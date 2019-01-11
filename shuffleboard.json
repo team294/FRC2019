@@ -1,7 +1,7 @@
 {
   "tabPane": [
     {
-      "title": "Tab 1",
+      "title": "Vision",
       "autoPopulate": false,
       "autoPopulatePrefix": "",
       "widgetPane": {
@@ -46,17 +46,6 @@
               "_title": "limelight/ty"
             }
           },
-          "3,3": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///limelight/ledMode",
-              "_title": "limelight/ledMode"
-            }
-          },
           "6,0": {
             "size": [
               3,
@@ -76,15 +65,26 @@
               "imageHeight": 0
             }
           },
-          "4,2": {
+          "4,0": {
             "size": [
               1,
               1
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///Limelight/ledMode",
-              "_title": "Limelight/ledMode"
+              "_source0": "network_table:///SmartDashboard/Area",
+              "_title": "/SmartDashboard/Area"
+            }
+          },
+          "4,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Angle to Crosshair",
+              "_title": "SmartDashboard/Angle to Crosshair"
             }
           }
         }
@@ -104,8 +104,8 @@
     }
   ],
   "windowGeometry": {
-    "x": 1930.0,
-    "y": 97.0,
+    "x": 525.0,
+    "y": 113.0,
     "width": 1394.0,
     "height": 815.0
   }
