@@ -53,4 +53,7 @@ public class VisionData {
         ledM.setDouble(1);  
     }
 
+    public void updateVisionLog() {
+        Robot.log.writeLog("Vision", "Update Variables", "HorizOffset," + horizOffset + ",AreaFromCamera," + areaFromCamera);
+    }
 }
