@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.Shift;
+import frc.robot.commands.TurnToTarget;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -60,8 +61,14 @@ public class OI {
       left[i] = new JoystickButton(leftJoystick, i);
       right[i] = new JoystickButton(rightJoystick, i);
 
-      left[i].whenPressed(new Shift(false));
-      right[i].whenPressed(new Shift(true));
+      if (i == 1) {
+        left[i].whenPressed(new Shift(false));
+        right[i].whenPressed(new Shift(true));
+      }
+
+      if (i == 2) {
+        left[i].whenPressed(new TurnToTarget());
+      }
     }
   }
 

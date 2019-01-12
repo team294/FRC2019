@@ -15,6 +15,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveWithJoysticks;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -41,6 +42,9 @@ public class DriveTrain extends Subsystem {
     leftMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
     rightMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 
+    leftMotor2.setInverted(true);
+    rightMotor2.setInverted(true);
+
     leftMotor2.clearStickyFaults(0);
     rightMotor2.clearStickyFaults(0);
 
@@ -58,4 +62,12 @@ public class DriveTrain extends Subsystem {
     // Set the default command for a subsystem here.
     setDefaultCommand(new DriveWithJoysticks());
   }
+;
+  public void turnToCrosshair() {
+    double m_gainConstant = 1/45;
+    double xVal = Robot.vision.xValue.getDouble(0);
+    double fixSpeed = 0.3;
+    this.robotDrive.tankDrive(fixSpeed - (m_gainConstant * fixSpeed * xVal), fixSpeed + (m_gainConstant * fixSpeed * xVal));
+  }
+
 }
