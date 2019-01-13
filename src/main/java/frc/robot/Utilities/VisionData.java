@@ -14,7 +14,7 @@ public class VisionData {
     public double xFromCamera,yFromCamera,areaFromCamera,ledMode;
     private NetworkTableEntry ledM;  // led mode 
     
-    private NetworkTableEntry xValue,yValue,aValue;
+    public NetworkTableEntry xValue,yValue,aValue;
     /**
      * Creates a VisionData object and connects to Limelight Camera
      */
