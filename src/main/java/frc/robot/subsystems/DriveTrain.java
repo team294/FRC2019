@@ -39,12 +39,16 @@ public class DriveTrain extends Subsystem {
   private double leftEncoderZero = 0, rightEncoderZero = 0;
 
   public DriveTrain() {
+    
     leftMotor1.set(ControlMode.Follower, RobotMap.leftMotor2);
     leftMotor3.set(ControlMode.Follower, RobotMap.leftMotor2);
     rightMotor1.set(ControlMode.Follower, RobotMap.rightMotor2);
     rightMotor3.set(ControlMode.Follower, RobotMap.rightMotor2);
+
     leftMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-    rightMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+		rightMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+		zeroLeftEncoder();
+		zeroRightEncoder();
 
     leftMotor2.clearStickyFaults(0);
     rightMotor2.clearStickyFaults(0);
@@ -58,18 +62,39 @@ public class DriveTrain extends Subsystem {
   public void tankDrive (double powerLeft, double powerRight) {
     this.robotDrive.tankDrive(powerLeft, powerRight);
   }
-  public void zeroLeftEncoder() {
-    leftEncoderZero = leftMotor2.getSelectedSensorPosition(0);
-  }
-  public void zeroRightEncoder() {
-    rightEncoderZero = rightMotor2.getSelectedSensorPosition(0);
-  }
-  public double getLeftEncoderTicks() {
-    return leftMotor2.getSelectedSensorPosition(0) - leftEncoderZero;
-  }
-  public double getRightEncoderTicks() {
-    return rightMotor2.getSelectedSensorPosition(0) - rightEncoderZero;
-  }
+  
+  /**
+	 * Zeros the left encoder position in software
+	 */
+	public void zeroLeftEncoder() {
+		leftEncoderZero = leftMotor2.getSelectedSensorPosition(0);
+	}
+
+	/**
+	 * Zeros the right encoder position in software
+	 */
+	public void zeroRightEncoder() {
+		rightEncoderZero = rightMotor2.getSelectedSensorPosition(0);
+	}
+
+	/**
+	 * Get the position of the left encoder, in encoder ticks since last zeroLeftEncoder()
+	 * 
+	 * @return encoder position, in ticks
+	 */
+	public double getLeftEncoderTicks() {
+		return leftMotor2.getSelectedSensorPosition(0) - leftEncoderZero;
+	}
+
+	/**
+	 * Get the position of the right encoder, in encoder ticks since last zeroRightEncoder()
+	 * 
+	 * @return encoder position, in ticks
+	 */
+	public double getRightEncoderTicks() {
+		return rightMotor2.getSelectedSensorPosition(0) - rightEncoderZero;
+	}
+
   /* Method to convert encoder Ticks to Inches and vice versa, to be uncommented when RobotMap and robotPrefs are updated
   public double encoderTicksToInches(double encoderTicks) {
     return (encoderTicks / RobotMap.encoderTicksPerRevolution) * Robot.robotPrefs.wheelCircumference * Robot.robotPrefs.driveTrainDistanceFudgeFactor;
@@ -79,22 +104,22 @@ public class DriveTrain extends Subsystem {
   }
   */
 
-  public void periodic() {
-    getLeftEncoderTicks();
-    getRightEncoderTicks();
-    
-    if (DriverStation.getInstance().isEnabled()) {
-      if ((++periodicCount) >= 50) {
-        updateDriveLog();
-        periodicCount=0;
-      }
-    }
-  }
   @Override
   public void initDefaultCommand() {
     setDefaultCommand(new DriveWithJoysticks());
   }
+  @Override
+  public void periodic() {
 
+    if (DriverStation.getInstance().isEnabled()) {
+      if ((++periodicCount) >= 50) {
+        updateDriveLog();
+        periodicCount=0;
+        System.out.println("ENCODER TEST: " + getLeftEncoderTicks() );
+      }
+    }
+  }
+  
   public void updateDriveLog () {
     Robot.log.writeLog("DriveTrain", "Update Variables",
       "Left Motor 1 Output Voltage," + leftMotor1.getMotorOutputVoltage() + ",Left Motor 1 Output Current," + leftMotor1.getOutputCurrent() + ",Left Motor 1 Output Percent," + leftMotor1.getMotorOutputPercent() +
