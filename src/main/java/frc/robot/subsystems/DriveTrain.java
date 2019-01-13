@@ -15,6 +15,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveWithJoysticks;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -41,11 +42,22 @@ public class DriveTrain extends Subsystem {
     leftMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
     rightMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 
+    leftMotor1.setInverted(true);
+    leftMotor2.setInverted(true);
+    leftMotor3.setInverted(true);
+    rightMotor1.setInverted(true);
+    rightMotor2.setInverted(true);
+    rightMotor3.setInverted(true);
+
     leftMotor2.clearStickyFaults(0);
     rightMotor2.clearStickyFaults(0);
 
+    leftMotor1.setNeutralMode(NeutralMode.Brake);
     leftMotor2.setNeutralMode(NeutralMode.Brake);
+    leftMotor3.setNeutralMode(NeutralMode.Brake);
+    rightMotor1.setNeutralMode(NeutralMode.Brake);
     rightMotor2.setNeutralMode(NeutralMode.Brake);
+    rightMotor3.setNeutralMode(NeutralMode.Brake);
   }
 
   public void tankDrive (double powerLeft, double powerRight) {
@@ -58,4 +70,25 @@ public class DriveTrain extends Subsystem {
     // Set the default command for a subsystem here.
     setDefaultCommand(new DriveWithJoysticks());
   }
+;
+  public void turnToCrosshair() {
+    double gainConstant = 1.0/30.0;
+    System.out.println("gainConstant = " + gainConstant);
+    double xVal = Robot.vision.xValue.getDouble(0);
+    double fixSpeed = 0.5;
+    double lPercentPower = fixSpeed + (gainConstant * xVal);
+    double rPercentPower = fixSpeed - (gainConstant * xVal);
+
+    if (Robot.vision.areaFromCamera < 1.8 && Robot.vision.areaFromCamera != 0) {
+      this.robotDrive.tankDrive(lPercentPower, rPercentPower);
+    } else {
+      this.robotDrive.tankDrive(0, 0);
+    }
+    
+    System.out.println("lPercentPower = " + lPercentPower);
+    System.out.println("rPercentPower = " + rPercentPower);
+
+  }
+
+
 }
