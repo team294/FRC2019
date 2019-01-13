@@ -93,7 +93,7 @@ public class DriveTrain extends Subsystem {
 	 * @return encoder position, in ticks
 	 */
 	public double getLeftEncoderTicks() {
-		return leftMotor2.getSelectedSensorPosition(0) - leftEncoderZero;
+    return leftMotor2.getSelectedSensorPosition(0) + leftEncoderZero;
 	}
 
 	/**
@@ -102,22 +102,21 @@ public class DriveTrain extends Subsystem {
 	 * @return encoder position, in ticks
 	 */
 	public double getRightEncoderTicks() {
-		return rightMotor2.getSelectedSensorPosition(0) - rightEncoderZero;
+		return rightMotor2.getSelectedSensorPosition(0) + rightEncoderZero;
 	}
 
   public double encoderTicksToInches(double encoderTicks) {
     return (encoderTicks / RobotMap.encoderTicksPerRevolution) * Robot.robotPrefs.wheelCircumference * Robot.robotPrefs.driveTrainDistanceFudgeFactor;
-  } 
+  }
   public double inchesToEncoderTicks(double inches) {
     return (inches / Robot.robotPrefs.wheelCircumference / Robot.robotPrefs.driveTrainDistanceFudgeFactor) * RobotMap.encoderTicksPerRevolution;
   }
-
   public double getLeftEncoderInches() {
-    return encoderTicksToInches(getLeftEncoderInches());
+    return encoderTicksToInches(getLeftEncoderTicks());
   }
 
   public double getRightEncoderInches() {
-    return encoderTicksToInches(getRightEncoderInches());
+    return encoderTicksToInches(getRightEncoderTicks());
   }
 
   @Override
@@ -128,7 +127,7 @@ public class DriveTrain extends Subsystem {
   public void periodic() {
 
     if (DriverStation.getInstance().isEnabled()) {
-      if ((++periodicCount) >= 50) {
+      if ((++periodicCount) >= 25) {
         updateDriveLog();
         periodicCount=0;  
       }
@@ -143,7 +142,7 @@ public class DriveTrain extends Subsystem {
       ",Right Motor 1 Output Voltage," + rightMotor1.getMotorOutputVoltage() + ",Right Motor 1 Output Current," + rightMotor1.getOutputCurrent() + ",Right Motor 1 Output Percent," + rightMotor1.getMotorOutputPercent() +
       ",Right Motor 1 Output Voltage," + rightMotor2.getMotorOutputVoltage() + ",Right Motor 2 Output Current," + rightMotor2.getOutputCurrent() + ",Right Motor 2 Output Percent," + rightMotor2.getMotorOutputPercent() +
       ",Right Motor 1 Output Voltage," + rightMotor3.getMotorOutputVoltage() + ",Right Motor 3 Output Current," + rightMotor3.getOutputCurrent() + ",Right Motor 3 Output Percent," + rightMotor3.getMotorOutputPercent() +
-      ",Left Encoder Ticks," + getLeftEncoderTicks() + ",Right Encoder Ticks," + getRightEncoderTicks() + ",Left Encoder Inches," + getLeftEncoderInches() + ",Right Encoder Inches," + getRightEncoderInches() +
+      ",Left Encoder Zero," + leftEncoderZero + ",Right Encoder Zero," + rightEncoderZero + ",Left Encoder Ticks," + getLeftEncoderTicks() + ",Right Encoder Ticks," + getRightEncoderTicks() + ",Left Encoder Inches," + getLeftEncoderInches() + ",Right Encoder Inches," + getRightEncoderInches() + 
       ",High Gear," + Robot.shifter.isShifterInHighGear());
   }
 
@@ -163,6 +162,4 @@ public class DriveTrain extends Subsystem {
     System.out.println("lPercentPower = " + lPercentPower);
     System.out.println("rPercentPower = " + rPercentPower);
   }
-
-
 }
