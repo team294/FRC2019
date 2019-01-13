@@ -10,8 +10,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import frc.robot.commands.Shift;
-import frc.robot.commands.TurnToTarget;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import frc.robot.commands.*;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -64,12 +65,15 @@ public class OI {
       if (i == 1) {
         left[i].whenPressed(new Shift(false));
         right[i].whenPressed(new Shift(true));
-      }
-
-      if (i == 2) {
-        left[i].whenPressed(new TurnToTarget());
+      } else if (i == 3) {
+        left[i].whileHeld(new TurnToTarget());
+        right[i].whileHeld(new TurnToTarget());
       }
     }
+
+    
+    SmartDashboard.putData("Turn To Target", new TurnToTarget());
+
   }
 
   public void setDriveDirection(boolean direction) {
