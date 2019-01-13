@@ -2,6 +2,8 @@ package frc.robot.Utilities;
 
 import frc.robot.Robot;
 
+import java.lang.Math.*;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -52,8 +54,15 @@ public class VisionData {
     public void turnOffCamLeds() {
         ledM.setDouble(1);  
     }
-
     public void updateVisionLog() {
         Robot.log.writeLog("Vision", "Update Variables", "HorizOffset," + horizOffset + ",AreaFromCamera," + areaFromCamera);
+    // returns the distance from the target
+    // questionable accuracy
+    public double distanceFromTarget (){
+        double myDistance = 0.0;
+        // reference distance = 23.75 inches
+        // reference area =  3.5 (the units that are used in limelight)
+        myDistance = 23.75 * Math.sqrt(areaFromCamera/3.5);
+        return myDistance;
     }
 }
