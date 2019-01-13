@@ -56,6 +56,7 @@ public class VisionData {
     }
     public void updateVisionLog() {
         Robot.log.writeLog("Vision", "Update Variables", "HorizOffset," + horizOffset + ",AreaFromCamera," + areaFromCamera);
+    }
     // returns the distance from the target
     // questionable accuracy
     public double distanceFromTarget (){
