@@ -52,8 +52,12 @@ public class DriveTrain extends Subsystem {
     leftMotor2.clearStickyFaults(0);
     rightMotor2.clearStickyFaults(0);
 
+    leftMotor1.setNeutralMode(NeutralMode.Brake);
     leftMotor2.setNeutralMode(NeutralMode.Brake);
+    leftMotor3.setNeutralMode(NeutralMode.Brake);
+    rightMotor1.setNeutralMode(NeutralMode.Brake);
     rightMotor2.setNeutralMode(NeutralMode.Brake);
+    rightMotor3.setNeutralMode(NeutralMode.Brake);
   }
 
   public void tankDrive (double powerLeft, double powerRight) {
