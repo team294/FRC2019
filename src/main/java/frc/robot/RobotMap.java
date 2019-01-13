@@ -29,6 +29,7 @@ public class RobotMap {
   public static final int rightMotor1 = 20;
   public static final int rightMotor2 = 21;
   public static final int rightMotor3 = 22;
+  public static final double encoderTicksPerRevolution = 4096.0;
 
   // Pneumatic Addresses
   public static final int pnuematicShifterLow = 0;

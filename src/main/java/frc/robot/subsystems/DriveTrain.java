@@ -105,14 +105,20 @@ public class DriveTrain extends Subsystem {
 		return rightMotor2.getSelectedSensorPosition(0) - rightEncoderZero;
 	}
 
-  /* Method to convert encoder Ticks to Inches and vice versa, to be uncommented when RobotMap and robotPrefs are updated
   public double encoderTicksToInches(double encoderTicks) {
     return (encoderTicks / RobotMap.encoderTicksPerRevolution) * Robot.robotPrefs.wheelCircumference * Robot.robotPrefs.driveTrainDistanceFudgeFactor;
   } 
   public double inchesToEncoderTicks(double inches) {
     return (inches / Robot.robotPrefs.wheelCircumference / Robot.robotPrefs.driveTrainDistanceFudgeFactor) * RobotMap.encoderTicksPerRevolution;
   }
-  */
+
+  public double getLeftEncoderInches() {
+    return encoderTicksToInches(getLeftEncoderInches());
+  }
+
+  public double getRightEncoderInches() {
+    return encoderTicksToInches(getRightEncoderInches());
+  }
 
   @Override
   public void initDefaultCommand() {
@@ -124,8 +130,7 @@ public class DriveTrain extends Subsystem {
     if (DriverStation.getInstance().isEnabled()) {
       if ((++periodicCount) >= 50) {
         updateDriveLog();
-        periodicCount=0;
-        System.out.println("ENCODER TEST: " + getLeftEncoderTicks() );
+        periodicCount=0;  
       }
     }
   }
@@ -138,10 +143,10 @@ public class DriveTrain extends Subsystem {
       ",Right Motor 1 Output Voltage," + rightMotor1.getMotorOutputVoltage() + ",Right Motor 1 Output Current," + rightMotor1.getOutputCurrent() + ",Right Motor 1 Output Percent," + rightMotor1.getMotorOutputPercent() +
       ",Right Motor 1 Output Voltage," + rightMotor2.getMotorOutputVoltage() + ",Right Motor 2 Output Current," + rightMotor2.getOutputCurrent() + ",Right Motor 2 Output Percent," + rightMotor2.getMotorOutputPercent() +
       ",Right Motor 1 Output Voltage," + rightMotor3.getMotorOutputVoltage() + ",Right Motor 3 Output Current," + rightMotor3.getOutputCurrent() + ",Right Motor 3 Output Percent," + rightMotor3.getMotorOutputPercent() +
-      ",Left Encoder Ticks," + getLeftEncoderTicks() + ",Right Encoder Ticks," + getRightEncoderTicks() +
+      ",Left Encoder Ticks," + getLeftEncoderTicks() + ",Right Encoder Ticks," + getRightEncoderTicks() + ",Left Encoder Inches," + getLeftEncoderInches() + ",Right Encoder Inches," + getRightEncoderInches() +
       ",High Gear," + Robot.shifter.isShifterInHighGear());
   }
-  
+
   public void turnToCrosshair() {
     double gainConstant = 1.0/30.0;
     System.out.println("gainConstant = " + gainConstant);

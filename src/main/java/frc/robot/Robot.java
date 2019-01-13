@@ -12,8 +12,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Utilities.VisionData;
-import frc.robot.Utilities.FileLog;
+import frc.robot.Utilities.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
@@ -30,6 +29,7 @@ public class Robot extends TimedRobot {
   public static VisionData vision;
   public static OI oi;
   public static FileLog log;
+  public static RobotPreferences robotPrefs;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -41,6 +41,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     log = new FileLog("1");
+    robotPrefs = new RobotPreferences();
     driveTrain = new DriveTrain();
     shifter = new Shifter();
     vision = new VisionData();
