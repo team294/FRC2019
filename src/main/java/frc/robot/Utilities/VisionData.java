@@ -57,6 +57,7 @@ public class VisionData {
 
     // returns the distance from the target
     // questionable accuracy
+    // test comment
     public double distanceFromTarget (){
         double myDistance = 0.0;
         // reference distance = 23.75 inches
