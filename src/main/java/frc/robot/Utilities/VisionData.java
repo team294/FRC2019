@@ -43,6 +43,7 @@ public class VisionData {
         ledMode = ledM.getDouble(0);   
         SmartDashboard.putNumber("Area", areaFromCamera);
         SmartDashboard.putNumber("Angle to Crosshair", horizOffset);
+        SmartDashboard.putNumber("Distance", distanceFromTarget());
     }
 
    // Turn the LEDS on
@@ -54,17 +55,38 @@ public class VisionData {
     public void turnOffCamLeds() {
         ledM.setDouble(1);  
     }
+
+    /**
+     * 
+     * @param modeNumber select a number from 0 to 3.
+     * 0 = the LED Mode set in the current pipeline (find this at the ip address of the limelight).
+     * 1 = off.
+     * 2 = blink.
+     * 3 = on.
+     * If a number other than 0 to 3 is selected, turn the LEDs off.
+     */
+    public void setCameraMode(int modeNumber){
+        if(modeNumber > 3 || modeNumber < 0){
+            modeNumber = 1;
+        }
+        ledM.setDouble(modeNumber);
+    }
+
     public void updateVisionLog() {
         Robot.log.writeLog("Vision", "Update Variables", "HorizOffset," + horizOffset + ",AreaFromCamera," + areaFromCamera);
     }
-    // returns the distance from the target
-    // questionable accuracy
-    // test comment
+       
+    /***
+     * questionable accuracy
+     * @return the distance from the target in inches
+     * 
+     */
     public double distanceFromTarget (){
         double myDistance = 0.0;
+        double cameraOffset = 12.0;
         // reference distance = 23.75 inches
         // reference area =  3.5 (the units that are used in limelight)
-        myDistance = 23.75 * Math.sqrt(areaFromCamera/3.5);
+        myDistance = 23.75 * Math.sqrt(3.5/areaFromCamera) - cameraOffset;
         return myDistance;
     }
 }
