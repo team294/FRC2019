@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveWithJoysticks;
-import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -31,11 +30,11 @@ public class DriveTrain extends Subsystem {
   private final WPI_TalonSRX leftMotor1 = new WPI_TalonSRX(RobotMap.leftMotor1);
   private final WPI_TalonSRX leftMotor2 = new WPI_TalonSRX(RobotMap.leftMotor2);
   private final WPI_TalonSRX leftMotor3 = new WPI_TalonSRX(RobotMap.leftMotor3);
-  //private final WPI_TalonSRX rightMotor1 = new WPI_TalonSRX(RobotMap.rightMotor1);
-  private final WPI_VictorSPX rightMotor1 = new WPI_VictorSPX(RobotMap.rightMotor1);
+  private final WPI_TalonSRX rightMotor1 = new WPI_TalonSRX(RobotMap.rightMotor1);
+  //private final WPI_VictorSPX rightMotor1 = new WPI_VictorSPX(RobotMap.rightMotor1);
   private final WPI_TalonSRX rightMotor2 = new WPI_TalonSRX(RobotMap.rightMotor2);
-  //private final WPI_TalonSRX rightMotor3 = new WPI_TalonSRX(RobotMap.rightMotor3);
-  private final WPI_VictorSPX rightMotor3 = new WPI_VictorSPX(RobotMap.rightMotor3);
+  private final WPI_TalonSRX rightMotor3 = new WPI_TalonSRX(RobotMap.rightMotor3);
+  //private final WPI_VictorSPX rightMotor3 = new WPI_VictorSPX(RobotMap.rightMotor3);
   public final DifferentialDrive robotDrive = new DifferentialDrive(leftMotor2, rightMotor2);
 
   private int periodicCount = 0;
@@ -46,11 +45,12 @@ public class DriveTrain extends Subsystem {
     
     leftMotor1.set(ControlMode.Follower, RobotMap.leftMotor2);
     leftMotor3.set(ControlMode.Follower, RobotMap.leftMotor2);
-    //rightMotor1.set(ControlMode.Follower, RobotMap.rightMotor2);
-    //rightMotor3.set(ControlMode.Follower, RobotMap.rightMotor2);
+    rightMotor1.set(ControlMode.Follower, RobotMap.rightMotor2);
+    rightMotor3.set(ControlMode.Follower, RobotMap.rightMotor2);
 
-    rightMotor1.follow(rightMotor2);
-    rightMotor3.follow(rightMotor2);
+    // Use the following for Victors
+    //rightMotor1.follow(rightMotor2);
+    //rightMotor3.follow(rightMotor2);
 
     leftMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		rightMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);

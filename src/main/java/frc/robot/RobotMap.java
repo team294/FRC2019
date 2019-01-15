@@ -26,11 +26,11 @@ public class RobotMap {
   public static final int leftMotor1 = 10;
   public static final int leftMotor2 = 11;
   public static final int leftMotor3 = 12;
-  //public static final int rightMotor1 = 20; Victor testing
-  public static final int rightMotor1 = 30;
+  public static final int rightMotor1 = 20;
+  //public static final int rightMotor1 = 30; // Victor for testing
   public static final int rightMotor2 = 21;
-  //public static final int rightMotor3 = 22; Victor testing
-  public static final int rightMotor3 = 32;
+  public static final int rightMotor3 = 22;
+  //public static final int rightMotor3 = 32; // Victor for testing
   public static final double encoderTicksPerRevolution = 4096.0;
 
   // Pneumatic Addresses
