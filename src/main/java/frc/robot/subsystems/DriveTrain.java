@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveWithJoysticks;
-import frc.robot.Robot;
+//import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -58,8 +58,12 @@ public class DriveTrain extends Subsystem {
     rightMotor2.setInverted(true);
     rightMotor3.setInverted(true);
 
+    leftMotor1.clearStickyFaults(0);
     leftMotor2.clearStickyFaults(0);
+    leftMotor3.clearStickyFaults(0);
+    rightMotor1.clearStickyFaults(0);
     rightMotor2.clearStickyFaults(0);
+    rightMotor3.clearStickyFaults(0);
 
     leftMotor1.setNeutralMode(NeutralMode.Brake);
     leftMotor2.setNeutralMode(NeutralMode.Brake);
@@ -146,20 +150,48 @@ public class DriveTrain extends Subsystem {
       ",High Gear," + Robot.shifter.isShifterInHighGear());
   }
 
-  public void turnToCrosshair() {
-    double gainConstant = 1.0/30.0;
-    System.out.println("gainConstant = " + gainConstant);
-    double xVal = Robot.vision.xValue.getDouble(0);
-    double fixSpeed = 0.5;
-    double lPercentPower = fixSpeed + (gainConstant * xVal);
-    double rPercentPower = fixSpeed - (gainConstant * xVal);
+/**
+   * Drives towards target and stops in front of it
+   */
+  public void driveToCrosshair() {
 
-    if (Robot.vision.areaFromCamera < 1.8 && Robot.vision.areaFromCamera != 0) {
-      this.robotDrive.tankDrive(lPercentPower, rPercentPower);
+    double gainConstant = 1.0/30.0;
+    double xVal = Robot.vision.xValue.getDouble(0);
+    // 50 inches subtracted from the distance to decrease the speed
+    double startSpeed = 0.5 + (1.0/800.0 * (Robot.vision.distanceFromTarget() - 50));
+    double lJoystickPercent = Robot.oi.leftJoystick.getY();
+    double lPercentOutput = startSpeed + (gainConstant * xVal);
+    double rPercentOutput = startSpeed - (gainConstant * xVal);
+
+    // SEE ROB ON THIS about area == 0
+    if (Robot.vision.distanceFromTarget() > 30 && Robot.vision.areaFromCamera != 0 && lJoystickPercent == 0) {
+        this.robotDrive.tankDrive(lPercentOutput, rPercentOutput);
+    } else if (Robot.vision.distanceFromTarget() > 30 && Robot.vision.areaFromCamera != 0) {
+      this.robotDrive.tankDrive(lPercentOutput - lJoystickPercent, rPercentOutput - lJoystickPercent);
     } else {
       this.robotDrive.tankDrive(0, 0);
     }
-    System.out.println("lPercentPower = " + lPercentPower);
-    System.out.println("rPercentPower = " + rPercentPower);
+    Robot.log.writeLog("DriveTrain", "Vision Driving", "Degrees from Target," + xVal + ",Joystick Ouput," + lJoystickPercent + ",Inches from Target," + Robot.vision.distanceFromTarget()
+    + ",Target Area," + Robot.vision.areaFromCamera);
+  }
+
+   /**
+   * Turns in place to target
+   */
+  public void turnToCrosshair() {
+    double gainConstant = 1.0/30.0;
+    double xVal = Robot.vision.xValue.getDouble(0);
+    double fixSpeed = 0.4;
+    double lPercentOutput = fixSpeed + (gainConstant * xVal);
+    double rPercentOutput = fixSpeed - (gainConstant * xVal);
+    
+    if (xVal > 0.5) {
+      this.robotDrive.tankDrive(lPercentOutput, -lPercentOutput);
+    } else if (xVal < -0.5) {
+      this.robotDrive.tankDrive(-rPercentOutput, rPercentOutput);
+    } else {
+      this.robotDrive.tankDrive(0, 0);
+   }
+   Robot.log.writeLog("DriveTrain", "Vision Turning", "Degrees from Target," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget() + ",Target Area," + Robot.vision.areaFromCamera);
   }
 }

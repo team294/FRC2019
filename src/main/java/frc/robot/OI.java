@@ -66,13 +66,13 @@ public class OI {
         left[i].whenPressed(new Shift(false));
         right[i].whenPressed(new Shift(true));
       } else if (i == 3) {
-        left[i].whileHeld(new TurnToTarget());
-        right[i].whileHeld(new TurnToTarget());
+        left[i].whileHeld(new DriveWithVisionSteering());
+        right[i].whileHeld(new DriveWithVisionTurn());
       }
     }
 
     
-    SmartDashboard.putData("Turn To Target", new TurnToTarget());
+    SmartDashboard.putData("Turn To Target", new DriveWithVisionTurn());
 
   }
 
