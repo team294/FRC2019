@@ -151,18 +151,19 @@ public class DriveTrain extends Subsystem {
   }
 
 /**
-   * Drives towards target and stops in front of it
+   * Drives towards target and stops in front of it using speed from left joystick
+   * This may change depending on driver preferences
    */
   public void driveToCrosshair() {
 
     double gainConstant = 1.0/30.0;
     double xVal = Robot.vision.xValue.getDouble(0);
     // 50 inches subtracted from the distance to decrease the speed
-    double startSpeed = 0.5 + (1.0/800.0 * (Robot.vision.distanceFromTarget() - 50));
+    double startSpeed = 0.5;  // + (1.0/800.0 * (Robot.vision.distanceFromTarget() - 50));
     double lJoystickPercent = Robot.oi.leftJoystick.getY();
     double lPercentOutput = startSpeed + (gainConstant * xVal);
     double rPercentOutput = startSpeed - (gainConstant * xVal);
-
+    System.out.println("lPercentOut, rPercentOut "+lPercentOutput+" "+rPercentOutput);
     // SEE ROB ON THIS about area == 0
     if (Robot.vision.distanceFromTarget() > 30 && Robot.vision.areaFromCamera != 0 && lJoystickPercent == 0) {
         this.robotDrive.tankDrive(lPercentOutput, rPercentOutput);
