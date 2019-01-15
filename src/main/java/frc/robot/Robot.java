@@ -27,6 +27,7 @@ public class Robot extends TimedRobot {
   public static DriveTrain driveTrain;
   public static Shifter shifter;
   public static VisionData vision;
+  public static LineFollowing lineFollowing;
   public static OI oi;
   public static FileLog log;
   public static RobotPreferences robotPrefs;
@@ -45,6 +46,7 @@ public class Robot extends TimedRobot {
     driveTrain = new DriveTrain();
     shifter = new Shifter();
     vision = new VisionData();
+    lineFollowing = new LineFollowing();
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
