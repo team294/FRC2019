@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveWithJoysticks;
-import frc.robot.Robot;
+import frc.robot.Utilities.*;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -84,7 +84,7 @@ public class DriveTrain extends Subsystem {
 	 * Zeros the right encoder position in software
 	 */
 	public void zeroRightEncoder() {
-		rightEncoderZero = rightMotor2.getSelectedSensorPosition(0);
+    rightEncoderZero = rightMotor2.getSelectedSensorPosition(0);
 	}
 
 	/**
@@ -161,5 +161,18 @@ public class DriveTrain extends Subsystem {
     }
     System.out.println("lPercentPower = " + lPercentPower);
     System.out.println("rPercentPower = " + rPercentPower);
+  }
+
+  public void turnToLine() {
+    double lpercentPower = 0;
+    double rpercentPower = 0;
+    if (Robot.lineFollowing.isLinePresent(1)) {
+    }
+    if (Robot.lineFollowing.isLinePresent(0)) {
+      //turn left
+    }
+    if (Robot.lineFollowing.isLinePresent(2)) {
+      //turn right
+    }
   }
 }

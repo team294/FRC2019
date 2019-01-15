@@ -35,5 +35,8 @@ public class RobotMap {
   public static final int pnuematicShifterLow = 0;
   public static final int pnuematicShifterHigh = 1;
   
-
+  //RoboRIO digital I/O Addresses
+  public static int lineFollower1 = 0;
+  public static int lineFollower2 = 1;
+  public static int lineFollower3 = 2;
 }

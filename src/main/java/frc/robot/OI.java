@@ -74,6 +74,12 @@ public class OI {
     
     SmartDashboard.putData("Turn To Target", new TurnToTarget());
 
+    SmartDashboard.putData("Turn To Line", new TurnToLine());
+    SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
+    SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
+    SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));
+
+
   }
 
   public void setDriveDirection(boolean direction) {
