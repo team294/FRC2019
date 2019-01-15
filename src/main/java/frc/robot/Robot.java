@@ -24,12 +24,13 @@ import frc.robot.subsystems.*;
  * project.
  */
 public class Robot extends TimedRobot {
+  public static RobotPreferences robotPrefs;
   public static DriveTrain driveTrain;
   public static Shifter shifter;
   public static VisionData vision;
   public static OI oi;
   public static FileLog log;
-  public static RobotPreferences robotPrefs;
+
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();

@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -19,7 +20,6 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveWithJoysticks;
-import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -31,8 +31,10 @@ public class DriveTrain extends Subsystem {
   private final WPI_TalonSRX leftMotor2 = new WPI_TalonSRX(RobotMap.leftMotor2);
   private final WPI_TalonSRX leftMotor3 = new WPI_TalonSRX(RobotMap.leftMotor3);
   private final WPI_TalonSRX rightMotor1 = new WPI_TalonSRX(RobotMap.rightMotor1);
+  //private final WPI_VictorSPX rightMotor1 = new WPI_VictorSPX(RobotMap.rightMotor1);
   private final WPI_TalonSRX rightMotor2 = new WPI_TalonSRX(RobotMap.rightMotor2);
   private final WPI_TalonSRX rightMotor3 = new WPI_TalonSRX(RobotMap.rightMotor3);
+  //private final WPI_VictorSPX rightMotor3 = new WPI_VictorSPX(RobotMap.rightMotor3);
   public final DifferentialDrive robotDrive = new DifferentialDrive(leftMotor2, rightMotor2);
 
   private int periodicCount = 0;
@@ -45,6 +47,10 @@ public class DriveTrain extends Subsystem {
     leftMotor3.set(ControlMode.Follower, RobotMap.leftMotor2);
     rightMotor1.set(ControlMode.Follower, RobotMap.rightMotor2);
     rightMotor3.set(ControlMode.Follower, RobotMap.rightMotor2);
+
+    // Use the following for Victors
+    //rightMotor1.follow(rightMotor2);
+    //rightMotor3.follow(rightMotor2);
 
     leftMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		rightMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
@@ -139,9 +145,9 @@ public class DriveTrain extends Subsystem {
       "Left Motor 1 Output Voltage," + leftMotor1.getMotorOutputVoltage() + ",Left Motor 1 Output Current," + leftMotor1.getOutputCurrent() + ",Left Motor 1 Output Percent," + leftMotor1.getMotorOutputPercent() +
       ",Left Motor 2 Output Voltage," + leftMotor2.getMotorOutputVoltage() + ",Left Motor 2 Output Current," + leftMotor2.getOutputCurrent() + ",Left Motor 2 Output Percent," + leftMotor2.getMotorOutputPercent() +
       ",Left Motor 3 Output Voltage," + leftMotor3.getMotorOutputVoltage() + ",Left Motor 3 Output Current," + leftMotor3.getOutputCurrent() + ",Left Motor 3 Output Percent," + leftMotor3.getMotorOutputPercent() +
-      ",Right Motor 1 Output Voltage," + rightMotor1.getMotorOutputVoltage() + ",Right Motor 1 Output Current," + rightMotor1.getOutputCurrent() + ",Right Motor 1 Output Percent," + rightMotor1.getMotorOutputPercent() +
-      ",Right Motor 1 Output Voltage," + rightMotor2.getMotorOutputVoltage() + ",Right Motor 2 Output Current," + rightMotor2.getOutputCurrent() + ",Right Motor 2 Output Percent," + rightMotor2.getMotorOutputPercent() +
-      ",Right Motor 1 Output Voltage," + rightMotor3.getMotorOutputVoltage() + ",Right Motor 3 Output Current," + rightMotor3.getOutputCurrent() + ",Right Motor 3 Output Percent," + rightMotor3.getMotorOutputPercent() +
+      ",Right Motor 1 Output Voltage," + rightMotor1.getMotorOutputVoltage() + /* ",Right Motor 1 Output Current," + rightMotor1.getOutputCurrent() + */ ",Right Motor 1 Output Percent," + rightMotor1.getMotorOutputPercent() +
+      ",Right Motor 2 Output Voltage," + rightMotor2.getMotorOutputVoltage() + ",Right Motor 2 Output Current," + rightMotor2.getOutputCurrent() + ",Right Motor 2 Output Percent," + rightMotor2.getMotorOutputPercent() +
+      ",Right Motor 3 Output Voltage," + rightMotor3.getMotorOutputVoltage() + /* ",Right Motor 3 Output Current," + rightMotor3.getOutputCurrent() + */ ",Right Motor 3 Output Percent," + rightMotor3.getMotorOutputPercent() +
       ",Left Encoder Zero," + leftEncoderZero + ",Right Encoder Zero," + rightEncoderZero + ",Left Encoder Ticks," + getLeftEncoderTicks() + ",Right Encoder Ticks," + getRightEncoderTicks() + ",Left Encoder Inches," + getLeftEncoderInches() + ",Right Encoder Inches," + getRightEncoderInches() + 
       ",High Gear," + Robot.shifter.isShifterInHighGear());
   }
