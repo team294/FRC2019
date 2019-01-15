@@ -1,0 +1,9 @@
+[
+  {
+    "name": "FRC2019",
+    "file": "C:\\Users\\team\\Documents\\GitHub\\FRC2019\\build\\libs\\FRC2019.jar",
+    "extensions": [],
+    "librarydir": "C:\\Users\\team\\Documents\\GitHub\\FRC2019\\build\\tmp\\jniExtractDir",
+    "mainclass": "frc.robot.Main"
+  }
+]
