@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package src.main.java.frc.robot.subsystems;   // had to change from just frc.robot.subsystems ?
+package frc.robot.subsystems;   // had to change from just frc.robot.subsystems ?
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
