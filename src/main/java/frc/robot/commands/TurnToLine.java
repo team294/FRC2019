@@ -21,13 +21,13 @@ public class TurnToLine extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.driveTrain.turnToLine();
+    Robot.driveTrain.DriveOnLine();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.driveTrain.turnToLine();
+    Robot.driveTrain.DriveOnLine();
     SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
     SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
     SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));

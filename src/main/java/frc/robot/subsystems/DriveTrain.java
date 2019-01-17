@@ -199,17 +199,38 @@ public class DriveTrain extends Subsystem {
    Robot.log.writeLog("DriveTrain", "Vision Turning", "Degrees from Target," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget() + ",Target Area," + Robot.vision.areaFromCamera);
   }
 
-  public void turnToLine() {
+  public void DriveOnLine() {
+    
+
+  //@param returns LineNumber
+   /*
+    l c r Output
+    0 0 0 0
+    1 1 0 1
+    1 0 0 2
+    0 1 1 -1
+    0 0 1 -2
+    */
     double lpercentPower = 0;
     double rpercentPower = 0;
-    if (Robot.lineFollowing.isLinePresent(1)) {
+    int LineNumber;
+   /* if (Robot.lineFollowing.isLinePresent(1)) {
     }
     if (Robot.lineFollowing.isLinePresent(0)) {
       //turn left
     }
     if (Robot.lineFollowing.isLinePresent(2)) {
       //turn right
+    } */
+    if (Robot.lineFollowing.isLinePresent(2) == true && Robot.lineFollowing.isLinePresent(1) == true && Robot.lineFollowing.isLinePresent(0) == false) {
+      LineNumber = 1;
     }
+    if (Robot.lineFollowing.isLinePresent(0) == true && Robot.lineFollowing.isLinePresent(1) == true && Robot.lineFollowing.isLinePresent(2) == false) {
+      LineNumber = -1;
+    } else {
+      
+    }
+  return LineNumber;
   }
 }
 
