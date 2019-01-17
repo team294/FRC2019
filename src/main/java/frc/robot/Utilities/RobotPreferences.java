@@ -1,10 +1,6 @@
 package frc.robot.Utilities;
 
-import frc.robot.Robot;
-
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class RobotPreferences {
 
