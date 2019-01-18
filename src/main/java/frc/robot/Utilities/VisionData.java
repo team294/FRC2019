@@ -2,8 +2,6 @@ package frc.robot.Utilities;
 
 import frc.robot.Robot;
 
-import java.lang.Math.*;
-
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
