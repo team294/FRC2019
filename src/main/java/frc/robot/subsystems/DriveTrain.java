@@ -165,13 +165,12 @@ public class DriveTrain extends Subsystem {
   
   public void updateDriveLog () {
     Robot.log.writeLog("DriveTrain", "Update Variables",
-      "Left Motor 1 Output Voltage," + leftMotor1.getMotorOutputVoltage() + ",Left Motor 1 Output Current," + Robot.pdp.getCurrent(RobotMap.leftMotor1PDP) + ",Left Motor 1 Output Percent," + leftMotor1.getMotorOutputPercent() +
-      ",Left Motor 2 Output Voltage," + leftMotor2.getMotorOutputVoltage() + ",Left Motor 2 Output Current," + leftMotor2.getOutputCurrent() + ",Left Motor 2 Output Percent," + leftMotor2.getMotorOutputPercent() +
-      ",Left Motor 3 Output Voltage," + leftMotor3.getMotorOutputVoltage() + ",Left Motor 3 Output Current," + Robot.pdp.getCurrent(RobotMap.leftMotor3PDP) + ",Left Motor 3 Output Percent," + leftMotor3.getMotorOutputPercent() +
-      ",Right Motor 1 Output Voltage," + rightMotor1.getMotorOutputVoltage() + ",Right Motor 1 Output Current," + Robot.pdp.getCurrent(RobotMap.rightMotor1PDP) + ",Right Motor 1 Output Percent," + rightMotor1.getMotorOutputPercent() +
-      ",Right Motor 1 Output Voltage," + rightMotor2.getMotorOutputVoltage() + ",Right Motor 2 Output Current," + rightMotor2.getOutputCurrent() + ",Right Motor 2 Output Percent," + rightMotor2.getMotorOutputPercent() +
-      ",Right Motor 1 Output Voltage," + rightMotor3.getMotorOutputVoltage() + ",Right Motor 3 Output Current," + Robot.pdp.getCurrent(RobotMap.rightMotor3PDP) + ",Right Motor 3 Output Percent," + rightMotor3.getMotorOutputPercent() +
-      ",Left Encoder Zero," + leftEncoderZero + ",Right Encoder Zero," + rightEncoderZero + ",Left Encoder Ticks," + getLeftEncoderTicks() + ",Right Encoder Ticks," + getRightEncoderTicks() + ",Left Encoder Inches," + getLeftEncoderInches() + ",Right Encoder Inches," + getRightEncoderInches() + 
+      "Drive L1 Volts," + leftMotor1.getMotorOutputVoltage() + ",Drive L2 Volts," + leftMotor2.getMotorOutputVoltage() + ",Drive L3 Volts," + leftMotor3.getMotorOutputVoltage() +
+      ",Drive L1 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor1PDP) + ",Drive L2 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor2PDP) + ",Drive L3 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor3PDP) + 
+      ",Drive R1 Volts," + rightMotor1.getMotorOutputVoltage() + ",Drive R2 Volts," + rightMotor2.getMotorOutputVoltage() + ",Drive R3 Volts," + rightMotor3.getMotorOutputVoltage() + 
+      ",Drive R1 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor1PDP) + ",Drive R2 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor2PDP) + ",Drive R3 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor3PDP) + 
+      ",L Enc Zero," + leftEncoderZero + ",L Enc Ticks," + getLeftEncoderTicks() + ",L Drive Inches," + getLeftEncoderInches() + 
+      ",R Enc Zero," + rightEncoderZero + ",R Enc Ticks," + getRightEncoderTicks() + ",R Drive Inches," + getRightEncoderInches() + 
       ",High Gear," + Robot.shifter.isShifterInHighGear());
   }
 
