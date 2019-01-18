@@ -73,6 +73,7 @@ public class OI {
 
     
     SmartDashboard.putData("Turn To Target", new DriveWithVisionTurn());
+    SmartDashboard.putData("Pathfinder Test 1", new PathfinderToRocket());
 
     SmartDashboard.putData("Turn To Line", new TurnToLine());
     SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));

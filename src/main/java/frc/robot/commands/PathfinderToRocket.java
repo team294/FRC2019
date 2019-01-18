@@ -19,10 +19,10 @@ import jaci.pathfinder.Waypoint;
 import jaci.pathfinder.followers.DistanceFollower;
 import jaci.pathfinder.modifiers.TankModifier;
 
-public class DriveWithPathfinder extends Command {
+public class PathfinderToRocket extends Command {
   private DistanceFollower dfLeft, dfRight;
 
-  public DriveWithPathfinder() {
+  public PathfinderToRocket() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.driveTrain);
@@ -39,8 +39,8 @@ public class DriveWithPathfinder extends Command {
       Trajectory.Config.SAMPLES_HIGH, 0.01, RobotMap.max_velocity_ips*maxVelocityPercentLimit, 
       RobotMap.max_acceleration_ipsps, RobotMap.max_jerk_ipspsps);
     Waypoint[] points = new Waypoint[] {
-      new Waypoint(0, 0, Pathfinder.d2r(90)),
-      new Waypoint(211, 30, Pathfinder.d2r(55)),
+      new Waypoint(6.998403366802192, 297.85013158065647, Pathfinder.d2r(0)),
+      new Waypoint(176.3727943678803, 284.98625378310624, Pathfinder.d2r(16.615842155169048)),
     };
 
     Trajectory trajectory = Pathfinder.generate(points, config);
@@ -83,9 +83,9 @@ public class DriveWithPathfinder extends Command {
 
     double angleDifference = Pathfinder.boundHalfDegrees(desired_heading - gyro_heading);
     double turn = -0.016 * angleDifference;
-    
     Robot.driveTrain.setLeftMotors(l + turn);
     Robot.driveTrain.setRightMotors(r - turn);
+    Robot.driveTrain.tankDrive(1 + turn, r - turn);
 
     Robot.log.writeLog("Pathfinder", "execute left", "left power," + l + ",right power," + r + ",turn power," + turn +
                        ",left distance," + Robot.driveTrain.getLeftEncoderInches() + ",right distance," + Robot.driveTrain.getRightEncoderInches() +
@@ -102,7 +102,6 @@ public class DriveWithPathfinder extends Command {
                        ",segPos," + segRight.position + ",segVel," + segRight.velocity + ",segAccel," + segRight.acceleration + 
                        ",segJerk," + segRight.jerk + ",segHeading," + Pathfinder.r2d(segRight.heading) + ",segdt," + segRight.dt);
     SmartDashboard.putNumber("Pathfinder right position", segRight.position);
- 
   }
 
   // Make this return true when this Command no longer needs to run execute()
