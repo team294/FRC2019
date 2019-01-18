@@ -197,7 +197,7 @@ public class DriveTrain extends Subsystem {
    Robot.log.writeLog("DriveTrain", "Vision Turning", "Degrees from Target," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget() + ",Target Area," + Robot.vision.areaFromCamera);
   }
 
-  public void DriveOnLine() {
+  public double DriveOnLine() {
     
 
   //@param returns LineNumber
@@ -211,7 +211,7 @@ public class DriveTrain extends Subsystem {
     */
     double lpercentPower = 0;
     double rpercentPower = 0;
-    int LineNumber;
+    int LineNumber = 0;
    /* if (Robot.lineFollowing.isLinePresent(1)) {
     }
     if (Robot.lineFollowing.isLinePresent(0)) {
@@ -225,6 +225,15 @@ public class DriveTrain extends Subsystem {
     }
     if (Robot.lineFollowing.isLinePresent(0) == true && Robot.lineFollowing.isLinePresent(1) == true && Robot.lineFollowing.isLinePresent(2) == false) {
       LineNumber = -1;
+    } 
+    if (Robot.lineFollowing.isLinePresent(0) == true && Robot.lineFollowing.isLinePresent(1) == false && Robot.lineFollowing.isLinePresent(2) == false) {
+      LineNumber = -2;
+    }
+    if (Robot.lineFollowing.isLinePresent(0) == false && Robot.lineFollowing.isLinePresent(1) == false && Robot.lineFollowing.isLinePresent(2) == true) {
+      LineNumber = 2;
+    } 
+    if (Robot.lineFollowing.isLinePresent(0) == false && Robot.lineFollowing.isLinePresent(1) == false && Robot.lineFollowing.isLinePresent(2) == false) {
+      LineNumber = 0;
     } else {
       
     }
