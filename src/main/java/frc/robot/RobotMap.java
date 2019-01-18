@@ -14,8 +14,9 @@ package frc.robot;
  * floating around.
  */
 public class RobotMap {
-
+  
   public static final int PowerDistributionPanel = 0;
+
   public static final int leftMotor1 = 10;
   public static final int leftMotor2 = 11;
   public static final int leftMotor3 = 12;
@@ -34,8 +35,10 @@ public class RobotMap {
   public static final int lineFollower3 = 2;
 
   // PDP Addresses
-  public static final int leftMotor1PDP = 0; //Check on PDP and change
-  public static final int leftMotor3PDP = 1; //Check on PDP and change
+  public static final int leftMotor1PDP = 13; //Check on PDP and change
+  public static final int leftMotor2PDP = 15; //Check on PDP and change
+  public static final int leftMotor3PDP = 14; //Check on PDP and change
   public static final int rightMotor1PDP = 2; //Check on PDP and change
-  public static final int rightMotor3PDP = 3; //Check on PDP and change 
+  public static final int rightMotor2PDP = 0; //Check on PDP and change
+  public static final int rightMotor3PDP = 1; //Check on PDP and change 
 }
