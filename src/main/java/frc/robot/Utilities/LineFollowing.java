@@ -12,9 +12,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class LineFollowing {
-    public final DigitalInput lineFollower1 = new DigitalInput(RobotMap.lineFollower1);
-    public final DigitalInput lineFollower2 = new DigitalInput(RobotMap.lineFollower2);
-    public final DigitalInput lineFollower3 = new DigitalInput(RobotMap.lineFollower3);
+    public final DigitalInput lineFollowerLeft = new DigitalInput(RobotMap.lineFollowerLeft);
+    public final DigitalInput lineFollowerCenter = new DigitalInput(RobotMap.lineFollowerCenter);
+    public final DigitalInput lineFollowerRight = new DigitalInput(RobotMap.lineFollowerRight);
 
     public LineFollowing() {
     }
@@ -23,10 +23,10 @@ public class LineFollowing {
      * @param follower int between 1 and 3 inclusive that tells which lineFollower to get data from
      **/
     public boolean isLinePresent(int follower) {
-        if (follower == 1) return lineFollower1.get();
-        else if (follower == 2) return lineFollower2.get();
+        if (follower == 1) return !(lineFollowerLeft.get());
+        else if (follower == 2) return !(lineFollowerCenter.get());
         else {
-            return lineFollower3.get();
+            return !(lineFollowerRight.get());
         }
     }
 
