@@ -46,7 +46,7 @@ public class RobotMap {
 
   //Elevator Level Heights (in inches)
   public static final double rocketCargo1 = 12;
-  public static final double rocketHatch1 = 1;
+  public static final double rocketHatch1 = 19;
   public static final double rocketCargo2 = 1;
   public static final double rocketHatch2 = 1;
   public static final double rocketCargo3 = 1;

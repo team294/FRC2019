@@ -9,15 +9,16 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
-import frc.robot.Utilities.*;
-import frc.robot.commands.ElevatorWithJoysticks;
 import frc.robot.commands.StopElevator;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
+import com.revrobotics.ControlType;
 
 /**
  * Add your docs here.
@@ -28,23 +29,38 @@ public class Elevator extends Subsystem {
 
   private CANSparkMax elevatorMotor1;
   private CANSparkMax elevatorMotor2;
-  private CANEncoder elevatorEncoder1;
-  private CANEncoder elevatorEncoder2;
+  private CANEncoder elevatorEnc;
+  private CANPIDController elevatorPID;
 
   private int periodicCount = 0;
 
-  private double encoder1Zero = 0;
-  private double encoder2Zero = 0;
+  private double encoderZero = 0;
+
+  public double rampRate = .005; 
+  public double kP = 1;
+  public double kI = 0;
+  public double kD = 0;
+  public double kIz = 0;
+  public double kFF = 0;
+  public double kMaxOutput = 1;
+  public double kMinOutput = -1;
 
   public Elevator() {
 	elevatorMotor1 = new CANSparkMax(RobotMap.elevatorMotor1, MotorType.kBrushless);
 	elevatorMotor2 = new CANSparkMax(RobotMap.elevatorMotor2, MotorType.kBrushless);
-	elevatorEncoder1 = elevatorMotor1.getEncoder();
-	elevatorEncoder2 = elevatorMotor2.getEncoder();
+	elevatorEnc = elevatorMotor1.getEncoder();
+	elevatorPID = elevatorMotor1.getPIDController();
+	elevatorMotor2.follow(elevatorMotor1);
 	elevatorMotor1.clearFaults();	
 	elevatorMotor2.clearFaults();
-	zeroEncoder1();
-	zeroEncoder2();	
+	zeroElevatorEnc();
+	elevatorPID.setP(kP);
+	elevatorPID.setI(kI);
+	elevatorPID.setD(kD);
+	elevatorPID.setIZone(kIz);
+	elevatorPID.setFF(kFF);
+	elevatorMotor1.setRampRate(rampRate);
+	elevatorPID.setOutputRange(kMinOutput, kMaxOutput);
 	}
 	
 	/* 
@@ -52,31 +68,22 @@ public class Elevator extends Subsystem {
 	*/
 	public void setElevatorMotorPercentPower(double percentPower) {
 		elevatorMotor1.set(percentPower);
-		elevatorMotor2.set(percentPower);
+	}
+
+	public void setElevatorPos(double inches) {
+		elevatorPID.setReference(inchesToEncoderRevolutions(inches) + encoderZero, ControlType.kPosition);
 	}
 
 	public void stopElevator() {
 		setElevatorMotorPercentPower(0.0);
 	}
 
-	public void zeroEncoder1() {
-		encoder1Zero = elevatorEncoder1.getPosition();
+	public void zeroElevatorEnc() {
+		encoderZero = elevatorEnc.getPosition();
 	}
 
-	public double getZero() {
-		return encoder1Zero;
-	}
-
-	public void zeroEncoder2() {
-		encoder2Zero = elevatorEncoder2.getPosition();
-	}
-
-	public double getEncoder1Revolutions() {
-		return elevatorEncoder1.getPosition() - encoder1Zero;
-	}
-
-	public double getEncoder2Revolutions() {
-		return elevatorEncoder2.getPosition() - encoder2Zero;
+	public double getElevatorEncRevolutions() {
+		return elevatorEnc.getPosition() - encoderZero;
 	}
 
 	public double encoderRevolutionsToInches(double encoderRevs) {
@@ -87,12 +94,8 @@ public class Elevator extends Subsystem {
 		return inches / Robot.robotPrefs.elevatorGearCircumference;
 	}
 
-	public double getEncoder1Inches() {
-		return encoderRevolutionsToInches(getEncoder1Revolutions());
-	}
-
-	public double getEncoder2Inches() {
-		return encoderRevolutionsToInches(getEncoder2Revolutions());
+	public double getElevatorEncInches() {
+		return encoderRevolutionsToInches(getElevatorEncRevolutions());
 	}
 
 	public void updateElevatorLog() {
@@ -100,8 +103,7 @@ public class Elevator extends Subsystem {
 		"Elev1 Volts," + elevatorMotor1.getBusVoltage() + ",Elev2 Volts," + elevatorMotor2.getBusVoltage() +
 		",Elev1 Amps," + elevatorMotor1.getOutputCurrent() + ",Elev2 Amps," + elevatorMotor2.getOutputCurrent() +
 		",Elev1 Temp," + elevatorMotor1.getMotorTemperature() + ",Elev2 Temp," + elevatorMotor2.getMotorTemperature() +
-		",Elev Enc1 Revs," + getEncoder1Revolutions() + ",Elev Enc2 Revs," + getEncoder2Revolutions() +
-		",Elev Enc1 Inches," + getEncoder1Inches() + ",Elev Enc2 Inches," + getEncoder2Inches());
+		",Elev Enc Revs," + getElevatorEncRevolutions() + ",Elev Enc Inches," + getElevatorEncInches());
 	}
   @Override
   public void initDefaultCommand() {
@@ -112,6 +114,8 @@ public class Elevator extends Subsystem {
   @Override
   public void periodic() {
 
+	SmartDashboard.putNumber("Enc Zero", encoderZero);
+	SmartDashboard.putNumber("Enc Val", getElevatorEncRevolutions());
     if (DriverStation.getInstance().isEnabled()) {
       if ((++periodicCount) >= 25) {
         updateElevatorLog();

@@ -13,7 +13,6 @@ import frc.robot.Robot;
 public class ElevatorMoveToLevel extends Command {
 
   double inches;
-  double currInches;
   
   public ElevatorMoveToLevel(double inches) {
     // Use requires() here to declare subsystem dependencies
@@ -30,25 +29,24 @@ public class ElevatorMoveToLevel extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    currInches = Robot.elevator.getEncoder1Inches();
-    Robot.elevator.setElevatorMotorPercentPower(0.02);
+    Robot.elevator.setElevatorPos(inches);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return (currInches >= inches);
+    return false;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.elevator.stopElevator();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.elevator.stopElevator();
   }
 }
