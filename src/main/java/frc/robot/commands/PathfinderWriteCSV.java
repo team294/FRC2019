@@ -12,11 +12,10 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
-import jaci.pathfinder.Pathfinder;
-import jaci.pathfinder.Trajectory;
-import jaci.pathfinder.Waypoint;
-import jaci.pathfinder.followers.DistanceFollower;
-import jaci.pathfinder.modifiers.TankModifier;
+import frc.robot.pathfinder.Pathfinder;
+import frc.robot.pathfinder.Trajectory;
+import frc.robot.pathfinder.Waypoint;
+import frc.robot.pathfinder.followers.DistanceFollower;
 
 public class PathfinderWriteCSV extends Command {
   public PathfinderWriteCSV() {

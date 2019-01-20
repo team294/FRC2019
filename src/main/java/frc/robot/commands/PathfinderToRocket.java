@@ -13,11 +13,10 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
-import jaci.pathfinder.Pathfinder;
-import jaci.pathfinder.Trajectory;
-import jaci.pathfinder.Waypoint;
-import jaci.pathfinder.followers.DistanceFollower;
-import jaci.pathfinder.modifiers.TankModifier;
+import frc.robot.pathfinder.Pathfinder;
+import frc.robot.pathfinder.Trajectory;
+import frc.robot.pathfinder.Waypoint;
+import frc.robot.pathfinder.followers.DistanceFollower;
 
 public class PathfinderToRocket extends Command {
   private DistanceFollower dfLeft, dfRight;
@@ -36,35 +35,39 @@ public class PathfinderToRocket extends Command {
     Robot.driveTrain.setGyroRotation(0);
     Robot.driveTrain.setVoltageCompensation(true);
 
-    double maxVelocityPercentLimit = 0.6;   // Limit max velocity to 0.4 of real max velocity (for safety and to obsereve)
-    Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, 
-      Trajectory.Config.SAMPLES_HIGH, 0.01, RobotMap.max_velocity_ips*maxVelocityPercentLimit, 
-      RobotMap.max_acceleration_ipsps, RobotMap.max_jerk_ipspsps);
-    Waypoint[] points = new Waypoint[] {
-      // new Waypoint(297.85013158065647, 6.998403366802192, Pathfinder.d2r(0)),
-      // new Waypoint(284.98625378310624, 176.3727943678803, Pathfinder.d2r(16.615842155169048))
-      // new Waypoint(50, 50, Pathfinder.d2r(0)),
-      // new Waypoint(30, 70, Pathfinder.d2r(10))
-    };
+    // double maxVelocityPercentLimit = 0.6;   // Limit max velocity to 0.4 of real max velocity (for safety and to obsereve)
+    // Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, 
+    //   Trajectory.Config.SAMPLES_HIGH, 0.01, RobotMap.max_velocity_ips*maxVelocityPercentLimit, 
+    //   RobotMap.max_acceleration_ipsps, RobotMap.max_jerk_ipspsps);
+    // Waypoint[] points = new Waypoint[] {
+    //   // new Waypoint(297.85013158065647, 6.998403366802192, Pathfinder.d2r(0)),
+    //   // new Waypoint(284.98625378310624, 176.3727943678803, Pathfinder.d2r(16.615842155169048))
+    //   // new Waypoint(50, 50, Pathfinder.d2r(0)),
+    //   // new Waypoint(30, 70, Pathfinder.d2r(10))
+    // };
 
-    Trajectory trajectory = Pathfinder.generate(points, config);
+    // Trajectory trajectory = Pathfinder.generate(points, config);
 
-    // Save main trajectory for reference
-    File saveFile = new File("/home/lvuser/trajectory.csv");
-    Pathfinder.writeToCSV(saveFile, trajectory);
+    // // Save main trajectory for reference
+    // File saveFile = new File("/home/lvuser/trajectory.csv");
+    // Pathfinder.writeToCSV(saveFile, trajectory);
 
-    // Wheelbase Width
-    TankModifier modifier = new TankModifier(trajectory).modify(RobotMap.wheelbase_in);
+    // // Wheelbase Width
+    // TankModifier modifier = new TankModifier(trajectory).modify(RobotMap.wheelbase_in);
 
-    // Save left and right side trajectories for reference
-    saveFile = new File("/home/lvuser/trajectory-left.csv");
-    Pathfinder.writeToCSV(saveFile, modifier.getLeftTrajectory());
-    saveFile = new File("/home/lvuser/trajectory-right.csv");
-    Pathfinder.writeToCSV(saveFile, modifier.getRightTrajectory());
+    // // Save left and right side trajectories for reference
+    // saveFile = new File("/home/lvuser/trajectory-left.csv");
+    // Pathfinder.writeToCSV(saveFile, modifier.getLeftTrajectory());
+    // saveFile = new File("/home/lvuser/trajectory-right.csv");
+    // Pathfinder.writeToCSV(saveFile, modifier.getRightTrajectory());
+
+    Trajectory trajCenter = Pathfinder.readFromCSV("/home/lvuser/trajectory.csv");
+    Trajectory trajLeft = Pathfinder.readFromCSV("/home/lvuser/trajectory-left.csv");
+    Trajectory trajRight = Pathfinder.readFromCSV("/home/lvuser/trajectory-right.csv");
 
     // Create DistanceFollowers for the Trajectories and configure them
-    dfLeft = new DistanceFollower(modifier.getLeftTrajectory());
-    dfRight = new DistanceFollower(modifier.getRightTrajectory());
+    dfLeft = new DistanceFollower(trajLeft);
+    dfRight = new DistanceFollower(trajRight);
     // dfLeft.configureEncoder(Robot.driveTrain.getLeftEncoderTicks(), RobotMap.encoderTicksPerRevolution, RobotMap.wheel_diameter_m);
     // dfRight.configureEncoder(Robot.driveTrain.getRightEncoderTicks(), RobotMap.encoderTicksPerRevolution, RobotMap.wheel_diameter_m);
     dfLeft.configurePIDVA(0.02, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0025);
