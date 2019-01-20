@@ -13,6 +13,7 @@ import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.Utilities.*;
 import frc.robot.commands.ElevatorWithJoysticks;
+import frc.robot.commands.StopElevator;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -49,9 +50,13 @@ public class Elevator extends Subsystem {
 	/* 
 	powerLeft and powerRight are between -1.0 and 1.0
 	*/
-	public void raiseElevator(double power) {
-		elevatorMotor1.set(power);
-		elevatorMotor2.set(power);
+	public void setElevatorMotorPercentPower(double percentPower) {
+		elevatorMotor1.set(percentPower);
+		elevatorMotor2.set(percentPower);
+	}
+
+	public void stopElevator() {
+		setElevatorMotorPercentPower(0.0);
 	}
 
 	public void zeroEncoder1() {
@@ -97,7 +102,7 @@ public class Elevator extends Subsystem {
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
-	setDefaultCommand(new ElevatorWithJoysticks());
+	setDefaultCommand(new StopElevator());
   }
 
   @Override

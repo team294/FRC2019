@@ -45,7 +45,7 @@ public class RobotMap {
   public static final int rightMotor3PDP = 1; //Check on PDP and change 
 
   //Elevator Level Heights (in inches)
-  public static final double rocketCargo1 = 1;
+  public static final double rocketCargo1 = 12;
   public static final double rocketHatch1 = 1;
   public static final double rocketCargo2 = 1;
   public static final double rocketHatch2 = 1;
