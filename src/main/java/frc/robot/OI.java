@@ -74,6 +74,8 @@ public class OI {
     
     SmartDashboard.putData("Turn To Target", new DriveWithVisionTurn());
     SmartDashboard.putData("Raise Elevator to Level", new ElevatorMoveToLevel(RobotMap.rocketCargo1));
+    SmartDashboard.putNumber("Encoder Zero", Robot.elevator.getEncoder1Inches());
+    SmartDashboard.putNumber("Encoder Val", Robot.elevator.getZero());
     SmartDashboard.putData("Turn To Line", new TurnToLine());
     SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
     SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));

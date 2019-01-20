@@ -32,7 +32,7 @@ public class RobotPreferences {
 		prototypeRobot = prefs.getBoolean("prototypeRobot", false); // true if testing code on a prototype, default to false (competition bot w/ Victors)
 		driveDirection = prefs.getBoolean("driveDirection", true);
 		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;	
-		elevatorGearCircumference = prefs.getDouble("circum", 1); //TODO change values when elevator is built
+		elevatorGearCircumference = prefs.getDouble("Circumference", 1); //TODO change values when elevator is built
 		driveTrainDistanceFudgeFactor = prefs.getDouble("driveTrainDistanceFudgeFactor", 1);
 		/* if (driveTrainDistanceFudgeFactor == -9999) {
 			// If fudge factor for driving can't be read, then assume value of 1

@@ -63,6 +63,10 @@ public class Elevator extends Subsystem {
 		encoder1Zero = elevatorEncoder1.getPosition();
 	}
 
+	public double getZero() {
+		return encoder1Zero;
+	}
+
 	public void zeroEncoder2() {
 		encoder2Zero = elevatorEncoder2.getPosition();
 	}
