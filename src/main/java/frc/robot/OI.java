@@ -75,10 +75,10 @@ public class OI {
     SmartDashboard.putData("Turn To Target", new DriveWithVisionTurn());
 
     SmartDashboard.putData("Drive on line", new TurnToLine());
-    SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
+   /* SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
     SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
     SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));
-
+*/
 
   }
 
