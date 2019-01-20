@@ -33,8 +33,10 @@ public class Elevator extends Subsystem {
   private CANPIDController elevatorPID;
 
   private int periodicCount = 0;
-
+  private int idleCount= 0;
   private double encoderZero = 0;
+  private double prevEnc = 0.0;
+  private double currEnc = 0.0;
 
   public double rampRate = .005; 
   public double kP = 1;
@@ -113,14 +115,28 @@ public class Elevator extends Subsystem {
 
   @Override
   public void periodic() {
-
 	SmartDashboard.putNumber("Enc Zero", encoderZero);
 	SmartDashboard.putNumber("Enc Val", getElevatorEncRevolutions());
+
     if (DriverStation.getInstance().isEnabled()) {
-      if ((++periodicCount) >= 25) {
-        updateElevatorLog();
-        periodicCount=0;  
-      }
+		prevEnc = currEnc;
+		currEnc = getElevatorEncRevolutions();
+		if (currEnc == prevEnc) {
+			idleCount++;
+		}
+		else {
+			idleCount = 0;
+		}
+
+		if(idleCount>=50) {
+			if((++periodicCount) >= 25) {
+				updateElevatorLog();
+				periodicCount = 0;
+			}
+		}
+		else {
+			updateElevatorLog();
+		}
     }
   }
 }
