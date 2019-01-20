@@ -65,13 +65,15 @@ public class OI {
         left[i].whenPressed(new Shift(false));
         right[i].whenPressed(new Shift(true));
       } else if (i == 3) {
-        left[i].whileHeld(new DriveWithVisionSteering());
-        right[i].whileHeld(new DriveWithVisionTurn());
+        left[i].whenPressed(new DriveWithVision());
+        left[i].whenReleased(new DriveWithJoysticks());
+        right[i].whenPressed(new VisionTurnToTarget());
+        right[i].whenReleased(new DriveWithJoysticks()); // We should be able to cancel the commands when the button is released. This is a better method to do that.
       }
     }
 
     
-    SmartDashboard.putData("Turn To Target", new DriveWithVisionTurn());
+    SmartDashboard.putData("Turn To Target", new VisionTurnToTarget());
 
     SmartDashboard.putData("Turn To Line", new TurnToLine());
     SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
