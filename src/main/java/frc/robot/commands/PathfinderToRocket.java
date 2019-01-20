@@ -33,14 +33,18 @@ public class PathfinderToRocket extends Command {
   protected void initialize() {
     Robot.driveTrain.zeroLeftEncoder();
     Robot.driveTrain.zeroRightEncoder();
+    Robot.driveTrain.setGyroRotation(0);
+    Robot.driveTrain.setVoltageCompensation(true);
 
     double maxVelocityPercentLimit = 0.6;   // Limit max velocity to 0.4 of real max velocity (for safety and to obsereve)
     Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, 
       Trajectory.Config.SAMPLES_HIGH, 0.01, RobotMap.max_velocity_ips*maxVelocityPercentLimit, 
       RobotMap.max_acceleration_ipsps, RobotMap.max_jerk_ipspsps);
     Waypoint[] points = new Waypoint[] {
-      new Waypoint(6.998403366802192, 297.85013158065647, Pathfinder.d2r(0)),
-      new Waypoint(176.3727943678803, 284.98625378310624, Pathfinder.d2r(16.615842155169048)),
+      // new Waypoint(297.85013158065647, 6.998403366802192, Pathfinder.d2r(0)),
+      // new Waypoint(284.98625378310624, 176.3727943678803, Pathfinder.d2r(16.615842155169048))
+      // new Waypoint(50, 50, Pathfinder.d2r(0)),
+      // new Waypoint(30, 70, Pathfinder.d2r(10))
     };
 
     Trajectory trajectory = Pathfinder.generate(points, config);
@@ -61,8 +65,8 @@ public class PathfinderToRocket extends Command {
     // Create DistanceFollowers for the Trajectories and configure them
     dfLeft = new DistanceFollower(modifier.getLeftTrajectory());
     dfRight = new DistanceFollower(modifier.getRightTrajectory());
-    // dfLeft.configureEncoder(Robot.drivetrain.getLeftEncoderTicks(), RobotMap.encoderTicksPerRevolution, RobotMap.wheel_diameter_m);
-    // dfRight.configureEncoder(Robot.drivetrain.getRightEncoderTicks(), RobotMap.encoderTicksPerRevolution, RobotMap.wheel_diameter_m);
+    // dfLeft.configureEncoder(Robot.driveTrain.getLeftEncoderTicks(), RobotMap.encoderTicksPerRevolution, RobotMap.wheel_diameter_m);
+    // dfRight.configureEncoder(Robot.driveTrain.getRightEncoderTicks(), RobotMap.encoderTicksPerRevolution, RobotMap.wheel_diameter_m);
     dfLeft.configurePIDVA(0.02, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0025);
     dfRight.configurePIDVA(0.02, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0025);
     dfLeft.reset();
@@ -72,9 +76,6 @@ public class PathfinderToRocket extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Trajectory.Segment segLeft = dfLeft.getSegment();
-    Trajectory.Segment segRight = dfRight.getSegment();
-
     double l = dfLeft.calculate(Robot.driveTrain.getLeftEncoderInches());
     double r = dfRight.calculate(Robot.driveTrain.getRightEncoderInches());
 
@@ -83,10 +84,11 @@ public class PathfinderToRocket extends Command {
 
     double angleDifference = Pathfinder.boundHalfDegrees(desired_heading - gyro_heading);
     double turn = -0.016 * angleDifference;
-    Robot.driveTrain.setLeftMotors(l + turn);
-    Robot.driveTrain.setRightMotors(r - turn);
-    Robot.driveTrain.tankDrive(1 + turn, r - turn);
+    Robot.driveTrain.setLeftMotors(-(l + turn));
+    Robot.driveTrain.setRightMotors(-(r - turn));
 
+    Trajectory.Segment segLeft = dfLeft.getSegment();
+    Trajectory.Segment segRight = dfRight.getSegment();
     Robot.log.writeLog("Pathfinder", "execute left", "left power," + l + ",right power," + r + ",turn power," + turn +
                        ",left distance," + Robot.driveTrain.getLeftEncoderInches() + ",right distance," + Robot.driveTrain.getRightEncoderInches() +
                        ",heading," + gyro_heading + 

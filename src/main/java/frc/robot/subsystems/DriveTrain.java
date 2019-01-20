@@ -19,12 +19,14 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.Utilities.*;
 //import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.I2C;
 
 /**
  * Drive Train subsystem.  
@@ -79,7 +81,23 @@ public class DriveTrain extends Subsystem {
     rightMotor1.setNeutralMode(NeutralMode.Brake);
     rightMotor2.setNeutralMode(NeutralMode.Brake);
     rightMotor3.setNeutralMode(NeutralMode.Brake);
-  }
+
+    // Configure navX
+		try {
+			/* Communicate w/navX MXP via the MXP SPI Bus.
+			 * Alternatively: I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB
+			 * See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for
+			 * details.
+			 */
+
+			ahrs = new AHRS(I2C.Port.kMXP);
+
+		} catch (RuntimeException ex) {
+			DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
+		}
+		ahrs.zeroYaw();
+		// zeroGyroRotation();
+	}
 
   public void tankDrive (double powerLeft, double powerRight) {
     this.robotDrive.tankDrive(powerLeft, powerRight);
@@ -183,7 +201,7 @@ public class DriveTrain extends Subsystem {
 	 */
 	public void zeroGyroRotation() {
 		// set yawZero to gryo angle
-		yawZero = -ahrs.getAngle();
+		yawZero = ahrs.getAngle();
 		// System.err.println("PLZ Never Zero the Gyro Rotation it is not good");
 	}
 
@@ -194,7 +212,7 @@ public class DriveTrain extends Subsystem {
 	 */
 	public void setGyroRotation(double currentHeading) {
 		// set yawZero to gryo angle, offset to currentHeading
-		yawZero = -ahrs.getAngle() - currentHeading;
+		yawZero = ahrs.getAngle() - currentHeading;
 		// System.err.println("PLZ Never Zero the Gyro Rotation it is not good");
 	}
 
@@ -204,12 +222,13 @@ public class DriveTrain extends Subsystem {
 	 * @return Current angle from -180 to 180 degrees
 	 */
 	public double getGyroRotation() {
-		double angle = -ahrs.getAngle() - yawZero;
+		double angle = ahrs.getAngle() - yawZero;
 		// Angle will be in terms of raw gyro units (-inf,inf), so you need to convert
 		// to (-180, 180]
 		angle = angle % 360;
 		angle = (angle <= -180) ? (angle + 360) : angle;
-		angle = (angle > 180) ? (angle - 360) : angle;
+    angle = (angle > 180) ? (angle - 360) : angle;
+    SmartDashboard.putNumber("Gyro Angle", angle);
 		return angle;
 	}
 
@@ -299,4 +318,3 @@ public class DriveTrain extends Subsystem {
     }
   }
 }
-

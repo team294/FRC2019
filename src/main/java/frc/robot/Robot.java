@@ -65,6 +65,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    Robot.driveTrain.getGyroRotation();
   }
 
   /**
@@ -79,7 +80,9 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
-    Robot.vision.turnOffCamLeds();// CameraLedOff();    
+    Robot.vision.turnOffCamLeds();// CameraLedOff();   
+    Robot.driveTrain.zeroGyroRotation(); 
+    // Robot.driveTrain.getGyroRotation();
   }
 
   
