@@ -14,7 +14,8 @@ public class RobotPreferences {
 	public boolean driveDirection;		// true for reversed
 	public double wheelCircumference;	// wheel circumference, in inches
 	public double driveTrainDistanceFudgeFactor;  // Scaling factor for driving distance (default = 1)
-	
+	public double elevatorGearCircumference; //circumference of the gear driving the elevator in inches
+
 	/**
 	 * Creates a RobotPreferences object and reads the robot preferences.
 	 */
@@ -30,7 +31,8 @@ public class RobotPreferences {
 		inBCRLab = prefs.getBoolean("inBCRLab", false);
 		prototypeRobot = prefs.getBoolean("prototypeRobot", false); // true if testing code on a prototype, default to false (competition bot w/ Victors)
 		driveDirection = prefs.getBoolean("driveDirection", true);
-		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;		
+		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;	
+		elevatorGearCircumference = prefs.getDouble("elevGearDiameter", 1) *Math.PI; //TODO change values when elevator is built
 		driveTrainDistanceFudgeFactor = prefs.getDouble("driveTrainDistanceFudgeFactor", 1);
 		/* if (driveTrainDistanceFudgeFactor == -9999) {
 			// If fudge factor for driving can't be read, then assume value of 1
