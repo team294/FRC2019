@@ -98,9 +98,10 @@ public class OI {
     xBoxX.whenActive(new ElevatorMoveToLevel(RobotMap.CargoShipCargo));
 
     SmartDashboard.putData("Turn To Target", new DriveWithVisionTurn());
-    SmartDashboard.putData("Raise Elevator to Level", new ElevatorMoveToLevel(RobotMap.testLevel));
+    SmartDashboard.putData("Raise Elevator to Level", new ElevatorMoveToLevel(-1.0));
     SmartDashboard.putData("Move Elevator to Zero", new ElevatorMoveToLevel(0.0));
-    SmartDashboard.putData("Zero Encoder", new ElevatorEncoderZero());
+    SmartDashboard.putData("Zero Encoder (w/ Limit)", new ElevatorEncoderZero());
+    SmartDashboard.putData("Zero Encoder (w/out Limit)", new ElevatorManualZero());
     SmartDashboard.putData("Turn To Line", new TurnToLine());
     SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
     SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));

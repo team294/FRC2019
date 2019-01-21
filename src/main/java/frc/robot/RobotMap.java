@@ -51,5 +51,5 @@ public class RobotMap {
   public static final double HatchHigh = 75.0;
   public static final double CargoShipCargo = 34.75;
   public static final double ballOffset = 8.5;
-  public static double robotOffset = 6.75;
+  public static double robotOffset = 6.5;
 }

@@ -18,7 +18,9 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
+import com.revrobotics.CANDigitalInput;
 import com.revrobotics.ControlType;
+import com.revrobotics.CANDigitalInput.LimitSwitchPolarity;
 
 /**
  * Add your docs here.
@@ -31,6 +33,7 @@ public class Elevator extends Subsystem {
   private CANSparkMax elevatorMotor2;
   private CANEncoder elevatorEnc;
   private CANPIDController elevatorPID;
+  private CANDigitalInput elevatorLowerLimit;
 
   private int periodicCount = 0;
   private int idleCount= 0;
@@ -52,10 +55,12 @@ public class Elevator extends Subsystem {
 	elevatorMotor2 = new CANSparkMax(RobotMap.elevatorMotor2, MotorType.kBrushless);
 	elevatorEnc = elevatorMotor1.getEncoder();
 	elevatorPID = elevatorMotor1.getPIDController();
+	elevatorLowerLimit = elevatorMotor1.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen);
 	elevatorMotor2.follow(elevatorMotor1);
 	elevatorMotor1.clearFaults();	
 	elevatorMotor2.clearFaults();
 	zeroElevatorEnc();
+	elevatorLowerLimit.enableLimitSwitch(true);
 	elevatorPID.setP(kP);
 	elevatorPID.setI(kI);
 	elevatorPID.setD(kD);
@@ -100,6 +105,10 @@ public class Elevator extends Subsystem {
 		return encoderRevolutionsToInches(getElevatorEncRevolutions());
 	}
 
+	public boolean getElevatorLowerLimit() {
+		return elevatorLowerLimit.get();
+	}
+
 	public void updateElevatorLog() {
 		Robot.log.writeLog("Elevator", "Update Variables",
 		"Elev1 Volts," + elevatorMotor1.getBusVoltage() + ",Elev2 Volts," + elevatorMotor2.getBusVoltage() +
@@ -117,7 +126,7 @@ public class Elevator extends Subsystem {
   public void periodic() {
 	SmartDashboard.putNumber("Enc Zero", encoderZero);
 	SmartDashboard.putNumber("Enc Val", getElevatorEncRevolutions());
-
+	SmartDashboard.putBoolean("Forward", getElevatorLowerLimit());
     if (DriverStation.getInstance().isEnabled()) {
 		prevEnc = currEnc;
 		currEnc = getElevatorEncRevolutions();
