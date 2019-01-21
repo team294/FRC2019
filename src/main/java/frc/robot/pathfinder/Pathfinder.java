@@ -61,7 +61,7 @@ public class Pathfinder {
      * @return              The trajectory that was read from file
      */
     public static Trajectory readFromCSV(String fileName) {
-        String csvFile = "/Users/team/Documents/GitHub/FRC2019/PathWeaver/output/" + fileName;
+        String csvFile = "/home/lvuser/deploy/paths/" + fileName;
         String line = "";
         String csvSplitBy = ",";
         int trajLength = 0;
@@ -74,29 +74,39 @@ public class Pathfinder {
             while ((line = br.readLine()) != null) {
                 trajLength++;
             }
-            Segment[] segArray = new Segment[trajLength];
-            int i = 0;
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        Segment[] segArray = new Segment[trajLength];
+        int i = 0;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) { 
             line = br.readLine();           // Read line with column headings and discard that line           
             while ((line = br.readLine()) != null) {
-                String[] traj = line.split(csvSplitBy);
-                dt = Double.parseDouble(traj[0]);
-                x = Double.parseDouble(traj[1]);
-                y = Double.parseDouble(traj[2]);
-                position = Double.parseDouble(traj[3]);
-                velocity = Double.parseDouble(traj[4]);
-                acceleration = Double.parseDouble(traj[5]);
-                jerk = Double.parseDouble(traj[6]);
-                heading = Double.parseDouble(traj[7]);
+                String[] trajPoint = line.split(csvSplitBy);
+                dt = Double.parseDouble(trajPoint[0]);
+                x = Double.parseDouble(trajPoint[1]);
+                y = Double.parseDouble(trajPoint[2]);
+                position = Double.parseDouble(trajPoint[3]);
+                velocity = Double.parseDouble(trajPoint[4]);
+                acceleration = Double.parseDouble(trajPoint[5]);
+                jerk = Double.parseDouble(trajPoint[6]);
+                heading = Double.parseDouble(trajPoint[7]);
                 seg = new Segment(dt, x, y, position, velocity, acceleration, jerk, heading);
                 segArray[i] = seg;
                 i++;
             }
+            br.close();
             Trajectory traj = new Trajectory(segArray);
             return traj;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
+        
         // return new Trajectory(PathfinderJNI.trajectoryDeserializeCSV(file.getAbsolutePath()));
     }
 

@@ -166,7 +166,7 @@ public class DriveTrain extends Subsystem {
 	 * @return encoder position, in ticks
 	 */
 	public double getLeftEncoderTicks() {
-    return leftMotor2.getSelectedSensorPosition(0) + leftEncoderZero;
+    return leftMotor2.getSelectedSensorPosition(0) - leftEncoderZero;
 	}
 
 	/**
@@ -175,7 +175,7 @@ public class DriveTrain extends Subsystem {
 	 * @return encoder position, in ticks
 	 */
 	public double getRightEncoderTicks() {
-		return rightMotor2.getSelectedSensorPosition(0) + rightEncoderZero;
+		return -(rightMotor2.getSelectedSensorPosition(0) - rightEncoderZero);
 	}
 
   public double encoderTicksToInches(double encoderTicks) {

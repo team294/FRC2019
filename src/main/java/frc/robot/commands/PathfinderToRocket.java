@@ -61,17 +61,19 @@ public class PathfinderToRocket extends Command {
     // saveFile = new File("/home/lvuser/trajectory-right.csv");
     // Pathfinder.writeToCSV(saveFile, modifier.getRightTrajectory());
 
-    Trajectory trajCenter = Pathfinder.readFromCSV("/home/lvuser/trajectory.csv");
-    Trajectory trajLeft = Pathfinder.readFromCSV("/home/lvuser/trajectory-left.csv");
-    Trajectory trajRight = Pathfinder.readFromCSV("/home/lvuser/trajectory-right.csv");
+    Trajectory trajCenter = Pathfinder.readFromCSV("Test.pf1.csv");
+    Trajectory trajLeft = Pathfinder.readFromCSV("Test.left.pf1.csv");
+    Trajectory trajRight = Pathfinder.readFromCSV("Test.right.pf1.csv");
 
     // Create DistanceFollowers for the Trajectories and configure them
     dfLeft = new DistanceFollower(trajLeft);
     dfRight = new DistanceFollower(trajRight);
     // dfLeft.configureEncoder(Robot.driveTrain.getLeftEncoderTicks(), RobotMap.encoderTicksPerRevolution, RobotMap.wheel_diameter_m);
     // dfRight.configureEncoder(Robot.driveTrain.getRightEncoderTicks(), RobotMap.encoderTicksPerRevolution, RobotMap.wheel_diameter_m);
-    dfLeft.configurePIDVA(0.02, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0025);
-    dfRight.configurePIDVA(0.02, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0025);
+    // dfLeft.configurePIDVA(0.02, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0025);
+    // dfRight.configurePIDVA(0.02, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0025);
+    dfLeft.configurePIDVA(0.0, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0);
+    dfRight.configurePIDVA(0.0, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0);
     dfLeft.reset();
     dfRight.reset();
   }
@@ -79,6 +81,9 @@ public class PathfinderToRocket extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    Trajectory.Segment segLeft = dfLeft.getSegment();
+    Trajectory.Segment segRight = dfRight.getSegment();
+
     double l = dfLeft.calculate(Robot.driveTrain.getLeftEncoderInches());
     double r = dfRight.calculate(Robot.driveTrain.getRightEncoderInches());
 
@@ -90,8 +95,6 @@ public class PathfinderToRocket extends Command {
     Robot.driveTrain.setLeftMotors(-(l + turn));
     Robot.driveTrain.setRightMotors(-(r - turn));
 
-    Trajectory.Segment segLeft = dfLeft.getSegment();
-    Trajectory.Segment segRight = dfRight.getSegment();
     Robot.log.writeLog("Pathfinder", "execute left", "left power," + l + ",right power," + r + ",turn power," + turn +
                        ",left distance," + Robot.driveTrain.getLeftEncoderInches() + ",right distance," + Robot.driveTrain.getRightEncoderInches() +
                        ",heading," + gyro_heading + 
