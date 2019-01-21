@@ -10,8 +10,8 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ZeroElevatorEncoders extends Command {
-  public ZeroElevatorEncoders() {
+public class ElevatorEncoderZero extends Command {
+  public ElevatorEncoderZero() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.elevator);
