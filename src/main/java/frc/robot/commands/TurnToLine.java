@@ -28,9 +28,6 @@ public class TurnToLine extends Command {
   @Override
   protected void execute() {
     Robot.driveTrain.DriveOnLine();
-    SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
-    SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
-    SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));
   }
 
   // Make this return true when this Command no longer needs to run execute()

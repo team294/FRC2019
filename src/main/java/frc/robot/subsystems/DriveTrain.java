@@ -162,7 +162,7 @@ public class DriveTrain extends Subsystem {
     double gainConstant = 1.0/30.0;
     double xVal = Robot.vision.xValue.getDouble(0);
     // 50 inches subtracted from the distance to decrease the speed
-    double startSpeed = 0.5;  // + (1.0/800.0 * (Robot.vision.distanceFromTarget() - 50));
+    double startSpeed =-0.5;  // + (1.0/800.0 * (Robot.vision.distanceFromTarget() - 50));
     double lJoystickPercent = Robot.oi.leftJoystick.getY();
     double lPercentOutput = startSpeed + (gainConstant * xVal);
     double rPercentOutput = startSpeed - (gainConstant * xVal);
@@ -199,47 +199,43 @@ public class DriveTrain extends Subsystem {
    Robot.log.writeLog("DriveTrain", "Vision Turning", "Degrees from Target," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget() + ",Target Area," + Robot.vision.areaFromCamera);
   }
 
-  public double DriveOnLine() {
-    
-
-  //@param returns LineNumber
-   /*
-    l c r Output
-    0 0 0 0
-    1 1 0 1
-    1 0 0 2
-    0 1 1 -1
-    0 0 1 -2
-    */
-    double lpercentPower = 0;
-    double rpercentPower = 0;
-    int LineNumber = 0;
-   /* if (Robot.lineFollowing.isLinePresent(1)) {
-    }
-    if (Robot.lineFollowing.isLinePresent(0)) {
-      //turn left
-    }
-    if (Robot.lineFollowing.isLinePresent(2)) {
-      //turn right
-    } */
-    if (Robot.lineFollowing.isLinePresent(2) == true && Robot.lineFollowing.isLinePresent(1) == true && Robot.lineFollowing.isLinePresent(0) == false) {
-      LineNumber = 1;
-    }
-    if (Robot.lineFollowing.isLinePresent(0) == true && Robot.lineFollowing.isLinePresent(1) == true && Robot.lineFollowing.isLinePresent(2) == false) {
-      LineNumber = -1;
-    } 
-    if (Robot.lineFollowing.isLinePresent(0) == true && Robot.lineFollowing.isLinePresent(1) == false && Robot.lineFollowing.isLinePresent(2) == false) {
-      LineNumber = -2;
-    }
-    if (Robot.lineFollowing.isLinePresent(0) == false && Robot.lineFollowing.isLinePresent(1) == false && Robot.lineFollowing.isLinePresent(2) == true) {
-      LineNumber = 2;
-    } 
-    if (Robot.lineFollowing.isLinePresent(0) == false && Robot.lineFollowing.isLinePresent(1) == false && Robot.lineFollowing.isLinePresent(2) == false) {
-      LineNumber = 0;
+  public void DriveOnLine() {
+    double lPercentPower = 0;
+    double rPercentPower = 0;
+    double baseSpeed = 1;
+    //LineFollowing name = new LineFollowing();
+    int lineNum = Robot.lineFollowing.lineNumber();
+    if (lineNum == 0) {
+      // Straight
+      lPercentPower = .55*baseSpeed;
+      rPercentPower = .55*baseSpeed;
+    } else if (lineNum == 1) {
+      // Turn left slight?
+      lPercentPower = .6*baseSpeed;
+      rPercentPower = 0*baseSpeed;
+    } else if (lineNum == -1) {
+      // Turn right slight?
+      lPercentPower = 0*baseSpeed;
+      rPercentPower = .6*baseSpeed;
+    } else if (lineNum == -2) {
+      // Turn left
+      lPercentPower = .8*baseSpeed;
+      rPercentPower = -.8*baseSpeed;
+    } else if (lineNum == 2) {
+      // Turn right
+      /*while (Robot.lineFollowing.isLinePresent(2) == false){
+        this.robotDrive.tankDrive(.5, .5);
+      }*/
+      lPercentPower = -.8*baseSpeed;
+      rPercentPower = .8*baseSpeed;
     } else {
-      
+      // Stop
+      lPercentPower = 0;
+      rPercentPower = 0;
     }
-  return LineNumber;
+    System.out.println("Base Speed " + baseSpeed +" Left percent power: " + lPercentPower + " Right Percent Power " + rPercentPower);
+    this.robotDrive.tankDrive(lPercentPower, rPercentPower);
   }
 }
+
 
