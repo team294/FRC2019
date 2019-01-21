@@ -28,6 +28,7 @@ public class Robot extends TimedRobot {
   public static DriveTrain driveTrain;
   public static Shifter shifter;
   public static VisionData vision;
+  public static DisplayHandler display;
   public static LineFollowing lineFollowing;
   public static OI oi;
   public static FileLog log;
@@ -48,6 +49,7 @@ public class Robot extends TimedRobot {
     driveTrain = new DriveTrain();
     shifter = new Shifter();
     vision = new VisionData();
+    display = new DisplayHandler();
     lineFollowing = new LineFollowing();
     pdp = new PowerDistributionPanel();
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
