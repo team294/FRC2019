@@ -202,29 +202,29 @@ public class DriveTrain extends Subsystem {
   public void DriveOnLine() {
     double lPercentPower = 0;
     double rPercentPower = 0;
-    double baseSpeed = .5;
+    double baseSpeed = 1;
     //LineFollowing name = new LineFollowing();
     int lineNum = Robot.lineFollowing.lineNumber();
     if (lineNum == 0) {
       // Straight
-      lPercentPower = 1*baseSpeed;
-      rPercentPower = 1*baseSpeed;
+      lPercentPower = .55*baseSpeed;
+      rPercentPower = .55*baseSpeed;
     } else if (lineNum == 1) {
       // Turn left slight?
-      lPercentPower = 1*baseSpeed;
-      rPercentPower = .8*baseSpeed;
+      lPercentPower = .6*baseSpeed;
+      rPercentPower = 0*baseSpeed;
     } else if (lineNum == -1) {
       // Turn right slight?
-      lPercentPower = .8*baseSpeed;
-      rPercentPower = 1*baseSpeed;
+      lPercentPower = 0*baseSpeed;
+      rPercentPower = .6*baseSpeed;
     } else if (lineNum == -2) {
       // Turn left
-      lPercentPower = 1*baseSpeed;
-      rPercentPower = .5*baseSpeed;
+      lPercentPower = .8*baseSpeed;
+      rPercentPower = -.8*baseSpeed;
     } else if (lineNum == 2) {
       // Turn right
-      lPercentPower = .5*baseSpeed;
-      rPercentPower = 1*baseSpeed;
+      lPercentPower = -.8*baseSpeed;
+      rPercentPower = .8*baseSpeed;
     } else {
       // Stop
       lPercentPower = 0;
