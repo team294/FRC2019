@@ -68,6 +68,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    Robot.lineFollowing.displayLineSensors();
   }
 
   /**
@@ -132,10 +133,9 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     log.writeLogEcho("Robot", "Teleop mode init", "");
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    //if (m_autonomousCommand != null) {
+     // m_autonomousCommand.cancel();
     }
-  }
 
   /**
    * This function is called periodically during operator control.
