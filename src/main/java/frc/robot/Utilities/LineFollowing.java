@@ -30,7 +30,7 @@ public class LineFollowing {
      * @return true for line present, false for nothing
      */
     public boolean isLinePresent() {
-        return !lineFollowerLeft.get() && !lineFollowerCenter.get() && !lineFollowerRight.get();
+        return lineFollowerLeft.get() || lineFollowerCenter.get() || lineFollowerRight.get();
     }
     public int lineNumber() {
 

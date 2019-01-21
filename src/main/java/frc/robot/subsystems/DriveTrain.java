@@ -166,6 +166,8 @@ public class DriveTrain extends Subsystem {
    */
   public void driveToCrosshair() {
 
+    double minDistanceToTarget = 23.75;
+
     double gainConstant = 1.0/30.0;
     double xVal = Robot.vision.xValue.getDouble(0);
     // 50 inches subtracted from the distance to decrease the speed
@@ -175,9 +177,9 @@ public class DriveTrain extends Subsystem {
     double rPercentOutput = startSpeed - (gainConstant * xVal);
     System.out.println("lPercentOut, rPercentOut "+lPercentOutput+" "+rPercentOutput);
     // SEE ROB ON THIS about area == 0
-    if (Robot.vision.distanceFromTarget() > 30 && Robot.vision.areaFromCamera != 0 && lJoystickPercent == 0) {
+    if (Robot.vision.distanceFromTarget() > minDistanceToTarget && Robot.vision.areaFromCamera != 0 && lJoystickPercent == 0) {
         this.robotDrive.tankDrive(lPercentOutput, rPercentOutput);
-    } else if (Robot.vision.distanceFromTarget() > 30 && Robot.vision.areaFromCamera != 0) {
+    } else if (Robot.vision.distanceFromTarget() > minDistanceToTarget && Robot.vision.areaFromCamera != 0) {
       this.robotDrive.tankDrive(lPercentOutput - lJoystickPercent, rPercentOutput - lJoystickPercent);
     } else {
       this.robotDrive.tankDrive(0, 0);
