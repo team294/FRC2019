@@ -244,9 +244,6 @@ public class DriveTrain extends Subsystem {
       rPercentPower = -.8*baseSpeed;
     } else if (lineNum == 2) {
       // Turn right
-      /*while (Robot.lineFollowing.isLinePresent(2) == false){
-        this.robotDrive.tankDrive(.5, .5);
-      }*/
       lPercentPower = -.8*baseSpeed;
       rPercentPower = .8*baseSpeed;
     } else {

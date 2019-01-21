@@ -4,6 +4,7 @@ import frc.robot.Robot;
 import frc.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class LineFollowing {
     public final DigitalInput lineFollowerLeft = new DigitalInput(RobotMap.lineFollowerLeft);
