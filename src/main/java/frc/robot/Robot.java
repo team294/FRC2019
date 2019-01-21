@@ -133,8 +133,8 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     log.writeLogEcho("Robot", "Teleop mode init", "");
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    //if (m_autonomousCommand != null) {
+     // m_autonomousCommand.cancel();
     }
   }
 
