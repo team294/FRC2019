@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.commands.*;
 
 /**
@@ -66,13 +65,15 @@ public class OI {
         left[i].whenPressed(new Shift(false));
         right[i].whenPressed(new Shift(true));
       } else if (i == 3) {
-        left[i].whileHeld(new DriveWithVisionSteering());
-        right[i].whileHeld(new DriveWithVisionTurn());
+        left[i].whenPressed(new DriveWithVision());
+        left[i].whenReleased(new DriveWithJoysticks());
+        right[i].whenPressed(new VisionTurnToTarget());
+        right[i].whenReleased(new DriveWithJoysticks()); // We should be able to cancel the commands when the button is released. This is a better method to do that.
       }
     }
 
     
-    SmartDashboard.putData("Turn To Target", new DriveWithVisionTurn());
+    SmartDashboard.putData("Turn To Target", new VisionTurnToTarget());
 
     SmartDashboard.putData("Drive on line", new TurnToLine());
    /* SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));

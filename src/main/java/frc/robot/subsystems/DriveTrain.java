@@ -12,7 +12,9 @@ package frc.robot.subsystems;   // had to change from just frc.robot.subsystems 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -21,21 +23,23 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveWithJoysticks;
-import frc.robot.Utilities.*;
-//import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
  * Drive Train subsystem.  
  */
 public class DriveTrain extends Subsystem {
-  // This is to test with the 2018 drive base.  The 2019 drive base will use 4 Talon SBX controllers for follower motors 1 and 3
-  private final WPI_TalonSRX leftMotor1 = new WPI_TalonSRX(RobotMap.leftMotor1);
+  // This is to test with the 2018 drive base.  The 2019 drive base will use 4 Victor SPX controllers for follower motors 1 and 3
+  //private final WPI_TalonSRX leftMotor1 = new WPI_TalonSRX(RobotMap.leftMotor1);
+  //private final WPI_TalonSRX leftMotor3 = new WPI_TalonSRX(RobotMap.leftMotor3);
+  //private final WPI_TalonSRX rightMotor1 = new WPI_TalonSRX(RobotMap.rightMotor1);
+  //private final WPI_TalonSRX rightMotor3 = new WPI_TalonSRX(RobotMap.rightMotor3);
+  private final BaseMotorController leftMotor1;
   private final WPI_TalonSRX leftMotor2 = new WPI_TalonSRX(RobotMap.leftMotor2);
-  private final WPI_TalonSRX leftMotor3 = new WPI_TalonSRX(RobotMap.leftMotor3);
-  private final WPI_TalonSRX rightMotor1 = new WPI_TalonSRX(RobotMap.rightMotor1);
+  private final BaseMotorController leftMotor3;
+  private final BaseMotorController rightMotor1;
   private final WPI_TalonSRX rightMotor2 = new WPI_TalonSRX(RobotMap.rightMotor2);
-  private final WPI_TalonSRX rightMotor3 = new WPI_TalonSRX(RobotMap.rightMotor3);
+  private final BaseMotorController rightMotor3;
   public final DifferentialDrive robotDrive = new DifferentialDrive(leftMotor2, rightMotor2);
 
   private int periodicCount = 0;
@@ -43,12 +47,30 @@ public class DriveTrain extends Subsystem {
   private double leftEncoderZero = 0, rightEncoderZero = 0;
 
   public DriveTrain() {
-    
-    leftMotor1.set(ControlMode.Follower, RobotMap.leftMotor2);
-    leftMotor3.set(ControlMode.Follower, RobotMap.leftMotor2);
-    rightMotor1.set(ControlMode.Follower, RobotMap.rightMotor2);
-    rightMotor3.set(ControlMode.Follower, RobotMap.rightMotor2);
 
+    // Reads the robot prefs to check if using Victors or Talons for alternate motor controllers
+    if (Robot.robotPrefs.prototypeRobot) { // true means Talons
+      leftMotor1 = new WPI_TalonSRX(RobotMap.leftMotor1);
+      leftMotor3 = new WPI_TalonSRX(RobotMap.leftMotor3);
+      rightMotor1 = new WPI_TalonSRX(RobotMap.rightMotor1);
+      rightMotor3 = new WPI_TalonSRX(RobotMap.rightMotor3);
+
+      leftMotor1.set(ControlMode.Follower, RobotMap.leftMotor2);
+      leftMotor3.set(ControlMode.Follower, RobotMap.leftMotor2);
+      rightMotor1.set(ControlMode.Follower, RobotMap.rightMotor2);
+      rightMotor3.set(ControlMode.Follower, RobotMap.rightMotor2);
+    }
+    else {
+      leftMotor1 = new WPI_VictorSPX(RobotMap.leftMotor1);
+      leftMotor3 = new WPI_VictorSPX(RobotMap.leftMotor3);
+      rightMotor1 = new WPI_VictorSPX(RobotMap.rightMotor1);
+      rightMotor3 = new WPI_VictorSPX(RobotMap.rightMotor3);
+
+      leftMotor1.follow(leftMotor2);
+      leftMotor3.follow(leftMotor2);
+      rightMotor1.follow(rightMotor2);
+      rightMotor3.follow(rightMotor2);
+    }
     leftMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		rightMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		zeroLeftEncoder();
@@ -143,13 +165,12 @@ public class DriveTrain extends Subsystem {
   
   public void updateDriveLog () {
     Robot.log.writeLog("DriveTrain", "Update Variables",
-      "Left Motor 1 Output Voltage," + leftMotor1.getMotorOutputVoltage() + ",Left Motor 1 Output Current," + leftMotor1.getOutputCurrent() + ",Left Motor 1 Output Percent," + leftMotor1.getMotorOutputPercent() +
-      ",Left Motor 2 Output Voltage," + leftMotor2.getMotorOutputVoltage() + ",Left Motor 2 Output Current," + leftMotor2.getOutputCurrent() + ",Left Motor 2 Output Percent," + leftMotor2.getMotorOutputPercent() +
-      ",Left Motor 3 Output Voltage," + leftMotor3.getMotorOutputVoltage() + ",Left Motor 3 Output Current," + leftMotor3.getOutputCurrent() + ",Left Motor 3 Output Percent," + leftMotor3.getMotorOutputPercent() +
-      ",Right Motor 1 Output Voltage," + rightMotor1.getMotorOutputVoltage() + ",Right Motor 1 Output Current," + rightMotor1.getOutputCurrent() + ",Right Motor 1 Output Percent," + rightMotor1.getMotorOutputPercent() +
-      ",Right Motor 1 Output Voltage," + rightMotor2.getMotorOutputVoltage() + ",Right Motor 2 Output Current," + rightMotor2.getOutputCurrent() + ",Right Motor 2 Output Percent," + rightMotor2.getMotorOutputPercent() +
-      ",Right Motor 1 Output Voltage," + rightMotor3.getMotorOutputVoltage() + ",Right Motor 3 Output Current," + rightMotor3.getOutputCurrent() + ",Right Motor 3 Output Percent," + rightMotor3.getMotorOutputPercent() +
-      ",Left Encoder Zero," + leftEncoderZero + ",Right Encoder Zero," + rightEncoderZero + ",Left Encoder Ticks," + getLeftEncoderTicks() + ",Right Encoder Ticks," + getRightEncoderTicks() + ",Left Encoder Inches," + getLeftEncoderInches() + ",Right Encoder Inches," + getRightEncoderInches() + 
+      "Drive L1 Volts," + leftMotor1.getMotorOutputVoltage() + ",Drive L2 Volts," + leftMotor2.getMotorOutputVoltage() + ",Drive L3 Volts," + leftMotor3.getMotorOutputVoltage() +
+      ",Drive L1 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor1PDP) + ",Drive L2 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor2PDP) + ",Drive L3 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor3PDP) + 
+      ",Drive R1 Volts," + rightMotor1.getMotorOutputVoltage() + ",Drive R2 Volts," + rightMotor2.getMotorOutputVoltage() + ",Drive R3 Volts," + rightMotor3.getMotorOutputVoltage() + 
+      ",Drive R1 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor1PDP) + ",Drive R2 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor2PDP) + ",Drive R3 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor3PDP) + 
+      ",L Enc Zero," + leftEncoderZero + ",L Enc Ticks," + getLeftEncoderTicks() + ",L Drive Inches," + getLeftEncoderInches() + 
+      ",R Enc Zero," + rightEncoderZero + ",R Enc Ticks," + getRightEncoderTicks() + ",R Drive Inches," + getRightEncoderInches() + 
       ",High Gear," + Robot.shifter.isShifterInHighGear());
   }
 

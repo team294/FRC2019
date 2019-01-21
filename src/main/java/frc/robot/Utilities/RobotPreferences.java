@@ -1,10 +1,6 @@
 package frc.robot.Utilities;
 
-import frc.robot.Robot;
-
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class RobotPreferences {
 
@@ -32,7 +28,7 @@ public class RobotPreferences {
 	 */
 	public void refresh() {
 		inBCRLab = prefs.getBoolean("inBCRLab", false);
-		prototypeRobot = prefs.getBoolean("prototypeRobot", false); // true if testing code on a prototype, default to false (competition bot)
+		prototypeRobot = prefs.getBoolean("prototypeRobot", false); // true if testing code on a prototype, default to false (competition bot w/ Victors)
 		driveDirection = prefs.getBoolean("driveDirection", true);
 		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;		
 		driveTrainDistanceFudgeFactor = prefs.getDouble("driveTrainDistanceFudgeFactor", 1);
