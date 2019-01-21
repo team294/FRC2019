@@ -17,7 +17,9 @@ public class LineFollowing {
     public final DigitalInput lineFollowerRight = new DigitalInput(RobotMap.lineFollowerRight);
 
     public LineFollowing() {
+
     }
+
     /**
      * Returns true if object is found
      * @param follower int between 1 and 3 inclusive that tells which lineFollower to get data from
@@ -28,6 +30,14 @@ public class LineFollowing {
         else {
             return !(lineFollowerRight.get());
         }
+    }
+
+    /**
+     * Returns true if a line is present on <b>any</b> of the line followers
+     * @return true for line present, false for nothing
+     */
+    public boolean isLinePresent() {
+        return !lineFollowerLeft.get() && !lineFollowerCenter.get() && !lineFollowerRight.get();
     }
     public int lineNumber() {
 
@@ -44,16 +54,16 @@ public class LineFollowing {
         
         int lineNumber = 0;
 
-        if (Robot.lineFollowing.isLinePresent(1) == true && Robot.lineFollowing.isLinePresent(2) == true && Robot.lineFollowing.isLinePresent(3) == false) {
-        lineNumber = 1; // 1 1 0 : Turn left slight?
-        } else if (Robot.lineFollowing.isLinePresent(1) == false && Robot.lineFollowing.isLinePresent(2) == true && Robot.lineFollowing.isLinePresent(3) == true) {
-        lineNumber = -1; // 0 1 1 : Turn right slight?
-        } else if (Robot.lineFollowing.isLinePresent(1) == false && Robot.lineFollowing.isLinePresent(2) == false && Robot.lineFollowing.isLinePresent(3) == true) {
-        lineNumber = -2; // 0 0 1 : Turn Right 
-        } else if (Robot.lineFollowing.isLinePresent(1) == true && Robot.lineFollowing.isLinePresent(2) == false && Robot.lineFollowing.isLinePresent(3) == false) {
-        lineNumber = 2; // 1 0 0 : Turn Left
-        } else if (Robot.lineFollowing.isLinePresent(1) == false && Robot.lineFollowing.isLinePresent(2) == true && Robot.lineFollowing.isLinePresent(3) == false) {
-        lineNumber = 0; // 0 1 0 : Straight
+        if (isLinePresent(1) && isLinePresent(2) && !isLinePresent(3)) {
+            lineNumber = 1; // 1 1 0 : Turn left slight?
+        } else if (!isLinePresent(1) && isLinePresent(2) && isLinePresent(3)) {
+            lineNumber = -1; // 0 1 1 : Turn right slight?
+        } else if (!isLinePresent(1) && !isLinePresent(2) && isLinePresent(3)) {
+            lineNumber = -2; // 0 0 1 : Turn Right 
+        } else if (isLinePresent(1) && !isLinePresent(2) && !isLinePresent(3)) {
+            lineNumber = 2; // 1 0 0 : Turn Left
+        } else if (!isLinePresent(1) && isLinePresent(2) && !isLinePresent(3)) {
+            lineNumber = 0; // 0 1 0 : Straight
         } else {
             lineNumber = 3; // 0 0 0 ; 1 1 1 ; 1 0 1 : Stop
         }
