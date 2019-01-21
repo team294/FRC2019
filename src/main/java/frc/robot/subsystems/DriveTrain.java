@@ -166,7 +166,7 @@ public class DriveTrain extends Subsystem {
    */
   public void driveToCrosshair() {
 
-    double minDistanceToTarget = 23.75;
+    double minDistanceToTarget = 13;
 
     double gainConstant = 1.0/30.0;
     double xVal = Robot.vision.xValue.getDouble(0);

@@ -70,7 +70,7 @@ public class OI {
         left[i].whenReleased(new DriveWithJoysticks());
         right[i].whenReleased(new DriveWithJoysticks());
       } else if (i == 3) {
-        left[i].whenPressed(new DriveWithVision());
+        left[i].whenPressed(new DriveWithVision(true));
         left[i].whenReleased(new DriveWithJoysticks());
         right[i].whenPressed(new VisionTurnToTarget());
         right[i].whenReleased(new DriveWithJoysticks()); // We should be able to cancel the commands when the button is released. This is a better method to do that.

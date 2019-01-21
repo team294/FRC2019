@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 public class DriveWithVision extends Command {
@@ -45,6 +46,7 @@ public class DriveWithVision extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
+    SmartDashboard.putBoolean("Is Line Present?", Robot.lineFollowing.isLinePresent());
     return endOnLine && Robot.lineFollowing.isLinePresent(); // Stops when a line is detected by the line followers
   }
 
