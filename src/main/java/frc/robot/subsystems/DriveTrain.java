@@ -185,10 +185,12 @@ public class DriveTrain extends Subsystem {
     return (inches / Robot.robotPrefs.wheelCircumference / Robot.robotPrefs.driveTrainDistanceFudgeFactor) * RobotMap.encoderTicksPerRevolution;
   }
   public double getLeftEncoderInches() {
+    SmartDashboard.putNumber("Left Inches", encoderTicksToInches(getLeftEncoderTicks()));
     return encoderTicksToInches(getLeftEncoderTicks());
   }
 
   public double getRightEncoderInches() {
+    SmartDashboard.putNumber("Right Inches", encoderTicksToInches(getRightEncoderTicks()));
     return encoderTicksToInches(getRightEncoderTicks());
   }
 

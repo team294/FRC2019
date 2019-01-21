@@ -136,6 +136,17 @@
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
             }
+          },
+          "3,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/Pathfinder Test 1",
+              "_title": "/SmartDashboard/Pathfinder Test 1"
+            }
           }
         }
       }

@@ -83,6 +83,8 @@ public class Robot extends TimedRobot {
     Robot.vision.turnOffCamLeds();// CameraLedOff();   
     Robot.driveTrain.zeroGyroRotation(); 
     // Robot.driveTrain.getGyroRotation();
+    Robot.driveTrain.zeroLeftEncoder();
+    Robot.driveTrain.zeroRightEncoder();
   }
 
   
