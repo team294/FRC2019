@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -31,6 +32,7 @@ public class Robot extends TimedRobot {
   public static OI oi;
   public static FileLog log;
   public static RobotPreferences robotPrefs;
+  public static PowerDistributionPanel pdp;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -47,6 +49,7 @@ public class Robot extends TimedRobot {
     shifter = new Shifter();
     vision = new VisionData();
     lineFollowing = new LineFollowing();
+    pdp = new PowerDistributionPanel();
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
@@ -75,6 +78,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    log.writeLogEcho("Robot", "Disabled", "");
   }
 
   @Override
@@ -98,6 +102,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    log.writeLogEcho("Robot", "Autonomous mode init", "");
     m_autonomousCommand = m_chooser.getSelected();
 
     /*
@@ -127,6 +132,7 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    log.writeLogEcho("Robot", "Teleop mode init", "");
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

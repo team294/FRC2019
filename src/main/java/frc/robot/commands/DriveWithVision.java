@@ -10,8 +10,8 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class DriveWithVisionTurn extends Command {
-  public DriveWithVisionTurn() {
+public class DriveWithVision extends Command {
+  public DriveWithVision() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.driveTrain);
@@ -20,13 +20,13 @@ public class DriveWithVisionTurn extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.driveTrain.turnToCrosshair();
+    Robot.driveTrain.driveToCrosshair();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.driveTrain.turnToCrosshair();
+    Robot.driveTrain.driveToCrosshair();
   }
 
   // Make this return true when this Command no longer needs to run execute()
