@@ -64,6 +64,11 @@ public class OI {
       if (i == 1) {
         left[i].whenPressed(new Shift(false));
         right[i].whenPressed(new Shift(true));
+      } else if (i == 2) {
+        left[i].whenPressed(new DriveAssist());
+        right[i].whenPressed(new DriveAssist());
+        left[i].whenReleased(new DriveWithJoysticks());
+        right[i].whenReleased(new DriveWithJoysticks());
       } else if (i == 3) {
         left[i].whenPressed(new DriveWithVision());
         left[i].whenReleased(new DriveWithJoysticks());
@@ -75,11 +80,12 @@ public class OI {
     
     SmartDashboard.putData("Turn To Target", new VisionTurnToTarget());
 
-    SmartDashboard.putData("Drive on line", new TurnToLine());
-   /* SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
+    SmartDashboard.putData("Drive on line", new DriveWithLineFollowing());
+    /* 
+    SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
     SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
     SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));
-*/
+    */
 
   }
 

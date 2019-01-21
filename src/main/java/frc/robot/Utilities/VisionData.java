@@ -39,9 +39,10 @@ public class VisionData {
         vertOffset = yValue.getDouble(0);
         areaFromCamera = aValue.getDouble(0); 
         ledMode = ledM.getDouble(0);   
-        SmartDashboard.putNumber("Area", areaFromCamera);
-        SmartDashboard.putNumber("Angle to Crosshair", horizOffset);
-        SmartDashboard.putNumber("Distance", distanceFromTarget()); 
+        // These functions are too taxing on CPU resources on the driver station
+        //SmartDashboard.putNumber("Area", areaFromCamera);
+        //SmartDashboard.putNumber("Angle to Crosshair", horizOffset);
+        //SmartDashboard.putNumber("Distance", distanceFromTarget()); 
     }
 
    // Turn the LEDS on

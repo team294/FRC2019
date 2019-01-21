@@ -46,11 +46,13 @@ public class DriveWithJoysticks extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    // TODO: Add robot log call to indicate end of driver control
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    end();
   }
 }

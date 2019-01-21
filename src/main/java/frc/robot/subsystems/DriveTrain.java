@@ -17,8 +17,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
@@ -29,17 +27,13 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  * Drive Train subsystem.  
  */
 public class DriveTrain extends Subsystem {
-  // This is to test with the 2018 drive base.  The 2019 drive base will use 4 Victor SPX controllers for follower motors 1 and 3
-  //private final WPI_TalonSRX leftMotor1 = new WPI_TalonSRX(RobotMap.leftMotor1);
-  //private final WPI_TalonSRX leftMotor3 = new WPI_TalonSRX(RobotMap.leftMotor3);
-  //private final WPI_TalonSRX rightMotor1 = new WPI_TalonSRX(RobotMap.rightMotor1);
-  //private final WPI_TalonSRX rightMotor3 = new WPI_TalonSRX(RobotMap.rightMotor3);
   private final BaseMotorController leftMotor1;
   private final WPI_TalonSRX leftMotor2 = new WPI_TalonSRX(RobotMap.leftMotor2);
   private final BaseMotorController leftMotor3;
   private final BaseMotorController rightMotor1;
   private final WPI_TalonSRX rightMotor2 = new WPI_TalonSRX(RobotMap.rightMotor2);
   private final BaseMotorController rightMotor3;
+
   public final DifferentialDrive robotDrive = new DifferentialDrive(leftMotor2, rightMotor2);
 
   private int periodicCount = 0;
@@ -101,6 +95,13 @@ public class DriveTrain extends Subsystem {
   public void tankDrive (double powerLeft, double powerRight) {
     this.robotDrive.tankDrive(powerLeft, powerRight);
   }
+
+  /**
+   * Stops the motors by calling tankDrive(0, 0)
+   */
+  public void stop() {
+    tankDrive(0, 0);
+  }
   
   /**
 	 * Zeros the left encoder position in software
@@ -147,21 +148,6 @@ public class DriveTrain extends Subsystem {
   public double getRightEncoderInches() {
     return encoderTicksToInches(getRightEncoderTicks());
   }
-
-  @Override
-  public void initDefaultCommand() {
-    setDefaultCommand(new DriveWithJoysticks());
-  }
-  @Override
-  public void periodic() {
-
-    if (DriverStation.getInstance().isEnabled()) {
-      if ((++periodicCount) >= 25) {
-        updateDriveLog();
-        periodicCount=0;  
-      }
-    }
-  }
   
   public void updateDriveLog () {
     Robot.log.writeLog("DriveTrain", "Update Variables",
@@ -183,8 +169,8 @@ public class DriveTrain extends Subsystem {
     double gainConstant = 1.0/30.0;
     double xVal = Robot.vision.xValue.getDouble(0);
     // 50 inches subtracted from the distance to decrease the speed
-    double startSpeed =-0.5;  // + (1.0/800.0 * (Robot.vision.distanceFromTarget() - 50));
-    double lJoystickPercent = Robot.oi.leftJoystick.getY();
+    double startSpeed = -0.5;  // + (1.0/800.0 * (Robot.vision.distanceFromTarget() - 50));
+    double lJoystickPercent = Robot.oi.leftJoystick.getY(); // TODO: Update speed settings from joystick to allow for much finer control
     double lPercentOutput = startSpeed + (gainConstant * xVal);
     double rPercentOutput = startSpeed - (gainConstant * xVal);
     System.out.println("lPercentOut, rPercentOut "+lPercentOutput+" "+rPercentOutput);
@@ -220,7 +206,7 @@ public class DriveTrain extends Subsystem {
    Robot.log.writeLog("DriveTrain", "Vision Turning", "Degrees from Target," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget() + ",Target Area," + Robot.vision.areaFromCamera);
   }
 
-  public void DriveOnLine() {
+  public void driveOnLine() {
     double lPercentPower = 0;
     double rPercentPower = 0;
     double baseSpeed = 1;
@@ -253,6 +239,21 @@ public class DriveTrain extends Subsystem {
     }
     System.out.println("Base Speed " + baseSpeed +" Left percent power: " + lPercentPower + " Right Percent Power " + rPercentPower);
     this.robotDrive.tankDrive(lPercentPower, rPercentPower);
+  }
+
+  @Override
+  public void initDefaultCommand() {
+    setDefaultCommand(new DriveWithJoysticks());
+  }
+  @Override
+  public void periodic() {
+
+    if (DriverStation.getInstance().isEnabled()) {
+      if ((++periodicCount) >= 25) {
+        updateDriveLog();
+        periodicCount=0;  
+      }
+    }
   }
 }
 

@@ -11,10 +11,23 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 public class DriveWithVision extends Command {
+
+  private boolean endOnLine = false;
+
   public DriveWithVision() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.driveTrain);
+  }
+
+  /**
+   * Drive towards the vision target
+   * @param endOnLine specify whether or not to end on the line target.
+   *  </br> true means end on line, false means continue to wall (will not exit with false)
+   */
+  public DriveWithVision(boolean endOnLine) {
+    requires(Robot.driveTrain);
+    this.endOnLine = endOnLine;
   }
 
   // Called just before this Command runs the first time
@@ -32,17 +45,20 @@ public class DriveWithVision extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return endOnLine && Robot.lineFollowing.isLinePresent(); // Stops when a line is detected by the line followers
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    // TODO: Add a robot log call here to indicate an end to the vision portion, possibly with a data dump
+    Robot.driveTrain.stop();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.driveTrain.stop();
   }
 }
