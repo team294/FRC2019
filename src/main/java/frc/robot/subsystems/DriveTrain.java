@@ -135,10 +135,10 @@ public class DriveTrain extends Subsystem {
 	}
 
   public double encoderTicksToInches(double encoderTicks) {
-    return (encoderTicks / RobotMap.encoderTicksPerRevolution) * Robot.robotPrefs.wheelCircumference * Robot.robotPrefs.driveTrainDistanceFudgeFactor;
+    return (encoderTicks / RobotMap.encoderTicksPerRevolution) * Robot.robotPrefs.wheelCircumference ;
   }
   public double inchesToEncoderTicks(double inches) {
-    return (inches / Robot.robotPrefs.wheelCircumference / Robot.robotPrefs.driveTrainDistanceFudgeFactor) * RobotMap.encoderTicksPerRevolution;
+    return (inches / Robot.robotPrefs.wheelCircumference) * RobotMap.encoderTicksPerRevolution;
   }
   public double getLeftEncoderInches() {
     return encoderTicksToInches(getLeftEncoderTicks());

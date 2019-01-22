@@ -13,7 +13,7 @@ public class RobotPreferences {
 	public boolean prototypeRobot;		// Set true if using code for prototype bots, false for practice and competition bots
 	public boolean driveDirection;		// true for reversed
 	public double wheelCircumference;	// wheel circumference, in inches
-	public double driveTrainDistanceFudgeFactor;  // Scaling factor for driving distance (default = 1)
+	public double cameraDistanceFromFrontOfBumper;  // (default = 12 inches)
 	
 	/**
 	 * Creates a RobotPreferences object and reads the robot preferences.
@@ -31,11 +31,30 @@ public class RobotPreferences {
 		prototypeRobot = prefs.getBoolean("prototypeRobot", false); // true if testing code on a prototype, default to false (competition bot w/ Victors)
 		driveDirection = prefs.getBoolean("driveDirection", true);
 		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;		
-		driveTrainDistanceFudgeFactor = prefs.getDouble("driveTrainDistanceFudgeFactor", 1);
-		/* if (driveTrainDistanceFudgeFactor == -9999) {
-			// If fudge factor for driving can't be read, then assume value of 1
-			driveTrainDistanceFudgeFactor = 1;  //0.96824;
-		} */
+		cameraDistanceFromFrontOfBumper = prefs.getDouble("cameraDistanceFromFrontOfBumper", 12);		
+	}
+
+	/* Sets up Preferences if they haven't been set as when changing RoboRios or first start-up.
+		The values are set to defaults, so if using the prototype robots set inBCRLab to true
+	*/	
+	public void doExist(){
+					 
+		if (!prefs.containsKey("inBCRLab")){
+			 prefs.putBoolean("inBCRLab", false);
+		}	 
+		if (!prefs.containsKey("prototypeRobot")){
+			prefs.putBoolean("prototypeRobot", false);
+		}
+		if (!prefs.containsKey("driveDirection")){
+			prefs.putBoolean("driveDirection", true);
+		}
+		if (!prefs.containsKey("wheelDiameter")){
+			prefs.putDouble("wheelDiameter", 6);
+		}
+		if (!prefs.containsKey("cameraDistanceFromFrontOfBumper")){
+			prefs.putDouble("cameraDistanceFromFrontOfBumper", 12);
+		}
+
 	}
 
 	public String getString(String k) {
