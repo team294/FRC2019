@@ -10,5 +10,6 @@
     ".classpath": true,
     ".project": true
   },
-  "wpilib.online": false
+  "wpilib.online": false,
+  "wpilib.deployOffline": true
 }

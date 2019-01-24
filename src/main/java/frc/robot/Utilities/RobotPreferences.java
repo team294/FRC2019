@@ -15,7 +15,9 @@ public class RobotPreferences {
 	public double wheelCircumference;	// wheel circumference, in inches
 	public double driveTrainDistanceFudgeFactor;  // Scaling factor for driving distance (default = 1)
 	public double elevatorGearCircumference; //circumference of the gear driving the elevator in inches
-	public double robotOffset;
+	public double robotOffset; //distance of elevator 0 value from the ground
+	public double cameraDistanceFromFrontOfBumper;  // (default = 12 inches)
+	
 	/**
 	 * Creates a RobotPreferences object and reads the robot preferences.
 	 */
@@ -40,6 +42,29 @@ public class RobotPreferences {
 			// If fudge factor for driving can't be read, then assume value of 1
 			driveTrainDistanceFudgeFactor = 1;  //0.96824;
 		} */
+		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;		
+		cameraDistanceFromFrontOfBumper = prefs.getDouble("cameraDistanceFromFrontOfBumper", 12);		
+	}
+
+	/* Sets up Preferences if they haven't been set as when changing RoboRios or first start-up.
+		The values are set to defaults, so if using the prototype robots set inBCRLab to true
+	*/	
+	public void doExist(){				 
+		if (!prefs.containsKey("inBCRLab")){
+			 prefs.putBoolean("inBCRLab", false);
+		}	 
+		if (!prefs.containsKey("prototypeRobot")){
+			prefs.putBoolean("prototypeRobot", false);
+		}
+		if (!prefs.containsKey("driveDirection")){
+			prefs.putBoolean("driveDirection", true);
+		}
+		if (!prefs.containsKey("wheelDiameter")){
+			prefs.putDouble("wheelDiameter", 6);
+		}
+		if (!prefs.containsKey("cameraDistanceFromFrontOfBumper")){
+			prefs.putDouble("cameraDistanceFromFrontOfBumper", 12);
+		}
 	}
 
 	public String getString(String k) {
