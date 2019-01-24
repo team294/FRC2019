@@ -45,11 +45,9 @@ public class RobotMap {
   public static final int rightMotor3PDP = 1; //Check on PDP and change 
 
   //Elevator Level Heights (in inches)
-  public static final double testLevel = 12.0; //TODO To be deleted after enough testing of elevator
-  public static final double HatchLow = 19.0;
-  public static final double HatchMid = 47.0;
-  public static final double HatchHigh = 75.0;
-  public static final double CargoShipCargo = 34.75;
+  public static final double HatchLow = 19.0 + Robot.robotPrefs.robotOffset;
+  public static final double HatchMid = 47.0 + Robot.robotPrefs.robotOffset;
+  public static final double HatchHigh = 75.0 + Robot.robotPrefs.robotOffset;
+  public static final double CargoShipCargo = 34.75 + Robot.robotPrefs.robotOffset;
   public static final double ballOffset = 8.5;
-  public static double robotOffset = 6.5;
 }

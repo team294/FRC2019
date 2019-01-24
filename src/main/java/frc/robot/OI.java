@@ -84,7 +84,7 @@ public class OI {
     }
 
     /*
-    if (isBall) {
+    if (isBall) { //TODO uncomment when the sensor that tells whether we have a ball or hatch is added
     xBoxA.whenActive(new ElevatorMoveToLevel(RobotMap.HatchLow + RobotMap.ballOffset));
     xBoxB.whenActive(new ElevatorMoveToLevel(RobotMap.HatchMid + RobotMap.ballOffset));
     xBoxY.whenActive(new ElevatorMoveToLevel(RobotMap.HatchHigh + RobotMap.ballOffset));
@@ -98,10 +98,9 @@ public class OI {
     xBoxX.whenActive(new ElevatorMoveToLevel(RobotMap.CargoShipCargo));
 
     SmartDashboard.putData("Turn To Target", new DriveWithVisionTurn());
-    SmartDashboard.putData("Raise Elevator to Level", new ElevatorMoveToLevel(-1.0));
     SmartDashboard.putData("Move Elevator to Zero", new ElevatorMoveToLevel(0.0));
-    SmartDashboard.putData("Zero Encoder (w/ Limit)", new ElevatorEncoderZero());
-    SmartDashboard.putData("Zero Encoder (w/out Limit)", new ElevatorManualZero());
+    SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero());
+    SmartDashboard.putData("Manual Zero Elev Enc (w/out Limit)", new ElevatorManualZero());
     SmartDashboard.putData("Turn To Line", new TurnToLine());
     SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
     SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
