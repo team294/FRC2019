@@ -56,7 +56,7 @@ public class Elevator extends Subsystem {
 	elevatorEnc = elevatorMotor1.getEncoder();
 	elevatorPID = elevatorMotor1.getPIDController();
 	elevatorLowerLimit = elevatorMotor1.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen);
-	elevatorMotor2.follow(elevatorMotor1);
+	elevatorMotor2.follow(elevatorMotor1, true);
 	elevatorMotor1.clearFaults();	
 	elevatorMotor2.clearFaults();
 	zeroElevatorEnc();

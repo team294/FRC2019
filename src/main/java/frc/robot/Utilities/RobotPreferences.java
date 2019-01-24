@@ -65,6 +65,9 @@ public class RobotPreferences {
 		if (!prefs.containsKey("cameraDistanceFromFrontOfBumper")){
 			prefs.putDouble("cameraDistanceFromFrontOfBumper", 12);
 		}
+		if (!prefs.containsKey("elevatorGearDiameter")) {
+			prefs.putDouble("elevatorGearDiameter", 3.0);
+		}
 	}
 
 	public String getString(String k) {
