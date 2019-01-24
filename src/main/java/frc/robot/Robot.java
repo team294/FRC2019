@@ -144,6 +144,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
     Robot.vision.readCameraData();
+    SmartDashboard.putBoolean("Is Line Present?", lineFollowing.isLinePresent());
   }
 
   /**

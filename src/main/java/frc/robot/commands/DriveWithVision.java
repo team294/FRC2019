@@ -34,6 +34,7 @@ public class DriveWithVision extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    System.out.println("---VISION TRACKING INITIATED---");
     Robot.driveTrain.driveToCrosshair();
   }
 
@@ -55,6 +56,7 @@ public class DriveWithVision extends Command {
   protected void end() {
     // TODO: Add a robot log call here to indicate an end to the vision portion, possibly with a data dump
     Robot.driveTrain.stop();
+    System.out.println("---VISION TRACKING ENDED---");
   }
 
   // Called when another command which requires one or more of the same

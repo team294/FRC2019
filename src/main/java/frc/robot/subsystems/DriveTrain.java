@@ -212,7 +212,7 @@ public class DriveTrain extends Subsystem {
     double lPercentPower = 0;
     double rPercentPower = 0;
     double baseSpeed = 1;
-    //LineFollowing name = new LineFollowing();
+
     int lineNum = Robot.lineFollowing.lineNumber();
     if (lineNum == 0) {
       // Straight

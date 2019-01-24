@@ -21,6 +21,7 @@ public class DriveWithLineFollowing extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    System.out.println("---LINE TRACKING INITIATED---");
     Robot.driveTrain.driveOnLine();
   }
 
@@ -41,6 +42,7 @@ public class DriveWithLineFollowing extends Command {
   protected void end() {
     // TODO: Add a call to robot log here to indicate end of line following, possibly with a data dump
     Robot.driveTrain.stop();
+    System.out.println("---LINE FOLLOWING ENDED---");
   }
 
   // Called when another command which requires one or more of the same

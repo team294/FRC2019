@@ -38,8 +38,9 @@ public class VisionData {
         horizOffset = xValue.getDouble(0);
         vertOffset = yValue.getDouble(0);
         areaFromCamera = aValue.getDouble(0); 
-        ledMode = ledM.getDouble(0);   
-        // These functions are too taxing on CPU resources on the driver station
+        ledMode = ledM.getDouble(0);
+
+        // These functions are too taxing on CPU resources on the driver station to be run in teleopPeriodic
         //SmartDashboard.putNumber("Area", areaFromCamera);
         //SmartDashboard.putNumber("Angle to Crosshair", horizOffset);
         //SmartDashboard.putNumber("Distance", distanceFromTarget()); 
@@ -91,7 +92,7 @@ public class VisionData {
         myDistance = 23.75 * Math.sqrt(3.5/areaFromCamera) - cameraOffset;
 
         System.out.println("Distance from Target = " + myDistance);
-        System.out.println("Area from Camera = " + areaFromCamera);
+        //System.out.println("Area from Camera = " + areaFromCamera);
         return myDistance;
     }
 }
