@@ -48,7 +48,7 @@ public class DriveWithJoysticks extends Command {
   @Override
   protected void end() {
     // TODO: Add robot log call to indicate end of driver control
-    System.out.println("---DRIVE CONTROL ENDED---");
+    System.out.println("---DRIVER CONTROL ENDED---");
   }
 
   // Called when another command which requires one or more of the same

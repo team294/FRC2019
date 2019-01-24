@@ -21,6 +21,7 @@ public class DriveWithLineFollowing extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.driveTrain.clearEncoderList();  // clear the encoder list in preparation for checking if the wheels are moving or not
     System.out.println("---LINE TRACKING INITIATED---");
     Robot.driveTrain.driveOnLine();
   }
@@ -34,7 +35,7 @@ public class DriveWithLineFollowing extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return Robot.driveTrain.areEncodersTurning(5.0); // Check if the encoders have changed
   }
 
   // Called once after isFinished returns true

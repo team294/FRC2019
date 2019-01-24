@@ -36,6 +36,7 @@ public class DriveWithVision extends Command {
   protected void initialize() {
     System.out.println("---VISION TRACKING INITIATED---");
     Robot.driveTrain.driveToCrosshair();
+    //Robot.driveTrain.clearEncoderList();
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -48,7 +49,7 @@ public class DriveWithVision extends Command {
   @Override
   protected boolean isFinished() {
     SmartDashboard.putBoolean("Is Line Present?", Robot.lineFollowing.isLinePresent());
-    return endOnLine && Robot.lineFollowing.isLinePresent(); // Stops when a line is detected by the line followers
+    return endOnLine && Robot.lineFollowing.isLinePresent() && Robot.vision.distanceFromTarget() < 30; // Stops when a line is detected by the line followers
   }
 
   // Called once after isFinished returns true

@@ -9,6 +9,9 @@
 package frc.robot.subsystems;   // had to change from just frc.robot.subsystems ?
 
 
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -39,6 +42,7 @@ public class DriveTrain extends Subsystem {
   private int periodicCount = 0;
   
   private double leftEncoderZero = 0, rightEncoderZero = 0;
+  private LinkedList<Double> encoderStack = new LinkedList<Double>();
 
   public DriveTrain() {
 
@@ -124,7 +128,7 @@ public class DriveTrain extends Subsystem {
 	 */
 	public double getLeftEncoderTicks() {
     return leftMotor2.getSelectedSensorPosition(0) + leftEncoderZero;
-	}
+  }
 
 	/**
 	 * Get the position of the right encoder, in encoder ticks since last zeroRightEncoder()
@@ -149,6 +153,39 @@ public class DriveTrain extends Subsystem {
     return encoderTicksToInches(getRightEncoderTicks());
   }
   
+  /**
+   * Empties the ecoder tracking stack and zeroes the left and right encoders
+   */
+  public void clearEncoderList() {
+    encoderStack.clear();
+    zeroLeftEncoder();
+    zeroRightEncoder();
+  }
+
+  /**
+   * Averages the ticks of the left and right encoder and adds them to the encoder stack.
+   * Also removes the earliest element if above 50 elements.
+   */
+  public void updateEncoderList() {
+    encoderStack.add(getLeftEncoderTicks() + getRightEncoderTicks());
+    if (encoderStack.size() > 50) encoderStack.remove();
+  }
+
+  /**
+   * Checks if the encoders are turning. Make sure you have been calling updateEncoderList enough times before.
+   * @param precision Precision, in ticks (i.e. number of ticks by which the average can differ from the last reading)
+   * @return true if the difference between the average and the last element is less than the precision specified
+   */
+  public boolean areEncodersTurning(double precision) {
+    if (encoderStack.size()<50) return false;
+    double sum = 0.0;
+    Iterator<Double> iterator = encoderStack.descendingIterator();
+    while(iterator.hasNext()) {
+      sum += iterator.next();
+    }
+    return Math.abs(sum/encoderStack.size()-encoderStack.peekLast()) <= precision;
+  }
+
   public void updateDriveLog () {
     Robot.log.writeLog("DriveTrain", "Update Variables",
       "Drive L1 Volts," + leftMotor1.getMotorOutputVoltage() + ",Drive L2 Volts," + leftMotor2.getMotorOutputVoltage() + ",Drive L3 Volts," + leftMotor3.getMotorOutputVoltage() +
@@ -171,8 +208,8 @@ public class DriveTrain extends Subsystem {
     double gainConstant = 1.0/30.0;
     double xVal = Robot.vision.xValue.getDouble(0);
     // 50 inches subtracted from the distance to decrease the speed
-    double startSpeed = -0.5;  // + (1.0/800.0 * (Robot.vision.distanceFromTarget() - 50));
-    double lJoystickPercent = Robot.oi.leftJoystick.getY(); // TODO: Update speed settings from joystick to allow for much finer control
+    double startSpeed = -0.5;
+    double lJoystickPercent = Robot.oi.leftJoystick.getY()-0.25;
     double lPercentOutput = startSpeed + (gainConstant * xVal);
     double rPercentOutput = startSpeed - (gainConstant * xVal);
     System.out.println("lPercentOut, rPercentOut "+lPercentOutput+" "+rPercentOutput);
@@ -180,9 +217,10 @@ public class DriveTrain extends Subsystem {
     if (Robot.vision.distanceFromTarget() > minDistanceToTarget && Robot.vision.areaFromCamera != 0 && lJoystickPercent == 0) {
         this.robotDrive.tankDrive(lPercentOutput, rPercentOutput);
     } else if (Robot.vision.distanceFromTarget() > minDistanceToTarget && Robot.vision.areaFromCamera != 0) {
-      this.robotDrive.tankDrive(lPercentOutput - lJoystickPercent, rPercentOutput - lJoystickPercent);
+        //this.robotDrive.tankDrive(lPercentOutput - lJoystickPercent, rPercentOutput - lJoystickPercent);
+        this.robotDrive.tankDrive(lPercentOutput - lJoystickPercent, rPercentOutput - lJoystickPercent);
     } else {
-      this.robotDrive.tankDrive(0, 0);
+        this.robotDrive.tankDrive(0, 0);
     }
     Robot.log.writeLog("DriveTrain", "Vision Driving", "Degrees from Target," + xVal + ",Joystick Ouput," + lJoystickPercent + ",Inches from Target," + Robot.vision.distanceFromTarget()
     + ",Target Area," + Robot.vision.areaFromCamera);
@@ -216,8 +254,10 @@ public class DriveTrain extends Subsystem {
     int lineNum = Robot.lineFollowing.lineNumber();
     if (lineNum == 0) {
       // Straight
-      lPercentPower = .55*baseSpeed;
-      rPercentPower = .55*baseSpeed;
+      //lPercentPower = .55*baseSpeed;
+      //rPercentPower = .55*baseSpeed;
+      lPercentPower = 0.65*baseSpeed;
+      rPercentPower = 0.65*baseSpeed;
     } else if (lineNum == 1) {
       // Turn left slight?
       lPercentPower = .6*baseSpeed;
@@ -241,6 +281,7 @@ public class DriveTrain extends Subsystem {
     }
     System.out.println("Base Speed " + baseSpeed +" Left percent power: " + lPercentPower + " Right Percent Power " + rPercentPower);
     this.robotDrive.tankDrive(lPercentPower, rPercentPower);
+    updateEncoderList();
   }
 
   @Override
