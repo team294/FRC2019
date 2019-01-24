@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Utilities.*;
@@ -29,6 +30,7 @@ public class Robot extends TimedRobot {
   public static Shifter shifter;
   public static VisionData vision;
   public static LineFollowing lineFollowing;
+  public static Climb climb;
   public static OI oi;
   public static FileLog log;
   public static RobotPreferences robotPrefs;
@@ -49,11 +51,14 @@ public class Robot extends TimedRobot {
     shifter = new Shifter();
     vision = new VisionData();
     lineFollowing = new LineFollowing();
+    climb = new Climb();
     pdp = new PowerDistributionPanel();
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
     robotPrefs.doExist();   // Sets up Robot Preferences if they do not exist : ie you just replaced RoboRio
+
+    climb.enableCompressor(true);
 
     oi = new OI();
   }
