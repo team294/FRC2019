@@ -84,6 +84,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     log.writeLogEcho("Robot", "Disabled", "");
+    climb.enableCompressor(true);
   }
 
   @Override
@@ -117,6 +118,8 @@ public class Robot extends TimedRobot {
      * autonomousCommand = new ExampleCommand(); break; }
      */
 
+    climb.enableCompressor(true);
+
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.start();
@@ -137,6 +140,8 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    climb.enableCompressor(true);
+
     log.writeLogEcho("Robot", "Teleop mode init", "");
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
