@@ -72,8 +72,8 @@ public class PathfinderToRocket extends Command {
     // dfRight.configureEncoder(Robot.driveTrain.getRightEncoderTicks(), RobotMap.encoderTicksPerRevolution, RobotMap.wheel_diameter_m);
     // dfLeft.configurePIDVA(0.02, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0025);
     // dfRight.configurePIDVA(0.02, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0025);
-    dfLeft.configurePIDVA(0.0, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0038);
-    dfRight.configurePIDVA(0.0, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0038);
+    dfLeft.configurePIDVA(0.05, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0038);
+    dfRight.configurePIDVA(0.05, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0038);
     dfLeft.reset();
     dfRight.reset();
   }
