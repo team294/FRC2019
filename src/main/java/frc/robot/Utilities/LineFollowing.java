@@ -66,12 +66,7 @@ public class LineFollowing {
         } else {
             lineNumber = 3; // 0 0 0 ; 1 1 1 ; 1 0 1 : Stop
         }
+        Robot.log.writeLog("LineFollower", "Update Variables", "lineNumber = "+ lineNumber());
         return lineNumber;
-    }
-
-    public void updateLineFollowerLog() { //TODO update data later
-        Robot.log.writeLog("LineFollower", "Update Variables", "Some data");
-    }
-
-
+    }    
 }
