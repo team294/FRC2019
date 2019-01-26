@@ -10,9 +10,17 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.StopElevator;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -28,12 +36,16 @@ import com.revrobotics.CANDigitalInput.LimitSwitchPolarity;
 public class Elevator extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.  
+  //private CANSparkMax elevatorMotor1;
+  //private CANSparkMax elevatorMotor2;
+  //private CANEncoder elevatorEnc;
+  //private CANPIDController elevatorPID;
+  //private CANDigitalInput elevatorLowerLimit;
+  //TODO comment out if they miraculously switch back to Sparks
 
-  private CANSparkMax elevatorMotor1;
-  private CANSparkMax elevatorMotor2;
-  private CANEncoder elevatorEnc;
-  private CANPIDController elevatorPID;
-  private CANDigitalInput elevatorLowerLimit;
+  private WPI_TalonSRX elevatorMotor1;
+  private BaseMotorController elevatorMotor2;
+  private DigitalInput elevatorLowerLimit = new DigitalInput(RobotMap.elevatorLowerLimit);
 
   private int periodicCount = 0;
   private int idleCount= 0;
@@ -41,25 +53,24 @@ public class Elevator extends Subsystem {
   private double prevEnc = 0.0;
   private double currEnc = 0.0;
 
-  public double rampRate = .005; 
+  /* public double rampRate = .005; 
   public double kP = 1;
   public double kI = 0;
   public double kD = 0;
   public double kIz = 0;
   public double kFF = 0;
   public double kMaxOutput = 1;
-  public double kMinOutput = -1;
+  public double kMinOutput = -1; */
 
   public Elevator() {
-	elevatorMotor1 = new CANSparkMax(RobotMap.elevatorMotor1, MotorType.kBrushless);
+	/* elevatorMotor1 = new CANSparkMax(RobotMap.elevatorMotor1, MotorType.kBrushless);
 	elevatorMotor2 = new CANSparkMax(RobotMap.elevatorMotor2, MotorType.kBrushless);
 	elevatorEnc = elevatorMotor1.getEncoder();
 	elevatorPID = elevatorMotor1.getPIDController();
 	elevatorLowerLimit = elevatorMotor1.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen);
-	elevatorMotor2.follow(elevatorMotor1, true);
+	elevatorMotor2.follow(elevatorMotor1, true); 
 	elevatorMotor1.clearFaults();	
 	elevatorMotor2.clearFaults();
-	zeroElevatorEnc();
 	elevatorLowerLimit.enableLimitSwitch(true);
 	elevatorPID.setP(kP);
 	elevatorPID.setI(kI);
@@ -67,7 +78,20 @@ public class Elevator extends Subsystem {
 	elevatorPID.setIZone(kIz);
 	elevatorPID.setFF(kFF);
 	elevatorMotor1.setRampRate(rampRate);
-	elevatorPID.setOutputRange(kMinOutput, kMaxOutput);
+	elevatorPID.setOutputRange(kMinOutput, kMaxOutput); 
+	*/
+
+	elevatorMotor1 = new WPI_TalonSRX(RobotMap.elevatorMotor1);
+	elevatorMotor2 = new WPI_VictorSPX(RobotMap.elevatorMotor2);
+	elevatorMotor2.follow(elevatorMotor1);
+	elevatorMotor2.setInverted(true);
+    elevatorMotor1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+	zeroElevatorEnc();
+
+	elevatorMotor1.clearStickyFaults();
+	elevatorMotor2.clearStickyFaults();
+	elevatorMotor1.setNeutralMode(NeutralMode.Brake);
+	elevatorMotor2.setNeutralMode(NeutralMode.Brake);
 	}
 	
 	/* 
@@ -77,20 +101,20 @@ public class Elevator extends Subsystem {
 		elevatorMotor1.set(percentPower);
 	}
 
-	public void setElevatorPos(double inches) {
+	/* public void setElevatorPos(double inches) {
 		elevatorPID.setReference(inchesToEncoderRevolutions(inches) + encoderZero, ControlType.kPosition);
-	}
+	} TODO uncomment when PID for this is figured out */
 
 	public void stopElevator() {
 		setElevatorMotorPercentPower(0.0);
 	}
 
 	public void zeroElevatorEnc() {
-		encoderZero = elevatorEnc.getPosition();
+		encoderZero = elevatorMotor1.getSelectedSensorPosition(0);
 	}
 
 	public double getElevatorEncRevolutions() {
-		return elevatorEnc.getPosition() - encoderZero;
+		return elevatorMotor1.getSelectedSensorPosition(0) - encoderZero;
 	}
 
 	public double encoderRevolutionsToInches(double encoderRevs) {
@@ -112,8 +136,7 @@ public class Elevator extends Subsystem {
 	public void updateElevatorLog() {
 		Robot.log.writeLog("Elevator", "Update Variables",
 		"Elev1 Volts," + elevatorMotor1.getBusVoltage() + ",Elev2 Volts," + elevatorMotor2.getBusVoltage() +
-		",Elev1 Amps," + elevatorMotor1.getOutputCurrent() + ",Elev2 Amps," + elevatorMotor2.getOutputCurrent() +
-		",Elev1 Temp," + elevatorMotor1.getMotorTemperature() + ",Elev2 Temp," + elevatorMotor2.getMotorTemperature() +
+		",Elev1 Amps," + Robot.pdp.getCurrent(RobotMap.elevatorMotor1PDP) + ",Elev2 Amps," + Robot.pdp.getCurrent(RobotMap.elevatorMotor2PDP) +
 		",Elev Enc Revs," + getElevatorEncRevolutions() + ",Elev Enc Inches," + getElevatorEncInches());
 	}
   @Override
