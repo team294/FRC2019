@@ -18,14 +18,28 @@ import frc.robot.pathfinder.Trajectory;
 import frc.robot.pathfinder.Waypoint;
 import frc.robot.pathfinder.followers.DistanceFollower;
 
-public class PathfinderToRocket extends Command {
+public class DrivePathfinder extends Command {
   private DistanceFollower dfLeft, dfRight;
   private boolean hasReset;
+  Trajectory trajCenter;
+  Trajectory trajRight;
+  Trajectory trajLeft;
+  boolean resetGyro;
 
-  public PathfinderToRocket() {
+  public DrivePathfinder(String pathName, boolean gyroReset) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.driveTrain);
+    trajCenter = Pathfinder.readFromCSV(pathName + ".pf1.csv");
+    trajRight = Pathfinder.readFromCSV(pathName + ".left.pf1.csv");
+    trajLeft = Pathfinder.readFromCSV(pathName + ".right.pf1.csv");
+    resetGyro = gyroReset;
+    
+    // Create DistanceFollowers for the Trajectories and configure them
+    dfLeft = new DistanceFollower(trajLeft);
+    dfRight = new DistanceFollower(trajRight);
+    dfLeft.configurePIDVA(0.05, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0038);
+    dfRight.configurePIDVA(0.05, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0038);
   }
 
   // Called just before this Command runs the first time
@@ -33,22 +47,16 @@ public class PathfinderToRocket extends Command {
   protected void initialize() {
     Robot.driveTrain.zeroLeftEncoder();
     Robot.driveTrain.zeroRightEncoder();
-    Robot.driveTrain.setGyroRotation(0);
     Robot.driveTrain.setVoltageCompensation(true);
     hasReset = false;
 
-    Trajectory trajCenter = Pathfinder.readFromCSV("TestCurve1.pf1.csv");
-    Trajectory trajLeft = Pathfinder.readFromCSV("TestCurve1.right.pf1.csv");
-    Trajectory trajRight = Pathfinder.readFromCSV("TestCurve1.left.pf1.csv");
+    if (resetGyro) {
+      Robot.driveTrain.setGyroRotation(Pathfinder.r2d(trajCenter.segments[0].heading));
+    }
 
-    // Create DistanceFollowers for the Trajectories and configure them
-    dfLeft = new DistanceFollower(trajLeft);
-    dfRight = new DistanceFollower(trajRight);
-    dfLeft.configurePIDVA(0.05, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0038);
-    dfRight.configurePIDVA(0.05, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0038);
     dfLeft.reset();
     dfRight.reset();
-    Robot.log.writeLog("Pathfinder", "initialize", "start time," + dfLeft.getCalcDeltaTimeMillis());
+    Robot.log.writeLog("Pathfinder", "initialize", "time," + ((double)dfLeft.getCalcDeltaTimeMillis()) / 1000.0);
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -73,7 +81,7 @@ public class PathfinderToRocket extends Command {
     Robot.driveTrain.setLeftMotors(-(l + turn));
     Robot.driveTrain.setRightMotors(-(r - turn));
 
-    Robot.log.writeLog("Pathfinder", "execute", "time," + dfLeft.getCalcTimeMillis() +
+    Robot.log.writeLog("Pathfinder", "execute", "time," + ((double)dfLeft.getCalcDeltaTimeMillis()) / 1000.0 +
                        ",left power," + l + ",right power," + r + ",turn power," + turn +
                        ",left distance," + Robot.driveTrain.getLeftEncoderInches() + ",right distance," + Robot.driveTrain.getRightEncoderInches() +
                        ",heading," + gyro_heading + ",left isFinished," + dfLeft.isFinished() + 
