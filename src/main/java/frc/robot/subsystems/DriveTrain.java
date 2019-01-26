@@ -97,7 +97,7 @@ public class DriveTrain extends Subsystem {
   }
 
   public void tankDrive (double powerLeft, double powerRight) {
-    this.robotDrive.tankDrive(powerLeft, powerRight);
+    robotDrive.tankDrive(powerLeft, powerRight);
   }
 
   /**
@@ -206,21 +206,26 @@ public class DriveTrain extends Subsystem {
     double minDistanceToTarget = 13;
 
     double gainConstant = 1.0/30.0;
-    double xVal = Robot.vision.xValue.getDouble(0);
-    // 50 inches subtracted from the distance to decrease the speed
+    double xVal = Robot.vision.xValue.getDouble(0); // Might want to make this a method in the vision class so we don' have "magic calls" to NetworkTables
     double startSpeed = -0.5;
-    double lJoystickPercent = Robot.oi.leftJoystick.getY()-0.25;
+    double lJoystickPercent = Robot.oi.leftJoystick.getY()-0.25; // Test value for now, wanted to speed it up
+    // double lJoystickPercent = Math.abs(Robot.oi.leftJoystick.getY()) + 0.25
     double lPercentOutput = startSpeed + (gainConstant * xVal);
     double rPercentOutput = startSpeed - (gainConstant * xVal);
     System.out.println("lPercentOut, rPercentOut "+lPercentOutput+" "+rPercentOutput);
     // SEE ROB ON THIS about area == 0
+    if (lJoystickPercent != 0) {
+        lPercentOutput -= lJoystickPercent;
+        rPercentOutput -= lJoystickPercent;
+    }
+    if (Robot.vision.distanceFromTarget() > 50) { // Going too fast at far distances, need to slow it down a bit
+      lPercentOutput *= 0.75;
+      rPercentOutput += 0.75;
+    }
     if (Robot.vision.distanceFromTarget() > minDistanceToTarget && Robot.vision.areaFromCamera != 0 && lJoystickPercent == 0) {
-        this.robotDrive.tankDrive(lPercentOutput, rPercentOutput);
-    } else if (Robot.vision.distanceFromTarget() > minDistanceToTarget && Robot.vision.areaFromCamera != 0) {
-        //this.robotDrive.tankDrive(lPercentOutput - lJoystickPercent, rPercentOutput - lJoystickPercent);
-        this.robotDrive.tankDrive(lPercentOutput - lJoystickPercent, rPercentOutput - lJoystickPercent);
+        tankDrive(lPercentOutput, rPercentOutput);
     } else {
-        this.robotDrive.tankDrive(0, 0);
+        tankDrive(0, 0);
     }
     Robot.log.writeLog("DriveTrain", "Vision Driving", "Degrees from Target," + xVal + ",Joystick Ouput," + lJoystickPercent + ",Inches from Target," + Robot.vision.distanceFromTarget()
     + ",Target Area," + Robot.vision.areaFromCamera);
