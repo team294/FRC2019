@@ -34,7 +34,6 @@ public class DriveWithVision extends Command {
   @Override
   protected void initialize() {
     Robot.log.writeLogEcho("DriveTrain", "Vision Tracking Init", "");
-    Robot.driveTrain.resetLogIterators();
     Robot.driveTrain.driveToCrosshair();
     //Robot.driveTrain.clearEncoderList(); // This is only done at the start of the line tracking
   }

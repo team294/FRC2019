@@ -22,7 +22,6 @@ public class DriveWithLineFollowing extends Command {
   protected void initialize() {
     Robot.log.writeLogEcho("DriveTrain", "Line Tracking Init", "");
     Robot.driveTrain.clearEncoderList();
-    Robot.driveTrain.resetLogIterators();
     Robot.driveTrain.driveOnLine();
   }
 

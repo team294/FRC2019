@@ -67,5 +67,9 @@ public class LineFollowing {
             lineNumber = 3; // 0 0 0 ; 1 1 1 ; 1 0 1 : Stop
         }
         return lineNumber;
-    }    
+    }
+    
+    public void logLineFollowers() {
+        Robot.log.writeLog("Line Following", "Update Variables", "Line Number," + lineNumber() + ",LF1," + isLinePresent(1) + ",LF2," + isLinePresent(2) + ",LF3," + isLinePresent(3));
+    }
 }

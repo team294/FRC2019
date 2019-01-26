@@ -40,7 +40,7 @@ public class DriveTrain extends Subsystem {
   public final DifferentialDrive robotDrive = new DifferentialDrive(leftMotor2, rightMotor2);
 
   // Iterators for logging
-  private int periodicCount, visionCount, lineCount = 0;
+  private int periodicCount = 0;
   
   // Encoders
   private double leftEncoderZero = 0, rightEncoderZero = 0;
@@ -201,13 +201,6 @@ public class DriveTrain extends Subsystem {
   }
 
   /**
-   * Resets the iterators so that the log is called the first time vision/line tracking is used
-   */
-  public void resetLogIterators() {
-    visionCount = lineCount = 25;
-  }
-
-  /**
    * Drives towards target and stops in front of it using speed from left joystick
    * This may change depending on driver preferences
    */
@@ -234,11 +227,9 @@ public class DriveTrain extends Subsystem {
     if (distance > minDistanceToTarget && area != 0) tankDrive(lPercentOutput, rPercentOutput);
     else tankDrive(0, 0);
 
-    if (++visionCount >= 25) {
-      Robot.log.writeLogEcho("DriveTrain", "Vision Tracking", "Crosshair Horiz Offset," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget()
-      + ",Target Area," + area + ",Joystick Ouput," + lJoystickPercent + ",Left Percent," + lPercentOutput + ",Right Percent," + rPercentOutput);
-      visionCount = 0;
-    }
+    Robot.log.writeLogEcho("DriveTrain", "Vision Tracking", "Crosshair Horiz Offset," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget()
+     + ",Target Area," + area + ",Joystick Ouput," + lJoystickPercent + ",Left Percent," + lPercentOutput + ",Right Percent," + rPercentOutput);
+
   }
 
    /**
@@ -295,9 +286,7 @@ public class DriveTrain extends Subsystem {
       rPercentPower = 0;
     }
 
-    if (++lineCount >= 25) {
-      Robot.log.writeLogEcho("DriveTrain", "Line Tracking", "Line Number," + lineNum + ",Left Percent," + lPercentPower + ",Right Percent," + rPercentPower);
-    }
+    Robot.log.writeLogEcho("DriveTrain", "Line Tracking", "Line Number," + lineNum + ",Left Percent," + lPercentPower + ",Right Percent," + rPercentPower);
 
     this.robotDrive.tankDrive(lPercentPower, rPercentPower);
     updateEncoderList();
@@ -314,6 +303,7 @@ public class DriveTrain extends Subsystem {
     if (DriverStation.getInstance().isEnabled()) {
       if ((++periodicCount) >= 25) {
         updateDriveLog();
+        Robot.lineFollowing.logLineFollowers(); // This is the best place for this I guess
         periodicCount=0;  
       }
     }
