@@ -1,4 +1,4 @@
-package frc.robot.Utilities;
+package frc.robot.utilities;
 
 import frc.robot.Robot;
 import frc.robot.RobotMap;
