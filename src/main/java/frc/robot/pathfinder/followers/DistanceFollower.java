@@ -157,6 +157,13 @@ public class DistanceFollower {
     }
 
     /**
+     * @return the system time that the distance follower was last reset.
+     */
+    public long getStartTimeMillis() {
+        return startTimeMillis;
+    }
+
+    /**
      * @return whether we have finished tracking this trajectory or not.
      */
     public boolean isFinished() {

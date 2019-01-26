@@ -56,7 +56,7 @@ public class DrivePathfinder extends Command {
 
     dfLeft.reset();
     dfRight.reset();
-    Robot.log.writeLog("Pathfinder", "initialize", "time," + ((double)dfLeft.getCalcDeltaTimeMillis()) / 1000.0);
+    Robot.log.writeLog("Pathfinder", "initialize", "time," + ((double)(System.currentTimeMillis() - dfLeft.getStartTimeMillis()) / 1000.0));
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -77,18 +77,18 @@ public class DrivePathfinder extends Command {
     double desired_heading = Pathfinder.r2d(dfLeft.getHeading());  // Should also be in degrees
 
     double angleDifference = Pathfinder.boundHalfDegrees(desired_heading - gyro_heading);
-    double turn = 0.016 * angleDifference * 0;
+    double turn = 0.05 * angleDifference * 0;
     Robot.driveTrain.setLeftMotors(-(l + turn));
     Robot.driveTrain.setRightMotors(-(r - turn));
 
-    Robot.log.writeLog("Pathfinder", "execute", "time," + ((double)dfLeft.getCalcDeltaTimeMillis()) / 1000.0 +
+    Robot.log.writeLog("Pathfinder", "execute", "time," + ((double)(System.currentTimeMillis() - dfLeft.getStartTimeMillis()) / 1000.0 +
                        ",left power," + l + ",right power," + r + ",turn power," + turn +
                        ",left distance," + Robot.driveTrain.getLeftEncoderInches() + ",right distance," + Robot.driveTrain.getRightEncoderInches() +
                        ",heading," + gyro_heading + ",left isFinished," + dfLeft.isFinished() + 
                        ",left segPos," + segLeft.position + ",left segVel," + segLeft.velocity + ",left segAccel," + segLeft.acceleration + 
-                       ",left segJerk," + segLeft.jerk + ",left segHeading," + Pathfinder.r2d(segLeft.heading) + ",left segdt," + segLeft.dt + ",right isFinished," + dfRight.isFinished() + 
+                       ",left segJerk," + segLeft.jerk + ",left segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segLeft.heading)) + ",left segdt," + segLeft.dt + ",right isFinished," + dfRight.isFinished() + 
                        ",right segPos," + segRight.position + ",right segVel," + segRight.velocity + ",right segAccel," + segRight.acceleration + 
-                       ",right segJerk," + segRight.jerk + ",right segHeading," + Pathfinder.r2d(segRight.heading) + ",right segdt," + segRight.dt);
+                       ",right segJerk," + segRight.jerk + ",right segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segRight.heading)) + ",right segdt," + segRight.dt));
     SmartDashboard.putNumber("Pathfinder right position", segRight.position);
     SmartDashboard.putNumber("Pathfinder left position", segLeft.position);
   }
