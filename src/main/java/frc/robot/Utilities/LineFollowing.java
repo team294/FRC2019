@@ -6,9 +6,9 @@ import frc.robot.RobotMap;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class LineFollowing {
-    public final DigitalInput lineFollower1 = new DigitalInput(RobotMap.lineFollower1);
-    public final DigitalInput lineFollower2 = new DigitalInput(RobotMap.lineFollower2);
-    public final DigitalInput lineFollower3 = new DigitalInput(RobotMap.lineFollower3);
+    private final DigitalInput lineFollower1 = new DigitalInput(RobotMap.lineFollower1);
+    private final DigitalInput lineFollower2 = new DigitalInput(RobotMap.lineFollower2);
+    private final DigitalInput lineFollower3 = new DigitalInput(RobotMap.lineFollower3);
 
     public LineFollowing() {
     }
