@@ -14,32 +14,23 @@ package frc.robot;
  * floating around.
  */
 public class RobotMap {
-  // For example to map the left and right motors, you could define the
-  // following variables to use with your drivetrain subsystem.
-  // public static int leftMotor = 1;
-  // public static int rightMotor = 2;
+  
+  public static final int PowerDistributionPanel = 0;
 
-  // If you are using multiple modules, make sure to define both the port
-  // number and the module. For example you with a rangefinder:
-  // public static int rangefinderPort = 1;
-  // public static int rangefinderModule = 1;
   public static final int leftMotor1 = 10;
   public static final int leftMotor2 = 11;
   public static final int leftMotor3 = 12;
   public static final int rightMotor1 = 20;
   public static final int rightMotor2 = 21;
   public static final int rightMotor3 = 22;
+  public static final int elevatorMotor1 = 30;
+  public static final int elevatorMotor2 = 31;
   public static final double encoderTicksPerRevolution = 4096.0;
 
   // Pneumatic Addresses
   public static final int pnuematicShifterLow = 0;
   public static final int pnuematicShifterHigh = 1;
   
-  // RoboRIO digital I/O Addresses
-  public static int lineFollower1 = 0;
-  public static int lineFollower2 = 1;
-  public static int lineFollower3 = 2;
-
   // TODO Update with 2018 base
   // Imperial versions
   public static final double wheelbase_in = 25.0;       // wheelbase, in inches
@@ -57,5 +48,24 @@ public class RobotMap {
   public static final double max_velocity_mps = max_velocity_ips*0.0254;  // max robot velocity, in meters per second
   public static final double max_acceleration_mpsps = max_acceleration_ipsps*0.0254;  // max robot acceleration, in meters per second per second
   public static final double max_jerk_mpspsps = max_jerk_ipspsps*0.0254;  // max robot jerk, in meters per second per second per second
+
+  public static final int lineFollower1 = 0;
+  public static final int lineFollower2 = 1;
+  public static final int lineFollower3 = 2;
+
+  // PDP Addresses
+  public static final int leftMotor1PDP = 13; //Check on PDP and change
+  public static final int leftMotor2PDP = 15; //Check on PDP and change
+  public static final int leftMotor3PDP = 14; //Check on PDP and change
+  public static final int rightMotor1PDP = 2; //Check on PDP and change
+  public static final int rightMotor2PDP = 0; //Check on PDP and change
+  public static final int rightMotor3PDP = 1; //Check on PDP and change 
+
+  //Elevator Level Heights (in inches)
+  public static final double HatchLow = 19.0 - Robot.robotPrefs.robotOffset;
+  public static final double HatchMid = 47.0 - Robot.robotPrefs.robotOffset;
+  public static final double HatchHigh = 75.0 - Robot.robotPrefs.robotOffset;
+  public static final double CargoShipCargo = 34.75 + Robot.robotPrefs.robotOffset;
+  public static final double ballOffset = 8.5;
 
 }

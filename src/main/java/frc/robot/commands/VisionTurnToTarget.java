@@ -10,8 +10,8 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class DriveWithVisionTurn extends Command {
-  public DriveWithVisionTurn() {
+public class VisionTurnToTarget extends Command {
+  public VisionTurnToTarget() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.driveTrain);

@@ -10,23 +10,28 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class DriveWithVisionSteering extends Command {
-  public DriveWithVisionSteering() {
+public class ElevatorMoveToLevel extends Command {
+
+  double currPos;
+  double target;
+  
+  public ElevatorMoveToLevel(double inches) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.driveTrain);
+    requires(Robot.elevator);
+    this.target = inches;
+    this.currPos = Robot.elevator.getElevatorEncInches();
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.driveTrain.driveToCrosshair();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.driveTrain.driveToCrosshair();
+    Robot.elevator.setElevatorPos(target-currPos);
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -44,5 +49,6 @@ public class DriveWithVisionSteering extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.elevator.stopElevator();
   }
 }

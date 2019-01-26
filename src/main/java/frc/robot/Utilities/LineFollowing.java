@@ -3,12 +3,6 @@ package frc.robot.Utilities;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 
-import java.lang.Math.*;
-
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class LineFollowing {
