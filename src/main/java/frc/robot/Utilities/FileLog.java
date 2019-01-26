@@ -1,4 +1,4 @@
-package frc.robot.Utilities;
+package frc.robot.utilities;
 
 import java.io.File;
 import java.io.FileWriter;

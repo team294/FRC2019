@@ -207,6 +207,7 @@ public class DriveTrain extends Subsystem {
 
     double gainConstant = 1.0/30.0;
     double xVal = Robot.vision.xValue.getDouble(0); // Might want to make this a method in the vision class so we don' have "magic calls" to NetworkTables
+    System.out.println("Angle: " + xVal);
     double startSpeed = -0.5;
     double lJoystickPercent = Robot.oi.leftJoystick.getY()-0.25; // Test value for now, wanted to speed it up
     // double lJoystickPercent = Math.abs(Robot.oi.leftJoystick.getY()) + 0.25
@@ -218,11 +219,7 @@ public class DriveTrain extends Subsystem {
         lPercentOutput -= lJoystickPercent;
         rPercentOutput -= lJoystickPercent;
     }
-    if (Robot.vision.distanceFromTarget() > 50) { // Going too fast at far distances, need to slow it down a bit
-      lPercentOutput *= 0.75;
-      rPercentOutput += 0.75;
-    }
-    if (Robot.vision.distanceFromTarget() > minDistanceToTarget && Robot.vision.areaFromCamera != 0 && lJoystickPercent == 0) {
+    if (Robot.vision.distanceFromTarget() > minDistanceToTarget && Robot.vision.areaFromCamera != 0) {
         tankDrive(lPercentOutput, rPercentOutput);
     } else {
         tankDrive(0, 0);
