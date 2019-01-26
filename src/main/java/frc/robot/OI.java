@@ -10,8 +10,13 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.buttons.Trigger;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.XboxController;
+
 import frc.robot.commands.*;
+import frc.robot.subsystems.Elevator;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -49,7 +54,15 @@ public class OI {
 
   public Joystick leftJoystick = new Joystick(0);
   public Joystick rightJoystick = new Joystick(1);
+  public Joystick coPanel = new Joystick(2);
+  public XboxController xBoxController = new XboxController(3);
   private boolean driveDirection = true;
+
+  private Button xBoxA = new JoystickButton(xBoxController, 1);
+  private Button xBoxB = new JoystickButton(xBoxController, 2);
+  private Button xBoxX = new JoystickButton(xBoxController, 3);
+  private Button xBoxY = new JoystickButton(xBoxController, 4);
+
 
   public OI() {
     Button[] left = new Button[12];
@@ -77,16 +90,30 @@ public class OI {
       }
     }
 
+    // The conditional logic needs to go in the command itself. No logic can be done in OI since OI is constructed at the start and not run repeatedly
+
+    /*
+    if (isBall) { //TODO uncomment when the sensor that tells whether we have a ball or hatch is added
+    xBoxA.whenActive(new ElevatorMoveToLevel(RobotMap.HatchLow + RobotMap.ballOffset));
+    xBoxB.whenActive(new ElevatorMoveToLevel(RobotMap.HatchMid + RobotMap.ballOffset));
+    xBoxY.whenActive(new ElevatorMoveToLevel(RobotMap.HatchHigh + RobotMap.ballOffset));
+    xBoxX.whenActive(new ElevatorMoveToLevel(RobotMap.CargoShipCargo));
+    }
+    else {
+      */
+    xBoxA.whenActive(new ElevatorMoveToLevel(RobotMap.HatchLow));
+    xBoxB.whenActive(new ElevatorMoveToLevel(RobotMap.HatchMid));
+    xBoxY.whenActive(new ElevatorMoveToLevel(RobotMap.HatchHigh));
+    xBoxX.whenActive(new ElevatorMoveToLevel(RobotMap.CargoShipCargo));
     
     SmartDashboard.putData("Turn To Target", new VisionTurnToTarget());
 
     SmartDashboard.putData("Drive on line", new DriveWithLineFollowing());
-    /* 
-    SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
-    SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
-    SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));
-    */
 
+    SmartDashboard.putData("Move Elevator to Zero", new ElevatorMoveToLevel(0.0));
+    SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero());
+    SmartDashboard.putData("Manual Zero Elev Enc (w/out Limit)", new ElevatorManualZero());
+  
   }
 
   public void setDriveDirection(boolean direction) {

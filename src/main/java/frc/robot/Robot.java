@@ -27,6 +27,7 @@ import frc.robot.subsystems.*;
 public class Robot extends TimedRobot {
   public static DriveTrain driveTrain;
   public static Shifter shifter;
+  public static Elevator elevator;
   public static VisionData vision;
   public static LineFollowing lineFollowing;
   public static OI oi;
@@ -47,12 +48,14 @@ public class Robot extends TimedRobot {
     robotPrefs = new RobotPreferences();
     driveTrain = new DriveTrain();
     shifter = new Shifter();
+    elevator = new Elevator();
     vision = new VisionData();
     lineFollowing = new LineFollowing();
     pdp = new PowerDistributionPanel();
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
+    robotPrefs.doExist();   // Sets up Robot Preferences if they do not exist : ie you just replaced RoboRio
 
     oi = new OI();
   }

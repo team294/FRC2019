@@ -138,14 +138,48 @@
             }
           },
           "5,3": {
+
             "size": [
               1,
               1
             ],
             "content": {
               "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Drive on line",
-              "_title": "/SmartDashboard/Drive on line"
+              "_source0": "network_table:///SmartDashboard/Raise Elevator to Level",
+              "_title": "SmartDashboard/Raise Elevator to Level"
+            }
+          },
+          "4,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/Zero Encoder",
+              "_title": "SmartDashboard/Zero Encoder"
+            }
+          },
+          "3,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Enc Val",
+              "_title": "SmartDashboard/Enc Val"
+            }
+          },
+          "4,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Enc Zero",
+              "_title": "SmartDashboard/Enc Zero"
             }
           }
         }
@@ -177,9 +211,9 @@
     }
   ],
   "windowGeometry": {
-    "x": 525.0,
-    "y": 113.0,
+    "x": 530.0,
+    "y": 53.0,
     "width": 1394.0,
-    "height": 815.0
+    "height": 883.0
   }
 }
