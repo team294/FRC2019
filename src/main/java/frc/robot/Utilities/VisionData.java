@@ -1,11 +1,8 @@
 package frc.robot.utilities;
 
-import frc.robot.Robot;
-
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class VisionData {
     public double horizOffset;    //  Horizontal angle error
@@ -39,11 +36,6 @@ public class VisionData {
         vertOffset = yValue.getDouble(0);
         areaFromCamera = aValue.getDouble(0); 
         ledMode = ledM.getDouble(0);
-
-        // These functions are too taxing on CPU resources on the driver station to be run in teleopPeriodic
-        //SmartDashboard.putNumber("Area", areaFromCamera);
-        //SmartDashboard.putNumber("Angle to Crosshair", horizOffset);
-        //SmartDashboard.putNumber("Distance", distanceFromTarget()); 
     }
 
    // Turn the LEDS on
@@ -71,17 +63,12 @@ public class VisionData {
         }
         ledM.setDouble(modeNumber);
     }
-
-    public void updateVisionLog() {
-        Robot.log.writeLog("Vision", "Update Variables", "HorizOffset," + horizOffset + ",AreaFromCamera," + areaFromCamera);
-    }
     
     /**
      *  questionable accuracy
     * @return the distance from the target in inches
     * 
     */
-    // test comment
     public double distanceFromTarget (){
         double myDistance = 0.0;
         double cameraOffset = 12.0;
@@ -90,9 +77,6 @@ public class VisionData {
         // reference area =  3.5 (the units that are used in limelight)
         //myDistance = 23.75 * Math.sqrt(areaFromCamera/3.5);
         myDistance = 23.75 * Math.sqrt(3.5/areaFromCamera) - cameraOffset;
-
-        System.out.println("Distance from Target = " + myDistance);
-        //System.out.println("Area from Camera = " + areaFromCamera);
         return myDistance;
     }
 }

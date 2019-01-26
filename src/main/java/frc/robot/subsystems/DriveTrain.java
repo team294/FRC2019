@@ -39,8 +39,10 @@ public class DriveTrain extends Subsystem {
 
   public final DifferentialDrive robotDrive = new DifferentialDrive(leftMotor2, rightMotor2);
 
-  private int periodicCount = 0;
+  // Iterators for logging
+  private int periodicCount, visionCount, lineCount = 0;
   
+  // Encoders
   private double leftEncoderZero = 0, rightEncoderZero = 0;
   private LinkedList<Double> encoderStack = new LinkedList<Double>();
 
@@ -157,8 +159,9 @@ public class DriveTrain extends Subsystem {
    * Empties the ecoder tracking stack and zeroes the left and right encoders
    */
   public void clearEncoderList() {
+    Robot.log.writeLogEcho("DriveTrain", "Encoders Cleared", "");
     encoderStack.clear();
-    zeroLeftEncoder();
+    zeroLeftEncoder();  // Theoretically these don't need to be zeroed; the stack just adds their values
     zeroRightEncoder();
   }
 
@@ -197,35 +200,45 @@ public class DriveTrain extends Subsystem {
       ",High Gear," + Robot.shifter.isShifterInHighGear());
   }
 
-/**
+  /**
+   * Resets the iterators so that the log is called the first time vision/line tracking is used
+   */
+  public void resetLogIterators() {
+    visionCount = lineCount = 25;
+  }
+
+  /**
    * Drives towards target and stops in front of it using speed from left joystick
    * This may change depending on driver preferences
    */
   public void driveToCrosshair() {
 
     double minDistanceToTarget = 13;
+    double distance = Robot.vision.distanceFromTarget();
+    double area = Robot.vision.areaFromCamera;
+    double xVal = Robot.vision.horizOffset;
 
     double gainConstant = 1.0/30.0;
-    double xVal = Robot.vision.xValue.getDouble(0); // Might want to make this a method in the vision class so we don' have "magic calls" to NetworkTables
-    System.out.println("Angle: " + xVal);
     double startSpeed = -0.5;
     double lJoystickPercent = Robot.oi.leftJoystick.getY()-0.25; // Test value for now, wanted to speed it up
     // double lJoystickPercent = Math.abs(Robot.oi.leftJoystick.getY()) + 0.25
     double lPercentOutput = startSpeed + (gainConstant * xVal);
     double rPercentOutput = startSpeed - (gainConstant * xVal);
-    System.out.println("lPercentOut, rPercentOut "+lPercentOutput+" "+rPercentOutput);
-    // SEE ROB ON THIS about area == 0
+
     if (lJoystickPercent != 0) {
         lPercentOutput -= lJoystickPercent;
         rPercentOutput -= lJoystickPercent;
     }
-    if (Robot.vision.distanceFromTarget() > minDistanceToTarget && Robot.vision.areaFromCamera != 0) {
-        tankDrive(lPercentOutput, rPercentOutput);
-    } else {
-        tankDrive(0, 0);
+
+    // TODO: Speed up or slow down based on distance
+    if (distance > minDistanceToTarget && area != 0) tankDrive(lPercentOutput, rPercentOutput);
+    else tankDrive(0, 0);
+
+    if (++visionCount >= 25) {
+      Robot.log.writeLogEcho("DriveTrain", "Vision Tracking", "Crosshair Horiz Offset," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget()
+      + ",Target Area," + area + ",Joystick Ouput," + lJoystickPercent + ",Left Percent," + lPercentOutput + ",Right Percent," + rPercentOutput);
+      visionCount = 0;
     }
-    Robot.log.writeLog("DriveTrain", "Vision Driving", "Degrees from Target," + xVal + ",Joystick Ouput," + lJoystickPercent + ",Inches from Target," + Robot.vision.distanceFromTarget()
-    + ",Target Area," + Robot.vision.areaFromCamera);
   }
 
    /**
@@ -245,13 +258,13 @@ public class DriveTrain extends Subsystem {
     } else {
       this.robotDrive.tankDrive(0, 0);
    }
-   Robot.log.writeLog("DriveTrain", "Vision Turning", "Degrees from Target," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget() + ",Target Area," + Robot.vision.areaFromCamera);
+   //Robot.log.writeLog("DriveTrain", "Vision Turning", "Degrees from Target," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget() + ",Target Area," + Robot.vision.areaFromCamera);
   }
 
   public void driveOnLine() {
     double lPercentPower = 0;
     double rPercentPower = 0;
-    double baseSpeed = 1;
+    double baseSpeed = 1; // If this remains 1, we can remove it from the code. Otherwise, we cdan make it responsive to the joystick as well.
 
     int lineNum = Robot.lineFollowing.lineNumber();
     if (lineNum == 0) {
@@ -281,7 +294,11 @@ public class DriveTrain extends Subsystem {
       lPercentPower = 0;
       rPercentPower = 0;
     }
-    System.out.println("Base Speed " + baseSpeed +" Left percent power: " + lPercentPower + " Right Percent Power " + rPercentPower);
+
+    if (++lineCount >= 25) {
+      Robot.log.writeLogEcho("DriveTrain", "Line Tracking", "Line Number," + lineNum + ",Left Percent," + lPercentPower + ",Right Percent," + rPercentPower);
+    }
+
     this.robotDrive.tankDrive(lPercentPower, rPercentPower);
     updateEncoderList();
   }
@@ -290,6 +307,7 @@ public class DriveTrain extends Subsystem {
   public void initDefaultCommand() {
     setDefaultCommand(new DriveWithJoysticks());
   }
+
   @Override
   public void periodic() {
 

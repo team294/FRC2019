@@ -22,7 +22,7 @@ public class DriveWithJoysticks extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    System.out.println("---DRIVER CONTROL INITIATED---");
+    Robot.log.writeLogEcho("DriveTrain", "Driver Control Init", "");
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -47,8 +47,8 @@ public class DriveWithJoysticks extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    // TODO: Add robot log call to indicate end of driver control
-    System.out.println("---DRIVER CONTROL ENDED---");
+    Robot.driveTrain.stop();
+    Robot.log.writeLogEcho("DriveTrain", "Driver Control Ended", "");
   }
 
   // Called when another command which requires one or more of the same

@@ -8,7 +8,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 public class DriveWithVision extends Command {
@@ -34,9 +33,10 @@ public class DriveWithVision extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    System.out.println("---VISION TRACKING INITIATED---");
+    Robot.log.writeLogEcho("DriveTrain", "Vision Tracking Init", "");
+    Robot.driveTrain.resetLogIterators();
     Robot.driveTrain.driveToCrosshair();
-    //Robot.driveTrain.clearEncoderList();
+    //Robot.driveTrain.clearEncoderList(); // This is only done at the start of the line tracking
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -48,22 +48,20 @@ public class DriveWithVision extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    SmartDashboard.putBoolean("Is Line Present?", Robot.lineFollowing.isLinePresent());
     return endOnLine && Robot.lineFollowing.isLinePresent() && Robot.vision.distanceFromTarget() < 30; // Stops when a line is detected by the line followers
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    // TODO: Add a robot log call here to indicate an end to the vision portion, possibly with a data dump
     Robot.driveTrain.stop();
-    System.out.println("---VISION TRACKING ENDED---");
+    Robot.log.writeLogEcho("DriveTrain", "Vision Tracking Ended", "");
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.driveTrain.stop();
+    end();
   }
 }

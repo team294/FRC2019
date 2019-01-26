@@ -8,7 +8,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 public class DriveWithLineFollowing extends Command {
@@ -21,8 +20,9 @@ public class DriveWithLineFollowing extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.driveTrain.clearEncoderList();  // clear the encoder list in preparation for checking if the wheels are moving or not
-    System.out.println("---LINE TRACKING INITIATED---");
+    Robot.log.writeLogEcho("DriveTrain", "Line Tracking Init", "");
+    Robot.driveTrain.clearEncoderList();
+    Robot.driveTrain.resetLogIterators();
     Robot.driveTrain.driveOnLine();
   }
 
@@ -41,9 +41,8 @@ public class DriveWithLineFollowing extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    // TODO: Add a call to robot log here to indicate end of line following, possibly with a data dump
     Robot.driveTrain.stop();
-    System.out.println("---LINE FOLLOWING ENDED---");
+    Robot.log.writeLogEcho("DriveTrain", "Line Tracking Ended", "");
   }
 
   // Called when another command which requires one or more of the same
