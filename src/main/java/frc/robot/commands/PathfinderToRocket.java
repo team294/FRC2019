@@ -91,7 +91,7 @@ public class PathfinderToRocket extends Command {
     double desired_heading = Pathfinder.r2d(dfLeft.getHeading());  // Should also be in degrees
 
     double angleDifference = Pathfinder.boundHalfDegrees(desired_heading - gyro_heading);
-    double turn = -0.016 * angleDifference;
+    double turn = 0.016 * angleDifference;
     Robot.driveTrain.setLeftMotors(-(l + turn));
     Robot.driveTrain.setRightMotors(-(r - turn));
 
