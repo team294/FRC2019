@@ -87,7 +87,9 @@ public class Elevator extends Subsystem {
 	elevatorMotor2.follow(elevatorMotor1);
 	elevatorMotor1.setInverted(true);
     elevatorMotor1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-	elevatorMotor1.configForwardLimitSwitchSource(LimitSwitchSource.RemoteTalonSRX, LimitSwitchNormal.NormallyOpen);
+	elevatorMotor1.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+	elevatorMotor1.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+	
 	elevatorLowerLimit = elevatorMotor1.getSensorCollection();
 	zeroElevatorEnc();
 
@@ -180,7 +182,7 @@ public class Elevator extends Subsystem {
 		else {
 			idleCount = 0;
 		}
-
+// TODO Audrey - explain this to Rob?
 		if(idleCount>=50) {
 			if((++periodicCount) >= 25) {
 				updateElevatorLog();
