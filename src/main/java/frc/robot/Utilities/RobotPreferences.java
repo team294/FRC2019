@@ -66,7 +66,10 @@ public class RobotPreferences {
 			prefs.putDouble("cameraDistanceFromFrontOfBumper", 12);
 		}
 		if (!prefs.containsKey("elevatorGearDiameter")) {
-			prefs.putDouble("elevatorGearDiameter", 3.0);
+			prefs.putDouble("elevatorGearDiameter", 1.0);
+		}
+		if (!prefs.containsKey("robotOffset")) {
+			prefs.putDouble("robotOffset", 3.0);
 		}
 	}
 

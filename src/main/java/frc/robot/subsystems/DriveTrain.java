@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveWithJoysticks;
@@ -154,6 +155,9 @@ public class DriveTrain extends Subsystem {
   }
   @Override
   public void periodic() {
+
+    SmartDashboard.putNumber("RightEnc", getRightEncoderTicks());
+    SmartDashboard.putNumber("LeftEnc", getLeftEncoderTicks());
 
     if (DriverStation.getInstance().isEnabled()) {
       if ((++periodicCount) >= 25) {

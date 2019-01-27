@@ -137,28 +137,6 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "3,3": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Raise Elevator to Level",
-              "_title": "SmartDashboard/Raise Elevator to Level"
-            }
-          },
-          "4,3": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Zero Encoder",
-              "_title": "SmartDashboard/Zero Encoder"
-            }
-          },
           "3,4": {
             "size": [
               1,
@@ -170,6 +148,30 @@
               "_title": "SmartDashboard/Enc Val"
             }
           },
+          "6,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Forward",
+              "_title": "/SmartDashboard/Forward",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "4,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/Manual Zero Elev Enc (w/out Limit)",
+              "_title": "SmartDashboard/Manual Zero Elev Enc (w/out Limit)"
+            }
+          },
           "4,4": {
             "size": [
               1,
@@ -179,6 +181,61 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Enc Zero",
               "_title": "SmartDashboard/Enc Zero"
+            }
+          },
+          "5,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/Test",
+              "_title": "SmartDashboard/Test"
+            }
+          },
+          "3,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/Zero Elev Enc (w/ Limit)",
+              "_title": "SmartDashboard/Zero Elev Enc (w/ Limit)"
+            }
+          },
+          "5,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/TEST",
+              "_title": "SmartDashboard/TEST"
+            }
+          },
+          "7,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/Move Elevator to Test",
+              "_title": "SmartDashboard/Move Elevator to Test"
+            }
+          },
+          "3,5": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/Move Elevator to Test",
+              "_title": "SmartDashboard/Move Elevator to Test"
             }
           }
         }
@@ -210,9 +267,9 @@
     }
   ],
   "windowGeometry": {
-    "x": 530.0,
-    "y": 53.0,
-    "width": 1394.0,
-    "height": 883.0
+    "x": 953.0,
+    "y": 0.0,
+    "width": 974.0,
+    "height": 1047.0
   }
 }

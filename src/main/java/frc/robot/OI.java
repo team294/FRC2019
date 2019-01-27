@@ -100,7 +100,8 @@ public class OI {
     xBoxX.whenActive(new ElevatorMoveToLevel(RobotMap.CargoShipCargo));
     
     SmartDashboard.putData("Turn To Target", new VisionTurnToTarget());
-    SmartDashboard.putData("Move Elevator to Zero", new ElevatorMoveToLevel(0.0));
+    SmartDashboard.putData("Elevator F", new ElevatorForward()); // For testing limit switch
+    SmartDashboard.putData("Elevator R", new ElevatorReverse()); // For testing limit switch
     SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero());
     SmartDashboard.putData("Manual Zero Elev Enc (w/out Limit)", new ElevatorManualZero());
     SmartDashboard.putData("Turn To Line", new TurnToLine());
