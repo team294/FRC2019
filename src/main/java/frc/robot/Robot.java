@@ -72,6 +72,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     Robot.driveTrain.getGyroRotation();
+    // Robot.log.writeLog("Robot", "periodic", "current time," + System.currentTimeMillis());
   }
 
   /**

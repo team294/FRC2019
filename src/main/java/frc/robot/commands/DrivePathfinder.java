@@ -25,6 +25,7 @@ public class DrivePathfinder extends Command {
   Trajectory trajRight;
   Trajectory trajLeft;
   boolean resetGyro;
+  String bufferString = "";
 
   public DrivePathfinder(String pathName, boolean gyroReset) {
     // Use requires() here to declare subsystem dependencies
@@ -38,13 +39,19 @@ public class DrivePathfinder extends Command {
     // Create DistanceFollowers for the Trajectories and configure them
     dfLeft = new DistanceFollower(trajLeft);
     dfRight = new DistanceFollower(trajRight);
-    dfLeft.configurePIDVA(0.05, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0038);
-    dfRight.configurePIDVA(0.05, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0038);
+    dfLeft.configurePIDVA(0.05, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0032); // P = 0.05
+    dfRight.configurePIDVA(0.05, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0032); // A = 0.0038
+    for(int index = 0; index < 1000; index++){
+      bufferString += " ";
+    }
+
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+  //  Robot.log.writeLog("Pathfinder", "initialize start", "current time," + System.currentTimeMillis() + ",start time," + dfLeft.getStartTimeMillis());
+    Robot.driveTrain.setDriveMode(true);
     Robot.driveTrain.zeroLeftEncoder();
     Robot.driveTrain.zeroRightEncoder();
     Robot.driveTrain.setVoltageCompensation(true);
@@ -56,12 +63,13 @@ public class DrivePathfinder extends Command {
 
     dfLeft.reset();
     dfRight.reset();
-    Robot.log.writeLog("Pathfinder", "initialize", "time," + ((double)(System.currentTimeMillis() - dfLeft.getStartTimeMillis()) / 1000.0));
+   // Robot.log.writeLog("Pathfinder", "initialize finish", "current time," + System.currentTimeMillis() + ",start time," + dfLeft.getStartTimeMillis());
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    // Robot.log.writeLog("Pathfinder", "execute start", "current time," + System.currentTimeMillis() + ",start time," + dfLeft.getStartTimeMillis());
     if (!hasReset) {
       dfLeft.reset();
       dfRight.reset();
@@ -80,26 +88,34 @@ public class DrivePathfinder extends Command {
     double turn = 0.05 * angleDifference * 0;
     Robot.driveTrain.setLeftMotors(-(l + turn));
     Robot.driveTrain.setRightMotors(-(r - turn));
+  //   Robot.log.writeLog("Pathfinder", "execute 2", "current time," + System.currentTimeMillis() + ",start time," + dfLeft.getStartTimeMillis());
 
-    Robot.log.writeLog("Pathfinder", "execute", "time," + ((double)(System.currentTimeMillis() - dfLeft.getStartTimeMillis()) / 1000.0 +
-                       ",left power," + l + ",right power," + r + ",turn power," + turn +
-                       ",left distance," + Robot.driveTrain.getLeftEncoderInches() + ",right distance," + Robot.driveTrain.getRightEncoderInches() +
-                       ",heading," + gyro_heading + ",left isFinished," + dfLeft.isFinished() + 
-                       ",left segPos," + segLeft.position + ",left segVel," + segLeft.velocity + ",left segAccel," + segLeft.acceleration + 
-                       ",left segJerk," + segLeft.jerk + ",left segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segLeft.heading)) + ",left segdt," + segLeft.dt + ",right isFinished," + dfRight.isFinished() + 
-                       ",right segPos," + segRight.position + ",right segVel," + segRight.velocity + ",right segAccel," + segRight.acceleration + 
-                       ",right segJerk," + segRight.jerk + ",right segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segRight.heading)) + ",right segdt," + segRight.dt));
-    SmartDashboard.putNumber("Pathfinder right position", segRight.position);
-    SmartDashboard.putNumber("Pathfinder left position", segLeft.position);
-  }
+  //   Robot.log.writeLog("Pathfinder", "execute", "time," + ((double)(System.currentTimeMillis() - dfLeft.getStartTimeMillis()) / 1000.0 +
+  //                       ",left power," + l + ",right power," + r + ",turn power," + turn +
+  //                       ",left distance," + Robot.driveTrain.getLeftEncoderInches() + ",right distance," + Robot.driveTrain.getRightEncoderInches()));
+  //   Robot.log.writeLog("Pathfinder", "execute", "time," + ((double)(System.currentTimeMillis() - dfLeft.getStartTimeMillis()) / 1000.0 +
+  //                       ",heading," + gyro_heading + ",left isFinished," + dfLeft.isFinished()));
+  //   Robot.log.writeLog("Pathfinder", "execute", "time," + ((double)(System.currentTimeMillis() - dfLeft.getStartTimeMillis()) / 1000.0 +
+  //                       ",left segPos," + segLeft.position + ",left segVel," + segLeft.velocity + ",left segAccel," + segLeft.acceleration + 
+  //                       ",left segJerk," + segLeft.jerk + ",left segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segLeft.heading)) + ",left segdt," + segLeft.dt + ",right isFinished," + dfRight.isFinished() + 
+  //                       ",right segPos," + segRight.position + ",right segVel," + segRight.velocity + ",right segAccel," + segRight.acceleration + 
+  //                       ",right segJerk," + segRight.jerk + ",right segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segRight.heading)) + ",right segdt," + segRight.dt));
+  //   SmartDashboard.putNumber("Pathfinder right position", segRight.position);
+  //   SmartDashboard.putNumber("Pathfinder left position", segLeft.position);
+
+  //   Robot.log.writeLog("Pathfinder", "execute finish", "current time," + System.currentTimeMillis() + ",start time," + dfLeft.getStartTimeMillis());
+   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
+    Robot.log.writeLog("Pathfinder", "isFinished start", "current time," + System.currentTimeMillis() + ",start time," + dfLeft.getStartTimeMillis());
     if (dfLeft.isFinished()) {
       Robot.driveTrain.setVoltageCompensation(false);
+      Robot.driveTrain.setDriveMode(false);
       return true;
     }
+    Robot.log.writeLog("Pathfinder", "isFinished finish", "current time," + System.currentTimeMillis() + ",start time," + dfLeft.getStartTimeMillis());
     return false;
   }
 

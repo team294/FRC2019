@@ -256,7 +256,27 @@ public class DriveTrain extends Subsystem {
     angle = (angle > 180) ? (angle - 360) : angle;
     SmartDashboard.putNumber("Gyro Angle", angle);
 		return angle;
-	}
+  }
+  public void setDriveMode(boolean setCoast){
+   if(setCoast){
+    leftMotor1.setNeutralMode(NeutralMode.Coast);
+    leftMotor2.setNeutralMode(NeutralMode.Coast);
+    leftMotor3.setNeutralMode(NeutralMode.Coast);
+    rightMotor1.setNeutralMode(NeutralMode.Coast);
+    rightMotor2.setNeutralMode(NeutralMode.Coast);
+    rightMotor3.setNeutralMode(NeutralMode.Coast);
+
+   }else{
+    leftMotor1.setNeutralMode(NeutralMode.Coast);
+    leftMotor2.setNeutralMode(NeutralMode.Brake);
+    leftMotor3.setNeutralMode(NeutralMode.Brake);
+    rightMotor1.setNeutralMode(NeutralMode.Brake);
+    rightMotor2.setNeutralMode(NeutralMode.Brake);
+    rightMotor3.setNeutralMode(NeutralMode.Brake);
+
+   }
+   
+  }
 
   @Override
   public void initDefaultCommand() {
