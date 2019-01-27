@@ -59,7 +59,7 @@
               "Crosshair/Crosshair color": "#FFFFFFFF",
               "Controls/Show controls": true,
               "Controls/Rotation": "NONE",
-              "compression": 0.0,
+              "compression": -1.0,
               "fps": -1,
               "imageWidth": 0,
               "imageHeight": 0
@@ -106,7 +106,7 @@
             "content": {
               "_type": "Boolean Box",
               "_source0": "network_table:///SmartDashboard/Left LineFollower",
-              "_title": "SmartDashboard/Left LineFollower",
+              "_title": "/SmartDashboard/Left LineFollower",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
             }
@@ -118,8 +118,8 @@
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Right LineFollower",
-              "_title": "SmartDashboard/Right LineFollower",
+              "_source0": "network_table:///SmartDashboard/Middle LineFollower",
+              "_title": "/SmartDashboard/Middle LineFollower",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
             }
@@ -131,12 +131,13 @@
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Middle LineFollower",
-              "_title": "SmartDashboard/Middle LineFollower",
+              "_source0": "network_table:///SmartDashboard/Right LineFollower",
+              "_title": "/SmartDashboard/Right LineFollower",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
             }
           },
+
           "3,3": {
             "size": [
               1,
