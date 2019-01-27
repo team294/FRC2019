@@ -290,7 +290,7 @@ public class DriveTrain extends Subsystem {
       lPercentPower = -.8*baseSpeed;
       rPercentPower = .8*baseSpeed;
     } else {
-      // Stop
+      // Drive forwards in hopes of recovering the line?
       lPercentPower = 0.3;
       rPercentPower = 0.3;
     }

@@ -5,26 +5,29 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class VisionData {
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    NetworkTable limelight = inst.getTable("limelight");
+
     public double horizOffset;    //  Horizontal angle error
     public double vertOffset;       // Vertical angle error
     
-    public double xFromCamera,yFromCamera,areaFromCamera,ledMode;
-    private NetworkTableEntry ledM;  // led mode 
+    public double areaFromCamera,ledMode;
+    private NetworkTableEntry ledM, pipeline;  // led mode 
     
     public NetworkTableEntry xValue,yValue,aValue;
     /**
      * Creates a VisionData object and connects to Limelight Camera
      */
     public VisionData() {
-    NetworkTableInstance inst = NetworkTableInstance.getDefault();
-    inst.startClientTeam(294);
-    NetworkTable limelight = inst.getTable("limelight");
+
+        inst.startClientTeam(294);
+
+        ledM = limelight.getEntry("ledMode");
+        pipeline = limelight.getEntry("pipeline");
     
-    ledM = limelight.getEntry("ledMode");
-   
-    xValue = limelight.getEntry("tx");
-    yValue = limelight.getEntry("ty");
-    aValue = limelight.getEntry("ta");
+        xValue = limelight.getEntry("tx");
+        yValue = limelight.getEntry("ty");
+        aValue = limelight.getEntry("ta");
 
     // Aim error and angle error based on calibrated limelight cross-hair
     // aimXError = limelight.getEntry("cx0");  // aim error from CrossHair
@@ -46,6 +49,34 @@ public class VisionData {
     // Turn the LEDS off
     public void turnOffCamLeds() {
         ledM.setDouble(1);  
+    }
+
+    /**
+     * Returns the true pipeline being used
+     * @return
+     */
+    public double getPipeline() {
+        return limelight.getEntry("getpipe").getDouble(0);
+    }
+
+    /**
+     * Sets the pipeline number to use
+     * @param pipeNum Pipeline to change to (see limelight web dashboard for details)
+     */
+    public void setPipe(double pipeNum) {
+        pipeline.setDouble(pipeNum);
+    }
+
+    /**
+     * Changes the pipeline and waits to check that it has changed
+     * @param pipeNum Pipeline to change to (see limelight web dashboard for details)
+     */
+    public void setPipeWait(double pipeNum) {
+        setPipe(pipeNum);
+        while (getPipeline() != pipeNum) {
+            System.out.println("Waiting for pipeline to switch");
+        }
+        return;
     }
 
       /**

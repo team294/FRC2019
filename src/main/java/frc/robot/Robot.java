@@ -148,7 +148,7 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
     Robot.vision.readCameraData();
     SmartDashboard.putBoolean("Is Line Present?", lineFollowing.isLinePresent());
-    SmartDashboard.putBoolean("Vision Assistance Available", vision.areaFromCamera != 0);
+    //SmartDashboard.putBoolean("Vision Assistance Available", vision.areaFromCamera != 0);
   }
 
   /**
