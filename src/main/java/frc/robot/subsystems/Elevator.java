@@ -182,7 +182,6 @@ public class Elevator extends Subsystem {
 		else {
 			idleCount = 0;
 		}
-// TODO Audrey - explain this to Rob?
 		if(idleCount>=50) {
 			if((++periodicCount) >= 25) {
 				updateElevatorLog();

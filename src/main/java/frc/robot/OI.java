@@ -85,6 +85,8 @@ public class OI {
       }
     }
 
+    SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true));
+
     /*
     if (isBall) { //TODO uncomment when the sensor that tells whether we have a ball or hatch is added
     xBoxA.whenActive(new ElevatorMoveToLevel(RobotMap.HatchLow + RobotMap.ballOffset));

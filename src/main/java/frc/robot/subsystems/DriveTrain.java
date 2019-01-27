@@ -15,6 +15,9 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.kauailabs.navx.frc.AHRS;
+
+
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -25,6 +28,7 @@ import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveWithJoysticks;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.I2C;
 
 /**
  * Drive Train subsystem.  
@@ -43,6 +47,10 @@ public class DriveTrain extends Subsystem {
   private final BaseMotorController rightMotor3;
   public final DifferentialDrive robotDrive = new DifferentialDrive(leftMotor2, rightMotor2);
 
+  // Gyro variables
+  private AHRS ahrs;
+  private double yawZero = 0;
+  
   private int periodicCount = 0;
   
   private double leftEncoderZero = 0, rightEncoderZero = 0;
@@ -97,11 +105,70 @@ public class DriveTrain extends Subsystem {
     rightMotor1.setNeutralMode(NeutralMode.Brake);
     rightMotor2.setNeutralMode(NeutralMode.Brake);
     rightMotor3.setNeutralMode(NeutralMode.Brake);
-  }
+
+    // Configure navX
+		try {
+			/* Communicate w/navX MXP via the MXP SPI Bus.
+			 * Alternatively: I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB
+			 * See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for
+			 * details.
+			 */
+
+			ahrs = new AHRS(I2C.Port.kMXP);
+
+		} catch (RuntimeException ex) {
+			DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
+		}
+		ahrs.zeroYaw();
+		// zeroGyroRotation();
+	}
 
   public void tankDrive (double powerLeft, double powerRight) {
     this.robotDrive.tankDrive(powerLeft, powerRight);
   }
+
+  /**
+	 * Set the percent output of the left motor.
+	 * 
+	 * @param powerPct Percent of power -1.0 (reverse) to 1.0 (forward)
+	 */
+	public void setLeftMotors(double powerPct) {
+		//TODO check if direction forward/backward is correct
+		leftMotor2.set(ControlMode.PercentOutput, -powerPct);
+	}
+
+	/**
+	 * Set the percent output of the right motor.
+	 * 
+	 * @param powerPct Percent of power -1.0 (reverse) to 1.0 (forward)
+	 */
+	public void setRightMotors(double powerPct) {
+		//TODO check if direction forward/backward is correct
+		rightMotor2.set(ControlMode.PercentOutput, powerPct);
+  }
+
+  /**
+	 * Stops all motors.
+	 */
+	public void stopAllMotors() {
+		setLeftMotors(0);
+		setRightMotors(0);
+	}
+  
+  /**
+	 * Turns voltage compensation on or off for drive motors.
+	 * Voltage compensation increases accuracy for autonomous code,
+	 * but it decreases maximum velocity/power when driving by joystick.
+	 * @param turnOn true=turn on, false= turn off
+	 */
+	public void setVoltageCompensation(boolean turnOn) {
+		leftMotor1.enableVoltageCompensation(turnOn);
+		leftMotor2.enableVoltageCompensation(turnOn);
+		leftMotor3.enableVoltageCompensation(turnOn);
+		rightMotor1.enableVoltageCompensation(turnOn);
+		rightMotor2.enableVoltageCompensation(turnOn);
+		rightMotor3.enableVoltageCompensation(turnOn);
+	}
   
   /**
 	 * Zeros the left encoder position in software
@@ -123,7 +190,7 @@ public class DriveTrain extends Subsystem {
 	 * @return encoder position, in ticks
 	 */
 	public double getLeftEncoderTicks() {
-    return leftMotor2.getSelectedSensorPosition(0) + leftEncoderZero;
+    return leftMotor2.getSelectedSensorPosition(0) - leftEncoderZero;
 	}
 
 	/**
@@ -132,7 +199,7 @@ public class DriveTrain extends Subsystem {
 	 * @return encoder position, in ticks
 	 */
 	public double getRightEncoderTicks() {
-		return rightMotor2.getSelectedSensorPosition(0) + rightEncoderZero;
+		return -(rightMotor2.getSelectedSensorPosition(0) - rightEncoderZero);
 	}
 
   public double encoderTicksToInches(double encoderTicks) {
@@ -142,11 +209,73 @@ public class DriveTrain extends Subsystem {
     return (inches / Robot.robotPrefs.wheelCircumference) * RobotMap.encoderTicksPerRevolution;
   }
   public double getLeftEncoderInches() {
+    SmartDashboard.putNumber("Left Inches", encoderTicksToInches(getLeftEncoderTicks()));
     return encoderTicksToInches(getLeftEncoderTicks());
   }
 
   public double getRightEncoderInches() {
+    SmartDashboard.putNumber("Right Inches", encoderTicksToInches(getRightEncoderTicks()));
     return encoderTicksToInches(getRightEncoderTicks());
+  }
+
+  public double getAverageDistance() {
+		return (getRightEncoderInches() + getLeftEncoderInches()) / 2.0;
+	}
+
+	/**
+	 * Zeros the gyro position in software
+	 */
+	public void zeroGyroRotation() {
+		// set yawZero to gryo angle
+		yawZero = ahrs.getAngle();
+		// System.err.println("PLZ Never Zero the Gyro Rotation it is not good");
+	}
+
+	/**
+	 * Resets the gyro position in software to a specified angle
+	 * 
+	 * @param currentHeading Gyro heading to reset to, in degrees
+	 */
+	public void setGyroRotation(double currentHeading) {
+		// set yawZero to gryo angle, offset to currentHeading
+		yawZero = ahrs.getAngle() - currentHeading;
+		// System.err.println("PLZ Never Zero the Gyro Rotation it is not good");
+	}
+
+	/**
+	 * Gets the rotation of the gyro
+	 * 
+	 * @return Current angle from -180 to 180 degrees
+	 */
+	public double getGyroRotation() {
+		double angle = ahrs.getAngle() - yawZero;
+		// Angle will be in terms of raw gyro units (-inf,inf), so you need to convert
+		// to (-180, 180]
+		angle = angle % 360;
+		angle = (angle <= -180) ? (angle + 360) : angle;
+    angle = (angle > 180) ? (angle - 360) : angle;
+    SmartDashboard.putNumber("Gyro Angle", angle);
+		return angle;
+  }
+  public void setDriveMode(boolean setCoast){
+   if(setCoast){
+    leftMotor1.setNeutralMode(NeutralMode.Coast);
+    leftMotor2.setNeutralMode(NeutralMode.Coast);
+    leftMotor3.setNeutralMode(NeutralMode.Coast);
+    rightMotor1.setNeutralMode(NeutralMode.Coast);
+    rightMotor2.setNeutralMode(NeutralMode.Coast);
+    rightMotor3.setNeutralMode(NeutralMode.Coast);
+
+   }else{
+    leftMotor1.setNeutralMode(NeutralMode.Coast);
+    leftMotor2.setNeutralMode(NeutralMode.Brake);
+    leftMotor3.setNeutralMode(NeutralMode.Brake);
+    rightMotor1.setNeutralMode(NeutralMode.Brake);
+    rightMotor2.setNeutralMode(NeutralMode.Brake);
+    rightMotor3.setNeutralMode(NeutralMode.Brake);
+
+   }
+   
   }
 
   @Override
@@ -237,4 +366,3 @@ public class DriveTrain extends Subsystem {
     }
   }
 }
-

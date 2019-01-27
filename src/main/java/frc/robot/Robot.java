@@ -70,7 +70,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    //Robot.lineFollowing.displayLineSensors();  This caused an error.  not in lineFollowing ???
+   // Robot.lineFollowing.displayLineSensors();  //This caused an error.  not in lineFollowing ???
+    Robot.driveTrain.getGyroRotation();
+    // Robot.log.writeLog("Robot", "periodic", "current time," + System.currentTimeMillis());
   }
 
   /**
@@ -86,7 +88,11 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
-    Robot.vision.turnOffCamLeds();// CameraLedOff();    
+    Robot.vision.turnOffCamLeds();// CameraLedOff();   
+    Robot.driveTrain.zeroGyroRotation(); 
+    // Robot.driveTrain.getGyroRotation();
+    Robot.driveTrain.zeroLeftEncoder();
+    Robot.driveTrain.zeroRightEncoder();
   }
 
   
