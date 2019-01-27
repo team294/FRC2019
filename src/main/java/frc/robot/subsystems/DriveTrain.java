@@ -319,6 +319,7 @@ public class DriveTrain extends Subsystem {
     double rPercentOutput = startSpeed - (gainConstant * xVal);
     System.out.println("lPercentOut, rPercentOut "+lPercentOutput+" "+rPercentOutput);
     // SEE ROB ON THIS about area == 0
+/*
     if (Robot.vision.distanceFromTarget() > 30 && Robot.vision.areaFromCamera != 0 && lJoystickPercent == 0) {
         this.robotDrive.tankDrive(lPercentOutput, rPercentOutput);
     } else if (Robot.vision.distanceFromTarget() > 30 && Robot.vision.areaFromCamera != 0) {
@@ -328,6 +329,7 @@ public class DriveTrain extends Subsystem {
     }
     Robot.log.writeLog("DriveTrain", "Vision Driving", "Degrees from Target," + xVal + ",Joystick Ouput," + lJoystickPercent + ",Inches from Target," + Robot.vision.distanceFromTarget()
     + ",Target Area," + Robot.vision.areaFromCamera);
+*/
   }
 
    /**
@@ -347,7 +349,7 @@ public class DriveTrain extends Subsystem {
     } else {
       this.robotDrive.tankDrive(0, 0);
    }
-   Robot.log.writeLog("DriveTrain", "Vision Turning", "Degrees from Target," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget() + ",Target Area," + Robot.vision.areaFromCamera);
+   Robot.log.writeLog("DriveTrain", "Vision Turning", "Degrees from Target," + xVal + ",Target Area," + Robot.vision.areaFromCamera);
   }
 
   public void turnToLine() {

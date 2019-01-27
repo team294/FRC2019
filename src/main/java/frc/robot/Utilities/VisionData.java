@@ -33,28 +33,18 @@ public class VisionData {
     // aimXError = limelight.getEntry("cx0");  // aim error from CrossHair
     }
 
-    public void readCameraData() {
-        turnOnCamLeds();
+    public void readCameraData() {       
+        setCameraMode(3);       // turn on camera LEDs
         horizOffset = xValue.getDouble(0);
         vertOffset = yValue.getDouble(0);
         areaFromCamera = aValue.getDouble(0); 
         ledMode = ledM.getDouble(0);   
         SmartDashboard.putNumber("Area", areaFromCamera);
         SmartDashboard.putNumber("Angle to Crosshair", horizOffset);
-        SmartDashboard.putNumber("Distance", distanceFromTarget()); 
+        //SmartDashboard.putNumber("Distance", distanceFromTarget()); 
     }
 
-   // Turn the LEDS on
-    public void turnOnCamLeds() {
-        ledM.setDouble(3);           
-    }
-
-    // Turn the LEDS off
-    public void turnOffCamLeds() {
-        ledM.setDouble(1);  
-    }
-
-      /**
+    /**
      * 
      * @param modeNumber select a number from 0 to 3.
      * 0 = the LED Mode set in the current pipeline (find this at the ip address of the limelight).
@@ -87,10 +77,10 @@ public class VisionData {
         // reference distance = 23.75 inches
         // reference area =  3.5 (the units that are used in limelight)
         //myDistance = 23.75 * Math.sqrt(areaFromCamera/3.5);
-        myDistance = 23.75 * Math.sqrt(3.5/areaFromCamera) - cameraOffset;
+       // myDistance = 23.75 * Math.sqrt(3.5/areaFromCamera) - cameraOffset;
 
-        System.out.println("Distance from Target = " + myDistance);
-        System.out.println("Area from Camera = " + areaFromCamera);
+        //System.out.println("Distance from Target = " + myDistance);
+        //System.out.println("Area from Camera = " + areaFromCamera);
         return myDistance;
     }
 }
