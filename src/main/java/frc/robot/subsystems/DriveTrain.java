@@ -44,7 +44,8 @@ public class DriveTrain extends Subsystem {
   
   // Encoders
   private double leftEncoderZero = 0, rightEncoderZero = 0;
-  private LinkedList<Double> encoderStack = new LinkedList<Double>();
+  private LinkedList<Double> lEncoderStack = new LinkedList<Double>();
+  private LinkedList<Double> rEncoderStack = new LinkedList<Double>();
 
   public DriveTrain() {
 
@@ -160,33 +161,40 @@ public class DriveTrain extends Subsystem {
    */
   public void clearEncoderList() {
     Robot.log.writeLogEcho("DriveTrain", "Encoders Cleared", "");
-    encoderStack.clear();
+    lEncoderStack.clear();
+    rEncoderStack.clear();
     zeroLeftEncoder();  // Theoretically these don't need to be zeroed; the stack just adds their values
     zeroRightEncoder();
   }
 
   /**
-   * Averages the ticks of the left and right encoder and adds them to the encoder stack.
+   * Averages the ticks of the left and right encoder and adds them to the encoder stacks.
    * Also removes the earliest element if above 50 elements.
    */
   public void updateEncoderList() {
-    encoderStack.add(getLeftEncoderTicks() + getRightEncoderTicks());
-    if (encoderStack.size() > 50) encoderStack.remove();
+    lEncoderStack.add(getLeftEncoderTicks());
+    rEncoderStack.add(getRightEncoderTicks());
+    if (lEncoderStack.size() > 50){
+      lEncoderStack.remove();
+      rEncoderStack.remove();
+    }
   }
 
   /**
-   * Checks if the encoders are turning. Make sure you have been calling updateEncoderList enough times before.
+   * Checks if both encoders are turning. Make sure you have been calling updateEncoderList enough times before.
    * @param precision Precision, in ticks (i.e. number of ticks by which the average can differ from the last reading)
    * @return true if the difference between the average and the last element is less than the precision specified
    */
   public boolean areEncodersTurning(double precision) {
-    if (encoderStack.size()<50) return false;
-    double sum = 0.0;
-    Iterator<Double> iterator = encoderStack.descendingIterator();
-    while(iterator.hasNext()) {
-      sum += iterator.next();
+    if (lEncoderStack.size()<50) return false;
+    double lSum = 0.0, rSum = 0.0;
+    Iterator<Double> lIterator = lEncoderStack.descendingIterator();
+    Iterator<Double> rIterator = rEncoderStack.descendingIterator();
+    while(lIterator.hasNext()) {
+      lSum += lIterator.next();
+      rSum += rIterator.next();
     }
-    return Math.abs(sum/encoderStack.size()-encoderStack.peekLast()) <= precision;
+    return (Math.abs(lSum/lEncoderStack.size()-lEncoderStack.peekLast()) <= precision && Math.abs(rSum/rEncoderStack.size()-rEncoderStack.peekLast()) <= precision);
   }
 
   public void updateDriveLog () {
@@ -257,7 +265,8 @@ public class DriveTrain extends Subsystem {
     double rPercentPower = 0;
     double baseSpeed = 1; // If this remains 1, we can remove it from the code. Otherwise, we cdan make it responsive to the joystick as well.
 
-    int lineNum = Robot.lineFollowing.lineNumber();
+    int lineNum = Robot.lineFollowing.getLineNumber();
+    //System.out.println("Line Number:" + lineNum);
     if (lineNum == 0) {
       // Straight
       //lPercentPower = .55*baseSpeed;
@@ -267,10 +276,10 @@ public class DriveTrain extends Subsystem {
     } else if (lineNum == 1) {
       // Turn left slight?
       lPercentPower = .6*baseSpeed;
-      rPercentPower = 0*baseSpeed;
+      rPercentPower = 0*baseSpeed; //0
     } else if (lineNum == -1) {
       // Turn right slight?
-      lPercentPower = 0*baseSpeed;
+      lPercentPower = 0*baseSpeed; //0
       rPercentPower = .6*baseSpeed;
     } else if (lineNum == -2) {
       // Turn left
@@ -282,8 +291,8 @@ public class DriveTrain extends Subsystem {
       rPercentPower = .8*baseSpeed;
     } else {
       // Stop
-      lPercentPower = 0;
-      rPercentPower = 0;
+      lPercentPower = 0.3;
+      rPercentPower = 0.3;
     }
 
     Robot.log.writeLogEcho("DriveTrain", "Line Tracking", "Line Number," + lineNum + ",Left Percent," + lPercentPower + ",Right Percent," + rPercentPower);

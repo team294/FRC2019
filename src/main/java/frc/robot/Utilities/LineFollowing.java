@@ -38,7 +38,7 @@ public class LineFollowing {
         return !lineFollowerLeft.get() || !lineFollowerCenter.get() || !lineFollowerRight.get();
     }
 
-    public int lineNumber() {
+    public int getLineNumber() {
 
         //@param returns lineNumber
         /*
@@ -58,9 +58,9 @@ public class LineFollowing {
         } else if (!isLinePresent(1) && isLinePresent(2) && isLinePresent(3)) {
             lineNumber = -1; // 0 1 1 : Turn right slight?
         } else if (!isLinePresent(1) && !isLinePresent(2) && isLinePresent(3)) {
-            lineNumber = -2; // 0 0 1 : Turn left? 
+            lineNumber = -2; // 0 0 1 : Turn right 
         } else if (isLinePresent(1) && !isLinePresent(2) && !isLinePresent(3)) {
-            lineNumber = 2; // 1 0 0 : Turn right?
+            lineNumber = 2; // 1 0 0 : Turn left
         } else if (!isLinePresent(1) && isLinePresent(2) && !isLinePresent(3)) {
             lineNumber = 0; // 0 1 0 : Straight
         } else {
@@ -70,6 +70,6 @@ public class LineFollowing {
     }
     
     public void logLineFollowers() {
-        Robot.log.writeLog("Line Following", "Update Variables", "Line Number," + lineNumber() + ",LF1," + isLinePresent(1) + ",LF2," + isLinePresent(2) + ",LF3," + isLinePresent(3));
+        Robot.log.writeLog("Line Following", "Update Variables", "Line Number," + getLineNumber() + ",LF1," + isLinePresent(1) + ",LF2," + isLinePresent(2) + ",LF3," + isLinePresent(3));
     }
 }

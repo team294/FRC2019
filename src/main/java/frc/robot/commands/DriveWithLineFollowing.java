@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 public class DriveWithLineFollowing extends Command {
@@ -42,6 +43,9 @@ public class DriveWithLineFollowing extends Command {
   protected void end() {
     Robot.driveTrain.stop();
     Robot.log.writeLogEcho("DriveTrain", "Line Tracking Ended", "");
+    if (Math.abs(Robot.lineFollowing.getLineNumber()) <= 1) {
+      SmartDashboard.putBoolean("Ready to Score", true);
+    }
   }
 
   // Called when another command which requires one or more of the same

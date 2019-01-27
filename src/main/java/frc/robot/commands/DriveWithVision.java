@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 public class DriveWithVision extends Command {
@@ -33,6 +34,7 @@ public class DriveWithVision extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    SmartDashboard.putBoolean("Ready to Score", false);
     Robot.log.writeLogEcho("DriveTrain", "Vision Tracking Init", "");
     Robot.driveTrain.driveToCrosshair();
     //Robot.driveTrain.clearEncoderList(); // This is only done at the start of the line tracking
@@ -47,7 +49,7 @@ public class DriveWithVision extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return endOnLine && Robot.lineFollowing.isLinePresent() && Robot.vision.distanceFromTarget() < 30; // Stops when a line is detected by the line followers
+    return endOnLine && Robot.lineFollowing.isLinePresent() && Robot.vision.distanceFromTarget() < 30; // Stops when a line is detected by the line followers within a reasonable expected distance
   }
 
   // Called once after isFinished returns true
