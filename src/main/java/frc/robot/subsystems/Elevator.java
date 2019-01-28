@@ -85,7 +85,8 @@ public class Elevator extends Subsystem {
 	elevatorMotor1 = new WPI_TalonSRX(RobotMap.elevatorMotor1);
 	elevatorMotor2 = new WPI_VictorSPX(RobotMap.elevatorMotor2);
 	elevatorMotor2.follow(elevatorMotor1);
-	elevatorMotor1.setInverted(true);
+	elevatorMotor1.setInverted(false);
+	elevatorMotor2.setInverted(false);
     elevatorMotor1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 	elevatorMotor1.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
 	elevatorMotor1.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);

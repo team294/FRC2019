@@ -224,7 +224,7 @@
             "content": {
               "_type": "Command",
               "_source0": "network_table:///SmartDashboard/Elevator F",
-              "_title": "SmartDashboard/Elevator F"
+              "_title": "/SmartDashboard/Elevator F"
             }
           },
           "8,4": {
@@ -235,7 +235,7 @@
             "content": {
               "_type": "Command",
               "_source0": "network_table:///SmartDashboard/Elevator R",
-              "_title": "SmartDashboard/Elevator R"
+              "_title": "/SmartDashboard/Elevator R"
             }
           }
         }
