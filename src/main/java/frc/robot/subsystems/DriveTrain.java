@@ -215,29 +215,31 @@ public class DriveTrain extends Subsystem {
   public void driveToCrosshair() {
 
     double minDistanceToTarget = 13;
-    double distance = Robot.vision.distanceFromTarget();
+    double distance = Robot.vision.distanceFromTarget(); // Convert to a pure area measurement since dist is inaccurate
     double area = Robot.vision.areaFromCamera;
     double xVal = Robot.vision.horizOffset;
 
     double gainConstant = 1.0/30.0;
     double startSpeed = -0.5;
+
+    /*
     double lJoystickPercent = Robot.oi.leftJoystick.getY()-0.25; // Test value for now, wanted to speed it up
     // double lJoystickPercent = Math.abs(Robot.oi.leftJoystick.getY()) + 0.25
     double lPercentOutput = startSpeed + (gainConstant * xVal);
     double rPercentOutput = startSpeed - (gainConstant * xVal);
 
-    if (lJoystickPercent != 0) {
-        lPercentOutput -= lJoystickPercent;
-        rPercentOutput -= lJoystickPercent;
-    }
+    lPercentOutput -= lJoystickPercent;
+    rPercentOutput -= lJoystickPercent;
+    */
+    double lJoystickAdjust = Math.abs(Robot.oi.leftJoystick.getY());
+    double lPercentOutput = lJoystickAdjust + (gainConstant * xVal);
+    double rPercentOutput = lJoystickAdjust - (gainConstant * xVal);
 
-    // TODO: Speed up or slow down based on distance
     if (distance > minDistanceToTarget && area != 0) tankDrive(lPercentOutput, rPercentOutput);
     else tankDrive(0, 0);
 
     Robot.log.writeLogEcho("DriveTrain", "Vision Tracking", "Crosshair Horiz Offset," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget()
-     + ",Target Area," + area + ",Joystick Ouput," + lJoystickPercent + ",Left Percent," + lPercentOutput + ",Right Percent," + rPercentOutput);
-
+     + ",Target Area," + area + ",Joystick Ouput," + lJoystickAdjust + ",Left Percent," + lPercentOutput + ",Right Percent," + rPercentOutput);
   }
 
    /**
