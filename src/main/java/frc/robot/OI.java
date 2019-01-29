@@ -85,7 +85,9 @@ public class OI {
       }
     }
 
-    SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("TestCurve", true, false));
+    SmartDashboard.putData("LoadToRocketPart1", new DrivePathfinder("LoadToRocketPT1", true, false));
+    SmartDashboard.putData("LoadToRocketPart2", new DrivePathfinder("LoadToRocketPT2", false, true));
+    SmartDashboard.putData("LoadToRocket", new PathfinderLoadToRocket());
 
     /*
     if (isBall) { //TODO uncomment when the sensor that tells whether we have a ball or hatch is added
