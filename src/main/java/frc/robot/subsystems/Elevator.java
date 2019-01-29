@@ -23,31 +23,17 @@ import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
-/** 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANPIDController;
-import com.revrobotics.CANDigitalInput;
-import com.revrobotics.ControlType;
-import com.revrobotics.CANDigitalInput.LimitSwitchPolarity;
-**/
+
 /**
  * Add your docs here.
  */
 public class Elevator extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.  
-  //private CANSparkMax elevatorMotor1;
-  //private CANSparkMax elevatorMotor2;
-  //private CANEncoder elevatorEnc;
-  //private CANPIDController elevatorPID;
-  //private CANDigitalInput elevatorLowerLimit;
-  //TODO comment out if they miraculously switch back to Sparks
 
   private WPI_TalonSRX elevatorMotor1;
   private BaseMotorController elevatorMotor2;
-  private SensorCollection elevatorLowerLimit;
+  private SensorCollection elevatorLimits;
 
   private int periodicCount = 0;
   private int idleCount= 0;
@@ -64,24 +50,6 @@ public class Elevator extends Subsystem {
   public double kMinOutput = -0.5;		//  down max output
 
   public Elevator() {
-	/* elevatorMotor1 = new CANSparkMax(RobotMap.elevatorMotor1, MotorType.kBrushless);
-	elevatorMotor2 = new CANSparkMax(RobotMap.elevatorMotor2, MotorType.kBrushless);
-	elevatorEnc = elevatorMotor1.getEncoder();
-	elevatorPID = elevatorMotor1.getPIDController();
-	elevatorLowerLimit = elevatorMotor1.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen);
-	elevatorMotor2.follow(elevatorMotor1, true); 
-	elevatorMotor1.clearFaults();	
-	elevatorMotor2.clearFaults();
-	elevatorLowerLimit.enableLimitSwitch(true);
-	elevatorPID.setP(kP);
-	elevatorPID.setI(kI);
-	elevatorPID.setD(kD);
-	elevatorPID.setIZone(kIz);
-	elevatorPID.setFF(kFF);
-	elevatorMotor1.setRampRate(rampRate);
-	elevatorPID.setOutputRange(kMinOutput, kMaxOutput); 
-	*/
-
 	elevatorMotor1 = new WPI_TalonSRX(RobotMap.elevatorMotor1);
 	elevatorMotor2 = new WPI_VictorSPX(RobotMap.elevatorMotor2);
 	elevatorMotor2.follow(elevatorMotor1);
@@ -91,7 +59,7 @@ public class Elevator extends Subsystem {
 	elevatorMotor1.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
 	elevatorMotor1.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
 	
-	elevatorLowerLimit = elevatorMotor1.getSensorCollection();
+	elevatorLimits = elevatorMotor1.getSensorCollection();
 	zeroElevatorEnc();
 
 	elevatorMotor1.config_kP(0, kP);
@@ -133,7 +101,7 @@ public class Elevator extends Subsystem {
 	}
 
 	public double encoderTicksToInches(double encoderTicks) {
-		return (encoderTicks / RobotMap.encoderTicksPerRevolution);// * Robot.robotPrefs.elevatorGearCircumference;
+		return (encoderTicks / RobotMap.encoderTicksPerRevolution) * Robot.robotPrefs.elevatorGearCircumference;
 	}
 	/**
 	 * to make easier for testing
@@ -152,15 +120,20 @@ public class Elevator extends Subsystem {
 		return encoderTicksToInches(getElevatorEncTicks());
 	}
 
+	public boolean getElevatorUpperLimit() {
+		return elevatorLimits.isFwdLimitSwitchClosed();
+	}
+
 	public boolean getElevatorLowerLimit() {
-		return elevatorLowerLimit.isFwdLimitSwitchClosed();
+		return elevatorLimits.isRevLimitSwitchClosed();
 	}
 
 	public void updateElevatorLog() {
 		Robot.log.writeLog("Elevator", "Update Variables",
 		"Elev1 Volts," + elevatorMotor1.getBusVoltage() + ",Elev2 Volts," + elevatorMotor2.getBusVoltage() +
 		",Elev1 Amps," + Robot.pdp.getCurrent(RobotMap.elevatorMotor1PDP) + ",Elev2 Amps," + Robot.pdp.getCurrent(RobotMap.elevatorMotor2PDP) +
-		",Elev Enc Ticks," + getElevatorEncTicks() + ",Elev Enc Inches," + getElevatorEncInches());
+		",Elev Enc Ticks," + getElevatorEncTicks() + ",Elev Enc Inches," + getElevatorEncInches() + 
+		",Upper Limit," + getElevatorUpperLimit() + ",Lower Limit," + getElevatorLowerLimit());
 	}
   @Override
   public void initDefaultCommand() {
@@ -173,7 +146,8 @@ public class Elevator extends Subsystem {
 	SmartDashboard.putNumber("Enc Rev", encoderTicksToRevolutions(getElevatorEncTicks()));
 	SmartDashboard.putNumber("Enc Inch", getElevatorEncInches());
 	SmartDashboard.putNumber("Enc Tick", getElevatorEncTicks());
-	SmartDashboard.putBoolean("Forward", getElevatorLowerLimit());
+	SmartDashboard.putBoolean("Lower Limit", getElevatorLowerLimit());
+	SmartDashboard.putBoolean("upper Limit", getElevatorUpperLimit());
     if (DriverStation.getInstance().isEnabled()) {
 		prevEnc = currEnc;
 		currEnc = getElevatorEncTicks();
