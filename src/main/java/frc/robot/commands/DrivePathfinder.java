@@ -21,7 +21,6 @@ import frc.robot.pathfinder.followers.DistanceFollower;
 
 public class DrivePathfinder extends Command {
   private DistanceFollower dfLeft, dfRight;
-  private boolean hasReset;
   Trajectory trajCenter;
   Trajectory trajRight;
   Trajectory trajLeft;
@@ -34,9 +33,16 @@ public class DrivePathfinder extends Command {
     requires(Robot.driveTrain);
     resetGyro = gyroReset;
     driveForward = driveDirection;
-    trajCenter = Pathfinder.readFromCSV(pathName + ".pf1.csv");
-    trajRight = Pathfinder.readFromCSV(pathName + ".left.pf1.csv");
-    trajLeft = Pathfinder.readFromCSV(pathName + ".right.pf1.csv");
+
+    if (driveForward) {
+      trajCenter = Pathfinder.readFromCSV(pathName + ".pf1.csv", driveDirection);
+      trajRight = Pathfinder.readFromCSV(pathName + ".left.pf1.csv", driveDirection);
+      trajLeft = Pathfinder.readFromCSV(pathName + ".right.pf1.csv", driveDirection);
+    } else {
+      trajCenter = Pathfinder.readFromCSV(pathName + ".pf1.csv", driveDirection);
+      trajRight = Pathfinder.readFromCSV(pathName + ".right.pf1.csv", driveDirection);
+      trajLeft = Pathfinder.readFromCSV(pathName + ".left.pf1.csv", driveDirection);
+    }
     
     // Create DistanceFollowers for the Trajectories and configure them
     dfLeft = new DistanceFollower(trajLeft);
@@ -70,26 +76,18 @@ public class DrivePathfinder extends Command {
     Robot.driveTrain.zeroLeftEncoder();
     Robot.driveTrain.zeroRightEncoder();
     Robot.driveTrain.setVoltageCompensation(true);
-    hasReset = false;
 
     dfLeft.reset();
     dfRight.reset();
+
+    if (resetGyro) {
+      Robot.driveTrain.setGyroRotation(Pathfinder.r2d(trajCenter.segments[0].heading));
+    }
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    if (!hasReset) {
-      dfLeft.reset();
-      dfRight.reset();
-      hasReset = true;
-    }
-
-    if (driveForward) {
-      if (resetGyro) {
-        Robot.driveTrain.setGyroRotation(Pathfinder.r2d(trajCenter.segments[0].heading));
-      }
-
       double l = dfLeft.calculate(Robot.driveTrain.getLeftEncoderInches());
       double r = dfRight.calculate(Robot.driveTrain.getRightEncoderInches());
 
@@ -101,8 +99,15 @@ public class DrivePathfinder extends Command {
 
       double angleDifference = Pathfinder.boundHalfDegrees(desired_heading - gyro_heading);
       double turn = 0.04 * angleDifference;
-      Robot.driveTrain.setLeftMotors(-(l + turn));
-      Robot.driveTrain.setRightMotors(-(r - turn));
+
+      if (driveForward) {
+        Robot.driveTrain.setLeftMotors(-(l + turn));
+        Robot.driveTrain.setRightMotors(-(r - turn));
+      } else {
+        Robot.driveTrain.setLeftMotors(-(l + turn));
+        Robot.driveTrain.setRightMotors(-(r - turn));
+      }
+      
       logString = "time," + ((double)(System.currentTimeMillis() - dfLeft.getStartTimeMillis()) / 1000.0 +
                             ",left power," + l + ",right power," + r + ",turn power," + turn +
                             ",left distance," + Robot.driveTrain.getLeftEncoderInches() + ",right distance," + Robot.driveTrain.getRightEncoderInches()) +
@@ -112,47 +117,6 @@ public class DrivePathfinder extends Command {
                             ",right segPos," + segRight.position + ",right segVel," + segRight.velocity + ",right segAccel," + segRight.acceleration + 
                             ",right segJerk," + segRight.jerk + ",right segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segRight.heading)) + ",right segdt," + segRight.dt;
       Robot.log.writeLog("Pathfinder", "execute", logString);
-    } else {
-      if (resetGyro) {
-        Robot.driveTrain.setGyroRotation(Pathfinder.r2d(trajCenter.segments[0].heading) + 180);
-      } 
-
-      Segment curSegLeft = dfLeft.getSegment();
-      Segment curSegRight = dfRight.getSegment();
-      curSegLeft.velocity *= -1.0;
-      curSegRight.velocity *= -1.0;
-      curSegLeft.acceleration *= -1.0;
-      curSegRight.acceleration *= -1.0;
-      curSegLeft.jerk *= -1.0;
-      curSegRight.jerk *= -1.0;
-      double leftHeading = (curSegLeft.heading + 180) % 360;
-      curSegLeft.heading = leftHeading;
-      double rightHeading = (curSegRight.heading + 180) % 360;
-      curSegRight.heading = rightHeading;
-
-      double l = dfLeft.calculate(Robot.driveTrain.getRightEncoderInches());
-      double r = dfRight.calculate(Robot.driveTrain.getLeftEncoderInches());
-
-      Trajectory.Segment segLeft = dfLeft.getSegment();
-      Trajectory.Segment segRight = dfRight.getSegment();
-
-      double gyro_heading = Robot.driveTrain.getGyroRotation();    // Assuming the gyro is giving a value in degrees
-      double desired_heading = Pathfinder.r2d(dfLeft.getHeading());  // Should also be in degrees
-
-      double angleDifference = Pathfinder.boundHalfDegrees(desired_heading - gyro_heading);
-      double turn = 0.04 * angleDifference;
-      Robot.driveTrain.setLeftMotors(-(l + turn));
-      Robot.driveTrain.setRightMotors(-(r - turn));
-      logString = "time," + ((double)(System.currentTimeMillis() - dfLeft.getStartTimeMillis()) / 1000.0 +
-                            ",left power," + l + ",right power," + r + ",turn power," + turn +
-                            ",left distance," + Robot.driveTrain.getLeftEncoderInches() + ",right distance," + Robot.driveTrain.getRightEncoderInches()) +
-                            ",heading," + gyro_heading + ",left isFinished," + dfLeft.isFinished() +
-                            ",left segPos," + segLeft.position + ",left segVel," + segLeft.velocity + ",left segAccel," + segLeft.acceleration + 
-                            ",left segJerk," + segLeft.jerk + ",left segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segLeft.heading)) + ",left segdt," + segLeft.dt + ",right isFinished," + dfRight.isFinished() + 
-                            ",right segPos," + segRight.position + ",right segVel," + segRight.velocity + ",right segAccel," + segRight.acceleration + 
-                            ",right segJerk," + segRight.jerk + ",right segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segRight.heading)) + ",right segdt," + segRight.dt;
-      Robot.log.writeLog("Pathfinder", "execute", logString);
-    }
    }
 
   // Make this return true when this Command no longer needs to run execute()

@@ -52,6 +52,7 @@ public class Robot extends TimedRobot {
     vision = new VisionData();
     lineFollowing = new LineFollowing();
     pdp = new PowerDistributionPanel();
+    // pdp.clearStickyFaults();
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
