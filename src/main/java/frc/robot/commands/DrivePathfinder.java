@@ -24,17 +24,22 @@ public class DrivePathfinder extends Command {
   Trajectory trajCenter;
   Trajectory trajRight;
   Trajectory trajLeft;
-  boolean resetGyro, driveForward;
+  boolean resetGyro;
   String logString = "";
 
+  /**
+   * Drive following a path
+   * @param pathName        File name excluding .pf1.csv
+   * @param gyroReset       True = reset gyro to first heading on trajectory, False = don't reset gyro
+   * @param driveDirection  True = drive forward, False = drive backward
+   */
   public DrivePathfinder(String pathName, boolean gyroReset, boolean driveDirection) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.driveTrain);
     resetGyro = gyroReset;
-    driveForward = driveDirection;
 
-    if (driveForward) {
+    if (driveDirection) {
       trajCenter = Pathfinder.readFromCSV(pathName + ".pf1.csv", driveDirection);
       trajRight = Pathfinder.readFromCSV(pathName + ".left.pf1.csv", driveDirection);
       trajLeft = Pathfinder.readFromCSV(pathName + ".right.pf1.csv", driveDirection);
@@ -66,7 +71,7 @@ public class DrivePathfinder extends Command {
                            ",left segJerk," + segLeft.jerk + ",left segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segLeft.heading)) + ",left segdt," + segLeft.dt + ",right isFinished," + dfRight.isFinished() + 
                            ",right segPos," + segRight.position + ",right segVel," + segRight.velocity + ",right segAccel," + segRight.acceleration + 
                            ",right segJerk," + segRight.jerk + ",right segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segRight.heading)) + ",right segdt," + segRight.dt;
-    }
+  }
 
   // Called just before this Command runs the first time
   @Override
@@ -100,13 +105,8 @@ public class DrivePathfinder extends Command {
       double angleDifference = Pathfinder.boundHalfDegrees(desired_heading - gyro_heading);
       double turn = 0.04 * angleDifference;
 
-      if (driveForward) {
-        Robot.driveTrain.setLeftMotors(-(l + turn));
-        Robot.driveTrain.setRightMotors(-(r - turn));
-      } else {
-        Robot.driveTrain.setLeftMotors(-(l + turn));
-        Robot.driveTrain.setRightMotors(-(r - turn));
-      }
+      Robot.driveTrain.setLeftMotors(-(l + turn));
+      Robot.driveTrain.setRightMotors(-(r - turn));
       
       logString = "time," + ((double)(System.currentTimeMillis() - dfLeft.getStartTimeMillis()) / 1000.0 +
                             ",left power," + l + ",right power," + r + ",turn power," + turn +

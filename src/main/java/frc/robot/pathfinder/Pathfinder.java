@@ -58,6 +58,7 @@ public class Pathfinder {
     /**
      * Read a Trajectory from a CSV File
      * @param fileName      The file to read from
+     * @param driveForward  True = drive forward, false = drive backward
      * @return              The trajectory that was read from file
      */
     public static Trajectory readFromCSV(String fileName, boolean driveForward) {
