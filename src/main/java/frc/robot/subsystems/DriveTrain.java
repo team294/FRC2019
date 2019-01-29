@@ -46,6 +46,7 @@ public class DriveTrain extends Subsystem {
   private double leftEncoderZero = 0, rightEncoderZero = 0;
   private LinkedList<Double> lEncoderStack = new LinkedList<Double>();
   private LinkedList<Double> rEncoderStack = new LinkedList<Double>();
+  private boolean lEncStopped = false, rEncStopped = false;
 
   public DriveTrain() {
 
@@ -186,7 +187,7 @@ public class DriveTrain extends Subsystem {
    * @return true if the difference between the average and the last element is less than the precision specified
    */
   public boolean areEncodersTurning(double precision) {
-    if (lEncoderStack.size()<50) return false;
+    if (lEncoderStack.size()<50) return (lEncStopped = false) || (rEncStopped = false); // Sets both to false while returning.
     double lSum = 0.0, rSum = 0.0;
     Iterator<Double> lIterator = lEncoderStack.descendingIterator();
     Iterator<Double> rIterator = rEncoderStack.descendingIterator();
@@ -194,7 +195,7 @@ public class DriveTrain extends Subsystem {
       lSum += lIterator.next();
       rSum += rIterator.next();
     }
-    return (Math.abs(lSum/lEncoderStack.size()-lEncoderStack.peekLast()) <= precision && Math.abs(rSum/rEncoderStack.size()-rEncoderStack.peekLast()) <= precision);
+    return (lEncStopped = (Math.abs(lSum/lEncoderStack.size()-lEncoderStack.peekLast()) <= precision) & (rEncStopped = Math.abs(rSum/rEncoderStack.size()-rEncoderStack.peekLast()) <= precision));
   }
 
   public void updateDriveLog () {
@@ -220,7 +221,7 @@ public class DriveTrain extends Subsystem {
     double xVal = Robot.vision.horizOffset;
 
     double gainConstant = 1.0/30.0;
-    double startSpeed = -0.5;
+    //double startSpeed = -0.5;
 
     /*
     double lJoystickPercent = Robot.oi.leftJoystick.getY()-0.25; // Test value for now, wanted to speed it up
@@ -231,9 +232,15 @@ public class DriveTrain extends Subsystem {
     lPercentOutput -= lJoystickPercent;
     rPercentOutput -= lJoystickPercent;
     */
+
     double lJoystickAdjust = Math.abs(Robot.oi.leftJoystick.getY());
     double lPercentOutput = lJoystickAdjust + (gainConstant * xVal);
     double rPercentOutput = lJoystickAdjust - (gainConstant * xVal);
+
+    /* Untested auto-turn stuff */
+    if (lEncStopped && lPercentOutput != 0) rPercentOutput = 1.0; // The goal here is to slam the right side so that we still line up to the wall
+    if (rEncStopped && rPercentOutput != 0) lPercentOutput = 1.0; 
+    if (lPercentOutput == 1 || rPercentOutput == 1) System.out.println("STOP DETECTED, INITIATING EVASIVE MANEUVERS");
 
     if (distance > minDistanceToTarget && area != 0) tankDrive(lPercentOutput, rPercentOutput);
     else tankDrive(0, 0);
@@ -258,8 +265,9 @@ public class DriveTrain extends Subsystem {
       this.robotDrive.tankDrive(-rPercentOutput, rPercentOutput);
     } else {
       this.robotDrive.tankDrive(0, 0);
-   }
-   //Robot.log.writeLog("DriveTrain", "Vision Turning", "Degrees from Target," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget() + ",Target Area," + Robot.vision.areaFromCamera);
+    }
+    updateEncoderList();
+    //Robot.log.writeLog("DriveTrain", "Vision Turning", "Degrees from Target," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget() + ",Target Area," + Robot.vision.areaFromCamera);
   }
 
   public void driveOnLine() {
@@ -278,10 +286,10 @@ public class DriveTrain extends Subsystem {
     } else if (lineNum == 1) {
       // Turn left slight?
       lPercentPower = .6*baseSpeed;
-      rPercentPower = 0*baseSpeed; //0
+      rPercentPower = 0*baseSpeed;
     } else if (lineNum == -1) {
       // Turn right slight?
-      lPercentPower = 0*baseSpeed; //0
+      lPercentPower = 0*baseSpeed;
       rPercentPower = .6*baseSpeed;
     } else if (lineNum == -2) {
       // Turn left
@@ -298,6 +306,11 @@ public class DriveTrain extends Subsystem {
     }
 
     Robot.log.writeLogEcho("DriveTrain", "Line Tracking", "Line Number," + lineNum + ",Left Percent," + lPercentPower + ",Right Percent," + rPercentPower);
+
+    /* Untested auto-turn stuff */
+    if (lEncStopped && lPercentPower != 0) rPercentPower = 1.0; // The goal here is to slam the right side so that we still line up to the wall
+    if (rEncStopped && rPercentPower != 0) lPercentPower = 1.0;
+    if (lPercentPower == 1 || rPercentPower == 1) System.out.println("STOP DETECTED, INITIATING EVASIVE MANEUVERS"); 
 
     this.robotDrive.tankDrive(lPercentPower, rPercentPower);
     updateEncoderList();

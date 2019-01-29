@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 public class DriveWithLineFollowing extends Command {
+
   public DriveWithLineFollowing() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
@@ -22,7 +23,7 @@ public class DriveWithLineFollowing extends Command {
   @Override
   protected void initialize() {
     Robot.log.writeLogEcho("DriveTrain", "Line Tracking Init", "");
-    Robot.driveTrain.clearEncoderList();
+    //Robot.driveTrain.clearEncoderList();  probably don't need this
     Robot.driveTrain.driveOnLine();
   }
 
