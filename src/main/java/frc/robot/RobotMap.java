@@ -59,7 +59,7 @@ public class RobotMap {
   public static final double ballOffset = 8.5;
 
   //Climb Target Angles (in degrees)
-  public static final double climbStartingAngle = -53.0; //TODO Test when climb is built
-  public static final double vacuumTargetAngle = 120.0; //TODO Test when climb is built
+  public static final double climbStartingAngle = -50.0; //TODO Test when climb is built
+  public static final double vacuumTargetAngle = 180.0; //TODO Test when climb is built
   public static final double robotLiftAngle = 0.0; //TODO Test when climb is built
 }

@@ -14,10 +14,13 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.ctre.phoenix.motorcontrol.SensorCollection;
 
 import frc.robot.Robot;
 import frc.robot.RobotMap;
@@ -33,15 +36,37 @@ public class Climb extends Subsystem {
   private final BaseMotorController climbMotor2 = new WPI_VictorSPX(RobotMap.climbMotor2);
   private final BaseMotorController climbVacuum = new WPI_VictorSPX(RobotMap.climbVacuum);
   private final DigitalInput vacuumSwitch = new DigitalInput(RobotMap.vacuumSwitch);
+  private final SensorCollection climbLimit;
   private int periodicCount = 0;
   public double climbStartingPoint = 0;
+
+  public double rampRate = .005; 
+  public double kP = 1;
+  public double kI = 0;
+  public double kD = 0;
+  public double kFF = 0;
+  public int kIz = 0;
+  public double kMaxOutput = 1.0;	
+  public double kMinOutput = -1.0;
 
   public Climb() {
     enableCompressor(true);
 
     climbMotor2.follow(climbMotor1);
     climbMotor1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+    climbMotor1.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+    climbLimit = climbMotor1.getSensorCollection();
+
     zeroClimbEncoder();
+
+    climbMotor1.config_kP(0, kP);
+    climbMotor1.config_kI(0, kI);
+    climbMotor1.config_kD(0, kD);
+    climbMotor1.config_kF(0, kFF);
+    climbMotor1.config_IntegralZone(0, kIz);
+    climbMotor1.configClosedloopRamp(rampRate);
+    climbMotor1.configPeakOutputForward(kMaxOutput);
+    climbMotor1.configPeakOutputReverse(kMinOutput);
 
     climbMotor2.setInverted(true);
     climbMotor1.clearStickyFaults(0);
@@ -109,6 +134,10 @@ public class Climb extends Subsystem {
 
   public boolean isVacuumAchieved() {
     return vacuumSwitch.get();
+  }
+
+  public boolean getClimbReferenceLimit() {
+    return climbLimit.isRevLimitSwitchClosed();
   }
 
   /**
