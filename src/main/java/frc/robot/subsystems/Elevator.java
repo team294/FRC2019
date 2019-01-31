@@ -47,7 +47,7 @@ public class Elevator extends Subsystem {
   public double kFF = 0;
   public int kIz = 0;
   public double kMaxOutput = 1.0;		//  up max output
-  public double kMinOutput = -0.5;		//  down max output
+  public double kMinOutput = -1.0;		//  down max output
 
   public Elevator() {
 	elevatorMotor1 = new WPI_TalonSRX(RobotMap.elevatorMotor1);
@@ -101,7 +101,7 @@ public class Elevator extends Subsystem {
 	}
 
 	public double encoderTicksToInches(double encoderTicks) {
-		return (encoderTicks / RobotMap.encoderTicksPerRevolution) * Robot.robotPrefs.elevatorGearCircumference;
+		return (encoderTicks / RobotMap.encoderTicksPerRevolution) * (Robot.robotPrefs.elevatorGearCircumference * 2);
 	}
 	/**
 	 * to make easier for testing
@@ -113,7 +113,7 @@ public class Elevator extends Subsystem {
 	}
 
 	public double inchesToEncoderTicks(double inches) {
-		return (inches / Robot.robotPrefs.elevatorGearCircumference) * RobotMap.encoderTicksPerRevolution;
+		return (inches / (Robot.robotPrefs.elevatorGearCircumference * 2)) * RobotMap.encoderTicksPerRevolution;
 	}
 
 	public double getElevatorEncInches() {
