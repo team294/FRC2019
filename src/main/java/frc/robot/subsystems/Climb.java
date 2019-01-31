@@ -53,11 +53,12 @@ public class Climb extends Subsystem {
     enableCompressor(true);
 
     climbMotor2.follow(climbMotor1);
+    climbMotor2.setInverted(true);
     climbMotor1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
     climbMotor1.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
     climbLimit = climbMotor1.getSensorCollection();
 
-    zeroClimbEncoder();
+    zeroClimbEnc();
 
     climbMotor1.config_kP(0, kP);
     climbMotor1.config_kI(0, kI);
@@ -68,7 +69,6 @@ public class Climb extends Subsystem {
     climbMotor1.configPeakOutputForward(kMaxOutput);
     climbMotor1.configPeakOutputReverse(kMinOutput);
 
-    climbMotor2.setInverted(true);
     climbMotor1.clearStickyFaults(0);
     climbMotor2.clearStickyFaults(0);
     climbMotor1.setNeutralMode(NeutralMode.Brake);
@@ -92,6 +92,10 @@ public class Climb extends Subsystem {
     climbMotor1.set(percentOutput);
   }
 
+  public void setClimbPos(double angle) {
+    climbMotor1.set(ControlMode.Position, climbAngleToEncTicks(angle));
+  }
+
   /**
    * Turns on or turns off the vacuum
    * @param turnOn true turns vacuum on, false turns vacuum off
@@ -108,22 +112,41 @@ public class Climb extends Subsystem {
   /**
    * Sets current value of the climbEncoder as the new "zero"
    */
-  public void zeroClimbEncoder() {
+  public void zeroClimbEnc() {
     climbStartingPoint = climbMotor1.getSelectedSensorPosition(0);
+  }
+
+  /**
+   * 
+   * @return raw encoder value
+   */
+  public double getClimbEncTicksRaw() {
+    return climbMotor1.getSelectedSensorPosition(0);
   }
 
   public double getClimbEncoderTicks() {
     return climbMotor1.getSelectedSensorPosition(0) - climbStartingPoint;
   }
 
+  /**
+   * Convert encoder ticks to angle in degrees
+   * @param encoderTicks use getClimbEncoderTicks()
+   */
   public double climbEncTicksToAngle (double encoderTicks) {
     return ((encoderTicks * 360) / RobotMap.encoderTicksPerRevolution);
   }
 
+  /**
+   * Convert angle in degrees to encoder ticks
+   * @param climbAngle in degrees
+   */
   public double climbAngleToEncTicks (double climbAngle) {
     return ((climbAngle * RobotMap.encoderTicksPerRevolution) / 360);
   }
 
+  /**
+   * @return angle in degrees
+   */
   public double getClimbAngle() {
     return climbEncTicksToAngle(getClimbEncoderTicks());
   }
@@ -132,19 +155,20 @@ public class Climb extends Subsystem {
     climbMotor1.set(0.0);
   }
 
+  /**
+   * @return true = vaccum is at the required pressure
+   *          false = vacuum is not at the required pressure yet
+   */
   public boolean isVacuumAchieved() {
     return vacuumSwitch.get();
   }
 
+  /**
+   * @return true = climb is at its calibration angle
+   */
   public boolean getClimbReferenceLimit() {
     return climbLimit.isRevLimitSwitchClosed();
   }
-
-  /**
-   * TODO
-   * May need to put methods to find the Climb Encoder angle here
-   * Depends on what they decide to do with the motors/encoders
-   */
 
   public void updateClimbLog() {
     Robot.log.writeLog("Climb", "Update Variables", 
@@ -160,7 +184,14 @@ public class Climb extends Subsystem {
   }
   @Override
   public void periodic() {
-
+    if (!Robot.robotPrefs.climbCalibrated || Robot.beforeFirstEnable) {
+      if (climbLimit.isRevLimitSwitchClosed()) {
+        Robot.robotPrefs.setArmCalibration(getClimbEncTicksRaw() - climbAngleToEncTicks(RobotMap.climbStartingAngle), false);
+      }
+    }
+    if (getClimbAngle() > RobotMap.vacuumTargetAngle || getClimbAngle() < RobotMap.climbStartingAngle) {
+      Robot.robotPrefs.climbCalibrated = false;
+    }
     if (DriverStation.getInstance().isEnabled()) {
       if ((++periodicCount) >= 25) {
         updateClimbLog();

@@ -37,6 +37,7 @@ public class Robot extends TimedRobot {
   public static RobotPreferences robotPrefs;
   public static PowerDistributionPanel pdp;
 
+  public static boolean beforeFirstEnable = true; // true before the first time the robot is enabled after loading code
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
@@ -48,6 +49,9 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     log = new FileLog("1");
     robotPrefs = new RobotPreferences();
+    
+    beforeFirstEnable = true; // set variable that robot has not been enabled
+
     driveTrain = new DriveTrain();
     shifter = new Shifter();
     elevator = new Elevator();
@@ -111,6 +115,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     log.writeLogEcho("Robot", "Autonomous mode init", "");
+    beforeFirstEnable = false; // set variable that robot has been enabled
     m_autonomousCommand = m_chooser.getSelected();
 
     /*
@@ -143,8 +148,8 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     climb.enableCompressor(true);
-
     log.writeLogEcho("Robot", "Teleop mode init", "");
+    beforeFirstEnable = false; // set variable that robot has been enabled
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
