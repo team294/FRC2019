@@ -289,6 +289,7 @@ public class DriveTrain extends Subsystem {
     SmartDashboard.putNumber("Gyro Angle", angle);
 		return angle;
   }
+
   public void setDriveMode(boolean setCoast){
    if(setCoast){
     leftMotor1.setNeutralMode(NeutralMode.Coast);
@@ -336,6 +337,56 @@ public class DriveTrain extends Subsystem {
       ",L Enc Zero," + leftEncoderZero + ",L Enc Ticks," + getLeftEncoderTicks() + ",L Drive Inches," + getLeftEncoderInches() + 
       ",R Enc Zero," + rightEncoderZero + ",R Enc Ticks," + getRightEncoderTicks() + ",R Drive Inches," + getRightEncoderInches() + 
       ",High Gear," + Robot.shifter.isShifterInHighGear());
+  }
+
+  /**
+   * Gets the predicted scoring quadrant of the robot based on what the gyro currently reads
+   * @return
+   */
+  public double checkScoringQuadrant() {
+    // assuming the same quadrants as a unit circle, with 0 being straight up (+y axis) and -180 or 180 being straight down (-y axis)
+    double gyroAngle = getGyroRotation();
+    if (Math.abs(gyroAngle) <= 5) { // Should mean straight up, +y axis, cardianl durection North
+      return 1.5; // in between quadrants 1 and 2
+    } else if (Math.abs(gyroAngle) - 180 <= 5) { // Within 5 degrees of -y axis
+      return 3.5; // in between quadrants 3 and 4
+    } else if (Math.abs(gyroAngle - 90) <= 5) { // Within 5 degrees of +x axis
+      return 0.5; // in between quadrants 4 and 1
+    } else if (Math.abs(gyroAngle + 90) <= 5) { // Wihin 5 degrees of -x axis
+      return 2.5; // in between quadrants 2 and 3
+    } else if (gyroAngle > 90) {
+      return 4;
+    } else if (gyroAngle > 0) {
+      return 1; // since all Q4 have already returned, only positive angles left are Q1
+    } else if (gyroAngle < -90) {
+      return 3;
+    } else if (gyroAngle < 0) {
+      return 2; // only negative angles left are Q2
+    } else {
+      return 0; // Something must be wrong here, this result should never happen
+    }
+  }
+
+  /**
+   * Returns the target angle we expect to try to score at
+   * @param quadrant scoring quadrant from 0.5 to 4 (inclusive) from checkScoringQuadrant()
+   * @return double in the range (-180, 180] (in actual practice, a small array of standard values)
+   * </br> The default value is 0.
+   */
+  public double getTargetAngle(double quadrant) {
+    if (quadrant == 1) return 28.75;
+    if (quadrant == 1.5) return 0;
+    if (quadrant == 2) return -28.75;
+    if (quadrant == 2.5) return -90;
+    if (quadrant == 3) return -151.75;
+    if (quadrant == 3.5) return 180;
+    if (quadrant == 4) return 151.75;
+    if (quadrant == 4.5 || quadrant == 0.5) return 90;
+    return 0;
+  }
+
+  public double getTargetAngle() {
+    return getTargetAngle(checkScoringQuadrant());
   }
 
   /**

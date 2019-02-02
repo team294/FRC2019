@@ -14,6 +14,7 @@ import frc.robot.Robot;
 public class DriveWithVision extends Command {
 
   private boolean endOnLine = false;
+  private double targetQuad = 0; // The quadrant of the target we want to drive to
 
   public DriveWithVision() {
     // Use requires() here to declare subsystem dependencies
@@ -36,8 +37,9 @@ public class DriveWithVision extends Command {
   protected void initialize() {
     SmartDashboard.putBoolean("Ready to Score", false);
     Robot.log.writeLogEcho("DriveTrain", "Vision Tracking Init", "");
-    Robot.driveTrain.clearEncoderList();
+    Robot.driveTrain.clearEncoderList(); // May not be necessary to clear
     //Robot.driveTrain.driveToCrosshair();
+    targetQuad = Robot.driveTrain.checkScoringQuadrant();
   }
 
   // Called repeatedly when this Command is scheduled to run
