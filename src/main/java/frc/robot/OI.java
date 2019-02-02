@@ -104,7 +104,7 @@ public class OI {
     SmartDashboard.putData("Turn To Target", new VisionTurnToTarget());
     SmartDashboard.putData("Elevator F", new ElevatorForward()); // For testing limit switch
     SmartDashboard.putData("Elevator R", new ElevatorReverse()); // For testing limit switch
-    SmartDashboard.putData("Calib", new ElevatorMoveToLevel(10.0));
+    SmartDashboard.putData("Calib", new ElevatorMoveToLevel(25.0));
     SmartDashboard.putData("Move Zero", new ElevatorMoveToLevel(0.0));
     SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero());
     SmartDashboard.putData("Manual Zero Elev Enc (w/out Limit)", new ElevatorManualZero());

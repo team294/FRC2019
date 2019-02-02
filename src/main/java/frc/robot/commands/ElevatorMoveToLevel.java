@@ -12,32 +12,31 @@ import frc.robot.Robot;
 
 public class ElevatorMoveToLevel extends Command {
 
-  double currPos;
-  double target;
-  
+  private double target;
+
   public ElevatorMoveToLevel(double inches) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.elevator);
-    this.target = inches;
-    this.currPos = Robot.elevator.getElevatorEncInches();
+    target = inches;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.elevator.setElevatorPos(target);
+
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.elevator.setElevatorPos(target-currPos);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+   return Math.abs(Robot.elevator.getElevatorEncInches() - target) <= 0.5;
   }
 
   // Called once after isFinished returns true

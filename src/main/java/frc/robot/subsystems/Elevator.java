@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,9 +37,11 @@ public class Elevator extends Subsystem {
   private SensorCollection elevatorLimits;
 
   private int periodicCount = 0;
+  private int voltageCount = 0;
   private int idleCount= 0;
-  private double prevEnc = 0.0;
-  private double currEnc = 0.0;
+  private double prevEnc = 0.0; // last recorded encoder value
+  private double currEnc = 0.0; // current recorded encoder value
+  private double initEnc = 0.0; // first encoder value recorded when testing that encoder is working correctly
 
   public double rampRate = .005; 
   public double kP = 1;
@@ -138,16 +141,15 @@ public class Elevator extends Subsystem {
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
-	setDefaultCommand(new StopElevator());
+	//setDefaultCommand(new StopElevator());
   }
 
   @Override
   public void periodic() {
-	SmartDashboard.putNumber("Enc Rev", encoderTicksToRevolutions(getElevatorEncTicks()));
 	SmartDashboard.putNumber("Enc Inch", getElevatorEncInches());
 	SmartDashboard.putNumber("Enc Tick", getElevatorEncTicks());
 	SmartDashboard.putBoolean("Lower Limit", getElevatorLowerLimit());
-	SmartDashboard.putBoolean("upper Limit", getElevatorUpperLimit());
+	SmartDashboard.putBoolean("Upper Limit", getElevatorUpperLimit());
     if (DriverStation.getInstance().isEnabled()) {
 		prevEnc = currEnc;
 		currEnc = getElevatorEncTicks();
@@ -166,6 +168,22 @@ public class Elevator extends Subsystem {
 		else {
 			updateElevatorLog();
 		}
-    }
+	}
+	/* if (elevatorMotor1.getMotorOutputPercent() > 0) {
+		if (initEnc == 0.0) initEnc = getElevatorEncTicks();
+		voltageCount++;
+		if(voltageCount >= 5 && (currEnc - initEnc) <= 0) {
+			stopElevator();
+			initEnc = 0.0;
+		}
+	}
+	if (elevatorMotor1.getMotorOutputPercent() < 0) {
+		if (initEnc == 0.0) initEnc = getElevatorEncTicks();
+		voltageCount++;
+		if(voltageCount >= 5 && (initEnc - currEnc) >= 0) {
+			stopElevator();
+			initEnc = 0.0;
+		}
+	}*/
   }
 }
