@@ -344,6 +344,8 @@ public class DriveTrain extends Subsystem {
    */
   public void driveToCrosshair() {
 
+    // TODO: Add some calls to the gyro to drive in a curve, possibly changing the endpoint based on the angle error
+
     double minDistanceToTarget = 13;
     double distance = Robot.vision.distanceFromTarget(); // Convert to a pure area measurement since dist is inaccurate
     double area = Robot.vision.areaFromCamera;
