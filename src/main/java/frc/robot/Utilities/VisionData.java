@@ -33,8 +33,8 @@ public class VisionData {
     // aimXError = limelight.getEntry("cx0");  // aim error from CrossHair
     }
 
-    public void readCameraData() {
-        turnOnCamLeds();
+    public void readCameraData() {       
+        setCameraMode(3);       // turn on camera LEDs
         horizOffset = xValue.getDouble(0);
         vertOffset = yValue.getDouble(0);
         areaFromCamera = aValue.getDouble(0); 
@@ -65,18 +65,6 @@ public class VisionData {
      */
     public void setPipe(double pipeNum) {
         pipeline.setDouble(pipeNum);
-    }
-
-    /**
-     * Changes the pipeline and waits to check that it has changed
-     * @param pipeNum Pipeline to change to (see limelight web dashboard for details)
-     */
-    public void setPipeWait(double pipeNum) {
-        setPipe(pipeNum);
-        while (getPipeline() != pipeNum) {
-            System.out.println("Waiting for pipeline to switch");
-        }
-        return;
     }
 
       /**

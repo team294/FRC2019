@@ -86,11 +86,12 @@ public class OI {
         left[i].whenPressed(new DriveWithVision(true));
         left[i].whenReleased(new DriveWithJoysticks());
         right[i].whenPressed(new VisionTurnToTarget());
-        right[i].whenReleased(new DriveWithJoysticks()); // We should be able to cancel the commands when the button is released. This is a better method to do that.
+        right[i].whenReleased(new DriveWithJoysticks());
       }
     }
 
     // The conditional logic needs to go in the command itself. No logic can be done in OI since OI is constructed at the start and not run repeatedly
+    SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true));
 
     /*
     if (isBall) { //TODO uncomment when the sensor that tells whether we have a ball or hatch is added
