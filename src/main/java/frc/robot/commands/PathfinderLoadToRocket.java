@@ -14,8 +14,8 @@ public class PathfinderLoadToRocket extends CommandGroup {
    * Add your docs here.
    */
   public PathfinderLoadToRocket() {
-    addSequential(new DrivePathfinder("LoadToRocketPT1-A", true, false));
+    addSequential(new DrivePathfinder("RLoadToRocketPT1-A", true, false));
     // addSequential(new TurnGyro(90)); //TODO add TurnGyro command
-    addSequential(new DrivePathfinder("LoadToRocketPT2-A2", false, true));
+    addSequential(new DrivePathfinder("RLoadToRocketPT2-A2", false, true));
   }
 }
