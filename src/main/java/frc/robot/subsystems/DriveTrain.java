@@ -364,4 +364,44 @@ public class DriveTrain extends Subsystem {
       //turn right
     }
   }
+
+  public void turnToAngle() {
+
+    double lpercentPower = 0;
+    double rpercentPower = 0;
+    double currentAngle = Robot.driveTrain.getGyroRotation();
+    double targetAngle = 69;// Depends on a button press TBD
+
+    //if target and current are on the same side
+    if(((targetAngle > 0) && (currentAngle >0 )) || ((targetAngle <0) & (currentAngle <0))){
+      if(Math.abs(currentAngle) > Math.abs(targetAngle)){
+        //turn right
+        rpercentPower = 0.65;
+        lpercentPower = 0;
+        Robot.driveTrain.setRightMotors(rpercentPower);
+        Robot.driveTrain.setLeftMotors(lpercentPower);
+      } else {
+        //turn left
+        rpercentPower = 0;
+        lpercentPower = 0.65;
+        Robot.driveTrain.setRightMotors(rpercentPower);
+        Robot.driveTrain.setLeftMotors(lpercentPower);
+      }
+    }
+     //if target and current are on opposite sides
+    else if ((Math.abs(currentAngle-0) + Math.abs(targetAngle - 0)) < (Math.abs(currentAngle - 180) + Math.abs(currentAngle -180))) {
+      //Turn Right
+      rpercentPower = 0.65;
+      lpercentPower = 0;
+      Robot.driveTrain.setRightMotors(rpercentPower);
+      Robot.driveTrain.setLeftMotors(lpercentPower);
+    } else {
+      rpercentPower = 0;
+      lpercentPower = 0.65;
+      Robot.driveTrain.setRightMotors(rpercentPower);
+      Robot.driveTrain.setLeftMotors(lpercentPower);
+    }
+
+
+  }
 }
