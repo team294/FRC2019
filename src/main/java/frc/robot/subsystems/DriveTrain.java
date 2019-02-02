@@ -233,7 +233,8 @@ public class DriveTrain extends Subsystem {
     rPercentOutput -= lJoystickPercent;
     */
 
-    double lJoystickAdjust = Math.abs(Robot.oi.leftJoystick.getY());
+    //double lJoystickAdjust = Math.abs(Robot.oi.leftJoystick.getY());
+    double lJoystickAdjust = 0.7 * Math.sqrt(Math.abs(Robot.oi.leftJoystick.getY()));
     double lPercentOutput = lJoystickAdjust + (gainConstant * xVal);
     double rPercentOutput = lJoystickAdjust - (gainConstant * xVal);
 

@@ -23,7 +23,7 @@ public class DriveWithLineFollowing extends Command {
   @Override
   protected void initialize() {
     Robot.log.writeLogEcho("DriveTrain", "Line Tracking Init", "");
-    //Robot.driveTrain.clearEncoderList();  probably don't need this
+    //Robot.driveTrain.clearEncoderList();
     Robot.driveTrain.driveOnLine();
   }
 

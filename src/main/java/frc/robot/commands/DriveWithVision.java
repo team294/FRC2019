@@ -36,9 +36,8 @@ public class DriveWithVision extends Command {
   protected void initialize() {
     SmartDashboard.putBoolean("Ready to Score", false);
     Robot.log.writeLogEcho("DriveTrain", "Vision Tracking Init", "");
-    //Robot.vision.setPipeWait(0); // This is extremely risky to have an unbounded loop in init
+    Robot.driveTrain.clearEncoderList();
     //Robot.driveTrain.driveToCrosshair();
-    //Robot.driveTrain.clearEncoderList(); // This is only done at the start of the line tracking
   }
 
   // Called repeatedly when this Command is scheduled to run
