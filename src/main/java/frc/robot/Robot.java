@@ -27,8 +27,10 @@ import frc.robot.subsystems.*;
 public class Robot extends TimedRobot {
   public static DriveTrain driveTrain;
   public static Shifter shifter;
-  public static VisionData vision;
   public static Elevator elevator;
+  public static Cargo cargo;
+  public static Hatch hatch;
+  public static VisionData vision;
   public static LineFollowing lineFollowing;
   public static OI oi;
   public static FileLog log;
@@ -49,6 +51,8 @@ public class Robot extends TimedRobot {
     driveTrain = new DriveTrain();
     shifter = new Shifter();
     elevator = new Elevator();
+    cargo = new Cargo();
+    hatch = new Hatch();
     vision = new VisionData();
     lineFollowing = new LineFollowing();
     pdp = new PowerDistributionPanel();

@@ -25,11 +25,14 @@ public class RobotMap {
   public static final int rightMotor3 = 22;
   public static final int elevatorMotor1 = 30;
   public static final int elevatorMotor2 = 31;
+  public static final int cargoMotor1 = 40;
+  public static final int cargoMotor2 = 41;
   public static final double encoderTicksPerRevolution = 4096.0;
 
   // Pneumatic Addresses
-  public static final int pnuematicShifterLow = 0;
-  public static final int pnuematicShifterHigh = 1;
+  public static final int pneumaticShifterLow = 0;
+  public static final int pneumaticShifterHigh = 1;
+  public static final int pneumaticHatchIntake = 2;
   
   // TODO Update with 2018 base
   // Imperial versions
