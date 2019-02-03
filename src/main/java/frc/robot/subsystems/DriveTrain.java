@@ -367,41 +367,60 @@ public class DriveTrain extends Subsystem {
 
   public void turnToAngle() {
 
-    double lpercentPower = 0;
-    double rpercentPower = 0;
+   
+    double turnAngle = 0;
+    double currentAngleFake = 0;
+    double fixSpeed = 0.4;
+    double percentOutput;
+    double error = 1;
+    //double rPercentOutput;   
     double currentAngle = Robot.driveTrain.getGyroRotation();
-    double targetAngle = 69;// Depends on a button press TBD
+    double targetAngle = 90; // Depends on a button press TBD
+    boolean sameSide = false;
+    boolean inRightRange = false;
 
-    //if target and current are on the same side
-    if(((targetAngle > 0) && (currentAngle >0 )) || ((targetAngle <0) & (currentAngle <0))){
-      if(Math.abs(currentAngle) > Math.abs(targetAngle)){
-        //turn right
-        rpercentPower = 0.65;
-        lpercentPower = 0;
-        Robot.driveTrain.setRightMotors(rpercentPower);
-        Robot.driveTrain.setLeftMotors(lpercentPower);
-      } else {
-        //turn left
-        rpercentPower = 0;
-        lpercentPower = 0.65;
-        Robot.driveTrain.setRightMotors(rpercentPower);
-        Robot.driveTrain.setLeftMotors(lpercentPower);
-      }
-    }
-     //if target and current are on opposite sides
-    else if ((Math.abs(currentAngle-0) + Math.abs(targetAngle - 0)) < (Math.abs(currentAngle - 180) + Math.abs(currentAngle -180))) {
-      //Turn Right
-      rpercentPower = 0.65;
-      lpercentPower = 0;
-      Robot.driveTrain.setRightMotors(rpercentPower);
-      Robot.driveTrain.setLeftMotors(lpercentPower);
+    
+  //  turnAngle = (180/Math.PI)*(Math.acos(Math.cos(currentAngle)*Math.cos(targetAngle)+Math.sin(currentAngle)*Math.sin(targetAngle)));
+  
+
+    if (((targetAngle > 0) && (currentAngle > 0)|| ((targetAngle < 0) && (currentAngle < 0)))){
+      sameSide = true;
+      turnAngle = (Math.abs(currentAngle) - Math.abs(targetAngle));
     } else {
-      rpercentPower = 0;
-      lpercentPower = 0.65;
-      Robot.driveTrain.setRightMotors(rpercentPower);
-      Robot.driveTrain.setLeftMotors(lpercentPower);
+      sameSide = false;
+      if(180 > (180 - Math.abs(currentAngle) + (180 - Math.abs(targetAngle)))){
+        turnAngle = (180 - Math.abs(currentAngle) + 180 - Math.abs(targetAngle));
+      } else {
+        turnAngle = Math.abs(currentAngle) + Math.abs(targetAngle);
+      }
+      
     }
 
 
+    if(((targetAngle < currentAngle) && (targetAngle > -1*(180-currentAngle)) && (currentAngle>0))) {
+      inRightRange = true;
+    } else if(((targetAngle > currentAngle) && (targetAngle < (180+currentAngle)) && (currentAngle>0))) {
+      inRightRange = true; // IN RIGHT RANGE NEEDS TO BER DOUBLE CHECKED THIS LINE LOGIC CHECK ALMOST DONE
+    }
+
+
+     //turnAngle *= (-1);
+
+ System.out.println("turn angle is " + turnAngle + "current angle is " + currentAngle);
+ System.out.println("is right boolean " + inRightRange);
+   
+      percentOutput = fixSpeed + (.05*turnAngle);
+      
+
+      if (inRightRange) {
+        this.robotDrive.tankDrive(percentOutput, -percentOutput);
+      } else if (!inRightRange) {
+        this.robotDrive.tankDrive(-percentOutput, percentOutput);
+      } else {
+        this.robotDrive.tankDrive(0, 0);
+      }
+
+    } 
   }
-}
+
+
