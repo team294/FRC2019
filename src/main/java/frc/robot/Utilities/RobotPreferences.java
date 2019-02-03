@@ -37,9 +37,10 @@ public class RobotPreferences {
 		prototypeRobot = prefs.getBoolean("prototypeRobot", false); // true if testing code on a prototype, default to false (competition bot w/ Victors)
 		driveDirection = prefs.getBoolean("driveDirection", true);
 		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;	
-		elevatorGearCircumference = prefs.getDouble("elevatorGearDiameter", 1); // TODO Change value when actual elevator is built, Conversion factor for makeshift elevator 18/32.3568952084);
+		elevatorGearCircumference = prefs.getDouble("elevatorGearDiameter", 1.7 * Math.PI); // TODO Change value when actual elevator is built, Conversion factor for makeshift elevator 18/32.3568952084);
 		driveTrainDistanceFudgeFactor = prefs.getDouble("driveTrainDistanceFudgeFactor", 1);
-		robotOffset = prefs.getDouble("robotOffset", 3.0); //TODO Change value when actual elevator is built
+		robotOffset = prefs.getDouble("robotOffset", 15.0); //TODO Change value when actual elevator is built
+
 		/* if (driveTrainDistanceFudgeFactor == -9999) {
 			// If fudge factor for driving can't be read, then assume value of 1
 			driveTrainDistanceFudgeFactor = 1;  //0.96824;
@@ -91,7 +92,10 @@ public class RobotPreferences {
 			prefs.putDouble("cameraDistanceFromFrontOfBumper", 12);
 		}
 		if (!prefs.containsKey("elevatorGearDiameter")) {
-			prefs.putDouble("elevatorGearDiameter", 3.0);
+			prefs.putDouble("elevatorGearDiameter", 1.7 * Math.PI);
+		}
+		if (!prefs.containsKey("robotOffset")) {
+			prefs.putDouble("robotOffset", 15.0);
 		}
 		if (!prefs.containsKey("calibrationZeroDegrees")) {
 			prefs.putDouble("calibrationZeroDegrees", -9999.0);		}
