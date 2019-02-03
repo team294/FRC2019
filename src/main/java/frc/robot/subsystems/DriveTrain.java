@@ -129,6 +129,28 @@ public class DriveTrain extends Subsystem {
   }
 
   /**
+	 * Sets the robot to drive at a curve.
+	 * 
+	 * @param speedPct
+	 *            Percent output of motor -1.0 to 1.0
+	 * @param curve
+	 *            the rate at which the robot will curve -1.0 to 1.0. Clockwise is
+	 *            positive.
+	 */
+	public void driveAtCurve(double speedPct, double curve) {
+		robotDrive.curvatureDrive(speedPct, curve, false);
+  }
+  
+  /**
+   * Drives the robot along a curve
+   * @param speedPct Percent output of motor [-1.0, 1.0]
+   * @param rotation Rotation rate (rate of heading change) from [-1.0, 1.0]
+   */
+  public void driveItLikeYouStoleIt(double speedPct, double rotation) {
+    robotDrive.arcadeDrive(speedPct, rotation, false);
+  }
+
+  /**
    * Stops the motors by calling tankDrive(0, 0)
    */
   public void stop() {
@@ -252,7 +274,7 @@ public class DriveTrain extends Subsystem {
 
   public double getAverageDistance() {
 		return (getRightEncoderInches() + getLeftEncoderInches()) / 2.0;
-	}
+  }
 
 	/**
 	 * Zeros the gyro position in software
@@ -401,6 +423,8 @@ public class DriveTrain extends Subsystem {
     double distance = Robot.vision.distanceFromTarget(); // Convert to a pure area measurement since dist is inaccurate
     double area = Robot.vision.areaFromCamera;
     double xVal = Robot.vision.horizOffset;
+    xVal = xVal + getGyroRotation() - getTargetAngle(1); 
+    xVal = Math.toDegrees(Math.atan(2 * Math.tan(Math.toRadians(xVal)))); // This will hopefully create a smooth curve towards the line
 
     double gainConstant = 1.0/30.0;
     //double startSpeed = -0.5;
