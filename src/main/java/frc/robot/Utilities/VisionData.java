@@ -99,9 +99,9 @@ public class VisionData {
         // reference distance = 23.75 inches
         // reference area =  3.5 (the units that are used in limelight)
         //myDistance = 23.75 * Math.sqrt(areaFromCamera/3.5);
-        //myDistance = 23.75 * Math.sqrt(3.5/areaFromCamera) - cameraOffset;
+        myDistance = 23.75 * Math.sqrt(3.5/areaFromCamera) - cameraOffset;
 
-        myDistance = (targetHeight - camMountHeight) / Math.tan(camMountAngle + vertOffset);
+        //myDistance = (targetHeight - camMountHeight) / Math.tan(camMountAngle + vertOffset);
 
         return myDistance;
     }

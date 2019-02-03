@@ -14,6 +14,7 @@ import frc.robot.Robot;
 public class DriveWithVision extends Command {
 
   private boolean endOnLine = false;
+  private boolean gyro = false;
   private double targetQuad = 0; // The quadrant of the target we want to drive to
 
   public DriveWithVision() {
@@ -25,11 +26,13 @@ public class DriveWithVision extends Command {
   /**
    * Drive towards the vision target
    * @param endOnLine specify whether or not to end on the line target.
+   * @param gyro specify whether or not to use gyro curve correction
    *  </br> true means end on line, false means continue to wall (will not exit with false)
    */
-  public DriveWithVision(boolean endOnLine) {
+  public DriveWithVision(boolean endOnLine, boolean gyro) {
     requires(Robot.driveTrain);
     this.endOnLine = endOnLine;
+    this.gyro = gyro;
   }
 
   // Called just before this Command runs the first time

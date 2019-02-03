@@ -32,7 +32,7 @@ public class DriveAssist extends CommandGroup {
     // arm.
 
     //addSequential(new Pathfinder());
-    addSequential(new DriveWithVision(true));
+    addSequential(new DriveWithVision(true, true));
     addSequential(new DriveWithLineFollowing()); // Currently there is no exit status for this, so it will run indefinitely
 
   }

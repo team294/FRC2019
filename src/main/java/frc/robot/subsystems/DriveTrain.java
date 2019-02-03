@@ -417,14 +417,19 @@ public class DriveTrain extends Subsystem {
    */
   public void driveToCrosshair() {
 
-    // TODO: Add some calls to the gyro to drive in a curve, possibly changing the endpoint based on the angle error
+    double xOffsetAdjustmentFactor = 1.8; // Should be tested to be perfect; 2 seems to go out of frame too quickly. Must be greater than 1.
 
     double minDistanceToTarget = 13;
     double distance = Robot.vision.distanceFromTarget(); // Convert to a pure area measurement since dist is inaccurate
+    System.out.println("Measured Distance: " + distance);
     double area = Robot.vision.areaFromCamera;
-    double xVal = Robot.vision.horizOffset;
-    xVal = xVal + getGyroRotation() - getTargetAngle(1); 
-    xVal = Math.toDegrees(Math.atan(2 * Math.tan(Math.toRadians(xVal)))); // This will hopefully create a smooth curve towards the line
+    double xVal = Robot.vision.horizOffset; // Alpha offset
+    System.out.println("Measured Angle: " + xVal);
+    double alphaT = xVal + getGyroRotation() - getTargetAngle(1); // true angle for measuring x displacement
+    System.out.println("Adjusted (true) angle: " + alphaT);
+    double alphaA = Math.toDegrees(Math.atan(xOffsetAdjustmentFactor * Math.tan(Math.toRadians(alphaT)))); // Adjusted angle for x displacement
+    System.out.println("False displacement angle:" + alphaA);
+    double finalAngle = alphaA + getTargetAngle(1) - getGyroRotation();
 
     double gainConstant = 1.0/30.0;
     //double startSpeed = -0.5;
@@ -441,15 +446,15 @@ public class DriveTrain extends Subsystem {
 
     //double lJoystickAdjust = Math.abs(Robot.oi.leftJoystick.getY());
     double lJoystickAdjust = 0.7 * Math.sqrt(Math.abs(Robot.oi.leftJoystick.getY()));
-    double lPercentOutput = lJoystickAdjust + (gainConstant * xVal);
-    double rPercentOutput = lJoystickAdjust - (gainConstant * xVal);
-
+    double lPercentOutput = lJoystickAdjust + (gainConstant * finalAngle); //xVal
+    double rPercentOutput = lJoystickAdjust - (gainConstant * finalAngle); //xVal
+ 
     /* Untested auto-turn stuff */
     if (lEncStopped && lPercentOutput != 0) rPercentOutput = 1.0; // The goal here is to slam the right side so that we still line up to the wall
     if (rEncStopped && rPercentOutput != 0) lPercentOutput = 1.0; 
-    if (lPercentOutput == 1 || rPercentOutput == 1) System.out.println("STOP DETECTED, INITIATING EVASIVE MANEUVERS");
+    if (lPercentOutput == 1.0 || rPercentOutput == 1.0) System.out.println("STOP DETECTED, INITIATING EVASIVE MANEUVERS");
 
-    if (distance > minDistanceToTarget && area != 0) tankDrive(lPercentOutput, rPercentOutput);
+    if (/* distance > minDistanceToTarget && */ area != 0) tankDrive(lPercentOutput, rPercentOutput); // Just ignore the distance check for now...
     else tankDrive(0, 0);
 
     Robot.log.writeLogEcho("DriveTrain", "Vision Tracking", "Crosshair Horiz Offset," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget()
