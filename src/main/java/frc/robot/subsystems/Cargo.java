@@ -29,21 +29,21 @@ public class Cargo extends Subsystem {
     cargoMotor2.enableVoltageCompensation(true);
   } 
 
-  public void setCargoMotorPercent(double percent) {
-    cargoMotor1.set(ControlMode.PercentOutput, percent); 
-    cargoMotor2.set(ControlMode.PercentOutput, percent);
+  public void setCargoMotorPercent(double percent1, double percent2) {
+    cargoMotor1.set(ControlMode.PercentOutput, percent1); 
+    cargoMotor2.set(ControlMode.PercentOutput, percent2);
   }
 
   public void intakeCargo() {
-    setCargoMotorPercent(0.3);
+    setCargoMotorPercent(0.5, 0.3);
   }
 
   public void outtakeCargo() {
-    setCargoMotorPercent(-0.3);
+    setCargoMotorPercent(-0.3, -0.3);
   }
 
   public void stopCargoIntake() {
-    setCargoMotorPercent(0);
+    setCargoMotorPercent(0, 0);
   }
 
   @Override
