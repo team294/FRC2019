@@ -26,11 +26,14 @@ public class RobotMap {
   public static final int elevatorMotor1 = 30;
   public static final int elevatorMotor2 = 31;
   public static final int wristMotor = 51;
+  public static final int cargoMotor1 = 40;
+  public static final int cargoMotor2 = 41;
   public static final double encoderTicksPerRevolution = 4096.0;
 
   // Pneumatic Addresses
-  public static final int pnuematicShifterLow = 0;
-  public static final int pnuematicShifterHigh = 1;
+  public static final int pneumaticShifterLow = 0;
+  public static final int pneumaticShifterHigh = 1;
+  public static final int pneumaticHatchIntake = 2;
   
   // TODO Update with 2018 base
   // Imperial versions
@@ -53,6 +56,7 @@ public class RobotMap {
   public static final int lineFollower1 = 0;
   public static final int lineFollower2 = 1;
   public static final int lineFollower3 = 2;
+  public static final int elevatorLowerLimit = 4;
 
   // PDP Addresses
   public static final int leftMotor1PDP = 13; //Check on PDP and change
@@ -60,13 +64,17 @@ public class RobotMap {
   public static final int leftMotor3PDP = 14; //Check on PDP and change
   public static final int rightMotor1PDP = 2; //Check on PDP and change
   public static final int rightMotor2PDP = 0; //Check on PDP and change
-  public static final int rightMotor3PDP = 1; //Check on PDP and change 
+  public static final int rightMotor3PDP = 1; //Check on PDP and change
+  public static final int elevatorMotor1PDP = 0; //Check on PDP and change
+  public static final int elevatorMotor2PDP = 0; //Check on PDP and change
 
   //Elevator Level Heights (in inches)
   public static final double HatchLow = 19.0 - Robot.robotPrefs.robotOffset;
   public static final double HatchMid = 47.0 - Robot.robotPrefs.robotOffset;
   public static final double HatchHigh = 75.0 - Robot.robotPrefs.robotOffset;
-  public static final double CargoShipCargo = 34.75 + Robot.robotPrefs.robotOffset;
+  public static final double CargoShipCargo = 34.75 - Robot.robotPrefs.robotOffset;
   public static final double ballOffset = 8.5;
+  
+  public enum ElevatorPosition {hatchLow, hatchMid, hatchHigh, cargoShipCargo}
 
 }

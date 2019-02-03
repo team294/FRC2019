@@ -7,47 +7,54 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ElevatorEncoderZero extends Command {
-  /**
-   * Drives the elevator down slowly until it reaches
-   * the lower limit switch, zeros the encoder
-   */
-  public ElevatorEncoderZero() {
+public class CargoIntake extends Command {
+
+  private double timeIntook = 0;
+
+  public CargoIntake() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.elevator);
+    requires(Robot.cargo);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.cargo.intakeCargo();
+    timeIntook = Timer.getFPGATimestamp();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.elevator.setElevatorMotorPercentOutput(-0.2);
+    Robot.cargo.intakeCargo();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Robot.elevator.getElevatorLowerLimit();
+    //TODO change is finished when we find out type of sensor
+    if (Timer.getFPGATimestamp() >= timeIntook + 1) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.elevator.stopElevator();
-    Robot.elevator.zeroElevatorEnc();
+    Robot.cargo.stopCargoIntake();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    end();
   }
 }

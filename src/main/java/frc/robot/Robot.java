@@ -29,6 +29,8 @@ public class Robot extends TimedRobot {
   public static Shifter shifter;
   public static Elevator elevator;
   public static Wrist wrist;
+  public static Cargo cargo;
+  public static Hatch hatch;
   public static VisionData vision;
   public static LineFollowing lineFollowing;
   public static OI oi;
@@ -51,14 +53,15 @@ public class Robot extends TimedRobot {
     shifter = new Shifter();
     elevator = new Elevator();
     wrist = new Wrist();
+    cargo = new Cargo();
+    hatch = new Hatch();
     vision = new VisionData();
     lineFollowing = new LineFollowing();
     pdp = new PowerDistributionPanel();
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
-    robotPrefs.doExist();   // Sets up Robot Preferences if they do not exist : ie you just replaced RoboRio
-
+    robotPrefs.doExist();  // sets up Robot Preferences if none - ie. you just changed the RoboRio
     oi = new OI();
   }
 
@@ -73,6 +76,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+   // Robot.lineFollowing.displayLineSensors();  //This caused an error.  not in lineFollowing ???
     Robot.driveTrain.getGyroRotation();
     // Robot.log.writeLog("Robot", "periodic", "current time," + System.currentTimeMillis());
   }
@@ -144,11 +148,9 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     log.writeLogEcho("Robot", "Teleop mode init", "");
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    //if (m_autonomousCommand != null) {
+     // m_autonomousCommand.cancel();
     }
-    log.writeLogEcho("Robot", "Teleop mode init", "");
-  }
 
   /**
    * This function is called periodically during operator control.
@@ -157,6 +159,8 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
     Robot.vision.readCameraData();
+    //SmartDashboard.putBoolean("Is Line Present?", lineFollowing.isLinePresent());  caused an error  not in lineFollowing  ??? rpc
+    SmartDashboard.putBoolean("Vision Assistance Available", vision.areaFromCamera != 0);
   }
 
   /**

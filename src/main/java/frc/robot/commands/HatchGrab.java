@@ -10,39 +10,42 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ElevatorEncoderZero extends Command {
+public class HatchGrab extends Command {
+  private boolean grab;
+
   /**
-   * Drives the elevator down slowly until it reaches
-   * the lower limit switch, zeros the encoder
+   * Grab or releae the hatch claw
+   * @param grab true = grab position, false = release position
    */
-  public ElevatorEncoderZero() {
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
-    requires(Robot.elevator);
+  public HatchGrab(boolean grab) {
+    requires(Robot.hatch);
+    this.grab = grab;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    if (grab) {
+      Robot.hatch.grabHatch();
+    } else {
+      Robot.hatch.releaseHatch();
+    }
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.elevator.setElevatorMotorPercentOutput(-0.2);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Robot.elevator.getElevatorLowerLimit();
+    return true;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.elevator.stopElevator();
-    Robot.elevator.zeroElevatorEnc();
   }
 
   // Called when another command which requires one or more of the same

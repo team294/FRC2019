@@ -285,6 +285,9 @@ public class DriveTrain extends Subsystem {
   @Override
   public void periodic() {
 
+    SmartDashboard.putNumber("RightEnc", getRightEncoderTicks());
+    SmartDashboard.putNumber("LeftEnc", getLeftEncoderTicks());
+
     if (DriverStation.getInstance().isEnabled()) {
       if ((++periodicCount) >= 25) {
         updateDriveLog();
