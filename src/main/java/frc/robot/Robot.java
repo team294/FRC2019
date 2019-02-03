@@ -80,6 +80,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    Robot.driveTrain.getGyroRotation();
+    // Robot.log.writeLog("Robot", "periodic", "current time," + System.currentTimeMillis());
   }
 
   /**
@@ -96,7 +98,12 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
-    Robot.vision.turnOffCamLeds();// CameraLedOff();    
+    //Robot.vision.turnOffCamLeds();  
+    Robot.vision.setCameraMode(1); // Turn off camera LEDs
+    Robot.driveTrain.zeroGyroRotation(); 
+    // Robot.driveTrain.getGyroRotation();
+    Robot.driveTrain.zeroLeftEncoder();
+    Robot.driveTrain.zeroRightEncoder();
   }
 
   
@@ -153,6 +160,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    log.writeLogEcho("Robot", "Teleop mode init", "");
   }
 
   /**
