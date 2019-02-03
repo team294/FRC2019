@@ -34,7 +34,8 @@ public class Climb extends Subsystem {
   private final Compressor compressor = new Compressor(0);
   private final WPI_TalonSRX climbMotor1 = new WPI_TalonSRX(RobotMap.climbMotor1);
   private final BaseMotorController climbMotor2 = new WPI_VictorSPX(RobotMap.climbMotor2);
-  private final BaseMotorController climbVacuum = new WPI_VictorSPX(RobotMap.climbVacuum);
+  private final WPI_TalonSRX climbVacuum1 = new WPI_TalonSRX(RobotMap.climbVacuum1);
+  private final WPI_TalonSRX climbVacuum2 = new WPI_TalonSRX(RobotMap.climbVacuum2);
   private final DigitalInput vacuumSwitch = new DigitalInput(RobotMap.vacuumSwitch);
   private final SensorCollection climbLimit;
   private int periodicCount = 0;
@@ -74,7 +75,7 @@ public class Climb extends Subsystem {
     climbMotor1.setNeutralMode(NeutralMode.Brake);
     climbMotor2.setNeutralMode(NeutralMode.Brake);
   }
-
+/*
   /**
    * Enables or disables the compressor
    * @param turnOn true = turn on compressor when pressure drops
@@ -102,10 +103,12 @@ public class Climb extends Subsystem {
    */
   public void enableVacuum(boolean turnOn) {
     if (turnOn) {
-      climbVacuum.set(ControlMode.PercentOutput, 0.5);
+      climbVacuum1.set(0.5);
+      climbVacuum2.set(0.5);
     }
     else {
-      climbVacuum.set(ControlMode.PercentOutput, 0.0);
+      climbVacuum1.set(0.0);
+      climbVacuum2.set(0.0);
     }
   }
 
@@ -172,8 +175,10 @@ public class Climb extends Subsystem {
 
   public void updateClimbLog() {
     Robot.log.writeLog("Climb", "Update Variables", 
-    "Climb1 Volts" + climbMotor1.getMotorOutputVoltage() + ",Climb2 Volts," + climbMotor2.getMotorOutputVoltage() + ",ClimbVac Volts," + climbVacuum.getMotorOutputVoltage() +
-    ",Climb1 Amps," + Robot.pdp.getCurrent(RobotMap.climbMotor1) + ",Climb2 Amps," + Robot.pdp.getCurrent(RobotMap.climbMotor2) + ",ClimbVac Amps," + Robot.pdp.getCurrent(RobotMap.climbVacuum) +
+    "Climb1 Volts" + climbMotor1.getMotorOutputVoltage() + ",Climb2 Volts," + climbMotor2.getMotorOutputVoltage() + 
+    ",ClimbVac1 Volts," + climbVacuum1.getMotorOutputVoltage() + ",ClimbVac2 Volts," + climbVacuum2.getMotorOutputVoltage() +
+    ",Climb1 Amps," + Robot.pdp.getCurrent(RobotMap.climbMotor1PDP) + ",Climb2 Amps," + Robot.pdp.getCurrent(RobotMap.climbMotor2PDP) + 
+    ",ClimbVac1 Amps," + Robot.pdp.getCurrent(RobotMap.climbVacuum1PDP) + ",ClimbVac2 Amps," + Robot.pdp.getCurrent(RobotMap.climbVacuum2PDP) +
     ",ClimbEnc Ticks," + getClimbEncoderTicks());
   }
   

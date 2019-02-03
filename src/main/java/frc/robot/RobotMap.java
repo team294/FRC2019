@@ -27,7 +27,8 @@ public class RobotMap {
   public static final int elevatorMotor2 = 31;
   public static final int climbMotor1 = 40;
   public static final int climbMotor2 = 41;
-  public static final int climbVacuum = 42;
+  public static final int climbVacuum1 = 42;
+  public static final int climbVacuum2 = 43;
   public static final double encoderTicksPerRevolution = 4096.0;
 
   // Pneumatic Addresses
@@ -66,7 +67,8 @@ public class RobotMap {
   public static final int rightMotor3PDP = 1; //Check on PDP and change 
   public static final int climbMotor1PDP = 3; //Check on PDP and change 
   public static final int climbMotor2PDP = 4; //Check on PDP and change 
-  public static final int climbVacuumPDP = 5; //Check on PDP and change 
+  public static final int climbVacuum1PDP = 5; //Check on PDP and change
+  public static final int climbVacuum2PDP = 6; //Check on PDP and change
 
   //Elevator Level Heights (in inches)
   public static final double HatchLow = 19.0 - Robot.robotPrefs.robotOffset;
