@@ -23,16 +23,24 @@ public class Hatch extends Subsystem {
   public Hatch() {
   }
 
-  // hatch panel is not secured
-  public void openHatch() {
+  /**
+   * hatch panel is secured
+   */
+  public void grabHatch() {
     hatchPiston.set(true);
   }
 
-  // hatch panel is secured
-  public void closeHatch() {
+  /**
+   * hatch panel is not secured
+   */
+  public void releaseHatch() {
     hatchPiston.set(false);
   }
 
+  /**
+   * Check if hatch panel is in grab or release position
+   * @return true = grab position, false = release position
+   */
   public boolean getHatchPistonPosition() {
     return hatchPiston.get();
   }

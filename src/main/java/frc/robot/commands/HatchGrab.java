@@ -10,17 +10,22 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class HatchToggle extends Command {
-  public HatchToggle() {
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
+public class HatchGrab extends Command {
+  private boolean grab;
+
+  /**
+   * Grab or releae the hatch claw
+   * @param grab true = grab position, false = release position
+   */
+  public HatchGrab(boolean grab) {
     requires(Robot.hatch);
+    this.grab = grab;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    if (Robot.hatch.getHatchPistonPosition() == true) {
+    if (grab) {
       Robot.hatch.grabHatch();
     } else {
       Robot.hatch.releaseHatch();

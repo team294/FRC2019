@@ -24,12 +24,22 @@ public class Cargo extends Subsystem {
     // TODO determine which motor to invert
     cargoMotor1.set(ControlMode.PercentOutput, 0);
     cargoMotor1.setNeutralMode(NeutralMode.Coast);
+    cargoMotor1.configVoltageCompSaturation(11.0, 0);
     cargoMotor1.enableVoltageCompensation(true);
+    cargoMotor1.setInverted(false);
+
     cargoMotor2.set(ControlMode.PercentOutput, 0);
     cargoMotor2.setNeutralMode(NeutralMode.Coast);
+    cargoMotor2.configVoltageCompSaturation(11.0, 0);
     cargoMotor2.enableVoltageCompensation(true);
+    cargoMotor2.setInverted(true);
   } 
 
+  /**
+   * Set the speed of the cargo motors
+   * @param percent1 From -1 (full speed out) to +1 (full speed in)
+   * @param percent2 From -1 (full speed out) to +1 (full speed in)
+   */
   public void setCargoMotorPercent(double percent1, double percent2) {
     cargoMotor1.set(ControlMode.PercentOutput, percent1); 
     cargoMotor2.set(ControlMode.PercentOutput, percent2);
