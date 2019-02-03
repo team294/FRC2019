@@ -83,12 +83,13 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     log.writeLogEcho("Robot", "Disabled", "");
-  }
+  }  
 
   @Override
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
-    Robot.vision.turnOffCamLeds();// CameraLedOff();   
+    //Robot.vision.turnOffCamLeds();  
+    Robot.vision.setCameraMode(1); // Turn off camera LEDs
     Robot.driveTrain.zeroGyroRotation(); 
     // Robot.driveTrain.getGyroRotation();
     Robot.driveTrain.zeroLeftEncoder();
