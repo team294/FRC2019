@@ -29,6 +29,7 @@ public class Robot extends TimedRobot {
   public static Shifter shifter;
   public static Elevator elevator;
   public static Cargo cargo;
+  public static Hatch hatch;
   public static VisionData vision;
   public static LineFollowing lineFollowing;
   public static OI oi;
@@ -51,6 +52,7 @@ public class Robot extends TimedRobot {
     shifter = new Shifter();
     elevator = new Elevator();
     cargo = new Cargo();
+    hatch = new Hatch();
     vision = new VisionData();
     lineFollowing = new LineFollowing();
     pdp = new PowerDistributionPanel();

@@ -20,7 +20,7 @@ public class Shifter extends Subsystem {
   // here. Call these from Commands.
 
   //private final Solenoid shifter = new Solenoid(RobotMap.pnuematicShifter);
-  private final DoubleSolenoid shifter = new DoubleSolenoid(RobotMap.pnuematicShifterLow, RobotMap.pnuematicShifterHigh);
+  private final DoubleSolenoid shifter = new DoubleSolenoid(RobotMap.pneumaticShifterLow, RobotMap.pneumaticShifterHigh);
   
 
   public Shifter() {
