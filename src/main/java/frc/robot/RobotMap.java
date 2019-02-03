@@ -41,7 +41,7 @@ public class RobotMap {
   public static final double max_acceleration_ipsps = 130.0;  // max robot acceleration, in inches per second per second
   public static final double max_jerk_ipspsps = 2400.0;  // max robot jerk, in inches per second per second per second
   
-  // TODO Update with 2018 base
+  // TODO Update with 2019 base
   // Metric versions
   public static final double wheelbase_m = wheelbase_in*0.0254;           // wheelbase, in meters
   public static final double wheel_diameter_m = wheel_diameter_in*0.0254; // wheel diamater, in meters

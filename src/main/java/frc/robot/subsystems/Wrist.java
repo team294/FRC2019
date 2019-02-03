@@ -33,6 +33,14 @@ public class Wrist extends Subsystem {
     wristMotor.setSelectedSensorPosition(0, 0, 0);
   }
 
+  public double getWristEncoderTicks() {
+    return wristMotor.getSelectedSensorPosition(0);
+  }
+
+  public double encoderTicksToRevolutions(double encoderTicks) {
+    return (encoderTicks / RobotMap.encoderTicksPerRevolution);
+  }
+
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
