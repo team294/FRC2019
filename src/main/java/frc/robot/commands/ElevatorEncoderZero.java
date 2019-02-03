@@ -11,6 +11,10 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 public class ElevatorEncoderZero extends Command {
+  /**
+   * Drives the elevator down slowly until it reaches
+   * the lower limit switch, zeros the encoder
+   */
   public ElevatorEncoderZero() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);

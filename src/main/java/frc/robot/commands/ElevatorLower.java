@@ -10,8 +10,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ElevatorReverse extends Command {
-  public ElevatorReverse() {
+public class ElevatorLower extends Command {
+  /**
+   * Slowly moves elevator DOWN
+   */
+  public ElevatorLower() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.elevator);

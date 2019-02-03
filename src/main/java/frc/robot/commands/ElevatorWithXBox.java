@@ -7,11 +7,16 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ElevatorForward extends Command {
-  public ElevatorForward() {
+public class ElevatorWithXBox extends Command {
+  
+  /** 
+   * Drive elevator manually using right joystick on the xBox controller
+  */
+  public ElevatorWithXBox() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.elevator);
@@ -25,7 +30,9 @@ public class ElevatorForward extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.elevator.setElevatorMotorPercentOutput(0.2);
+    double value = -Robot.oi.xBoxController.getY(Hand.kRight);
+    Robot.elevator.setElevatorMotorPercentOutput(value);
+    Robot.elevator.zeroElevatorEnc();
   }
 
   // Make this return true when this Command no longer needs to run execute()
