@@ -82,6 +82,28 @@ public class OI {
         left[i].whenReleased(new DriveWithJoysticks());
         right[i].whenPressed(new VisionTurnToTarget());
         right[i].whenReleased(new DriveWithJoysticks()); // We should be able to cancel the commands when the button is released. This is a better method to do that.
+      } else if (i == 6){
+        left[i].whenPressed(new DriveFakePathfinder(0));
+        left[i].whenReleased(new DriveWithJoysticks());
+      }
+      else if (i == 7 ){
+        left[i].whenPressed(new DriveFakePathfinder(-118.75));
+        left[i].whenReleased(new DriveWithJoysticks());
+      } else if (i == 8){
+        left[i].whenPressed(new DriveFakePathfinder(118.75));
+        left[i].whenReleased(new DriveWithJoysticks());
+      } else if (i == 9){
+        left[i].whenPressed(new DriveFakePathfinder(-90));
+        left[i].whenReleased(new DriveWithJoysticks());
+      } else if (i == 10){
+        left[i].whenPressed(new DriveFakePathfinder(90));
+        left[i].whenReleased(new DriveWithJoysticks());
+      } else if (i == 11){
+        left[i].whenPressed(new DriveFakePathfinder(-61.25));
+        left[i].whenReleased(new DriveWithJoysticks());
+      } else if (i == 4){
+        left[i].whenPressed(new DriveFakePathfinder(61.25));
+        left[i].whenReleased(new DriveWithJoysticks());
       }
     }
 
