@@ -85,13 +85,12 @@ public class OI {
       }
     }
 
-    SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true));
-
     xBoxA.whenActive(new ElevatorMoveToLevel(RobotMap.ElevatorPosition.hatchLow));
     xBoxB.whenActive(new ElevatorMoveToLevel(RobotMap.ElevatorPosition.hatchMid));
     xBoxY.whenActive(new ElevatorMoveToLevel(RobotMap.ElevatorPosition.hatchHigh));
     xBoxX.whenActive(new ElevatorMoveToLevel(RobotMap.ElevatorPosition.cargoShipCargo));
     
+    SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true));
     SmartDashboard.putData("Turn To Target", new VisionTurnToTarget());
     SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
     SmartDashboard.putData("Elevator Down", new ElevatorLower()); // For testing limit switch and encoder
@@ -101,6 +100,7 @@ public class OI {
     SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
     SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
     SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));
+    SmartDashboard.putData("Calibrate Wrist Zero", new WristCalibrateZero());
   }
 
   public void setDriveDirection(boolean direction) {

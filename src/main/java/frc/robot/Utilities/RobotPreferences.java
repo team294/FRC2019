@@ -1,6 +1,8 @@
 package frc.robot.Utilities;
 
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 
 public class RobotPreferences {
 
@@ -17,6 +19,9 @@ public class RobotPreferences {
 	public double elevatorGearCircumference; //circumference of the gear driving the elevator in inches
 	public double robotOffset; //distance of elevator 0 value from the ground
 	public double cameraDistanceFromFrontOfBumper;  // (default = 12 inches)
+	public double wristGearRatio; // wrist gear ratio, gear with encoder / gear driving wrist
+	public double wristCalZero;   		// Wrist encoder position at O degrees, in encoder ticks (i.e. the calibration factor)
+	public boolean wristCalibrated;     // Default to wrist being uncalibrated.  Calibrate from robot preferences or "Calibrate Wrist Zero" button on dashboard
 	
 	/**
 	 * Creates a RobotPreferences object and reads the robot preferences.
@@ -43,13 +48,16 @@ public class RobotPreferences {
 			driveTrainDistanceFudgeFactor = 1;  //0.96824;
 		} */
 		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;		
-		cameraDistanceFromFrontOfBumper = prefs.getDouble("cameraDistanceFromFrontOfBumper", 12);		
+		cameraDistanceFromFrontOfBumper = prefs.getDouble("cameraDistanceFromFrontOfBumper", 12);
+		wristGearRatio = prefs.getDouble("wristGearRatio", 1.0);
+		wristCalZero = prefs.getDouble("wristCalZero", -9999);
+		wristCalibrated = prefs.getBoolean("wristCalibrated", false);		
 	}
 
 	/* Sets up Preferences if they haven't been set as when changing RoboRios or first start-up.
 		The values are set to defaults, so if using the prototype robots set inBCRLab to true
 	*/	
-	public void doExist(){				 
+	public void doExist() {				 
 		if (!prefs.containsKey("inBCRLab")){
 			 prefs.putBoolean("inBCRLab", false);
 		}	 
@@ -70,6 +78,30 @@ public class RobotPreferences {
 		}
 		if (!prefs.containsKey("robotOffset")) {
 			prefs.putDouble("robotOffset", 15.0);
+		}
+		if (!prefs.containsKey("wristGearRatio")) {
+			prefs.putDouble("wristGearRatio", 1.0);
+		}
+		if (!prefs.containsKey("wristCalZero")) {
+			prefs.putDouble("wristCalZero", -9999);
+		}
+		if (!prefs.containsKey("wristCalibrated")) {
+			prefs.putBoolean("wristCalibrated", false);
+		}
+	}
+
+	/**
+	 * Sets wrist angle calibration factor and enables angle control modes for wrist
+	 * 
+	 * @param wristCalZero  Calibration factor for wrist
+	 * @param writeCalToPreferences  true = store calibration in Robot Preferences, false = don't change Robot Preferences
+	 */
+	public void setWristCalibration(double wristCalZero, boolean writeCalToPreferences) {
+		this.wristCalZero = wristCalZero;
+		wristCalibrated = true;
+		SmartDashboard.putBoolean("Wrist Calibrated", wristCalibrated);
+		if (writeCalToPreferences) {
+			prefs.putDouble("calibrationZeroDegrees", wristCalZero);
 		}
 	}
 

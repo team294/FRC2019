@@ -45,14 +45,14 @@ public class Elevator extends Subsystem {
 	private boolean encOK = true; // true is encoder working, false is encoder broken
 	private boolean elevatorMode = true; // true is automated, false is manual mode
 
-	public double rampRate = .005;
-	public double kP = 0.5;
-	public double kI = 0;
-	public double kD = 0;
-	public double kFF = 0;
-	public int kIz = 0;
-	public double kMaxOutput = 1.0; // up max output
-	public double kMinOutput = -1.0; // down max output
+	private double rampRate = .005;
+	private double kP = 0.5;
+	private double kI = 0;
+	private double kD = 0;
+	private double kFF = 0;
+	private int kIz = 0;
+	private double kMaxOutput = 1.0; // up max output
+	private double kMinOutput = -1.0; // down max output
 
 	public Elevator() {
 		elevatorMotor1 = new WPI_TalonSRX(RobotMap.elevatorMotor1);
@@ -87,7 +87,7 @@ public class Elevator extends Subsystem {
 	 * @param percentOutput between -1.0 (down) and 1.0 (up)
 	 */
 	public void setElevatorMotorPercentOutput(double percentOutput) {
-		elevatorMotor1.set(percentOutput);
+		elevatorMotor1.set(ControlMode.PercentOutput, percentOutput);
 	}
 
 	/**

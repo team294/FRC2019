@@ -29,6 +29,8 @@ public class RobotMap {
   public static final int cargoMotor1 = 40;
   public static final int cargoMotor2 = 41;
   public static final double encoderTicksPerRevolution = 4096.0;
+  public static final double encoderDegreesPerTicks = 360.0 / encoderTicksPerRevolution;
+  public static final double encoderTicksPerDegrees = encoderTicksPerRevolution / 360.0;
 
   // Pneumatic Addresses
   public static final int pneumaticShifterLow = 0;
@@ -68,7 +70,7 @@ public class RobotMap {
   public static final int elevatorMotor1PDP = 0; //Check on PDP and change
   public static final int elevatorMotor2PDP = 0; //Check on PDP and change
 
-  //Elevator Level Heights (in inches)
+  // Elevator Level Heights (in inches)
   public static final double HatchLow = 19.0 - Robot.robotPrefs.robotOffset;
   public static final double HatchMid = 47.0 - Robot.robotPrefs.robotOffset;
   public static final double HatchHigh = 75.0 - Robot.robotPrefs.robotOffset;
@@ -76,5 +78,13 @@ public class RobotMap {
   public static final double ballOffset = 8.5;
   
   public enum ElevatorPosition {hatchLow, hatchMid, hatchHigh, cargoShipCargo}
+
+  // Wrist Angles (in degrees)
+  public static final double WristStowed = 90.0;
+  public static final double WristUp = 45.0;
+  public static final double WristStraight = 0.0;
+  public static final double WristDown = -45.0;
+
+  public enum WristAngle {stowed, up, straight, down}
 
 }
