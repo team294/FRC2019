@@ -186,7 +186,7 @@ public class Wrist extends Subsystem {
 	 */
 	public boolean getEncOK() {
 		return encOK;
-	}
+  }
 
   /**
    * Writes information about the subsystem to the filelog

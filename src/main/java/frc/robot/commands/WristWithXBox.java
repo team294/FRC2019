@@ -31,8 +31,8 @@ public class WristWithXBox extends Command {
   @Override
   protected void execute() {
     double value = -Robot.oi.xBoxController.getY(Hand.kLeft);
-    Robot.elevator.setElevatorMotorPercentOutput(value);
-    Robot.elevator.zeroElevatorEnc();
+    Robot.wrist.setWristMotorPercentOutput(value);
+    Robot.wrist.zeroWristEncoder();
   }
 
   // Make this return true when this Command no longer needs to run execute()
