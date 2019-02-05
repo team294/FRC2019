@@ -186,9 +186,11 @@ public class Elevator extends Subsystem {
 		double amps2 = Robot.pdp.getCurrent(RobotMap.elevatorMotor2PDP);
 		if(amps1 > 10 && amps2 < 4) {
 			Robot.robotPrefs.recordStickyFaults("Elevator");
+			Robot.log.writeLog("Elevator", "Sticky Fault Logged", "");
 		}
 		else if(amps2 > 10 && amps1 < 4) {
 			Robot.robotPrefs.recordStickyFaults("Elevator");
+			Robot.log.writeLog("Elevator", "Sticky Fault Logged", "");
 		}
 	}
 
