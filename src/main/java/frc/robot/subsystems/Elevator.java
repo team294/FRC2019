@@ -43,7 +43,7 @@ public class Elevator extends Subsystem {
 	private double currEnc = 0.0; // current recorded encoder value
 	private double encSnapShot = 0.0; // snapshot of encoder value used to make sure encoder is working
 	private boolean encOK = true; // true is encoder working, false is encoder broken
-	private boolean elevatorMode = true; // true is automated, false is manual mode
+	private boolean elevatorMode; // true is automated, false is manual mode
 
 	public double rampRate = .005;
 	public double kP = 0.5;
@@ -80,6 +80,13 @@ public class Elevator extends Subsystem {
 		elevatorMotor2.clearStickyFaults();
 		elevatorMotor1.setNeutralMode(NeutralMode.Brake);
 		elevatorMotor2.setNeutralMode(NeutralMode.Brake);
+
+		if(getElevatorLowerLimit() && getElevatorEncTicks() == 0) {
+			elevatorMode = true;
+		}
+		else {
+			elevatorMode = false; // start the elevator in manual mode unless it is properly zeroed
+		}
 	}
 
 	/**
@@ -187,7 +194,7 @@ public class Elevator extends Subsystem {
 	@Override
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
-		if (!encOK) {
+		if (!elevatorMode) {
 			setDefaultCommand(new ElevatorWithXBox());
 		}
 	}
