@@ -105,4 +105,6 @@ public class VisionData {
 
         return myDistance;
     }
+
+    // TODO: Redo entire distance formula to be based on height (horiz offset) which also means standardizing crosshair y value
 }

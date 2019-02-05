@@ -39,7 +39,7 @@ public class DriveWithJoysticks extends Command {
       Robot.driveTrain.tankDrive(leftValue, rightValue);
     }
 
-    SmartDashboard.putBoolean("Vision Assistance Available", (Robot.vision.vertOffset <= 1.5 && Robot.vision.areaFromCamera != 0)); 
+    SmartDashboard.putBoolean("Vision Assistance Available", (Robot.vision.vertOffset <= 1.5 && Robot.vision.areaFromCamera != 0)); // Do we even need this anymore? Are there locations that we can score from and still see the side target? 
     // Tells us if vision is available for the rocket. Will need to be updated for when scoring balls.
   }
 

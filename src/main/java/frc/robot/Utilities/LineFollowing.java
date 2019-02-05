@@ -19,9 +19,9 @@ public class LineFollowing {
      * @param follower int between 1 and 3 inclusive that tells which lineFollower to get data from
      **/
     public boolean isLinePresent(int follower) {
-        if (follower == 1) return !(lineFollowerLeft.get());
-        else if (follower == 2) return !(lineFollowerCenter.get());
-        else return !(lineFollowerRight.get());
+        if (follower == 1) return (lineFollowerLeft.get());
+        else if (follower == 2) return (lineFollowerCenter.get());
+        else return (lineFollowerRight.get());
     }    
     
     public void displayLineSensors(){
@@ -35,7 +35,7 @@ public class LineFollowing {
      * @return true for line present, false for nothing
      */
     public boolean isLinePresent() {
-        return !lineFollowerLeft.get() || !lineFollowerCenter.get() || !lineFollowerRight.get();
+        return lineFollowerLeft.get() || lineFollowerCenter.get() || lineFollowerRight.get();
     }
 
     public int getLineNumber() {

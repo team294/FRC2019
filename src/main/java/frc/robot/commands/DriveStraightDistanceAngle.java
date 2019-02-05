@@ -7,9 +7,7 @@
 
 package frc.robot.commands;
 
-import java.util.function.Supplier;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.utilities.ToleranceChecker;
  
@@ -23,8 +21,8 @@ public class DriveStraightDistanceAngle extends Command {
 	
 	private final double 
 			kPdist = 0.05, 
-			kDdist = 0.37,
-			kIdist = 0.00; // not used
+			kDdist = 0.37;
+			//kIdist = 0.00; // not used
 	
 	private double prevDistErr;
 	private double angleErr;

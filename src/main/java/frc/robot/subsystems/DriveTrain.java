@@ -366,27 +366,30 @@ public class DriveTrain extends Subsystem {
    * @return
    */
   public double checkScoringQuadrant() {
+    // TODO: Add some console prints or SD to check
     // assuming the same quadrants as a unit circle, with 0 being straight up (+y axis) and -180 or 180 being straight down (-y axis)
+    double quadrant = 0.0;
     double gyroAngle = getGyroRotation();
+
     if (Math.abs(gyroAngle) <= 5) { // Should mean straight up, +y axis, cardianl durection North
-      return 1.5; // in between quadrants 1 and 2
+      quadrant = 1.5; // in between quadrants 1 and 2
     } else if (Math.abs(gyroAngle) - 180 <= 5) { // Within 5 degrees of -y axis
-      return 3.5; // in between quadrants 3 and 4
+      quadrant = 3.5; // in between quadrants 3 and 4
     } else if (Math.abs(gyroAngle - 90) <= 5) { // Within 5 degrees of +x axis
-      return 0.5; // in between quadrants 4 and 1
+      quadrant = 0.5; // in between quadrants 4 and 1
     } else if (Math.abs(gyroAngle + 90) <= 5) { // Wihin 5 degrees of -x axis
-      return 2.5; // in between quadrants 2 and 3
+      quadrant = 2.5; // in between quadrants 2 and 3
     } else if (gyroAngle > 90) {
-      return 4;
+      quadrant = 4;
     } else if (gyroAngle > 0) {
-      return 1; // since all Q4 have already returned, only positive angles left are Q1
+      quadrant = 1; // since all Q4 have already returned, only positive angles left are Q1
     } else if (gyroAngle < -90) {
-      return 3;
+      quadrant = 3;
     } else if (gyroAngle < 0) {
-      return 2; // only negative angles left are Q2
-    } else {
-      return 0; // Something must be wrong here, this result should never happen
+      quadrant = 2; // only negative angles left are Q2
     }
+    
+    return quadrant; // Something must be wrong here, this result should never happen
   }
 
   /**
@@ -396,15 +399,16 @@ public class DriveTrain extends Subsystem {
    * </br> The default value is 0.
    */
   public double getTargetAngle(double quadrant) {
-    if (quadrant == 1) return 28.75;
-    if (quadrant == 1.5) return 0;
-    if (quadrant == 2) return -28.75;
-    if (quadrant == 2.5) return -90;
-    if (quadrant == 3) return -151.75;
-    if (quadrant == 3.5) return 180;
-    if (quadrant == 4) return 151.75;
-    if (quadrant == 4.5 || quadrant == 0.5) return 90;
-    return 0;
+    double out = 0.0;
+    if (quadrant == 1) out = 28.75;
+    else if (quadrant == 1.5) out = 0;
+    else if (quadrant == 2) out = -28.75;
+    else if (quadrant == 2.5) out = -90;
+    else if (quadrant == 3) out = -151.75;
+    else if (quadrant == 3.5) out = 180;
+    else if (quadrant == 4) out = 151.75;
+    else if (quadrant == 4.5 || quadrant == 0.5) out = 90;
+    return out;
   }
 
   public double getTargetAngle() {
@@ -424,10 +428,10 @@ public class DriveTrain extends Subsystem {
    */
   public void driveToCrosshair(double quadrant) {
 
-    double xOffsetAdjustmentFactor = 1.5; // Should be tested to be perfect; 2 seems to go out of frame too quickly. Must be greater than 1.
+    double xOffsetAdjustmentFactor = 1.7; // Should be tested to be perfect; 2 seems to go out of frame too quickly. Must be greater than 1.
 
-    double minDistanceToTarget = 13;
-    double distance = Robot.vision.distanceFromTarget(); // Convert to a pure area measurement since dist is inaccurate
+    //double minDistanceToTarget = 13; // Not used right now because changing distance forumla to use height
+    double distance = Robot.vision.distanceFromTarget();
     System.out.println("Measured Distance: " + distance);
     double area = Robot.vision.areaFromCamera;
     double xVal = Robot.vision.horizOffset; // Alpha offset
@@ -435,27 +439,16 @@ public class DriveTrain extends Subsystem {
 
     if (quadrant != 0) {
       System.out.println("Measured Angle: " + xVal);
-      double alphaT = xVal + getGyroRotation() - getTargetAngle(4); // true angle for measuring x displacement
+      double alphaT = xVal + getGyroRotation() - getTargetAngle(quadrant); // true angle for measuring x displacement
       System.out.println("Adjusted (true) angle: " + alphaT);
       double alphaA = Math.toDegrees(Math.atan(xOffsetAdjustmentFactor * Math.tan(Math.toRadians(alphaT)))); // Adjusted angle for x displacement
       System.out.println("False displacement angle:" + alphaA);
-      finalAngle = alphaA + getTargetAngle(4) - getGyroRotation();
+      finalAngle = alphaA + getTargetAngle(quadrant) - getGyroRotation();
     } else {
       finalAngle = xVal;
     }
 
     double gainConstant = 1.0/30.0;
-    //double startSpeed = -0.5;
-
-    /*
-    double lJoystickPercent = Robot.oi.leftJoystick.getY()-0.25; // Test value for now, wanted to speed it up
-    // double lJoystickPercent = Math.abs(Robot.oi.leftJoystick.getY()) + 0.25
-    double lPercentOutput = startSpeed + (gainConstant * xVal);
-    double rPercentOutput = startSpeed - (gainConstant * xVal);
-
-    lPercentOutput -= lJoystickPercent;
-    rPercentOutput -= lJoystickPercent;
-    */
 
     //double lJoystickAdjust = Math.abs(Robot.oi.leftJoystick.getY());
     double lJoystickAdjust = 0.7 * Math.sqrt(Math.abs(Robot.oi.leftJoystick.getY()));
@@ -465,7 +458,7 @@ public class DriveTrain extends Subsystem {
     /* Untested auto-turn stuff */
     if (lEncStopped && lPercentOutput != 0) rPercentOutput = 1.0; // The goal here is to slam the right side so that we still line up to the wall
     if (rEncStopped && rPercentOutput != 0) lPercentOutput = 1.0; 
-    if (lPercentOutput == 1.0 || rPercentOutput == 1.0) System.out.println("STOP DETECTED, INITIATING EVASIVE MANEUVERS");
+    if (lPercentOutput == 1.0 || rPercentOutput == 1.0) System.out.println("STOP DETECTED, INITIATING EVASIVE MANEUVERS"); // TODO: test this because it doesn't look like it ever works
 
     if (/* distance > minDistanceToTarget && */ area != 0) tankDrive(lPercentOutput, rPercentOutput); // Just ignore the distance check for now...
     else tankDrive(0, 0);
@@ -496,9 +489,10 @@ public class DriveTrain extends Subsystem {
   }
 
   public void driveOnLine() {
+    // TODO: Integrate quadrants and gyro to correct based on which side of the line we're on
     double lPercentPower = 0;
     double rPercentPower = 0;
-    double baseSpeed = 1; // If this remains 1, we can remove it from the code. Otherwise, we cdan make it responsive to the joystick as well.
+    double baseSpeed = 0.7; // Lowered from 1 for new line sensors further out, untested
 
     int lineNum = Robot.lineFollowing.getLineNumber();
     //System.out.println("Line Number:" + lineNum);

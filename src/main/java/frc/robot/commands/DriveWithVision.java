@@ -45,6 +45,7 @@ public class DriveWithVision extends Command {
     Robot.driveTrain.clearEncoderList(); // May not be necessary to clear
     //Robot.driveTrain.driveToCrosshair();
     if (gyro) targetQuad = Robot.driveTrain.checkScoringQuadrant();
+    System.out.println("Target Quadrant:" + targetQuad);
     Robot.log.writeLogEcho("DriveTrain", "Vision Tracking Init", "Gyro," + gyro + ",Quadrant,"+targetQuad);
   }
 
@@ -59,6 +60,7 @@ public class DriveWithVision extends Command {
   protected boolean isFinished() {
     Robot.driveTrain.areEncodersTurning(5.0);
     return endOnLine && Robot.lineFollowing.isLinePresent() && Robot.vision.distanceFromTarget() < 30; // Stops when a line is detected by the line followers within a reasonable expected distance
+    // TODO:: with an accurate distance measurement, we can stop automatically when close enough
   }
 
   // Called once after isFinished returns true

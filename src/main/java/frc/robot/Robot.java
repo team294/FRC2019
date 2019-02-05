@@ -156,6 +156,7 @@ public class Robot extends TimedRobot {
     Robot.vision.readCameraData();
     SmartDashboard.putBoolean("Is Line Present?", lineFollowing.isLinePresent());
     SmartDashboard.putNumber("Target Distance", Robot.vision.distanceFromTarget());
+    SmartDashboard.putNumber("Target Quadrant", Robot.driveTrain.checkScoringQuadrant());
     //SmartDashboard.putBoolean("Vision Assistance Available", vision.areaFromCamera != 0);
   }
 
