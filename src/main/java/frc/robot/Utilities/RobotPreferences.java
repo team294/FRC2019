@@ -83,7 +83,7 @@ public class RobotPreferences {
 		}
 	}
 
-	public void recordStickyFault(String subsystem) {
+	public void recordStickyFaults(String subsystem) {
 		if(getString("problemSubsystem").indexOf(subsystem) == -1) {
 			if(getString("problemSubsystem").length() != 0) {
 				putString("problemSubsystem", (getString("problemSubsystem") + ", "));
@@ -96,7 +96,7 @@ public class RobotPreferences {
 		SmartDashboard.putString("problemSubsystem", getString("problemSubsystem"));
 		SmartDashboard.putBoolean("problemExists", getBoolean("problemExists"));
 	}
-	public void clearStickyFault() {
+	public void clearStickyFaults() {
 		putString("problemSubsystem", "");
 		putBoolean("problemExists", false);
 		SmartDashboard.putString("problemSubsystem", "");
