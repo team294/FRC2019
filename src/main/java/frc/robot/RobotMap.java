@@ -64,14 +64,14 @@ public class RobotMap {
   public static final int rightMotor1PDP = 2; //Check on PDP and change
   public static final int rightMotor2PDP = 0; //Check on PDP and change
   public static final int rightMotor3PDP = 1; //Check on PDP and change
-  public static final int elevatorMotor1PDP = 0; //Check on PDP and change
+  public static final int elevatorMotor1PDP = 1; //Check on PDP and change
   public static final int elevatorMotor2PDP = 3; //Check on PDP and change
 
   //Elevator Level Heights (in inches)
-  public static final double HatchLow = 19.0 - Robot.robotPrefs.robotOffset;
-  public static final double HatchMid = 47.0 - Robot.robotPrefs.robotOffset;
-  public static final double HatchHigh = 75.0 - Robot.robotPrefs.robotOffset;
-  public static final double CargoShipCargo = 34.75 - Robot.robotPrefs.robotOffset;
+  public static final double HatchLow = 19.0 - Robot.robotPrefs.elevatorBottomToFloor;
+  public static final double HatchMid = 47.0 - Robot.robotPrefs.elevatorBottomToFloor;
+  public static final double HatchHigh = 75.0 - Robot.robotPrefs.elevatorBottomToFloor;
+  public static final double CargoShipCargo = 34.75 - Robot.robotPrefs.elevatorBottomToFloor;
   public static final double ballOffset = 8.5;
   
   public enum ElevatorPosition {hatchLow, hatchMid, hatchHigh, cargoShipCargo}

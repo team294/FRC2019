@@ -179,12 +179,26 @@ public class Elevator extends Subsystem {
 	}
 
 	/**
+	 * 
+	 */
+	public void verifyMotors() {
+		double amps1 = Robot.pdp.getCurrent(RobotMap.elevatorMotor1PDP);
+		double amps2 = Robot.pdp.getCurrent(RobotMap.elevatorMotor2PDP);
+		if(amps1 > 10 && amps2 < 4) {
+			Robot.robotPrefs.recordStickyFault("Elevator");
+		}
+		else if(amps2 > 10 && amps1 < 4) {
+			Robot.robotPrefs.recordStickyFault("Elevator");
+		}
+	}
+
+	/**
 	 * writes information about the subsystem to the fileLog
 	 */
 	public void updateElevatorLog() {
 		Robot.log.writeLog("Elevator", "Update Variables",
 				"Elev1 Volts," + elevatorMotor1.getMotorOutputVoltage() + ",Elev2 Volts,"
-						+ elevatorMotor2.getMotorOutputVoltage() + ",Elev1 Amps,"
+						+ elevatorMotor2.getMotorOutputVoltage() + ",Talon Amps," + elevatorMotor1.getOutputCurrent() + ",Elev1 Amps,"
 						+ Robot.pdp.getCurrent(RobotMap.elevatorMotor1PDP) + ",Elev2 Amps,"
 						+ Robot.pdp.getCurrent(RobotMap.elevatorMotor2PDP) + ",Elev Enc Ticks," + getElevatorEncTicks()
 						+ ",Elev Enc Inches," + getElevatorEncInches() + ",Upper Limit," + getElevatorUpperLimit()
@@ -220,10 +234,12 @@ public class Elevator extends Subsystem {
 			if (idleCount >= 50) {
 				if ((++periodicCount) >= 25) {
 					updateElevatorLog();
+					verifyMotors();
 					periodicCount = 0;
 				}
 			} else {
 				updateElevatorLog();
+				verifyMotors();
 			}
 		}
 

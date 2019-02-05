@@ -1,6 +1,7 @@
 package frc.robot.Utilities;
 
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class RobotPreferences {
 
@@ -9,13 +10,15 @@ public class RobotPreferences {
 	/*
 	 * all of the robot preferences
 	 */
+	public String problemSubsystem;     // Records which subsystem(s) problem(s) exist in
+	public boolean problemExists;       // Set true if there is an issue
 	public boolean inBCRLab;			// Set true if in the BCR lab (with a big pole in the middle of the field)
 	public boolean prototypeRobot;		// Set true if using code for prototype bots, false for practice and competition bots
 	public boolean driveDirection;		// true for reversed
 	public double wheelCircumference;	// wheel circumference, in inches
 	public double driveTrainDistanceFudgeFactor;  // Scaling factor for driving distance (default = 1)
 	public double elevatorGearCircumference; //circumference of the gear driving the elevator in inches
-	public double robotOffset; //distance of elevator 0 value from the ground
+	public double elevatorBottomToFloor; //distance of elevator 0 value from the ground
 	public double cameraDistanceFromFrontOfBumper;  // (default = 12 inches)
 	
 	/**
@@ -30,26 +33,33 @@ public class RobotPreferences {
 	 * Re-reads the robot preferences.
 	 */
 	public void refresh() {
+		problemSubsystem = prefs.getString("problemSubsystem", "");
+		problemExists = prefs.getBoolean("problemExists", false);
 		inBCRLab = prefs.getBoolean("inBCRLab", false);
 		prototypeRobot = prefs.getBoolean("prototypeRobot", false); // true if testing code on a prototype, default to false (competition bot w/ Victors)
 		driveDirection = prefs.getBoolean("driveDirection", true);
 		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;	
 		elevatorGearCircumference = prefs.getDouble("elevatorGearDiameter", 1.7 * Math.PI); // TODO Change value when actual elevator is built, Conversion factor for makeshift elevator 18/32.3568952084);
 		driveTrainDistanceFudgeFactor = prefs.getDouble("driveTrainDistanceFudgeFactor", 1);
-		robotOffset = prefs.getDouble("robotOffset", 15.0); //TODO Change value when actual elevator is built
-
+		elevatorBottomToFloor = prefs.getDouble("elevatorBottomToFloor", 15.0); //TODO Change value when actual elevator is built
 		/* if (driveTrainDistanceFudgeFactor == -9999) {
 			// If fudge factor for driving can't be read, then assume value of 1
 			driveTrainDistanceFudgeFactor = 1;  //0.96824;
 		} */
 		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;		
-		cameraDistanceFromFrontOfBumper = prefs.getDouble("cameraDistanceFromFrontOfBumper", 12);		
+		cameraDistanceFromFrontOfBumper = prefs.getDouble("cameraDistanceFromFrontOfBumper", 12);
 	}
 
 	/* Sets up Preferences if they haven't been set as when changing RoboRios or first start-up.
 		The values are set to defaults, so if using the prototype robots set inBCRLab to true
 	*/	
 	public void doExist(){				 
+		if (!prefs.containsKey("problemSubsystem")){
+			prefs.putString("problemSubsystem", "");
+		}
+		if (!prefs.containsKey("problemExists")) {
+			prefs.putBoolean("problemExists", false);
+		}
 		if (!prefs.containsKey("inBCRLab")){
 			 prefs.putBoolean("inBCRLab", false);
 		}	 
@@ -68,9 +78,30 @@ public class RobotPreferences {
 		if (!prefs.containsKey("elevatorGearDiameter")) {
 			prefs.putDouble("elevatorGearDiameter", 1.7 * Math.PI);
 		}
-		if (!prefs.containsKey("robotOffset")) {
-			prefs.putDouble("robotOffset", 15.0);
+		if (!prefs.containsKey("elevatorBottomToFloor")) {
+			prefs.putDouble("elevatorBottomToFloor", 15.0);
 		}
+	}
+
+	public void recordStickyFault(String subsystem) {
+		if(getString("problemSubsystem").indexOf(subsystem) == -1) {
+			if(getString("problemSubsystem").length() != 0) {
+				putString("problemSubsystem", (getString("problemSubsystem") + ", "));
+			}
+			putString("problemSubsystem", getString("problemSubsystem") + subsystem);
+		}
+		if(!getBoolean("problemExists")) {
+			putBoolean("problemExists", true);
+		}
+		SmartDashboard.putString("problemSubsystem", getString("problemSubsystem"));
+		SmartDashboard.putBoolean("problemExists", getBoolean("problemExists"));
+	}
+	public void clearStickyFault() {
+		putString("problemSubsystem", "");
+		putBoolean("problemExists", false);
+		SmartDashboard.putString("problemSubsystem", "");
+		SmartDashboard.putBoolean("problemExists", false);
+
 	}
 
 	public String getString(String k) {
@@ -91,4 +122,24 @@ public class RobotPreferences {
 	public double getDouble(String k) {
 		return getDouble(k, 0);
 	}
+	public boolean getBoolean(String k, boolean d) {
+		return prefs.getBoolean(k, d);
+	}
+	public boolean getBoolean(String k) {
+		return getBoolean(k, false);
+	}
+	
+	public void putString(String k, String d) {
+		prefs.putString(k, d);
+	}
+	public void putDouble(String k, double d) {
+		prefs.putDouble(k, d);
+	}	
+	public void putInt(String k, int d) {
+		prefs.putInt(k, d);
+	}
+	public void putBoolean(String k, boolean d) {
+		prefs.putBoolean(k, d);
+	}
+
 }
