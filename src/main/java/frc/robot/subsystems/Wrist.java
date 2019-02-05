@@ -81,11 +81,11 @@ public class Wrist extends Subsystem {
    * must be less than 3 inches above starting position
    * @param degrees target degrees
    */
-  public void setWristDegrees(double degrees) {
-    if (encOK && wristMode) {
+  public void setWristAngle(double degrees) {
+    if (encOK && wristMode && Robot.robotPrefs.wristCalibrated) {
       // TODO determine max degrees and elevator height tolerance
       if (degrees < 60 || (Robot.elevator.getElevatorEncInches() < 3 && Robot.elevator.getCurrentElevatorTarget() < 3)) {
-        wristMotor.set(ControlMode.PercentOutput, degreesToEncoderTicks(degrees));
+        wristMotor.set(ControlMode.Position, degreesToEncoderTicks(degrees) + Robot.robotPrefs.wristCalZero);
         Robot.log.writeLog("Wrist", "Degrees set", "Target" + degrees);
       }
     }
@@ -178,17 +178,6 @@ public class Wrist extends Subsystem {
   public double getCurrentWristTarget() {
     double currentTarget = wristMotor.getClosedLoopTarget(0) - Robot.robotPrefs.wristCalZero;
 		return encoderTicksToDegrees(currentTarget);
-  }
-
-  /**
-	 * Sets the position of the wrist based on degrees
-	 * 
-	 * @param angle  desired angle, in degrees
-	 */
-  public void setWristAngle(double degrees) {
-    if (Robot.robotPrefs.wristCalibrated) {
-        wristMotor.set(ControlMode.Position, degreesToEncoderTicks(degrees) + Robot.robotPrefs.wristCalZero);
-	  }
   }
 
   /**
