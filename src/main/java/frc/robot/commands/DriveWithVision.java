@@ -17,6 +17,9 @@ public class DriveWithVision extends Command {
   private boolean gyro = false;
   private double targetQuad = 0; // The quadrant of the target we want to drive to
 
+  /**
+   * Vision assisted driving without gyro, keep going and never end on the line
+   */
   public DriveWithVision() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
@@ -39,16 +42,16 @@ public class DriveWithVision extends Command {
   @Override
   protected void initialize() {
     SmartDashboard.putBoolean("Ready to Score", false);
-    Robot.log.writeLogEcho("DriveTrain", "Vision Tracking Init", "");
     Robot.driveTrain.clearEncoderList(); // May not be necessary to clear
     //Robot.driveTrain.driveToCrosshair();
-    targetQuad = Robot.driveTrain.checkScoringQuadrant();
+    if (gyro) targetQuad = Robot.driveTrain.checkScoringQuadrant();
+    Robot.log.writeLogEcho("DriveTrain", "Vision Tracking Init", "Gyro," + gyro + ",Quadrant,"+targetQuad);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.driveTrain.driveToCrosshair();
+    Robot.driveTrain.driveToCrosshair(targetQuad);
   }
 
   // Make this return true when this Command no longer needs to run execute()

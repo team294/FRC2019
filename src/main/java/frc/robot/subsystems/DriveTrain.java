@@ -347,7 +347,7 @@ public class DriveTrain extends Subsystem {
       lSum += lIterator.next();
       rSum += rIterator.next();
     }
-    return (lEncStopped = (Math.abs(lSum/lEncoderStack.size()-lEncoderStack.peekLast()) <= precision) & (rEncStopped = Math.abs(rSum/rEncoderStack.size()-rEncoderStack.peekLast()) <= precision));
+    return ((lEncStopped = Math.abs(lSum/lEncoderStack.size()-lEncoderStack.peekLast()) <= precision) & (rEncStopped = Math.abs(rSum/rEncoderStack.size()-rEncoderStack.peekLast()) <= precision));
   }
 
   public void updateDriveLog () {
@@ -412,24 +412,37 @@ public class DriveTrain extends Subsystem {
   }
 
   /**
+   * Drives to the crosshair without gyro adjustment
+   */
+  public void driveToCrosshair() {
+    driveToCrosshair(0);
+  }
+
+  /**
    * Drives towards target and stops in front of it using speed from left joystick
    * This may change depending on driver preferences
    */
-  public void driveToCrosshair() {
+  public void driveToCrosshair(double quadrant) {
 
-    double xOffsetAdjustmentFactor = 1.8; // Should be tested to be perfect; 2 seems to go out of frame too quickly. Must be greater than 1.
+    double xOffsetAdjustmentFactor = 1.5; // Should be tested to be perfect; 2 seems to go out of frame too quickly. Must be greater than 1.
 
     double minDistanceToTarget = 13;
     double distance = Robot.vision.distanceFromTarget(); // Convert to a pure area measurement since dist is inaccurate
     System.out.println("Measured Distance: " + distance);
     double area = Robot.vision.areaFromCamera;
     double xVal = Robot.vision.horizOffset; // Alpha offset
-    System.out.println("Measured Angle: " + xVal);
-    double alphaT = xVal + getGyroRotation() - getTargetAngle(1); // true angle for measuring x displacement
-    System.out.println("Adjusted (true) angle: " + alphaT);
-    double alphaA = Math.toDegrees(Math.atan(xOffsetAdjustmentFactor * Math.tan(Math.toRadians(alphaT)))); // Adjusted angle for x displacement
-    System.out.println("False displacement angle:" + alphaA);
-    double finalAngle = alphaA + getTargetAngle(1) - getGyroRotation();
+    double finalAngle;
+
+    if (quadrant != 0) {
+      System.out.println("Measured Angle: " + xVal);
+      double alphaT = xVal + getGyroRotation() - getTargetAngle(4); // true angle for measuring x displacement
+      System.out.println("Adjusted (true) angle: " + alphaT);
+      double alphaA = Math.toDegrees(Math.atan(xOffsetAdjustmentFactor * Math.tan(Math.toRadians(alphaT)))); // Adjusted angle for x displacement
+      System.out.println("False displacement angle:" + alphaA);
+      finalAngle = alphaA + getTargetAngle(4) - getGyroRotation();
+    } else {
+      finalAngle = xVal;
+    }
 
     double gainConstant = 1.0/30.0;
     //double startSpeed = -0.5;
