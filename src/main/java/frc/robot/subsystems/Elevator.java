@@ -91,16 +91,26 @@ public class Elevator extends Subsystem {
 	}
 
 	/**
-	 * only works when encoder is working and elevatorMode is true (in automatic mode)
+	 * only works when encoder is working, elevatorMode is true (in automatic mode),
+	 * and current and target wrist angles are less than 60 degrees
 	 * @param inches target height in inches
 	 */
 	public void setElevatorPos(double inches) {
-		if (encOK && elevatorMode) {
+		// TODO determine max degrees of wrist
+		if (encOK && elevatorMode && Robot.wrist.getWristAngle() < 60 && Robot.wrist.getCurrentWristTarget() < 60) {
 			elevatorMotor1.set(ControlMode.Position, inchesToEncoderTicks(inches));
 			Robot.log.writeLog("Elevator", "Position set", "Target," + inches);
 		}
 	}
 
+	/**
+	 * Returns the height that elevator is trying to move to in inches
+	 * 
+	 * @return desired inches of elevator height
+	 */
+	public double getCurrentElevatorTarget() {
+		return encoderTicksToInches(elevatorMotor1.getClosedLoopTarget(0));
+	  }
 	/**
 	 * stops elevator motors
 	 */

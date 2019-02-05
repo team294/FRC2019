@@ -76,13 +76,18 @@ public class Wrist extends Subsystem {
   }
 
   /**
-   * Only works when encoder is working and wristMode is true (in automatic mode)
+   * Only works when encoder is working, wristMode is true (in automatic mode)
+   * If setting to greater than 60 degrees, elevator position and target
+   * must be less than 3 inches above starting position
    * @param degrees target degrees
    */
   public void setWristDegrees(double degrees) {
     if (encOK && wristMode) {
-      wristMotor.set(ControlMode.PercentOutput, degreesToEncoderTicks(degrees));
-      Robot.log.writeLog("Wrist", "Degrees set", "Target" + degrees);
+      // TODO determine max degrees and elevator height tolerance
+      if (degrees < 60 || (Robot.elevator.getElevatorEncInches() < 3 && Robot.elevator.getCurrentElevatorTarget() < 3)) {
+        wristMotor.set(ControlMode.PercentOutput, degreesToEncoderTicks(degrees));
+        Robot.log.writeLog("Wrist", "Degrees set", "Target" + degrees);
+      }
     }
   }
 
