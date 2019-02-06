@@ -20,10 +20,10 @@ public class HatchToggle extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    if (Robot.hatch.getHatchPistonPosition() == true) {
-      Robot.hatch.grabHatch();
-    } else {
+    if (Robot.hatch.isHatchPistionGrabbed()) {
       Robot.hatch.releaseHatch();
+    } else {
+      Robot.hatch.grabHatch();
     }
   }
 

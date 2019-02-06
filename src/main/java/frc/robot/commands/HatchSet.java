@@ -10,14 +10,14 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class HatchGrab extends Command {
+public class HatchSet extends Command {
   private boolean grab;
 
   /**
    * Grab or releae the hatch claw
    * @param grab true = grab position, false = release position
    */
-  public HatchGrab(boolean grab) {
+  public HatchSet(boolean grab) {
     requires(Robot.hatch);
     this.grab = grab;
   }
