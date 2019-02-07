@@ -373,11 +373,11 @@ public class DriveTrain extends Subsystem {
 
     if (Math.abs(gyroAngle) <= 5) { // Should mean straight up, +y axis, cardianl durection North
       quadrant = 1.5; // in between quadrants 1 and 2
-    } else if (Math.abs(gyroAngle) - 180 <= 5) { // Within 5 degrees of -y axis
+    } else if (Math.abs(gyroAngle) >= 175) { // Within 5 degrees of -y axis
       quadrant = 3.5; // in between quadrants 3 and 4
-    } else if (Math.abs(gyroAngle - 90) <= 5) { // Within 5 degrees of +x axis
+    } else if (gyroAngle >= 85 && gyroAngle <= 95) { // Within 5 degrees of +x axis
       quadrant = 0.5; // in between quadrants 4 and 1
-    } else if (Math.abs(gyroAngle + 90) <= 5) { // Wihin 5 degrees of -x axis
+    } else if (gyroAngle <= -85 && gyroAngle >= -95) { // Wihin 5 degrees of -x axis
       quadrant = 2.5; // in between quadrants 2 and 3
     } else if (gyroAngle > 90) {
       quadrant = 4;
@@ -521,8 +521,8 @@ public class DriveTrain extends Subsystem {
       rPercentPower = .8*baseSpeed;
     } else {
       // Drive forwards in hopes of recovering the line?
-      lPercentPower = 0.3;
-      rPercentPower = 0.3;
+      lPercentPower = 0.3*baseSpeed;
+      rPercentPower = 0.3*baseSpeed;
     }
 
     Robot.log.writeLogEcho("DriveTrain", "Line Tracking", "Line Number," + lineNum + ",Left Percent," + lPercentPower + ",Right Percent," + rPercentPower);
@@ -552,34 +552,55 @@ public class DriveTrain extends Subsystem {
 
     if (left) {
       if (lineNum == 0) {
-        // Straight
-        //lPercentPower = .55*baseSpeed;
-        //rPercentPower = .55*baseSpeed;
         lPercentPower = 0.65*baseSpeed;
         rPercentPower = 0.65*baseSpeed;
       } else if (lineNum == 1) {
-        // Turn left slight?
-        lPercentPower = .6*baseSpeed;
-        rPercentPower = 0*baseSpeed;
+        lPercentPower = 0.0*baseSpeed;
+        rPercentPower = 0.6*baseSpeed;
       } else if (lineNum == -1) {
-        // Turn right slight?
-        lPercentPower = 0*baseSpeed;
-        rPercentPower = .6*baseSpeed;
+        lPercentPower = 0.3*baseSpeed;
+        rPercentPower = 0.6*baseSpeed;
       } else if (lineNum == -2) {
-        // Turn left
-        lPercentPower = .8*baseSpeed;
-        rPercentPower = -.8*baseSpeed;
+        lPercentPower = 0.5*baseSpeed;
+        rPercentPower = 0.8*baseSpeed;
       } else if (lineNum == 2) {
-        // Turn right
-        lPercentPower = -.8*baseSpeed;
-        rPercentPower = .8*baseSpeed;
+        lPercentPower = -0.4*baseSpeed;
+        rPercentPower = 0.8*baseSpeed;
       } else {
-        // Drive forwards in hopes of recovering the line?
-        lPercentPower = 0.3;
-        rPercentPower = 0.3;
+        lPercentPower = -0.3*baseSpeed;
+        rPercentPower = 0.5*baseSpeed;
+      }
+    } else { // right
+      if (lineNum == 0) {
+        lPercentPower = 0.65*baseSpeed;
+        rPercentPower = 0.65*baseSpeed;
+      } else if (lineNum == 1) {
+        lPercentPower = 0.6*baseSpeed;
+        rPercentPower = 0.3*baseSpeed;
+      } else if (lineNum == -1) {
+        lPercentPower = 0.6*baseSpeed;
+        rPercentPower = 0.0*baseSpeed;
+      } else if (lineNum == -2) {
+        lPercentPower = 0.8*baseSpeed;
+        rPercentPower = -0.4*baseSpeed;
+      } else if (lineNum == 2) {
+        lPercentPower = 0.8*baseSpeed;
+        rPercentPower = 0.5*baseSpeed;
+      } else {
+        lPercentPower = 0.5*baseSpeed;
+        rPercentPower = -0.3*baseSpeed;
       }
     }
-    
+
+    Robot.log.writeLogEcho("DriveTrain", "Line Tracking", "Quadrant," + quadrant + ",Left," + left + ",Right," + right + ",Line Number," + lineNum + ",Left Percent," + lPercentPower + ",Right Percent," + rPercentPower);
+
+    /* Untested auto-turn stuff */
+    if (lEncStopped && lPercentPower != 0) rPercentPower = 1.0; // The goal here is to slam the right side so that we still line up to the wall
+    if (rEncStopped && rPercentPower != 0) lPercentPower = 1.0;
+    if (lPercentPower == 1 || rPercentPower == 1) System.out.println("STOP DETECTED, INITIATING EVASIVE MANEUVERS"); 
+
+    this.robotDrive.tankDrive(lPercentPower, rPercentPower);
+    updateEncoderList();
   }
   
   public void quadrantLineFollowing() {
