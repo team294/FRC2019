@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utilities.*;
@@ -32,11 +33,13 @@ public class Robot extends TimedRobot {
   public static Hatch hatch;
   public static VisionData vision;
   public static LineFollowing lineFollowing;
+  public static Climb climb;
   public static OI oi;
   public static FileLog log;
   public static RobotPreferences robotPrefs;
   public static PowerDistributionPanel pdp;
 
+  public static boolean beforeFirstEnable = true; // true before the first time the robot is enabled after loading code
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
@@ -48,6 +51,9 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     log = new FileLog("1");
     robotPrefs = new RobotPreferences();
+    
+    beforeFirstEnable = true; // set variable that robot has not been enabled
+
     driveTrain = new DriveTrain();
     shifter = new Shifter();
     elevator = new Elevator();
@@ -55,11 +61,14 @@ public class Robot extends TimedRobot {
     hatch = new Hatch();
     vision = new VisionData();
     lineFollowing = new LineFollowing();
+    climb = new Climb();
     pdp = new PowerDistributionPanel();
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
-    robotPrefs.doExist();  // sets up Robot Preferences if none - ie. you just changed the RoboRio
+    robotPrefs.doExist();   // Sets up Robot Preferences if they do not exist : ie you just replaced RoboRio
+    climb.enableCompressor(true);
+
     oi = new OI();
   }
 
@@ -87,7 +96,8 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     log.writeLogEcho("Robot", "Disabled", "");
-  }  
+    climb.enableCompressor(true);
+  }
 
   @Override
   public void disabledPeriodic() {
@@ -116,6 +126,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     log.writeLogEcho("Robot", "Autonomous mode init", "");
+    beforeFirstEnable = false; // set variable that robot has been enabled
     m_autonomousCommand = m_chooser.getSelected();
 
     /*
@@ -124,6 +135,8 @@ public class Robot extends TimedRobot {
      * = new MyAutoCommand(); break; case "Default Auto": default:
      * autonomousCommand = new ExampleCommand(); break; }
      */
+
+    climb.enableCompressor(true);
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -145,7 +158,9 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    climb.enableCompressor(true);
     log.writeLogEcho("Robot", "Teleop mode init", "");
+    beforeFirstEnable = false; // set variable that robot has been enabled
     //if (m_autonomousCommand != null) {
      // m_autonomousCommand.cancel();
     }
