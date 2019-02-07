@@ -75,6 +75,7 @@ public class RobotMap {
   public static final double HatchMid = 47.0 - Robot.robotPrefs.robotOffset;
   public static final double HatchHigh = 75.0 - Robot.robotPrefs.robotOffset;
   public static final double CargoShipCargo = 34.75 - Robot.robotPrefs.robotOffset;
+  public static final double StowHatch = 5.0 - Robot.robotPrefs.robotOffset; //TODO determine height to stow
   public static final double ballOffset = 8.5;
   
   public enum ElevatorPosition {hatchLow, hatchMid, hatchHigh, cargoShipCargo}

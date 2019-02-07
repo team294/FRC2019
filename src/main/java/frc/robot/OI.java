@@ -63,6 +63,7 @@ public class OI {
   private Button xBoxX = new JoystickButton(xBoxController, 3);
   private Button xBoxY = new JoystickButton(xBoxController, 4);
 
+  private Trigger trigWristElevEncoder = new CheckWristEncoderFail();
 
   public OI() {
     Button[] left = new Button[12];
@@ -89,6 +90,9 @@ public class OI {
     xBoxB.whenActive(new ElevatorMoveToLevel(RobotMap.ElevatorPosition.hatchMid));
     xBoxY.whenActive(new ElevatorMoveToLevel(RobotMap.ElevatorPosition.hatchHigh));
     xBoxX.whenActive(new ElevatorMoveToLevel(RobotMap.ElevatorPosition.cargoShipCargo));
+
+    trigWristElevEncoder.whenActive(new WristEncoderFail());
+
     
     SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true));
     SmartDashboard.putData("Turn To Target", new VisionTurnToTarget());
