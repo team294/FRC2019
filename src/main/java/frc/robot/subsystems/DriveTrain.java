@@ -322,7 +322,7 @@ public class DriveTrain extends Subsystem {
     rightMotor3.setNeutralMode(NeutralMode.Coast);
 
    }else{
-    leftMotor1.setNeutralMode(NeutralMode.Coast);
+    leftMotor1.setNeutralMode(NeutralMode.Brake);  
     leftMotor2.setNeutralMode(NeutralMode.Brake);
     leftMotor3.setNeutralMode(NeutralMode.Brake);
     rightMotor1.setNeutralMode(NeutralMode.Brake);
@@ -490,9 +490,11 @@ public class DriveTrain extends Subsystem {
 
   public void driveOnLine() {
     // TODO: Integrate quadrants and gyro to correct based on which side of the line we're on
+    // TODO: Explain to Rob why that is needed
     double lPercentPower = 0;
     double rPercentPower = 0;
     double baseSpeed = 0.7; // Lowered from 1 for new line sensors further out, untested
+                            //  This speed should reduce as we get close so we don't damage robot
 
     int lineNum = Robot.lineFollowing.getLineNumber();
     //System.out.println("Line Number:" + lineNum);
@@ -546,7 +548,7 @@ public class DriveTrain extends Subsystem {
     if (DriverStation.getInstance().isEnabled()) {
       if ((++periodicCount) >= 25) {
         updateDriveLog();
-        Robot.lineFollowing.logLineFollowers(); // This is the best place for this I guess
+        Robot.lineFollowing.logLineFollowers(); // This is the best place for this I guess -- only updates about every 0.5 second
         periodicCount=0;  
       }
     }
