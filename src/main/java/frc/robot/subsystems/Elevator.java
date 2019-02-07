@@ -38,6 +38,7 @@ public class Elevator extends Subsystem {
 	private int periodicCount = 0; // increments every cycle of periodic
 	private int posMoveCount = 0; // increments every cycle the elevator moves up
 	private int negMoveCount = 0; // increments every cycle the elevator moves down
+	private int motorFaultCount = 0; // increments every cycle the motor detects an issue
 	private int idleCount = 0; // increments every cycle the elevator isn't moving
 	private double prevEnc = 0.0; // last recorded encoder value
 	private double currEnc = 0.0; // current recorded encoder value
@@ -184,13 +185,15 @@ public class Elevator extends Subsystem {
 	public void verifyMotors() {
 		double amps1 = Robot.pdp.getCurrent(RobotMap.elevatorMotor1PDP);
 		double amps2 = Robot.pdp.getCurrent(RobotMap.elevatorMotor2PDP);
-		if(amps1 > 10 && amps2 < 4) {
+
+		if(motorFaultCount >= 5) {
 			Robot.robotPrefs.recordStickyFaults("Elevator");
-			Robot.log.writeLog("Elevator", "Sticky Fault Logged", "");
+		}
+		if(amps1 > 10 && amps2 < 4) {
+			motorFaultCount++;
 		}
 		else if(amps2 > 10 && amps1 < 4) {
-			Robot.robotPrefs.recordStickyFaults("Elevator");
-			Robot.log.writeLog("Elevator", "Sticky Fault Logged", "");
+			motorFaultCount++;
 		}
 	}
 
@@ -228,13 +231,9 @@ public class Elevator extends Subsystem {
 		if (DriverStation.getInstance().isEnabled()) {
 			prevEnc = currEnc;
 			currEnc = getElevatorEncTicks();
-			if (currEnc == prevEnc) {
-				idleCount++;
-			} else {
-				idleCount = 0;
-			}
+			idleCount = (currEnc == prevEnc) ? idleCount++ : 0;
 			if (idleCount >= 50) {
-				if ((++periodicCount) >= 25) {
+				if ((periodicCount++) >= 25) {
 					updateElevatorLog();
 					verifyMotors();
 					periodicCount = 0;

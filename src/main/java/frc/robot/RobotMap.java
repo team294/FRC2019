@@ -15,7 +15,7 @@ package frc.robot;
  */
 public class RobotMap {
   
-  public static final int PowerDistributionPanel = 0;
+  public static final int powerDistributionPanel = 0;
 
   public static final int leftMotor1 = 10;
   public static final int leftMotor2 = 11;
@@ -68,10 +68,10 @@ public class RobotMap {
   public static final int elevatorMotor2PDP = 3; //Check on PDP and change
 
   //Elevator Level Heights (in inches)
-  public static final double HatchLow = 19.0 - Robot.robotPrefs.elevatorBottomToFloor;
-  public static final double HatchMid = 47.0 - Robot.robotPrefs.elevatorBottomToFloor;
-  public static final double HatchHigh = 75.0 - Robot.robotPrefs.elevatorBottomToFloor;
-  public static final double CargoShipCargo = 34.75 - Robot.robotPrefs.elevatorBottomToFloor;
+  public static final double hatchLow = 19.0 - Robot.robotPrefs.elevatorBottomToFloor;
+  public static final double hatchMid = 47.0 - Robot.robotPrefs.elevatorBottomToFloor;
+  public static final double hatchHigh = 75.0 - Robot.robotPrefs.elevatorBottomToFloor;
+  public static final double cargoShipCargo = 34.75 - Robot.robotPrefs.elevatorBottomToFloor;
   public static final double ballOffset = 8.5;
   
   public enum ElevatorPosition {hatchLow, hatchMid, hatchHigh, cargoShipCargo}

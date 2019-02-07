@@ -2,6 +2,7 @@ package frc.robot.Utilities;
 
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 
 public class RobotPreferences {
 
@@ -89,6 +90,7 @@ public class RobotPreferences {
 				putString("problemSubsystem", (getString("problemSubsystem") + ", "));
 			}
 			putString("problemSubsystem", getString("problemSubsystem") + subsystem);
+			Robot.log.writeLog(subsystem, "Sticky Fault Logged", "");
 		}
 		if(!getBoolean("problemExists")) {
 			putBoolean("problemExists", true);
