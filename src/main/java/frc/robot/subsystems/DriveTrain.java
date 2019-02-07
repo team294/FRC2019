@@ -53,6 +53,7 @@ public class DriveTrain extends Subsystem {
   
   private int periodicCount = 0;
   
+  private double motorFaultCount; // increments every cycle the motor detects an issue
   private double leftEncoderZero = 0, rightEncoderZero = 0;
 
   public DriveTrain() {
@@ -291,7 +292,33 @@ public class DriveTrain extends Subsystem {
     if (DriverStation.getInstance().isEnabled()) {
       if ((++periodicCount) >= 25) {
         updateDriveLog();
+        verifyMotors(RobotMap.leftMotor1PDP, RobotMap.leftMotor2PDP, RobotMap.leftMotor3PDP, "Left");
+        verifyMotors(RobotMap.rightMotor1PDP, RobotMap.rightMotor2PDP, RobotMap.rightMotor3PDP, "Right");
         periodicCount=0;  
+      }
+    }
+  }
+  
+  /**
+   * Checks drive motor currents, records sticky faults if a motor is faulty for more than 5 cycles
+   * @param motor1PDP RobotMap PDP address for motor1
+   * @param motor2PDP RobotMap PDP address for motor1
+   * @param motor3PDP RobotMap PDP address for motor1
+   * @param side either "Left" or "Right" depending on which side is being read
+   */
+	public void verifyMotors(int motor1PDP, int motor2PDP, int motor3PDP, String side) {
+      double amps1 = Robot.pdp.getCurrent(motor1PDP);
+      double amps2 = Robot.pdp.getCurrent(motor2PDP);
+      double amps3 = Robot.pdp.getCurrent(motor3PDP);
+      double averageAmps = (amps1 + amps2 + amps3) / 3;
+
+		if(motorFaultCount >= 5) {
+      Robot.robotPrefs.recordStickyFaults(side + " Drive Train");
+      motorFaultCount = 0;
+		}
+		if(averageAmps > 10) {
+			if(amps1 < 7 || amps2 < 7 || amps3 < 7) {
+        motorFaultCount++;
       }
     }
   }

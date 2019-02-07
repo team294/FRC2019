@@ -180,7 +180,7 @@ public class Elevator extends Subsystem {
 	}
 
 	/**
-	 * 
+	 * Checks elevator motor currents, records sticky faults if a motor is faulty for more than 5 cycles
 	 */
 	public void verifyMotors() {
 		double amps1 = Robot.pdp.getCurrent(RobotMap.elevatorMotor1PDP);
@@ -188,6 +188,7 @@ public class Elevator extends Subsystem {
 
 		if(motorFaultCount >= 5) {
 			Robot.robotPrefs.recordStickyFaults("Elevator");
+			motorFaultCount = 0;
 		}
 		if(amps1 > 10 && amps2 < 4) {
 			motorFaultCount++;

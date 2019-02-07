@@ -84,6 +84,11 @@ public class RobotPreferences {
 		}
 	}
 
+	/**
+	 * Records in robotPreferences, fileLog, and Shuffleboard that a problem was found in a subsystem
+	 * (only records if the subsystem wasn't already flagged)
+	 * @param subsystem String name of subsystem in which a problem exists
+	 */
 	public void recordStickyFaults(String subsystem) {
 		if(getString("problemSubsystem").indexOf(subsystem) == -1) {
 			if(getString("problemSubsystem").length() != 0) {
@@ -98,12 +103,14 @@ public class RobotPreferences {
 		SmartDashboard.putString("problemSubsystem", getString("problemSubsystem"));
 		SmartDashboard.putBoolean("problemExists", getBoolean("problemExists"));
 	}
+	/**
+	 * Clears any sticky faults in the RobotPreferences and Shuffleboard
+	 */
 	public void clearStickyFaults() {
 		putString("problemSubsystem", "");
 		putBoolean("problemExists", false);
 		SmartDashboard.putString("problemSubsystem", "");
 		SmartDashboard.putBoolean("problemExists", false);
-
 	}
 
 	public String getString(String k) {
