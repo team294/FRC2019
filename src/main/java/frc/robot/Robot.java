@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Utilities.*;
+import frc.robot.utilities.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
@@ -74,7 +74,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-   // Robot.lineFollowing.displayLineSensors();  //This caused an error.  not in lineFollowing ???
+    Robot.lineFollowing.displayLineSensors();
     Robot.driveTrain.getGyroRotation();
     // Robot.log.writeLog("Robot", "periodic", "current time," + System.currentTimeMillis());
   }
@@ -157,8 +157,10 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
     Robot.vision.readCameraData();
-    //SmartDashboard.putBoolean("Is Line Present?", lineFollowing.isLinePresent());  caused an error  not in lineFollowing  ??? rpc
-    SmartDashboard.putBoolean("Vision Assistance Available", vision.areaFromCamera != 0);
+    SmartDashboard.putBoolean("Is Line Present?", lineFollowing.isLinePresent());
+    SmartDashboard.putNumber("Target Distance", Robot.vision.distanceFromTarget());
+    SmartDashboard.putNumber("Target Quadrant", Robot.driveTrain.checkScoringQuadrant());
+    //SmartDashboard.putBoolean("Vision Assistance Available", vision.areaFromCamera != 0);
   }
 
   /**

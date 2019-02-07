@@ -1,0 +1,78 @@
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
+
+package frc.robot.utilities;
+
+/**
+ * Class used to check if a measured value is within a given
+ * tolerance for a given number of measurements.
+ * 
+ * @author Don Sawdai
+ *
+ */
+public class ToleranceChecker {
+	private double tolerance;
+    private int requiredInToleranceSamples;    	// These number of samples must be within tolerance for "success"
+    private int nInToleranceSamples;  			// Number of successive measurements that were in tolerance
+
+    /**
+     * Create a new tolerance checker
+     * @param tolerance abs(error) must be less than or equal to tolerance for measurement to be "good" 
+     * @param requiredInToleranceSamples number of measured samples that must be in tolerance for "success"
+     */
+    public ToleranceChecker(double tolerance, int requiredInToleranceSamples) {
+    	this.tolerance = tolerance;
+    	this.requiredInToleranceSamples = requiredInToleranceSamples;
+    	reset();
+    }
+    
+    /**
+     * Reset the absolute error tolerance to be "good"
+     * @param tolerance
+     */
+    public void setTolerance(double tolerance) {
+    	this.tolerance = tolerance;
+    }
+    
+    /**
+     * Reset tolerance checker to "out of tolerance"
+     */
+    public void reset() {
+    	nInToleranceSamples = 0;
+    }
+    
+    /**
+     * Check if error is within tolerance
+     * @param error value to check
+     */
+    public void check(double error) {
+    	if (Math.abs(error)<=tolerance) {
+    		nInToleranceSamples++;
+    	} else {
+    		nInToleranceSamples = 0;
+    	}
+    }
+    
+    /**
+     * Returns whether or not the last N error samples been within tolerance
+     * @return true = yes, false = no
+     */
+    public boolean success() {
+    	return (nInToleranceSamples >= requiredInToleranceSamples);
+    }
+    
+    /**
+     * Check if current error is within tolerance, then returns whether or not the 
+     * last N error samples been within tolerance
+     * @param error current error
+     * @return true = yes, false = no
+     */
+    public boolean success(double error) {
+    	check(error);
+    	return success();
+    }
+}
