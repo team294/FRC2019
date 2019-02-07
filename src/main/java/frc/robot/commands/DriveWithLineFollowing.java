@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
+/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -11,50 +11,42 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
-/**
- * An example command. You can replace me with your own command.
- */
-public class DriveWithJoysticks extends Command {
-  public DriveWithJoysticks() {
+public class DriveWithLineFollowing extends Command {
+
+  public DriveWithLineFollowing() {
     // Use requires() here to declare subsystem dependencies
+    // eg. requires(chassis);
     requires(Robot.driveTrain);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.log.writeLogEcho("DriveTrain", "Driver Control Init", "");
-    Robot.vision.setPipe(1); // This is extremely dangerous to have this unbounded wait here
+    Robot.log.writeLogEcho("DriveTrain", "Line Tracking Init", "");
+    //Robot.driveTrain.clearEncoderList();
+    Robot.driveTrain.driveOnLine();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double leftValue = Robot.oi.leftJoystick.getY();
-    double rightValue = Robot.oi.rightJoystick.getY();
-
-    if (Robot.oi.getDriveDirection() == true)  {
-      Robot.driveTrain.tankDrive(-leftValue, -rightValue);
-    } else {
-      Robot.driveTrain.tankDrive(leftValue, rightValue);
-    }
-
-    SmartDashboard.putBoolean("Vision Assistance Available", (Robot.vision.vertOffset <= 1.5 && Robot.vision.areaFromCamera != 0)); // Do we even need this anymore? Are there locations that we can score from and still see the side target? 
-    // Tells us if vision is available for the rocket. Will need to be updated for when scoring balls.
+    Robot.driveTrain.driveOnLine();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return Robot.driveTrain.areEncodersStopped(5.0); // Check if the encoders have changed
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
     Robot.driveTrain.stop();
-    Robot.log.writeLogEcho("DriveTrain", "Driver Control Ended", "");
-    Robot.vision.setPipe(0); // Return the pipeline to the original vision tracking one
+    Robot.log.writeLogEcho("DriveTrain", "Line Tracking Ended", "");
+    if (Math.abs(Robot.lineFollowing.getLineNumber()) <= 1) {
+      SmartDashboard.putBoolean("Ready to Score", true);
+    }
   }
 
   // Called when another command which requires one or more of the same

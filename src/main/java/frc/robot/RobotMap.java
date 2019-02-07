@@ -23,18 +23,33 @@ public class RobotMap {
   public static final int rightMotor1 = 20;
   public static final int rightMotor2 = 21;
   public static final int rightMotor3 = 22;
-  public static final int elevatorMotor1 = 30;
-  public static final int elevatorMotor2 = 31;
-  public static final int climbMotor1 = 40;
-  public static final int climbMotor2 = 41;
-  public static final int climbVacuum1 = 42;
-  public static final int climbVacuum2 = 43;
   public static final double encoderTicksPerRevolution = 4096.0;
 
+
+  public static final int elevatorMotor1 = 30;
+  public static final int elevatorMotor2 = 31;
+
+  public static final int cargoMotor1 = 40;
+  public static final int cargoMotor2 = 41;
+
+  public static final int climbMotor1 = 50;
+  public static final int climbMotor2 = 51;
+  public static final int climbVacuum1 = 52;
+  public static final int climbVacuum2 = 53;
+  
   // Pneumatic Addresses
   public static final int pnuematicShifterLow = 0;
   public static final int pnuematicShifterHigh = 1;
-  
+  public static final int pneumaticHatchIntake = 2;
+ 
+    
+  //RoboRIO digital I/O Addresses
+  public static final int lineFollowerLeft = 2;
+  public static final int lineFollowerCenter = 1;
+  public static final int lineFollowerRight = 0;
+  public static final int vacuumSwitch = 3;
+  public static final int elevatorLowerLimit = 4;
+   
   // TODO Update with 2018 base
   // Imperial versions
   public static final double wheelbase_in = 25.0;       // wheelbase, in inches
@@ -53,12 +68,7 @@ public class RobotMap {
   public static final double max_acceleration_mpsps = max_acceleration_ipsps*0.0254;  // max robot acceleration, in meters per second per second
   public static final double max_jerk_mpspsps = max_jerk_ipspsps*0.0254;  // max robot jerk, in meters per second per second per second
 
-  public static final int lineFollower1 = 0;
-  public static final int lineFollower2 = 1;
-  public static final int lineFollower3 = 2;
-  public static final int vacuumSwitch = 3;
-  public static final int elevatorLowerLimit = 4;
-
+ 
   // PDP Addresses
   public static final int leftMotor1PDP = 13; //Check on PDP and change
   public static final int leftMotor2PDP = 15; //Check on PDP and change
@@ -74,7 +84,7 @@ public class RobotMap {
   public static final int elevatorMotor2PDP = 0; //Check on PDP and change
 
   //Elevator Level Heights (in inches)
-  public static final double HatchLow = 19.0 - Robot.robotPrefs.robotOffset;
+  public static final double HatchLow = 19.0 - Robot.robotPrefs.robotOffset; // For formatting, these should be lower camelCase
   public static final double HatchMid = 47.0 - Robot.robotPrefs.robotOffset;
   public static final double HatchHigh = 75.0 - Robot.robotPrefs.robotOffset;
   public static final double CargoShipCargo = 34.75 - Robot.robotPrefs.robotOffset;

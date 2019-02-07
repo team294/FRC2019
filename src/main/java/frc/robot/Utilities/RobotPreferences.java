@@ -1,4 +1,4 @@
-package frc.robot.Utilities;
+package frc.robot.utilities;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;

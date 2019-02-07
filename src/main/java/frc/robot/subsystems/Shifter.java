@@ -21,7 +21,6 @@ public class Shifter extends Subsystem {
 
   //private final Solenoid shifter = new Solenoid(RobotMap.pnuematicShifter);
   private final DoubleSolenoid shifter = new DoubleSolenoid(RobotMap.pnuematicShifterLow, RobotMap.pnuematicShifterHigh);
-  
 
   public Shifter() {
 		super();

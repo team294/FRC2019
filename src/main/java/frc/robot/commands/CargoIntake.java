@@ -7,46 +7,54 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
-public class TurnToLine extends Command {
-  public TurnToLine() {
+public class CargoIntake extends Command {
+
+  private double timeIntook = 0;
+
+  public CargoIntake() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.driveTrain);
+    requires(Robot.cargo);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.driveTrain.turnToLine();
+    Robot.cargo.intakeCargo();
+    timeIntook = Timer.getFPGATimestamp();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.driveTrain.turnToLine();
-    SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
-    SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
-    SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));
+    Robot.cargo.intakeCargo();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    //TODO change is finished when we find out type of sensor
+    if (Timer.getFPGATimestamp() >= timeIntook + 1) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.cargo.stopCargoIntake();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    end();
   }
 }
