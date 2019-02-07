@@ -65,6 +65,7 @@ public class LineFollowing {
             lineNumber = 0; // 0 1 0 : Straight
         } else {
             lineNumber = 3; // 0 0 0 ; 1 1 1 ; 1 0 1 : Stop
+            // Probably want a print to log and possibly driver station to indicate that line sensors are out
         }
         return lineNumber;
     }

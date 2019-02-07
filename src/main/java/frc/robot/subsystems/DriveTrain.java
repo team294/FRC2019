@@ -336,9 +336,9 @@ public class DriveTrain extends Subsystem {
   /**
    * Checks if both encoders are turning. Make sure you have been calling updateEncoderList enough times before.
    * @param precision Precision, in ticks (i.e. number of ticks by which the average can differ from the last reading)
-   * @return true if the difference between the average and the last element is less than the precision specified
+   * @return true if the difference between the average and the last element is less than the precision specified (this means both encoders are stopped)
    */
-  public boolean areEncodersTurning(double precision) {
+  public boolean areEncodersStopped(double precision) {
     if (lEncoderStack.size()<50) return (lEncStopped = false) || (rEncStopped = false); // Sets both to false while returning.
     double lSum = 0.0, rSum = 0.0;
     Iterator<Double> lIterator = lEncoderStack.descendingIterator();
@@ -363,7 +363,7 @@ public class DriveTrain extends Subsystem {
 
   /**
    * Gets the predicted scoring quadrant of the robot based on what the gyro currently reads
-   * @return
+   * @return a quadrant (corresponding to the unit circle) with axes in between quadrants numbered as x.5 values.
    */
   public double checkScoringQuadrant() {
     // TODO: Add some console prints or SD to check
@@ -454,7 +454,7 @@ public class DriveTrain extends Subsystem {
     double lJoystickAdjust = 0.7 * Math.sqrt(Math.abs(Robot.oi.leftJoystick.getY()));
     double lPercentOutput = lJoystickAdjust + (gainConstant * finalAngle); //xVal
     double rPercentOutput = lJoystickAdjust - (gainConstant * finalAngle); //xVal
- 
+
     /* Untested auto-turn stuff */
     if (lEncStopped && lPercentOutput != 0) rPercentOutput = 1.0; // The goal here is to slam the right side so that we still line up to the wall
     if (rEncStopped && rPercentOutput != 0) lPercentOutput = 1.0; 
@@ -494,7 +494,6 @@ public class DriveTrain extends Subsystem {
     double lPercentPower = 0;
     double rPercentPower = 0;
     double baseSpeed = 0.7; // Lowered from 1 for new line sensors further out, untested
-                            //  This speed should reduce as we get close so we don't damage robot
 
     int lineNum = Robot.lineFollowing.getLineNumber();
     //System.out.println("Line Number:" + lineNum);
@@ -536,6 +535,57 @@ public class DriveTrain extends Subsystem {
     this.robotDrive.tankDrive(lPercentPower, rPercentPower);
     updateEncoderList();
   }
+
+  public void quadrantLineFollowing(double quadrant) {
+    // add a special case for straight down (quadrant 3.5) because of roll over on 180
+    double angleTolerance = 3.0; // degrees
+    boolean left = Math.abs(getGyroRotation()) > Math.abs(getTargetAngle(quadrant) + angleTolerance);
+    boolean right = Math.abs(getGyroRotation()) < Math.abs(getTargetAngle(quadrant) - angleTolerance);
+    if (!left && !right) {
+      driveOnLine(); // if we're close to center just do the simple line following
+      return;
+    }
+
+    double baseSpeed = 0.7; // Lowered from 1 for new line sensors further out, untested
+    int lineNum = Robot.lineFollowing.getLineNumber();
+    double lPercentPower = 0.0, rPercentPower = 0.0;
+
+    if (left) {
+      if (lineNum == 0) {
+        // Straight
+        //lPercentPower = .55*baseSpeed;
+        //rPercentPower = .55*baseSpeed;
+        lPercentPower = 0.65*baseSpeed;
+        rPercentPower = 0.65*baseSpeed;
+      } else if (lineNum == 1) {
+        // Turn left slight?
+        lPercentPower = .6*baseSpeed;
+        rPercentPower = 0*baseSpeed;
+      } else if (lineNum == -1) {
+        // Turn right slight?
+        lPercentPower = 0*baseSpeed;
+        rPercentPower = .6*baseSpeed;
+      } else if (lineNum == -2) {
+        // Turn left
+        lPercentPower = .8*baseSpeed;
+        rPercentPower = -.8*baseSpeed;
+      } else if (lineNum == 2) {
+        // Turn right
+        lPercentPower = -.8*baseSpeed;
+        rPercentPower = .8*baseSpeed;
+      } else {
+        // Drive forwards in hopes of recovering the line?
+        lPercentPower = 0.3;
+        rPercentPower = 0.3;
+      }
+    }
+    
+  }
+  
+  public void quadrantLineFollowing() {
+    quadrantLineFollowing(checkScoringQuadrant());
+  }
+
 
   @Override
   public void initDefaultCommand() {

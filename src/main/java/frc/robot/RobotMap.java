@@ -71,7 +71,7 @@ public class RobotMap {
   public static final int elevatorMotor2PDP = 0; //Check on PDP and change
 
   //Elevator Level Heights (in inches)
-  public static final double HatchLow = 19.0 - Robot.robotPrefs.robotOffset;
+  public static final double HatchLow = 19.0 - Robot.robotPrefs.robotOffset; // For formatting, these should be lower camelCase
   public static final double HatchMid = 47.0 - Robot.robotPrefs.robotOffset;
   public static final double HatchHigh = 75.0 - Robot.robotPrefs.robotOffset;
   public static final double CargoShipCargo = 34.75 - Robot.robotPrefs.robotOffset;

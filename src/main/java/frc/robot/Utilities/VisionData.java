@@ -91,10 +91,6 @@ public class VisionData {
     public double distanceFromTarget (){
         double myDistance = 0.0;
         double cameraOffset = 12.0;
-
-        double camMountAngle = 19.75; // This needs to be measured and tested, and will eventually be not just a variable
-        double targetHeight = 28.75; // Height of the crosshair of the vision target; approx. 2ft, 4-3/4 in
-        double camMountHeight = 15; // Height of the camera above the floor
     
         // reference distance = 23.75 inches
         // reference area =  3.5 (the units that are used in limelight)

@@ -36,7 +36,7 @@ public class DriveWithLineFollowing extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Robot.driveTrain.areEncodersTurning(5.0); // Check if the encoders have changed
+    return Robot.driveTrain.areEncodersStopped(5.0); // Check if the encoders have changed
   }
 
   // Called once after isFinished returns true
