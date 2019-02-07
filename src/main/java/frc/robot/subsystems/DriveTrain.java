@@ -322,7 +322,7 @@ public class DriveTrain extends Subsystem {
     rightMotor3.setNeutralMode(NeutralMode.Coast);
 
    }else{
-    leftMotor1.setNeutralMode(NeutralMode.Brake);  
+    leftMotor1.setNeutralMode(NeutralMode.Brake);
     leftMotor2.setNeutralMode(NeutralMode.Brake);
     leftMotor3.setNeutralMode(NeutralMode.Brake);
     rightMotor1.setNeutralMode(NeutralMode.Brake);

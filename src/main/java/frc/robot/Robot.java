@@ -28,6 +28,8 @@ public class Robot extends TimedRobot {
   public static DriveTrain driveTrain;
   public static Shifter shifter;
   public static Elevator elevator;
+  public static Cargo cargo;
+  public static Hatch hatch;
   public static VisionData vision;
   public static LineFollowing lineFollowing;
   public static OI oi;
@@ -49,14 +51,15 @@ public class Robot extends TimedRobot {
     driveTrain = new DriveTrain();
     shifter = new Shifter();
     elevator = new Elevator();
+    cargo = new Cargo();
+    hatch = new Hatch();
     vision = new VisionData();
     lineFollowing = new LineFollowing();
     pdp = new PowerDistributionPanel();
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
-    robotPrefs.doExist();   // Sets up Robot Preferences if they do not exist : ie you just replaced RoboRio
-
+    robotPrefs.doExist();  // sets up Robot Preferences if none - ie. you just changed the RoboRio
     oi = new OI();
   }
 
