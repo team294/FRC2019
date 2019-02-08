@@ -9,7 +9,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.buttons.Trigger;
 import frc.robot.Robot;
-import frc.robot.subsystems.*;
 
 /**
  * Get() returns true if the Wrist encoder has failed (but not the elevator encoder)

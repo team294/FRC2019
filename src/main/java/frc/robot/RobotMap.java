@@ -23,24 +23,18 @@ public class RobotMap {
   public static final int rightMotor1 = 20;
   public static final int rightMotor2 = 21;
   public static final int rightMotor3 = 22;
-  public static final double encoderTicksPerRevolution = 4096.0;
-
-
   public static final int elevatorMotor1 = 30;
   public static final int elevatorMotor2 = 31;
   public static final int cargoMotor1 = 40;
   public static final int cargoMotor2 = 41;
- //  TODO  these lines don't seem to be used anuwhere.  Remove if not needed
- // public static final double encoderDegreesPerTicks = 360.0 / encoderTicksPerRevolution;
- // public static final double encoderTicksPerDegrees = encoderTicksPerRevolution / 360.0;
-
   public static final int climbMotor1 = 50;
   public static final int climbMotor2 = 51;
   public static final int climbVacuum1 = 52;
   public static final int climbVacuum2 = 53;
-
   public static final int wristMotor = 61;
    
+  public static final double encoderTicksPerRevolution = 4096.0;
+
   // Pneumatic Addresses
   public static final int pnuematicShifterLow = 0;
   public static final int pnuematicShifterHigh = 1;
@@ -86,6 +80,7 @@ public class RobotMap {
   public static final int climbVacuum2PDP = 6; //Check on PDP and change
   public static final int elevatorMotor1PDP = 0; //Check on PDP and change
   public static final int elevatorMotor2PDP = 0; //Check on PDP and change
+  // TODO add wrist and cargo pdp addresses
 
   //Elevator Level Heights (in inches)
   public static final double HatchLow = 19.0 - Robot.robotPrefs.robotOffset; // For formatting, these should be lower camelCase

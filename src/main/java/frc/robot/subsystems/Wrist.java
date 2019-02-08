@@ -9,7 +9,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.*;
@@ -35,6 +34,8 @@ public class Wrist extends Subsystem {
 	private double encSnapShot = 0.0; // snapshot of encoder value used to make sure encoder is working
   private boolean encOK = true; // true if encoder works, false if encoder broke
   private boolean wristMode = true; // true if automated, false if manual mode
+  private double encoderDegreesPerTicks = 360.0 / RobotMap.encoderTicksPerRevolution;
+  private double encoderTicksPerDegrees = RobotMap.encoderTicksPerRevolution / 360.0;
 
   // TODO test PID terms with actual wrist
   private double kP = 0;
@@ -138,7 +139,7 @@ public class Wrist extends Subsystem {
    * @return parameter encoder ticks converted to equivalent degrees
    */
   public double encoderTicksToDegrees(double encoderTicks) {
-    return encoderTicks * RobotMap.encoderDegreesPerTicks;
+    return encoderTicks * encoderDegreesPerTicks;
   }
 
   /**
@@ -147,7 +148,7 @@ public class Wrist extends Subsystem {
    * @return parameter degrees converted to equivalent encoder ticks
    */
   public double degreesToEncoderTicks(double degrees) {
-    return degrees * RobotMap.encoderTicksPerDegrees;
+    return degrees * encoderTicksPerDegrees;
   }
 
   /**
