@@ -30,9 +30,9 @@ public class RobotMap {
   public static final int elevatorMotor2 = 31;
   public static final int cargoMotor1 = 40;
   public static final int cargoMotor2 = 41;
- 
-  public static final double encoderDegreesPerTicks = 360.0 / encoderTicksPerRevolution;
-  public static final double encoderTicksPerDegrees = encoderTicksPerRevolution / 360.0;
+ //  TODO  these lines don't seem to be used anuwhere.  Remove if not needed
+ // public static final double encoderDegreesPerTicks = 360.0 / encoderTicksPerRevolution;
+ // public static final double encoderTicksPerDegrees = encoderTicksPerRevolution / 360.0;
 
   public static final int climbMotor1 = 50;
   public static final int climbMotor2 = 51;
