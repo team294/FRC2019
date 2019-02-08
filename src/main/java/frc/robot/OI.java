@@ -78,13 +78,21 @@ public class OI {
       if (i == 1) {
         left[i].whenPressed(new Shift(false));
         right[i].whenPressed(new Shift(true));
-      } else if (i == 3) {
-        left[i].whenPressed(new DriveWithVision());
+      } else if (i == 2) {
+        left[i].whenPressed(new DriveAssist());
+        right[i].whenPressed(new DriveAssist());
         left[i].whenReleased(new DriveWithJoysticks());
-        right[i].whenPressed(new VisionTurnToTarget());
-        right[i].whenReleased(new DriveWithJoysticks()); // We should be able to cancel the commands when the button is released. This is a better method to do that.
+        right[i].whenReleased(new DriveWithJoysticks());
+      } else if (i == 3) {
+        left[i].whenPressed(new DriveWithVision(false, true)); // No line followers, but gyro correction
+        left[i].whenReleased(new DriveWithJoysticks());
+        right[i].whenPressed(new DriveWithVision(false, false)); // No line followers, no gyro
+        right[i].whenReleased(new DriveWithJoysticks());
       }
     }
+
+    // The conditional logic needs to go in the command itself. No logic can be done in OI since OI is constructed at the start and not run repeatedly
+    SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true));
 
     xBoxA.whenActive(new ElevatorMoveToLevel(RobotMap.ElevatorPosition.hatchLow));
     xBoxB.whenActive(new ElevatorMoveToLevel(RobotMap.ElevatorPosition.hatchMid));
@@ -96,15 +104,18 @@ public class OI {
     
     SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true));
     SmartDashboard.putData("Turn To Target", new VisionTurnToTarget());
+
+    SmartDashboard.putData("Drive on line", new DriveWithLineFollowing());
+
+    SmartDashboard.putData("Move Elevator to Zero", new ElevatorMoveToLevel(0.0));
+    SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero());
+    //SmartDashboard.putData("Manual Zero Elev Enc (w/out Limit)", new ElevatorManualZero());
+  
     SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
     SmartDashboard.putData("Elevator Down", new ElevatorLower()); // For testing limit switch and encoder
     SmartDashboard.putData("Elevator to Zero", new ElevatorMoveToLevel(0.0)); // Move elevator to zero level (might be put on xBox for ball intaking later)
     SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero()); // Manual zeroing of elevator encoder
-    SmartDashboard.putData("Turn To Line", new TurnToLine());
-    SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
-    SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
-    SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));
-    SmartDashboard.putData("Calibrate Wrist Zero", new WristCalibrateZero());
+    //SmartDashboard.putData("Turn To Line", new TurnToLine());
   }
 
   public void setDriveDirection(boolean direction) {

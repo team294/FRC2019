@@ -1,5 +1,6 @@
-package frc.robot.Utilities;
+package frc.robot.utilities;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -13,8 +14,10 @@ public class RobotPreferences {
 	 */
 	public boolean inBCRLab;			// Set true if in the BCR lab (with a big pole in the middle of the field)
 	public boolean prototypeRobot;		// Set true if using code for prototype bots, false for practice and competition bots
-	public boolean driveDirection;		// true for reversed
-	public double wheelCircumference;	// wheel circumference, in inches
+	public boolean driveDirection;		// True for reversed
+	public boolean climbCalibrated = false; // Default to arm being uncalibrated
+	public double climbCalZero; // Climb encoder position at 0 degrees in encoder ticks
+	public double wheelCircumference;	// Wheel circumference, in inches
 	public double driveTrainDistanceFudgeFactor;  // Scaling factor for driving distance (default = 1)
 	public double elevatorGearCircumference; //circumference of the gear driving the elevator in inches
 	public double robotOffset; //distance of elevator 0 value from the ground
@@ -52,7 +55,31 @@ public class RobotPreferences {
 		wristGearRatio = prefs.getDouble("wristGearRatio", 1.0);
 		wristCalZero = prefs.getDouble("wristCalZero", -9999);
 		wristCalibrated = prefs.getBoolean("wristCalibrated", false);		
+		cameraDistanceFromFrontOfBumper = prefs.getDouble("cameraDistanceFromFrontOfBumper", 12);	
+		climbCalZero = prefs.getDouble("calibrationZeroDegrees", -9999);
+		climbCalibrated = (climbCalZero != -9999);
+		if(!climbCalibrated) {
+			DriverStation.reportError("Error: Preferences missing from RoboRio for Climb calibration.", true);
+			climbCalZero = 0;
+		}	
 	}
+
+	/**
+	 * Sets arm angle calibration factor and enables angle control modes for arm.
+	 * 
+	 * @param armCalZero
+	 *            Calibration factor for arm
+	 * @param writeCalToPreferences
+	 *            true = store calibration in Robot Preferences, false = don't
+	 *            change Robot Preferences
+	 */
+	public void setArmCalibration(double climbCalZero, boolean writeCalToPreferences) {
+		this.climbCalZero = climbCalZero;
+		climbCalibrated = true;
+		if (writeCalToPreferences) {
+			prefs.putDouble("calibrationZeroDegrees", climbCalZero);
+		}
+}
 
 	/* Sets up Preferences if they haven't been set as when changing RoboRios or first start-up.
 		The values are set to defaults, so if using the prototype robots set inBCRLab to true
@@ -103,6 +130,8 @@ public class RobotPreferences {
 		if (writeCalToPreferences) {
 			prefs.putDouble("calibrationZeroDegrees", wristCalZero);
 		}
+		if (!prefs.containsKey("calibrationZeroDegrees")) {
+			prefs.putDouble("calibrationZeroDegrees", -9999.0);		}
 	}
 
 	public String getString(String k) {

@@ -11,8 +11,9 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
-public class TurnToLine extends Command {
-  public TurnToLine() {
+public class DriveWithLineFollowing extends Command {
+
+  public DriveWithLineFollowing() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.driveTrain);
@@ -21,32 +22,37 @@ public class TurnToLine extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.driveTrain.turnToLine();
+    Robot.log.writeLogEcho("DriveTrain", "Line Tracking Init", "");
+    //Robot.driveTrain.clearEncoderList();
+    Robot.driveTrain.driveOnLine();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.driveTrain.turnToLine();
-    SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
-    SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
-    SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));
+    Robot.driveTrain.driveOnLine();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return Robot.driveTrain.areEncodersStopped(5.0); // Check if the encoders have changed
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.driveTrain.stop();
+    Robot.log.writeLogEcho("DriveTrain", "Line Tracking Ended", "");
+    if (Math.abs(Robot.lineFollowing.getLineNumber()) <= 1) {
+      SmartDashboard.putBoolean("Ready to Score", true);
+    }
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    end();
   }
 }
