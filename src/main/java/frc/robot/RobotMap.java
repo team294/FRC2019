@@ -18,24 +18,27 @@ public class RobotMap {
   public static final int PowerDistributionPanel = 0;
 
   public static final int leftMotor1 = 10;
-  public static final int leftMotor2 = 11;
+  public static final int leftMotor2 = 11;       // Talon
   public static final int leftMotor3 = 12;
   public static final int rightMotor1 = 20;
-  public static final int rightMotor2 = 21;
+  public static final int rightMotor2 = 21;      // Talon
   public static final int rightMotor3 = 22;
-  public static final double encoderTicksPerRevolution = 4096.0;
+  
 
-
-  public static final int elevatorMotor1 = 30;
+  public static final int elevatorMotor1 = 30;   // Talon
   public static final int elevatorMotor2 = 31;
 
   public static final int cargoMotor1 = 40;
   public static final int cargoMotor2 = 41;
 
-  public static final int climbMotor1 = 50;
+  public static final int climbMotor1 = 50;     // Talon
   public static final int climbMotor2 = 51;
-  public static final int climbVacuum1 = 52;
+  public static final int climbVacuum1 = 52;    // Talon
   public static final int climbVacuum2 = 53;
+
+  public static final int wristMotor = 60;      // Talon
+
+
   
   // Pneumatic Addresses
   public static final int pnuematicShifterLow = 0;
@@ -50,6 +53,8 @@ public class RobotMap {
   public static final int vacuumSwitch = 3;
   public static final int elevatorLowerLimit = 4;
    
+  public static final double encoderTicksPerRevolution = 4096.0;
+
   // TODO Update with 2018 base
   // Imperial versions
   public static final double wheelbase_in = 25.0;       // wheelbase, in inches
@@ -70,18 +75,23 @@ public class RobotMap {
 
  
   // PDP Addresses
-  public static final int leftMotor1PDP = 13; //Check on PDP and change
-  public static final int leftMotor2PDP = 15; //Check on PDP and change
-  public static final int leftMotor3PDP = 14; //Check on PDP and change
-  public static final int rightMotor1PDP = 2; //Check on PDP and change
-  public static final int rightMotor2PDP = 0; //Check on PDP and change
-  public static final int rightMotor3PDP = 1; //Check on PDP and change 
+  public static final int leftMotor1PDP = 13; 
+  public static final int leftMotor2PDP = 15; 
+  public static final int leftMotor3PDP = 14; 
+  public static final int rightMotor1PDP = 2; 
+  public static final int rightMotor2PDP = 0; 
+  public static final int rightMotor3PDP = 1; 
   public static final int climbMotor1PDP = 3; //Check on PDP and change 
   public static final int climbMotor2PDP = 4; //Check on PDP and change 
   public static final int climbVacuum1PDP = 5; //Check on PDP and change
   public static final int climbVacuum2PDP = 6; //Check on PDP and change
   public static final int elevatorMotor1PDP = 0; //Check on PDP and change
   public static final int elevatorMotor2PDP = 0; //Check on PDP and change
+  public static final int cargoMotor1PDP = 0;  //Check on PDP and change
+  public static final int cargoMotor2PDP = 0;  //Check on PDP and change
+ public static final int wristMotorPDP = 0;  //Check on PDP and change
+
+
 
   //Elevator Level Heights (in inches)
   public static final double HatchLow = 19.0 - Robot.robotPrefs.robotOffset; // For formatting, these should be lower camelCase
