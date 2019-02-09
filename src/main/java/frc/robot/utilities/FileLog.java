@@ -12,6 +12,7 @@ public class FileLog {
 	private static final SimpleDateFormat fileDateFormat = new SimpleDateFormat("yyyy-MM-dd.HH-mm-ss");
 	private String fileNameBase, fileNameFull;
 	private long startTime;
+	private int logMode;
 
 	/**
 	 * Creates a new log file called "/home/lvuser/logfile.ver.date.time.txt"
@@ -105,6 +106,14 @@ public class FileLog {
 	public void writeLogEcho(String subsytemOrCommand, String event, String msg) {
 		writeLog(subsytemOrCommand, event, msg);
 		System.out.println("Log: " + subsytemOrCommand + "," + event + "," + msg);
+	}
+
+	public void setLogWaitPeriod(int mode) {
+		logMode = mode;
+	}
+
+	public int getLogWaitPeriod() {
+		return logMode;
 	}
 	
 	/**

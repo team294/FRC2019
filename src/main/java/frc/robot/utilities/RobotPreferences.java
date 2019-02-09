@@ -25,6 +25,26 @@ public class RobotPreferences {
 	public double elevatorBottomToFloor; //distance of elevator 0 value from the ground
 	public double cameraDistanceFromFrontOfBumper;  // (Default = 12 inches)
 
+
+	/*
+	Measurement variables
+	*/
+
+	//Elevator level heights
+	public final double hatchLow = 19.0;
+  	public final double hatchMid = 47.0;
+  	public final double hatchHigh = 75.0;
+  	public final double cargoShipCargo = 34.75;
+  	public final double ballOffset = 8.5;
+
+	public enum ElevatorPosition {hatchLow, hatchMid, hatchHigh, cargoShipCargo}
+
+	//Climb Target Angles (in degrees)
+	public final double climbStartingAngle = -50.0; //TODO Test when climb is built
+	public final double vacuumTargetAngle = 180.0; //TODO Test when climb is built
+	public final double robotLiftAngle = 0.0; //TODO Test when climb is built
+
+
 	/**
 	 * Creates a RobotPreferences object and reads the robot preferences.
 	 */

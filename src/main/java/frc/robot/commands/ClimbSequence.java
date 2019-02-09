@@ -8,16 +8,14 @@
 package frc.robot.commands;
 
 import frc.robot.Robot;
-import frc.robot.RobotMap;
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.WaitUntilCommand;
 
 public class ClimbSequence extends CommandGroup {
   /**
    * Add your docs here.
    */
   public ClimbSequence() {
-    addSequential(new ClimbLift(RobotMap.vacuumTargetAngle));
-    addSequential(new ClimbLiftRobot(RobotMap.robotLiftAngle));
+    addSequential(new ClimbLift(Robot.robotPrefs.vacuumTargetAngle));
+    addSequential(new ClimbLiftRobot(Robot.robotPrefs.robotLiftAngle));
   }
 }
