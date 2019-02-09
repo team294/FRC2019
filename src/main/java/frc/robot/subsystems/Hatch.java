@@ -8,11 +8,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-
-import frc.robot.Robot;
-import frc.robot.RobotMap;
-
 import edu.wpi.first.wpilibj.Solenoid;
+import frc.robot.RobotMap;
 
 public class Hatch extends Subsystem {
   // Put methods for controlling this subsystem
