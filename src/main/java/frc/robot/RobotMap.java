@@ -88,7 +88,7 @@ public class RobotMap {
 
 
   //Elevator Level Heights (in inches)
-  public static final double hatchLow = 19.0 - Robot.robotPrefs.elevatorBottomToFloor; // For formatting, these should be lower camelCase
+  public static final double hatchLow = 19.0 - Robot.robotPrefs.elevatorBottomToFloor;
   public static final double hatchMid = 47.0 - Robot.robotPrefs.elevatorBottomToFloor;
   public static final double hatchHigh = 75.0 - Robot.robotPrefs.elevatorBottomToFloor;
   public static final double cargoShipCargo = 34.75 - Robot.robotPrefs.elevatorBottomToFloor;
