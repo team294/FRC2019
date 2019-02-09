@@ -104,17 +104,19 @@ public class OI {
     xBoxX.whenActive(new ElevatorMoveToLevel(RobotMap.ElevatorPosition.cargoShipCargo));
     
     SmartDashboard.putData("Turn To Target", new VisionTurnToTarget());
-
     SmartDashboard.putData("Drive on line", new DriveWithLineFollowing());
 
+    // Buttons for controlling the elevator
+    SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
+    SmartDashboard.putData("Elevator Down", new ElevatorLower()); // For testing limit switch and encoder
     SmartDashboard.putData("Move Elevator to Zero", new ElevatorMoveToLevel(0.0));
     SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero());
     //SmartDashboard.putData("Manual Zero Elev Enc (w/out Limit)", new ElevatorManualZero());
-  
-    SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
-    SmartDashboard.putData("Elevator Down", new ElevatorLower()); // For testing limit switch and encoder
-    SmartDashboard.putData("Elevator to Zero", new ElevatorMoveToLevel(0.0)); // Move elevator to zero level (might be put on xBox for ball intaking later)
-    SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero()); // Manual zeroing of elevator encoder
+
+    SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
+    SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
+    SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));
+    SmartDashboard.putData("Clear Sticky Faults", new ClearStickyFaults());
     //SmartDashboard.putData("Turn To Line", new TurnToLine());
   }
 
