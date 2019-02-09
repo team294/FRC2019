@@ -190,11 +190,14 @@ public class Elevator extends Subsystem {
 			Robot.robotPrefs.recordStickyFaults("Elevator");
 			motorFaultCount = 0;
 		}
-		if(amps1 > 10 && amps2 < 4) {
+		if(amps1 > 8 && amps2 < 3) {
 			motorFaultCount++;
 		}
-		else if(amps2 > 10 && amps1 < 4) {
+		else if(amps2 > 8 && amps1 < 3) {
 			motorFaultCount++;
+		}
+		else {
+			motorFaultCount = 0;
 		}
 	}
 
@@ -257,6 +260,7 @@ public class Elevator extends Subsystem {
 			if (posMoveCount > 3) {
 				encOK = (currEnc - encSnapShot) > 100;
 				if (!encOK) {
+					Robot.robotPrefs.recordStickyFaults("Elevator Enc");
 					setDefaultCommand(new ElevatorWithXBox());
 					elevatorMode = false;
 				}
@@ -272,6 +276,7 @@ public class Elevator extends Subsystem {
 			if (negMoveCount > 3) {
 				encOK = (currEnc - encSnapShot) < -100;
 				if (!encOK) {
+					Robot.robotPrefs.recordStickyFaults("Elevator Enc");
 					setDefaultCommand(new ElevatorWithXBox());
 					elevatorMode = false;
 				}

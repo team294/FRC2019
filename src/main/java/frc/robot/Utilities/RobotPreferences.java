@@ -111,6 +111,7 @@ public class RobotPreferences {
 		putBoolean("problemExists", false);
 		SmartDashboard.putString("problemSubsystem", "");
 		SmartDashboard.putBoolean("problemExists", false);
+		Robot.log.writeLog("RobotPrefs", "Sticky Faults Cleared", "");
 	}
 
 	public String getString(String k) {
