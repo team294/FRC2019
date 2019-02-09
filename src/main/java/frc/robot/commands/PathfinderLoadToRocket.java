@@ -9,15 +9,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class WristEncoderFail extends CommandGroup {
+public class PathfinderLoadToRocket extends CommandGroup {
   /**
-   * if wrist encoder fails, stop applying power to wrist until
-   * elevator hits its bottom limit switch (automatic), and then apply power until
-   * wrist hits its top limit switch
+   * Add your docs here.
    */
-  public WristEncoderFail() {
-    addParallel(new WristOff());
-    addSequential(new ElevatorMoveToLevel(0));
-    addSequential(new WristApplyPowerUntilStowed());
+  public PathfinderLoadToRocket() {
+    addSequential(new DrivePathfinder("RLoadToRocketPT1-A", true, false));
+    // addSequential(new TurnGyro(90)); //TODO add TurnGyro command
+    addSequential(new DrivePathfinder("RLoadToRocketPT2-A2", false, true));
   }
 }

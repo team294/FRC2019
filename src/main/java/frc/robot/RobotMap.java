@@ -15,7 +15,7 @@ package frc.robot;
  */
 public class RobotMap {
   
-  public static final int PowerDistributionPanel = 0;
+  public static final int powerDistributionPanel = 0;
 
   public static final int leftMotor1 = 10;
   public static final int leftMotor2 = 11;
@@ -75,19 +75,18 @@ public class RobotMap {
   public static final int rightMotor2PDP = 0; //Check on PDP and change
   public static final int rightMotor3PDP = 1; //Check on PDP and change 
   public static final int climbMotor1PDP = 3; //Check on PDP and change 
-  public static final int climbMotor2PDP = 4; //Check on PDP and change 
+  public static final int climbMotor2PDP = 3; //Check on PDP and change 
   public static final int climbVacuum1PDP = 5; //Check on PDP and change
   public static final int climbVacuum2PDP = 6; //Check on PDP and change
-  public static final int elevatorMotor1PDP = 0; //Check on PDP and change
-  public static final int elevatorMotor2PDP = 0; //Check on PDP and change
+  public static final int elevatorMotor1PDP = 4; //Check on PDP and change
+  public static final int elevatorMotor2PDP = 10; //Check on PDP and change
   // TODO add wrist and cargo pdp addresses
 
   //Elevator Level Heights (in inches)
-  public static final double HatchLow = 19.0 - Robot.robotPrefs.robotOffset; // For formatting, these should be lower camelCase
-  public static final double HatchMid = 47.0 - Robot.robotPrefs.robotOffset;
-  public static final double HatchHigh = 75.0 - Robot.robotPrefs.robotOffset;
-  public static final double CargoShipCargo = 34.75 - Robot.robotPrefs.robotOffset;
-  public static final double StowHatch = 5.0 - Robot.robotPrefs.robotOffset; //TODO determine height to stow
+  public static final double hatchLow = 19.0 - Robot.robotPrefs.elevatorBottomToFloor; // For formatting, these should be lower camelCase
+  public static final double hatchMid = 47.0 - Robot.robotPrefs.elevatorBottomToFloor;
+  public static final double hatchHigh = 75.0 - Robot.robotPrefs.elevatorBottomToFloor;
+  public static final double cargoShipCargo = 34.75 - Robot.robotPrefs.elevatorBottomToFloor;
   public static final double ballOffset = 8.5;
   
   public enum ElevatorPosition {hatchLow, hatchMid, hatchHigh, cargoShipCargo};
