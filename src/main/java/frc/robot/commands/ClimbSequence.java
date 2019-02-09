@@ -7,10 +7,8 @@
 
 package frc.robot.commands;
 
-import frc.robot.Robot;
 import frc.robot.RobotMap;
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.WaitUntilCommand;
 
 public class ClimbSequence extends CommandGroup {
   /**

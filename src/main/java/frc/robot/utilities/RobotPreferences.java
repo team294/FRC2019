@@ -28,7 +28,7 @@ public class RobotPreferences {
 	public double wristGearRatio; // wrist gear ratio, gear with encoder / gear driving wrist
 	public double wristCalZero;   		// Wrist encoder position at O degrees, in encoder ticks (i.e. the calibration factor)
 	public boolean wristCalibrated;     // Default to wrist being uncalibrated.  Calibrate from robot preferences or "Calibrate Wrist Zero" button on dashboard
-	
+
 	/**
 	 * Creates a RobotPreferences object and reads the robot preferences.
 	 */
