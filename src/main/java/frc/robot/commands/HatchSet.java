@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.RobotMap.PistonPositions;
 
 public class HatchSet extends Command {
   private boolean grab;
@@ -26,9 +27,9 @@ public class HatchSet extends Command {
   @Override
   protected void initialize() {
     if (grab) {
-      Robot.hatch.grabHatch();
+      Robot.hatch.setHatchPiston(PistonPositions.Extended);
     } else {
-      Robot.hatch.releaseHatch();
+      Robot.hatch.setHatchPiston(PistonPositions.Retracted);
     }
   }
 

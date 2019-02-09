@@ -38,9 +38,9 @@ public class RobotMap {
   // Pneumatic Addresses
   public static final int pnuematicShifterLow = 0;
   public static final int pnuematicShifterHigh = 1;
-  public static final int pneumaticHatchIntake = 2;
+  public static final int pneumaticHatchIn = 2;
+  public static final int pneumaticHatchOut = 3;
  
-    
   //RoboRIO digital I/O Addresses
   public static final int lineFollowerLeft = 2;
   public static final int lineFollowerCenter = 1;
@@ -104,4 +104,7 @@ public class RobotMap {
   public static final double climbStartingAngle = -50.0; //TODO Test when climb is built
   public static final double vacuumTargetAngle = 180.0; //TODO Test when climb is built
   public static final double robotLiftAngle = 0.0; //TODO Test when climb is built
+
+  public enum PistonPositions { Extended, Retracted, Moving, Null }
+
 }

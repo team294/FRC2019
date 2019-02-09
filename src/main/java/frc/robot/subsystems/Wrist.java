@@ -78,14 +78,14 @@ public class Wrist extends Subsystem {
 
   /**
    * Only works when encoder is working, wristMode is true (in automatic mode)
-   * If setting to greater than 60 degrees, elevator position and target
-   * must be less than 3 inches above starting position
+   * If setting to greater than 60 degrees, elevator position must be zero
+   * and target must be less than 1 inch above starting position
    * @param degrees target degrees
    */
   public void setWristAngle(double degrees) {
     if (encOK && wristMode && Robot.robotPrefs.wristCalibrated) {
       // TODO determine max degrees and elevator height tolerance
-      if (degrees < 60 || (Robot.elevator.getElevatorEncInches() < 3 && Robot.elevator.getCurrentElevatorTarget() < 3)) {
+      if (degrees < 60 || (Robot.elevator.getElevatorLowerLimit() && Robot.elevator.getCurrentElevatorTarget() < 1)) {
         wristMotor.set(ControlMode.Position, degreesToEncoderTicks(degrees) + Robot.robotPrefs.wristCalZero);
         Robot.log.writeLog("Wrist", "Degrees set", "Target" + degrees);
       }

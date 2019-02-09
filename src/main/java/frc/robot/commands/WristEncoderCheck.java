@@ -13,7 +13,7 @@ import frc.robot.Robot;
 /**
  * Get() returns true if the Wrist encoder has failed (but not the elevator encoder)
  */
-public class CheckWristEncoderFail extends Trigger {
+public class WristEncoderCheck extends Trigger {
   @Override
   public boolean get() {
     if(!Robot.wrist.getEncOK()) {

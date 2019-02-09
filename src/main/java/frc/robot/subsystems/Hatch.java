@@ -8,44 +8,52 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
-import edu.wpi.first.wpilibj.Solenoid;
+import frc.robot.RobotMap.PistonPositions;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class Hatch extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  private final Solenoid hatchPiston = new Solenoid(RobotMap.pneumaticHatchIntake);
+  private final DoubleSolenoid hatchPiston = new DoubleSolenoid(RobotMap.pneumaticHatchOut, RobotMap.pneumaticHatchIn);
+  private PistonPositions hatchPosition = PistonPositions.Null;
 
   public Hatch() {
   }
 
   /**
-   * hatch panel is secured
-   */
-  public void grabHatch() {
-    hatchPiston.set(false);
+	 * Sets the position of the hatch piston
+	 * 
+	 * @param position only accepts PistonPositions.Extended and PistonPositions.Retracted, other values are ignored
+	 */
+  public void setHatchPiston(RobotMap.PistonPositions position) {
+    if (position == RobotMap.PistonPositions.Extended) {
+      hatchPiston.set(Value.kForward);
+      hatchPosition = PistonPositions.Extended;
+      SmartDashboard.putString("Piston Position", "Extended");
+		}
+		if (position == RobotMap.PistonPositions.Retracted) {
+      hatchPiston.set(Value.kReverse);
+      hatchPosition = PistonPositions.Retracted;
+      SmartDashboard.putString("Piston Position", "Retracted");
+    }
   }
 
   /**
-   * hatch panel is not secured
-   */
-  public void releaseHatch() {
-    hatchPiston.set(true);
-  }
-
-  /**
-   * Check if hatch panel is in grab or release position
-   * @return true = grab position, false = release position
-   */
-  public boolean isHatchPistionGrabbed() {
-    return !hatchPiston.get();
-  }
+	 * 
+	 * @return position of hatch piston
+	 */
+	public PistonPositions getHatchPiston() {
+		return hatchPosition;
+	}
 
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
   }
+
 }

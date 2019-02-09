@@ -63,7 +63,7 @@ public class OI {
   private Button xBoxX = new JoystickButton(xBoxController, 3);
   private Button xBoxY = new JoystickButton(xBoxController, 4);
 
-  private Trigger trigWristElevEncoder = new CheckWristEncoderFail();
+  private Trigger trigWristElevEncoder = new WristEncoderCheck();
 
   public OI() {
     Button[] left = new Button[12];
@@ -116,6 +116,10 @@ public class OI {
     SmartDashboard.putData("Elevator to Zero", new ElevatorMoveToLevel(0.0)); // Move elevator to zero level (might be put on xBox for ball intaking later)
     SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero()); // Manual zeroing of elevator encoder
     //SmartDashboard.putData("Turn To Line", new TurnToLine());
+    SmartDashboard.putData("Toggle Piston", new HatchToggle());
+    SmartDashboard.putData("Piston Grab", new HatchSet(true));
+    SmartDashboard.putData("Piston Release", new HatchSet(false));
+    SmartDashboard.putString("Piston Position", "Null");
   }
 
   public void setDriveDirection(boolean direction) {
