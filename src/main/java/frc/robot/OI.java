@@ -90,8 +90,13 @@ public class OI {
       }
     }
 
+    SmartDashboard.putData("LoadToRocketPT1", new DrivePathfinder("RLoadToRocketPT1-A", true, false));
+    SmartDashboard.putData("LoadToRocketPT2-2", new DrivePathfinder("RLoadToRocketPT2-A2", false, true));
+    SmartDashboard.putData("LoadToRocket", new PathfinderLoadToRocket());
+    // SmartDashboard.putData("Turn Gyro 90", new TurnGyro(90));
+    // SmartDashboard.putData("LoadToRocket", new PathfinderLoadToRocket());
     // The conditional logic needs to go in the command itself. No logic can be done in OI since OI is constructed at the start and not run repeatedly
-    SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true));
+    // SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true));
 
     xBoxA.whenActive(new ElevatorMoveToLevel(RobotMap.ElevatorPosition.hatchLow));
     xBoxB.whenActive(new ElevatorMoveToLevel(RobotMap.ElevatorPosition.hatchMid));
@@ -99,17 +104,19 @@ public class OI {
     xBoxX.whenActive(new ElevatorMoveToLevel(RobotMap.ElevatorPosition.cargoShipCargo));
     
     SmartDashboard.putData("Turn To Target", new VisionTurnToTarget());
-
     SmartDashboard.putData("Drive on line", new DriveWithLineFollowing());
 
+    // Buttons for controlling the elevator
+    SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
+    SmartDashboard.putData("Elevator Down", new ElevatorLower()); // For testing limit switch and encoder
     SmartDashboard.putData("Move Elevator to Zero", new ElevatorMoveToLevel(0.0));
     SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero());
     //SmartDashboard.putData("Manual Zero Elev Enc (w/out Limit)", new ElevatorManualZero());
-  
-    SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
-    SmartDashboard.putData("Elevator Down", new ElevatorLower()); // For testing limit switch and encoder
-    SmartDashboard.putData("Elevator to Zero", new ElevatorMoveToLevel(0.0)); // Move elevator to zero level (might be put on xBox for ball intaking later)
-    SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero()); // Manual zeroing of elevator encoder
+
+    SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
+    SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
+    SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));
+    SmartDashboard.putData("Clear Sticky Faults", new ClearStickyFaults());
     //SmartDashboard.putData("Turn To Line", new TurnToLine());
   }
 
