@@ -89,7 +89,7 @@ public class OI {
     }
 
     SmartDashboard.putData("LoadToRocketPT1", new DrivePathfinder("RLoadToRocketPT1-A", true, false));
-    SmartDashboard.putData("LoadToRocketPT2-2", new DrivePathfinder("RLoadToRocketPT2-A2", false, true));
+    SmartDashboard.putData("LoadToRocketPT2-2", new DrivePathfinder("RLoadToRocketPT2-A", false, true));
     SmartDashboard.putData("LoadToRocket", new PathfinderLoadToRocket());
     // SmartDashboard.putData("Turn Gyro 90", new TurnGyro(90));
     // SmartDashboard.putData("LoadToRocket", new PathfinderLoadToRocket());
