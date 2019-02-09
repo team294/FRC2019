@@ -11,11 +11,11 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.utilities.FileLog;
 
-public class setLogMode extends Command {
+public class SetLogMode extends Command {
 
   private int mode;
 
-  public setLogMode(int mode) {
+  public SetLogMode(int mode) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     this.mode = mode;

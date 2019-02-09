@@ -108,10 +108,17 @@ public class FileLog {
 		System.out.println("Log: " + subsytemOrCommand + "," + event + "," + msg);
 	}
 
+	/**
+	 * Changes level of detail for fileLog
+	 * @param mode between 1-3, where 1 is the most detailed and 3 is the least detailed
+	 */
 	public void setLogWaitPeriod(int mode) {
 		logMode = mode;
 	}
 
+	/**
+	 * Returns what level of detail the fileLog should be at (to be called in each subsystem)
+	 */
 	public int getLogWaitPeriod() {
 		return logMode;
 	}

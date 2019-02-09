@@ -10,13 +10,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.buttons.Trigger;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
 
 import frc.robot.commands.*;
-import frc.robot.subsystems.Elevator;
 import frc.robot.utilities.RobotPreferences;
 
 /**
@@ -113,9 +110,15 @@ public class OI {
     SmartDashboard.putData("Move Elevator to Zero", new ElevatorMoveToLevel(Robot.robotPrefs.elevatorBottomToFloor)); // Move to encoder's zero position
     SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero());
 
+    // Buttons for controlling FileLogging
+    SmartDashboard.putData("InitialTesting Log Mode", new SetLogMode(1));
+    SmartDashboard.putData("PitTesting Log Mode", new SetLogMode(2));
+    SmartDashboard.putData("Competition Log Mode", new SetLogMode(3));
+
     SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
     SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
     SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));
+    
     SmartDashboard.putData("Clear Sticky Faults", new ClearStickyFaults());
     //SmartDashboard.putData("Turn To Line", new TurnToLine());
   }
