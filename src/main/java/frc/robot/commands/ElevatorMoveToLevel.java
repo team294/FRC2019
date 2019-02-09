@@ -49,16 +49,16 @@ public class ElevatorMoveToLevel extends Command {
     /* if(isBall) { //TODO correct if statement when intake subsystem is coded
       switch (pos) {
         case hatchLow:
-          Robot.elevator.setElevatorPos(RobotMap.HatchLow + RobotMap.ballOffset);
+          Robot.elevator.setElevatorPos(RobotMap.hatchLow + RobotMap.ballOffset);
           break;
         case hatchMid:
-          Robot.elevator.setElevatorPos(RobotMap.HatchMid + RobotMap.ballOffset);
+          Robot.elevator.setElevatorPos(RobotMap.hatchMid + RobotMap.ballOffset);
           break;
         case hatchHigh:
-          Robot.elevator.setElevatorPos(RobotMap.HatchHigh + RobotMap.ballOffset);
+          Robot.elevator.setElevatorPos(RobotMap.hatchHigh + RobotMap.ballOffset);
           break;
         case cargoShipCargo:
-          Robot.elevator.setElevatorPos(RobotMap.CargoShipCargo);
+          Robot.elevator.setElevatorPos(RobotMap.cargoShipCargo);
           break;
       }
     }
