@@ -312,6 +312,10 @@ public class DriveTrain extends Subsystem {
 		return angle;
   }
 
+  /**
+   * 
+   * @param setCoast true if want to put driveTrain in coast mode false to put in brake mode.
+   */
   public void setDriveMode(boolean setCoast){
    if(setCoast){
     leftMotor1.setNeutralMode(NeutralMode.Coast);

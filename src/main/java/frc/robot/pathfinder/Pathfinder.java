@@ -58,9 +58,10 @@ public class Pathfinder {
     /**
      * Read a Trajectory from a CSV File
      * @param fileName      The file to read from
+     * @param driveForward  True = drive forward, false = drive backward
      * @return              The trajectory that was read from file
      */
-    public static Trajectory readFromCSV(String fileName) {
+    public static Trajectory readFromCSV(String fileName, boolean driveForward) {
         String csvFile = "/home/lvuser/deploy/paths/" + fileName;
         String line = "";
         String csvSplitBy = ",";
@@ -90,11 +91,21 @@ public class Pathfinder {
                 dt = Double.parseDouble(trajPoint[0]);
                 x = Double.parseDouble(trajPoint[1]);
                 y = Double.parseDouble(trajPoint[2]);
-                position = Double.parseDouble(trajPoint[3]);
-                velocity = Double.parseDouble(trajPoint[4]);
-                acceleration = Double.parseDouble(trajPoint[5]);
-                jerk = Double.parseDouble(trajPoint[6]);
-                heading = Double.parseDouble(trajPoint[7]);
+
+                if (driveForward) {
+                    position = Double.parseDouble(trajPoint[3]);
+                    velocity = Double.parseDouble(trajPoint[4]);
+                    acceleration = Double.parseDouble(trajPoint[5]);
+                    jerk = Double.parseDouble(trajPoint[6]);
+                    heading = Double.parseDouble(trajPoint[7]);
+                } else {
+                    position = -Double.parseDouble(trajPoint[3]);
+                    velocity = -Double.parseDouble(trajPoint[4]);
+                    acceleration = -Double.parseDouble(trajPoint[5]);
+                    jerk = -Double.parseDouble(trajPoint[6]);
+                    heading = Double.parseDouble(trajPoint[7]);
+                    heading = (heading > 0) ? heading - Math.PI : heading + Math.PI;
+                }
                 seg = new Segment(dt, x, y, position, velocity, acceleration, jerk, heading);
                 segArray[i] = seg;
                 i++;
