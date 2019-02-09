@@ -86,14 +86,6 @@ public class RobotMap {
   
   public enum ElevatorPosition {hatchLow, hatchMid, hatchHigh, cargoShipCargo};
 
-  // Wrist Angles (in degrees)
-  public static final double WristStowed = 90.0;
-  public static final double WristUp = 45.0;
-  public static final double WristStraight = 0.0;
-  public static final double WristDown = -45.0;
-
-  public enum WristAngle {stowed, up, straight, down}
-
   //Climb Target Angles (in degrees)
   public static final double climbStartingAngle = -50.0; //TODO Test when climb is built
   public static final double vacuumTargetAngle = 180.0; //TODO Test when climb is built

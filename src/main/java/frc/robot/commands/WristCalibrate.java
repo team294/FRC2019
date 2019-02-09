@@ -10,17 +10,16 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class WristCalibrateZero extends Command {
-  public WristCalibrateZero() {
+public class WristCalibrate extends Command {
+  public WristCalibrate() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires (Robot.wrist);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.robotPrefs.setWristCalibration(Robot.wrist.getWristEncoderTicks(), true);
+    Robot.robotPrefs.setWristCalibration(Robot.robotPrefs.wristCalZero, true);
   }
 
   // Called repeatedly when this Command is scheduled to run

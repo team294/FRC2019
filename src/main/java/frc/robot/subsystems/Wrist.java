@@ -100,10 +100,10 @@ public class Wrist extends Subsystem {
   }
 
   /**
-   * Only zeros wrist encoder when it is at zero position (lower limit)
+   * Only zeros wrist encoder when it is at zero position (upper limit)
    */
   public void zeroWristEncoder() {
-    if (getWristLowerLimit()) {
+    if (getWristUpperLimit()) {
       wristMotor.setSelectedSensorPosition(0, 0, 0);
       Robot.log.writeLog("Wrist", "Zero Encoder", "");
     }
@@ -130,7 +130,16 @@ public class Wrist extends Subsystem {
    * @return raw encoder ticks (based on encoder zero being at zero position)
    */
   public double getWristEncoderTicks() {
-    return wristMotor.getSelectedSensorPosition(0) - Robot.robotPrefs.wristCalZero;
+    return getWristEncoderTicksRaw() - Robot.robotPrefs.wristCalZero;
+  }
+
+  /**
+   * 
+   * @return raw encoder ticks, adjusted direction (positive is towards stowed, negative is towards lower hard stop)
+   */
+  public double getWristEncoderTicksRaw() {
+    // TODO verify direction, add minus sign if needed
+    return wristMotor.getSelectedSensorPosition(0);
   }
 
   /**
@@ -153,10 +162,18 @@ public class Wrist extends Subsystem {
 
   /**
    * 
-   * @return current encoder ticks converted to degrees
+   * @return current encoder ticks (based on zero) converted to degrees
    */
   public double getWristEncoderDegrees() {
     return encoderTicksToDegrees(getWristEncoderTicks());
+  }
+
+  /**
+   * 
+   * @return current encoder ticks converted to degrees
+   */
+  public double getWristEncoderDegreesRaw() {
+    return encoderTicksToDegrees(getWristEncoderTicksRaw());
   }
 
   /**

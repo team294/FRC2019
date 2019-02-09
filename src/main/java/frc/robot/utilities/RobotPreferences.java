@@ -28,6 +28,14 @@ public class RobotPreferences {
 	public double wristGearRatio; // wrist gear ratio, gear with encoder / gear driving wrist
 	public double wristCalZero;   		// Wrist encoder position at O degrees, in encoder ticks (i.e. the calibration factor)
 	public boolean wristCalibrated;     // Default to wrist being uncalibrated.  Calibrate from robot preferences or "Calibrate Wrist Zero" button on dashboard
+	 
+	// Wrist Angles (in degrees)
+	public static final double WristStowed = 90.0;
+	public static final double WristUp = 45.0;
+	public static final double WristStraight = 0.0;
+	public static final double WristDown = -45.0;
+	public enum WristAngle {stowed, up, straight, down}
+
 
 	/**
 	 * Creates a RobotPreferences object and reads the robot preferences.
@@ -71,13 +79,13 @@ public class RobotPreferences {
 	/**
 	 * Sets arm angle calibration factor and enables angle control modes for arm.
 	 * 
-	 * @param armCalZero
+	 * @param climbCalZero
 	 *            Calibration factor for arm
 	 * @param writeCalToPreferences
 	 *            true = store calibration in Robot Preferences, false = don't
 	 *            change Robot Preferences
 	 */
-	public void setArmCalibration(double climbCalZero, boolean writeCalToPreferences) {
+	public void setClimbCalibration(double climbCalZero, boolean writeCalToPreferences) {
 		this.climbCalZero = climbCalZero;
 		climbCalibrated = true;
 		if (writeCalToPreferences) {
@@ -129,19 +137,28 @@ public class RobotPreferences {
 
 	/**
 	 * Sets wrist angle calibration factor and enables angle control modes for wrist
+	 * Only setting wrist calibration if wrist is at either limit switch, otherwise does nothing
 	 * 
 	 * @param wristCalZero  Calibration factor for wrist
 	 * @param writeCalToPreferences  true = store calibration in Robot Preferences, false = don't change Robot Preferences
 	 */
 	public void setWristCalibration(double wristCalZero, boolean writeCalToPreferences) {
 		this.wristCalZero = wristCalZero;
+		if (Robot.wrist.getWristUpperLimit()) {
+			wristCalZero = Robot.wrist.getWristEncoderTicksRaw() - Robot.wrist.degreesToEncoderTicks(WristStowed);
+		} else if (Robot.wrist.getWristLowerLimit()) {
+			wristCalZero = Robot.wrist.getWristEncoderTicksRaw() - Robot.wrist.degreesToEncoderTicks(WristDown);
+		} else {
+			return;
+		}
 		wristCalibrated = true;
 		SmartDashboard.putBoolean("Wrist Calibrated", wristCalibrated);
 		if (writeCalToPreferences) {
 			prefs.putDouble("calibrationZeroDegrees", wristCalZero);
 		}
 		if (!prefs.containsKey("calibrationZeroDegrees")) {
-			prefs.putDouble("calibrationZeroDegrees", -9999.0);		}
+			prefs.putDouble("calibrationZeroDegrees", -9999.0);	
+		}
 	}
 
 	/**
@@ -198,7 +215,6 @@ public class RobotPreferences {
 	public boolean getBoolean(String k) {
 		return getBoolean(k, false);
 	}
-	
 	public void putString(String k, String d) {
 		prefs.putString(k, d);
 	}
