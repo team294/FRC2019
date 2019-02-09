@@ -33,15 +33,15 @@ public class Climb extends Subsystem {
   // here. Call these from Commands.
   private final Compressor compressor = new Compressor(0);
   private final WPI_TalonSRX climbMotor1 = new WPI_TalonSRX(RobotMap.climbMotor1);
-  private final BaseMotorController climbMotor2 = new WPI_VictorSPX(RobotMap.climbMotor2);
-  private final WPI_TalonSRX climbVacuum1 = new WPI_TalonSRX(RobotMap.climbVacuum1);
-  private final WPI_TalonSRX climbVacuum2 = new WPI_TalonSRX(RobotMap.climbVacuum2);
-  private final DigitalInput vacuumSwitch = new DigitalInput(RobotMap.vacuumSwitch);
+  private final WPI_TalonSRX climbMotor2 = new WPI_TalonSRX(RobotMap.climbMotor2);
+  private final BaseMotorController climbVacuum1 = new WPI_VictorSPX(RobotMap.climbVacuum1);
+  private final BaseMotorController climbVacuum2 = new WPI_VictorSPX(RobotMap.climbVacuum2);
+  //private final DigitalInput vacuumSwitch = new DigitalInput(RobotMap.vacuumSwitch);
   private final SensorCollection climbLimit;
   private int periodicCount = 0;
   public double climbStartingPoint = 0;
 
-  public double rampRate = .005; 
+  public double rampRate = .005;
   public double kP = 1;
   public double kI = 0;
   public double kD = 0;
@@ -59,8 +59,6 @@ public class Climb extends Subsystem {
     climbMotor1.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
     climbLimit = climbMotor1.getSensorCollection();
 
-    zeroClimbEnc();
-
     climbMotor1.config_kP(0, kP);
     climbMotor1.config_kI(0, kI);
     climbMotor1.config_kD(0, kD);
@@ -72,8 +70,12 @@ public class Climb extends Subsystem {
 
     climbMotor1.clearStickyFaults(0);
     climbMotor2.clearStickyFaults(0);
+    climbVacuum1.clearStickyFaults();
+    climbVacuum2.clearStickyFaults();
     climbMotor1.setNeutralMode(NeutralMode.Brake);
     climbMotor2.setNeutralMode(NeutralMode.Brake);
+    climbVacuum1.setNeutralMode(NeutralMode.Brake);
+    climbVacuum2.setNeutralMode(NeutralMode.Brake);
   }
 /*
   /**
@@ -86,13 +88,17 @@ public class Climb extends Subsystem {
   }
 
   /**
-   * Sets percent power of motor
+   * Sets percent power of climb motors
    * @param percentPower between -1.0 and 1.0
    */
   public void setClimbMotorPercentOutput(double percentOutput) {
     climbMotor1.set(percentOutput);
   }
 
+  /**
+   * Sets angle of climb motors
+   * @param angle target angle in degrees
+   */
   public void setClimbPos(double angle) {
     climbMotor1.set(ControlMode.Position, climbAngleToEncTicks(angle));
   }
@@ -103,12 +109,12 @@ public class Climb extends Subsystem {
    */
   public void enableVacuum(boolean turnOn) {
     if (turnOn) {
-      climbVacuum1.set(0.5);
-      climbVacuum2.set(0.5);
+      climbVacuum1.set(ControlMode.PercentOutput, 0.5);
+      climbVacuum2.set(ControlMode.PercentOutput, 0.5);
     }
     else {
-      climbVacuum1.set(0.0);
-      climbVacuum2.set(0.0);
+      climbVacuum1.set(ControlMode.PercentOutput, 0.0);
+      climbVacuum2.set(ControlMode.PercentOutput, 0.0);
     }
   }
 
@@ -162,9 +168,9 @@ public class Climb extends Subsystem {
    * @return true = vaccum is at the required pressure
    *          false = vacuum is not at the required pressure yet
    */
-  public boolean isVacuumAchieved() {
+  /* public boolean isVacuumAchieved() {
     return vacuumSwitch.get();
-  }
+  } */
 
   /**
    * @return true = climb is at its calibration angle
@@ -191,14 +197,14 @@ public class Climb extends Subsystem {
   public void periodic() {
     if (!Robot.robotPrefs.climbCalibrated || Robot.beforeFirstEnable) {
       if (climbLimit.isRevLimitSwitchClosed()) {
-        Robot.robotPrefs.setArmCalibration(getClimbEncTicksRaw() - climbAngleToEncTicks(RobotMap.climbStartingAngle), false);
+        Robot.robotPrefs.setClimbCalibration(getClimbEncTicksRaw() - climbAngleToEncTicks(RobotMap.climbStartingAngle), false);
       }
     }
     if (getClimbAngle() > RobotMap.vacuumTargetAngle || getClimbAngle() < RobotMap.climbStartingAngle) {
       Robot.robotPrefs.climbCalibrated = false;
     }
     if (DriverStation.getInstance().isEnabled()) {
-      if ((++periodicCount) >= 25) {
+      if ((++periodicCount) >= 10) {
         updateClimbLog();
         periodicCount=0;  
       }

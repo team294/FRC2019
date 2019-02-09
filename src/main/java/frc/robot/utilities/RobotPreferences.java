@@ -52,28 +52,27 @@ public class RobotPreferences {
 		} */
 		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;		
 		cameraDistanceFromFrontOfBumper = prefs.getDouble("cameraDistanceFromFrontOfBumper", 12);	
-		climbCalZero = prefs.getDouble("calibrationZeroDegrees", -9999);
+		climbCalZero = prefs.getDouble("climbCalibrationZeroDegrees", -9999);
 		climbCalibrated = (climbCalZero != -9999);
 		if(!climbCalibrated) {
-			DriverStation.reportError("Error: Preferences missing from RoboRio for Climb calibration.", true);
+			DriverStation.reportError("Error: Preferences missing from RoboRio for Climb Calibration.", true);
 			climbCalZero = 0;
 		}	
 	}
 
 	/**
-	 * Sets arm angle calibration factor and enables angle control modes for arm.
+	 * Sets climb angle calibration factor and enables angle control modes for climb.
 	 * 
-	 * @param armCalZero
-	 *            Calibration factor for arm
+	 * @param climbCalZero
+	 *            Calibration factor for climb
 	 * @param writeCalToPreferences
-	 *            true = store calibration in Robot Preferences, false = don't
-	 *            change Robot Preferences
+	 *            true = store calibration in RobotPrefs, false = don't change RobotPrefs
 	 */
-	public void setArmCalibration(double climbCalZero, boolean writeCalToPreferences) {
+	public void setClimbCalibration(double climbCalZero, boolean writeCalToPreferences) {
 		this.climbCalZero = climbCalZero;
 		climbCalibrated = true;
 		if (writeCalToPreferences) {
-			prefs.putDouble("calibrationZeroDegrees", climbCalZero);
+			prefs.putDouble("climbCalibrationZeroDegrees", climbCalZero);
 		}
 }
 
@@ -108,8 +107,8 @@ public class RobotPreferences {
 		if (!prefs.containsKey("elevatorBottomToFloor")) {
 			prefs.putDouble("elevatorBottomToFloor", 15.0);
 		}
-		if (!prefs.containsKey("calibrationZeroDegrees")) {
-			prefs.putDouble("calibrationZeroDegrees", -9999.0);		}
+		if (!prefs.containsKey("climbCalibrationZeroDegrees")) {
+			prefs.putDouble("climbCalibrationZeroDegrees", -9999.0);		}
 	}
 
 	/**
