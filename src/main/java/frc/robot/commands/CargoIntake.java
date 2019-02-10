@@ -13,7 +13,6 @@ import frc.robot.Robot;
 
 public class CargoIntake extends Command {
 
-  private double timeIntook = 0;
 
   public CargoIntake() {
     // Use requires() here to declare subsystem dependencies
@@ -25,7 +24,6 @@ public class CargoIntake extends Command {
   @Override
   protected void initialize() {
     Robot.cargo.intakeCargo();
-    timeIntook = Timer.getFPGATimestamp();
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -37,8 +35,8 @@ public class CargoIntake extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    //TODO change is finished when we find out type of sensor
-    if (Timer.getFPGATimestamp() >= timeIntook + 1) {
+    if (Robot.cargo.getPhotoSwitch()) {
+      Robot.cargo.stopCargoIntake();
       return true;
     } else {
       return false;

@@ -46,6 +46,7 @@ public class RobotMap {
   public static final int lineFollowerCenter = 1;
   public static final int lineFollowerRight = 0;
   public static final int vacuumSwitch = 3;
+  public static int photoSwitchCargo = 4;
    
   // TODO Update with 2019 base
   // Robot Pathfinder data

@@ -13,7 +13,8 @@ import frc.robot.Robot;
 
 public class CargoOuttake extends Command {
 
-  private double timeOuttook = 0;
+  private double timeWithoutBall = 0; // the amount of time from the photo switch not sensing a ball
+  private boolean startTime = false; // have we started to count the time from 
 
   public CargoOuttake() {
     // Use requires() here to declare subsystem dependencies
@@ -25,20 +26,23 @@ public class CargoOuttake extends Command {
   @Override
   protected void initialize() {
     Robot.cargo.outtakeCargo();
-    timeOuttook = Timer.getFPGATimestamp();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
     Robot.cargo.outtakeCargo();
+    if(!Robot.cargo.getPhotoSwitch() && !startTime){
+      timeWithoutBall = Timer.getFPGATimestamp();
+      startTime = true;
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    //TODO change is finished when we find out type of sensor
-    if (Timer.getFPGATimestamp() >= timeOuttook + 1) {
+    if (timeSinceInitialized() >= 5 || Timer.getFPGATimestamp() - timeWithoutBall > 1) {
+      Robot.cargo.stopCargoIntake();
       return true;
     } else {
       return false;
