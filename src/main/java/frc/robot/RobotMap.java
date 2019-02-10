@@ -58,19 +58,19 @@ public class RobotMap {
   public static final double max_jerk_ipspsps = 2400.0;  // max robot jerk, in inches per second per second per second
   
   // PDP Addresses
-  public static final int leftMotor1PDP = 13; 
-  public static final int leftMotor2PDP = 15; 
-  public static final int leftMotor3PDP = 14; 
-  public static final int rightMotor1PDP = 2; 
-  public static final int rightMotor2PDP = 0; 
-  public static final int rightMotor3PDP = 1; 
-  public static final int climbMotor1PDP = 12; 
-  public static final int climbMotor2PDP = 11;  
-  public static final int climbVacuum1PDP = 9; 
-  public static final int climbVacuum2PDP = 8; 
-  public static final int elevatorMotor1PDP = 4; 
-  public static final int elevatorMotor2PDP = 10; 
-  public static final int cargoMotor1PDP = 5;  
-  public static final int cargoMotor2PDP = 6;  
-  public static final int wristMotorPDP = 3;  
+  public static final int leftMotor1PDP = 0; 
+  public static final int leftMotor2PDP = 1; 
+  public static final int leftMotor3PDP = 2; 
+  public static final int rightMotor1PDP = 15; 
+  public static final int rightMotor2PDP = 14; 
+  public static final int rightMotor3PDP = 13; 
+  public static final int climbMotor1PDP = 3; 
+  public static final int climbMotor2PDP = 12;  
+  public static final int climbVacuum1PDP = 10; 
+  public static final int climbVacuum2PDP = 9; 
+  public static final int elevatorMotor1PDP = 11; 
+  public static final int elevatorMotor2PDP = 4; 
+  public static final int cargoMotor1PDP = 6;  
+  public static final int cargoMotor2PDP = 7;  
+  public static final int wristMotorPDP = 5;  
 }
