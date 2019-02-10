@@ -59,7 +59,7 @@
               "Crosshair/Crosshair color": "#FFFFFFFF",
               "Controls/Show controls": true,
               "Controls/Rotation": "NONE",
-              "compression": -1.0,
+              "compression": 0.0,
               "fps": -1,
               "imageWidth": 0,
               "imageHeight": 0
@@ -137,64 +137,6 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-
-          "3,4": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Enc Val",
-              "_title": "SmartDashboard/Enc Val"
-            }
-          },
-          "6,4": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Forward",
-              "_title": "/SmartDashboard/Forward",
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "4,3": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Manual Zero Elev Enc (w/out Limit)",
-              "_title": "SmartDashboard/Manual Zero Elev Enc (w/out Limit)"
-            }
-          },
-          "4,4": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Enc Zero",
-              "_title": "SmartDashboard/Enc Zero"
-            }
-          },
-          "5,3": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Test",
-              "_title": "SmartDashboard/Test"
-            }
-          },
           "3,3": {
             "size": [
               1,
@@ -205,45 +147,71 @@
               "_source0": "network_table:///SmartDashboard/Zero Elev Enc (w/ Limit)",
               "_title": "SmartDashboard/Zero Elev Enc (w/ Limit)"
             }
-          },
-          "5,4": {
+          }
+        }
+      }
+    },
+    {
+      "title": "Pit",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "3,0": {
             "size": [
               1,
               1
             ],
             "content": {
               "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/TEST",
-              "_title": "SmartDashboard/TEST"
+              "_source0": "network_table:///SmartDashboard/Clear Sticky Faults",
+              "_title": "Sticky Faults"
             }
           },
-          "7,4": {
+          "4,0": {
             "size": [
               1,
               1
             ],
             "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Elevator F",
-              "_title": "/SmartDashboard/Elevator F"
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/problemExists",
+              "_title": "Problem Exists",
+              "Colors/Color when true": "#FF0000FF",
+              "Colors/Color when false": "#00FF00FF"
             }
           },
-          "8,4": {
+          "5,0": {
+            "size": [
+              5,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/problemSubsystem",
+              "_title": "Problem Subsystem"
+            }
+          },
+          "3,1": {
             "size": [
               1,
               1
             ],
             "content": {
               "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Elevator R",
-              "_title": "/SmartDashboard/Elevator R"
+              "_source0": "network_table:///SmartDashboard/Zero Elev Enc (w/ Limit)",
+              "_title": "SmartDashboard/Zero Elev Enc (w/ Limit)"
             }
           }
         }
       }
     },
     {
-      "title": "Tab 2",
+      "title": "Debug",
       "autoPopulate": false,
       "autoPopulatePrefix": "",
       "widgetPane": {
@@ -251,26 +219,54 @@
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
-        "tiles": {}
-      }
-    },
-    {
-      "title": "Tab 3",
-      "autoPopulate": false,
-      "autoPopulatePrefix": "",
-      "widgetPane": {
-        "gridSize": 128.0,
-        "showGrid": true,
-        "hgap": 16.0,
-        "vgap": 16.0,
-        "tiles": {}
+        "tiles": {
+          "3,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Log Level",
+              "_title": "SmartDashboard/Log Level"
+            }
+          },
+          "4,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "List Layout",
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Log 1 InitialTesting",
+                  "_title": "SmartDashboard/Log 1 InitialTesting"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Log 2 PitTesting",
+                  "_title": "SmartDashboard/Log 2 PitTesting"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Log 3 Competition",
+                  "_title": "SmartDashboard/Log 3 Competition"
+                }
+              ]
+            }
+          }
+        }
       }
     }
   ],
   "windowGeometry": {
-    "x": 171.0,
-    "y": 0.0,
-    "width": 1329.0,
-    "height": 1047.0
+    "x": -8.0,
+    "y": -8.0,
+    "width": 1936.0,
+    "height": 1056.0
   }
 }

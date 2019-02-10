@@ -10,12 +10,13 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.utilities.RobotPreferences;
 
 public class ElevatorMoveToLevel extends Command {
 
   private double target;
   private boolean targetInches; // true is target in inches, false is target in position
-  private RobotMap.ElevatorPosition pos;
+  private RobotPreferences.ElevatorPosition pos;
 
   /**
    * Moves elevator to target height
@@ -33,7 +34,7 @@ public class ElevatorMoveToLevel extends Command {
    * Moves elevator to target height
    * @param pos target height based on the position called from RobotMap
    */
-  public ElevatorMoveToLevel(RobotMap.ElevatorPosition pos) {
+  public ElevatorMoveToLevel(RobotPreferences.ElevatorPosition pos) {
     requires(Robot.elevator);
     this.pos = pos;
     targetInches = false;
@@ -49,32 +50,32 @@ public class ElevatorMoveToLevel extends Command {
     /* if(isBall) { //TODO correct if statement when intake subsystem is coded
       switch (pos) {
         case hatchLow:
-          Robot.elevator.setElevatorPos(RobotMap.HatchLow + RobotMap.ballOffset);
+          Robot.elevator.setElevatorPos(Robot.robotPrefs.hatchLow + RobotMap.ballOffset);
           break;
         case hatchMid:
-          Robot.elevator.setElevatorPos(RobotMap.HatchMid + RobotMap.ballOffset);
+          Robot.elevator.setElevatorPos(Robot.robotPrefs.hatchMid + RobotMap.ballOffset);
           break;
         case hatchHigh:
-          Robot.elevator.setElevatorPos(RobotMap.HatchHigh + RobotMap.ballOffset);
+          Robot.elevator.setElevatorPos(Robot.robotPrefs.hatchHigh + RobotMap.ballOffset);
           break;
         case cargoShipCargo:
-          Robot.elevator.setElevatorPos(RobotMap.CargoShipCargo);
+          Robot.elevator.setElevatorPos(Robot.robotPrefs.cargoShipCargo);
           break;
       }
     }
     else { //TODO correct if statement when intake subsystem is coded */
       switch (pos) {
         case hatchLow:
-          Robot.elevator.setElevatorPos(RobotMap.HatchLow);
+          Robot.elevator.setElevatorPos(Robot.robotPrefs.hatchLow);
           break;
         case hatchMid:
-          Robot.elevator.setElevatorPos(RobotMap.HatchMid);
+          Robot.elevator.setElevatorPos(Robot.robotPrefs.hatchMid);
           break;
         case hatchHigh:
-          Robot.elevator.setElevatorPos(RobotMap.HatchHigh);
+          Robot.elevator.setElevatorPos(Robot.robotPrefs.hatchHigh);
           break;
         case cargoShipCargo:
-          Robot.elevator.setElevatorPos(RobotMap.CargoShipCargo);
+          Robot.elevator.setElevatorPos(Robot.robotPrefs.cargoShipCargo);
           break;
       }
     }

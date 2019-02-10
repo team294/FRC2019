@@ -50,6 +50,9 @@ public class DriveTrain extends Subsystem {
   
   private int periodicCount = 0;
   
+  private double leftMotorFaultCount; // increments every cycle the left side detects an issue
+  private double rightMotorFaultCount; // increments every cycle the right side detects an issue
+  
   // Encoders
   private double leftEncoderZero = 0, rightEncoderZero = 0;
   private LinkedList<Double> lEncoderStack = new LinkedList<Double>();
@@ -124,7 +127,7 @@ public class DriveTrain extends Subsystem {
 		// zeroGyroRotation();
 	}
 
-  public void tankDrive (double powerLeft, double powerRight) {
+  public void tankDrive(double powerLeft, double powerRight) {
     robotDrive.tankDrive(powerLeft, powerRight);
   }
 
@@ -312,6 +315,10 @@ public class DriveTrain extends Subsystem {
 		return angle;
   }
 
+  /**
+   * 
+   * @param setCoast true if want to put driveTrain in coast mode false to put in brake mode.
+   */
   public void setDriveMode(boolean setCoast){
    if (setCoast) {
     leftMotor1.setNeutralMode(NeutralMode.Coast);
@@ -347,15 +354,47 @@ public class DriveTrain extends Subsystem {
     }
     return ((lEncStopped = Math.abs(lSum/lEncoderStack.size()-lEncoderStack.peekLast()) <= precision) & (rEncStopped = Math.abs(rSum/rEncoderStack.size()-rEncoderStack.peekLast()) <= precision));
   }
+  
+  /**
+   * Checks drive motor currents, records sticky faults if a motor is faulty for more than 5 cycles
+   * @param motor1PDP RobotMap PDP address for motor1
+   * @param motor2PDP RobotMap PDP address for motor2
+   * @param motor3PDP RobotMap PDP address for motor3
+   * @param side true is left, false is right
+   */
+	public void verifyMotors(int motor1PDP, int motor2PDP, int motor3PDP, boolean side) {
+      double amps1 = Robot.pdp.getCurrent(motor1PDP);
+      double amps2 = Robot.pdp.getCurrent(motor2PDP);
+      double amps3 = Robot.pdp.getCurrent(motor3PDP);
+      double averageAmps = (amps1 + amps2 + amps3) / 3;
 
+		if(leftMotorFaultCount >= 5) {
+      Robot.robotPrefs.recordStickyFaults("Left" + " Drive Train");
+      leftMotorFaultCount = 0;
+    } else if (rightMotorFaultCount >= 5) {
+      Robot.robotPrefs.recordStickyFaults("Right" + " Drive Train");
+      rightMotorFaultCount = 0;
+    }
+		if(averageAmps > 7) {
+			if(amps1 < 4 || amps2 < 4 || amps3 < 4) {
+        if(side) leftMotorFaultCount++;
+        else  rightMotorFaultCount++;
+      }
+      else {
+        if (side) leftMotorFaultCount = 0;
+        else rightMotorFaultCount = 0;
+      }
+    }
+  }
+  
   public void updateDriveLog () {
     Robot.log.writeLog("DriveTrain", "Update Variables",
       "Drive L1 Volts," + leftMotor1.getMotorOutputVoltage() + ",Drive L2 Volts," + leftMotor2.getMotorOutputVoltage() + ",Drive L3 Volts," + leftMotor3.getMotorOutputVoltage() +
       ",Drive L1 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor1PDP) + ",Drive L2 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor2PDP) + ",Drive L3 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor3PDP) + 
       ",Drive R1 Volts," + rightMotor1.getMotorOutputVoltage() + ",Drive R2 Volts," + rightMotor2.getMotorOutputVoltage() + ",Drive R3 Volts," + rightMotor3.getMotorOutputVoltage() + 
       ",Drive R1 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor1PDP) + ",Drive R2 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor2PDP) + ",Drive R3 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor3PDP) + 
-      ",L Enc Zero," + leftEncoderZero + ",L Enc Ticks," + getLeftEncoderTicks() + ",L Drive Inches," + getLeftEncoderInches() + 
-      ",R Enc Zero," + rightEncoderZero + ",R Enc Ticks," + getRightEncoderTicks() + ",R Drive Inches," + getRightEncoderInches() + 
+      ",L Enc Ticks," + getLeftEncoderTicks() + ",L Drive Inches," + getLeftEncoderInches() + 
+      ",R Enc Ticks," + getRightEncoderTicks() + ",R Drive Inches," + getRightEncoderInches() + 
       ",High Gear," + Robot.shifter.isShifterInHighGear());
   }
 
@@ -610,10 +649,6 @@ public class DriveTrain extends Subsystem {
     this.robotDrive.tankDrive(lPercentPower, rPercentPower);
     updateEncoderList();
   }
-  
-  public void quadrantLineFollowing() {
-    quadrantLineFollowing(checkScoringQuadrant());
-  }
 
   @Override
   public void initDefaultCommand() {
@@ -623,9 +658,14 @@ public class DriveTrain extends Subsystem {
   @Override
   public void periodic() {
 
+    SmartDashboard.putNumber("RightEnc", getRightEncoderTicks());
+    SmartDashboard.putNumber("LeftEnc", getLeftEncoderTicks());
+
     if (DriverStation.getInstance().isEnabled()) {
-      if ((++periodicCount) >= 25) {
+      if ((++periodicCount) >= 10) {
         updateDriveLog();
+        verifyMotors(RobotMap.leftMotor1PDP, RobotMap.leftMotor2PDP, RobotMap.leftMotor3PDP, true);
+        verifyMotors(RobotMap.rightMotor1PDP, RobotMap.rightMotor2PDP, RobotMap.rightMotor3PDP, false);
         Robot.lineFollowing.logLineFollowers(); // This is the best place for this I guess -- only updates about every 0.5 second
         periodicCount=0;  
       }

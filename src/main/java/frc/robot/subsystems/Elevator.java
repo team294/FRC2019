@@ -38,12 +38,13 @@ public class Elevator extends Subsystem {
 	private int periodicCount = 0; // increments every cycle of periodic
 	private int posMoveCount = 0; // increments every cycle the elevator moves up
 	private int negMoveCount = 0; // increments every cycle the elevator moves down
+	private int motorFaultCount = 0; // increments every cycle the motor detects an issue
 	private int idleCount = 0; // increments every cycle the elevator isn't moving
 	private double prevEnc = 0.0; // last recorded encoder value
 	private double currEnc = 0.0; // current recorded encoder value
 	private double encSnapShot = 0.0; // snapshot of encoder value used to make sure encoder is working
 	private boolean encOK = true; // true is encoder working, false is encoder broken
-	private boolean elevatorMode = true; // true is automated, false is manual mode
+	private boolean elevatorMode; // true is automated, false is manual mode
 
 	public double rampRate = .005;
 	public double kP = 0.5;
@@ -80,6 +81,13 @@ public class Elevator extends Subsystem {
 		elevatorMotor2.clearStickyFaults();
 		elevatorMotor1.setNeutralMode(NeutralMode.Brake);
 		elevatorMotor2.setNeutralMode(NeutralMode.Brake);
+
+		if(getElevatorLowerLimit() && getElevatorEncTicks() == 0) {
+			elevatorMode = true;
+		}
+		else {
+			elevatorMode = false; // start the elevator in manual mode unless it is properly zeroed
+		}
 	}
 
 	/**
@@ -92,11 +100,11 @@ public class Elevator extends Subsystem {
 
 	/**
 	 * only works when encoder is working and elevatorMode is true (in automatic mode)
-	 * @param inches target height in inches
+	 * @param inches target height in inches off the floor
 	 */
 	public void setElevatorPos(double inches) {
 		if (encOK && elevatorMode) {
-			elevatorMotor1.set(ControlMode.Position, inchesToEncoderTicks(inches));
+			elevatorMotor1.set(ControlMode.Position, inchesToEncoderTicks(inches - Robot.robotPrefs.elevatorBottomToFloor));
 			Robot.log.writeLog("Elevator", "Position set", "Target," + inches);
 		}
 	}
@@ -172,12 +180,34 @@ public class Elevator extends Subsystem {
 	}
 
 	/**
+	 * Checks elevator motor currents, records sticky faults if a motor is faulty for more than 5 cycles
+	 */
+	public void verifyMotors() {
+		double amps1 = Robot.pdp.getCurrent(RobotMap.elevatorMotor1PDP);
+		double amps2 = Robot.pdp.getCurrent(RobotMap.elevatorMotor2PDP);
+
+		if(motorFaultCount >= 5) {
+			Robot.robotPrefs.recordStickyFaults("Elevator");
+			motorFaultCount = 0;
+		}
+		if(amps1 > 8 && amps2 < 3) {
+			motorFaultCount++;
+		}
+		else if(amps2 > 8 && amps1 < 3) {
+			motorFaultCount++;
+		}
+		else {
+			motorFaultCount = 0;
+		}
+	}
+
+	/**
 	 * writes information about the subsystem to the fileLog
 	 */
 	public void updateElevatorLog() {
 		Robot.log.writeLog("Elevator", "Update Variables",
 				"Elev1 Volts," + elevatorMotor1.getMotorOutputVoltage() + ",Elev2 Volts,"
-						+ elevatorMotor2.getMotorOutputVoltage() + ",Elev1 Amps,"
+						+ elevatorMotor2.getMotorOutputVoltage() + ",Talon Amps," + elevatorMotor1.getOutputCurrent() + ",Elev1 Amps,"
 						+ Robot.pdp.getCurrent(RobotMap.elevatorMotor1PDP) + ",Elev2 Amps,"
 						+ Robot.pdp.getCurrent(RobotMap.elevatorMotor2PDP) + ",Elev Enc Ticks," + getElevatorEncTicks()
 						+ ",Elev Enc Inches," + getElevatorEncInches() + ",Upper Limit," + getElevatorUpperLimit()
@@ -187,7 +217,7 @@ public class Elevator extends Subsystem {
 	@Override
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
-		if (!encOK) {
+		if (!elevatorMode) {
 			setDefaultCommand(new ElevatorWithXBox());
 		}
 	}
@@ -205,18 +235,16 @@ public class Elevator extends Subsystem {
 		if (DriverStation.getInstance().isEnabled()) {
 			prevEnc = currEnc;
 			currEnc = getElevatorEncTicks();
-			if (currEnc == prevEnc) {
-				idleCount++;
-			} else {
-				idleCount = 0;
-			}
+			idleCount = (currEnc == prevEnc) ? idleCount++ : 0;
 			if (idleCount >= 50) {
-				if ((++periodicCount) >= 25) {
+				if ((periodicCount++) >= 25) {
 					updateElevatorLog();
+					verifyMotors();
 					periodicCount = 0;
 				}
 			} else {
 				updateElevatorLog();
+				verifyMotors();
 			}
 		}
 
@@ -232,6 +260,7 @@ public class Elevator extends Subsystem {
 			if (posMoveCount > 3) {
 				encOK = (currEnc - encSnapShot) > 100;
 				if (!encOK) {
+					Robot.robotPrefs.recordStickyFaults("Elevator Enc");
 					setDefaultCommand(new ElevatorWithXBox());
 					elevatorMode = false;
 				}
@@ -247,6 +276,7 @@ public class Elevator extends Subsystem {
 			if (negMoveCount > 3) {
 				encOK = (currEnc - encSnapShot) < -100;
 				if (!encOK) {
+					Robot.robotPrefs.recordStickyFaults("Elevator Enc");
 					setDefaultCommand(new ElevatorWithXBox());
 					elevatorMode = false;
 				}
