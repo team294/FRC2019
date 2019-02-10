@@ -30,7 +30,6 @@ public class RobotPreferences {
 	public boolean wristCalibrated;     // Default to wrist being uncalibrated.  Calibrate from robot preferences or "Calibrate Wrist Zero" button on dashboard
 	 
 	// Wrist Angles (in degrees)
-	//TODO update with actual wrist angles
 	public static final double WristStowed = 107.36;
 	public static final double WristUp = 15.0;
 	public static final double WristStraight = 0.0;

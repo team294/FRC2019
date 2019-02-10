@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.*;
+import frc.robot.utilities.FileLog;
+import frc.robot.utilities.RobotPreferences;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -73,6 +75,9 @@ public class Wrist extends Subsystem {
    * @param percentOutput between -1.0 and 1.0
    */
   public void setWristMotorPercentOutput(double percentOutput) {
+    if (Robot.log.getLogLevel() == 1) {
+      Robot.log.writeLog("Wrist" , "Percent Output", ",Percent Output," + percentOutput);
+    }
     wristMotor.set(ControlMode.PercentOutput, percentOutput);
   }
 
@@ -87,7 +92,9 @@ public class Wrist extends Subsystem {
       // TODO determine max degrees and elevator height tolerance
       if (degrees < 60 || (Robot.elevator.getElevatorLowerLimit() && Robot.elevator.getCurrentElevatorTarget() < 1)) {
         wristMotor.set(ControlMode.Position, degreesToEncoderTicks(degrees) + Robot.robotPrefs.wristCalZero);
-        Robot.log.writeLog("Wrist", "Degrees set", "Target" + degrees);
+        if(Robot.log.getLogLevel() <= 2) {
+          Robot.log.writeLog("Wrist", "Degrees set", ",Target," + degrees);
+        }
       }
     }
   }
@@ -105,7 +112,9 @@ public class Wrist extends Subsystem {
   public void zeroWristEncoder() {
     if (getWristUpperLimit()) {
       wristMotor.setSelectedSensorPosition(0, 0, 0);
-      Robot.log.writeLog("Wrist", "Zero Encoder", "");
+      if (Robot.log.getLogLevel() <= 2){
+        Robot.log.writeLog("Wrist", "Zero Encoder", "");
+      }
     }
   }
 
@@ -114,6 +123,9 @@ public class Wrist extends Subsystem {
    * @return true if wrist is at lower limit, false if not
    */
   public boolean getWristLowerLimit() {
+    if(Robot.log.getLogLevel() == 1){
+      Robot.log.writeLog("Wrist", "Lower Wrist Encoder", ",Lower Wrist Encoder," + wristLimits.isRevLimitSwitchClosed());
+    }
     return wristLimits.isRevLimitSwitchClosed();
   }
 
@@ -122,6 +134,9 @@ public class Wrist extends Subsystem {
    * @return true if wrist is at upper limit, false if not
    */
   public boolean getWristUpperLimit() {
+    if(Robot.log.getLogLevel() == 1){
+      Robot.log.writeLog("Wrist", "Upper Wrist Encoder", ",Upper Wrist Encoder," + wristLimits.isFwdLimitSwitchClosed());
+    }
     return wristLimits.isFwdLimitSwitchClosed();
   }
 
@@ -130,6 +145,9 @@ public class Wrist extends Subsystem {
    * @return raw encoder ticks (based on encoder zero being at zero position)
    */
   public double getWristEncoderTicks() {
+    if(Robot.log.getLogLevel() == 1){
+      Robot.log.writeLog("Wrist", "Wrist Encoder Ticks", ",Wrist Encoder Ticks," + (getWristEncoderTicksRaw() - Robot.robotPrefs.wristCalZero));
+    }
     return getWristEncoderTicksRaw() - Robot.robotPrefs.wristCalZero;
   }
 
@@ -165,6 +183,9 @@ public class Wrist extends Subsystem {
    * @return current encoder ticks (based on zero) converted to degrees
    */
   public double getWristEncoderDegrees() {
+    if(Robot.log.getLogLevel() == 1){
+      Robot.log.writeLog("Wrist", "Wrist Encoder Degrees", ",Wrist Encoder Degrees," + encoderTicksToDegrees(getWristEncoderTicks()));
+    }
     return encoderTicksToDegrees(getWristEncoderTicks());
   }
 
@@ -185,6 +206,9 @@ public class Wrist extends Subsystem {
     double wristAngle = getWristEncoderDegrees();
     wristAngle = wristAngle % 360; // If encoder wraps around 360 degrees
     wristAngle = (wristAngle > 180) ? wristAngle - 360 : wristAngle; // Change range to -180 to +180
+    if (Robot.log.getLogLevel() == 1){
+      Robot.log.writeLog("Wrist", "Get Wrist Angle", ",Wrist Angle," + wristAngle);
+    }
 		return wristAngle;
   }
 
@@ -195,6 +219,9 @@ public class Wrist extends Subsystem {
 	 */
   public double getCurrentWristTarget() {
     double currentTarget = wristMotor.getClosedLoopTarget(0) - Robot.robotPrefs.wristCalZero;
+    if(Robot.log.getLogLevel() == 1){
+      Robot.log.writeLog("Wrist", "Wrist Target", ",Wrist Target," + encoderTicksToDegrees(currentTarget));
+    }
 		return encoderTicksToDegrees(currentTarget);
   }
 
@@ -224,6 +251,17 @@ public class Wrist extends Subsystem {
 
   @Override
   public void periodic() {
+    if(getWristLowerLimit() || getWristUpperLimit()){
+      if (Robot.log.getLogLevel() <= 2) {
+        Robot.log.writeLog("Wrist", "Encoder Calibrated", ",Wrist Encoder Calibrated,");
+      }
+      Robot.robotPrefs.setWristCalibration(Robot.robotPrefs.wristCalZero, true);
+    }
+
+    if(Robot.log.getLogLevel() == 1) {
+      updateWristLog();
+    }
+    
     if (DriverStation.getInstance().isEnabled()) {
 			prevEnc = currEnc;
 			currEnc = getWristEncoderTicks();

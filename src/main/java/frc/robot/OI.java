@@ -63,7 +63,6 @@ public class OI {
   private Button xBoxY = new JoystickButton(xBoxController, 4);
 
   private Trigger trigWristElevEncoder = new WristEncoderCheck();
-  private Trigger trigCalibrateWristEncoder = new WristLimitCheck();
 
   public OI() {
     Button[] left = new Button[12];
@@ -131,6 +130,8 @@ public class OI {
     SmartDashboard.putData("Piston Grab", new HatchSet(true));
     SmartDashboard.putData("Piston Release", new HatchSet(false));
     SmartDashboard.putString("Piston Position", "Null");
+
+    trigWristElevEncoder.whenActive(new WristEncoderFail());
   }
 
   public void setDriveDirection(boolean direction) {
