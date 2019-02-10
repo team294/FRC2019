@@ -7,7 +7,7 @@
 
 package frc.robot.commands;
 
-import frc.robot.RobotMap;
+import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class ClimbSequence extends CommandGroup {
@@ -15,7 +15,7 @@ public class ClimbSequence extends CommandGroup {
    * Add your docs here.
    */
   public ClimbSequence() {
-    addSequential(new ClimbLift(RobotMap.vacuumTargetAngle));
-    addSequential(new ClimbLiftRobot(RobotMap.robotLiftAngle));
+    addSequential(new ClimbLift(Robot.robotPrefs.vacuumTargetAngle));
+    addSequential(new ClimbLiftRobot(Robot.robotPrefs.robotLiftAngle));
   }
 }

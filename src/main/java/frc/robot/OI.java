@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
 
 import frc.robot.commands.*;
+import frc.robot.utilities.RobotPreferences;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -95,10 +96,10 @@ public class OI {
     // The conditional logic needs to go in the command itself. No logic can be done in OI since OI is constructed at the start and not run repeatedly
     // SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true));
 
-    xBoxA.whenActive(new ElevatorMoveToLevel(RobotMap.ElevatorPosition.hatchLow));
-    xBoxB.whenActive(new ElevatorMoveToLevel(RobotMap.ElevatorPosition.hatchMid));
-    xBoxY.whenActive(new ElevatorMoveToLevel(RobotMap.ElevatorPosition.hatchHigh));
-    xBoxX.whenActive(new ElevatorMoveToLevel(RobotMap.ElevatorPosition.cargoShipCargo));
+    xBoxA.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchLow));
+    xBoxB.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchMid));
+    xBoxY.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchHigh));
+    xBoxX.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.cargoShipCargo));
     
     SmartDashboard.putData("Turn To Target", new VisionTurnToTarget());
     SmartDashboard.putData("Drive on line", new DriveWithLineFollowing());
@@ -106,14 +107,21 @@ public class OI {
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
     SmartDashboard.putData("Elevator Down", new ElevatorLower()); // For testing limit switch and encoder
-    SmartDashboard.putData("Move Elevator to Zero", new ElevatorMoveToLevel(0.0));
+    SmartDashboard.putData("Move Elevator to Zero", new ElevatorMoveToLevel(Robot.robotPrefs.elevatorBottomToFloor)); // Move to encoder's zero position
     SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero());
-    //SmartDashboard.putData("Manual Zero Elev Enc (w/out Limit)", new ElevatorManualZero());
+
+    // Buttons for controlling FileLogging
+    SmartDashboard.putData("Log 1 InitialTesting", new FileLogSetLevel(1));
+    SmartDashboard.putData("Log 2 PitTesting", new FileLogSetLevel(2));
+    SmartDashboard.putData("Log 3 Competition", new FileLogSetLevel(3));
+    Robot.log.setLogLevel(3);   // Also puts log level indicator on ShuffleBoard
 
     SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
     SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
     SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));
+    
     SmartDashboard.putData("Clear Sticky Faults", new ClearStickyFaults());
+    Robot.robotPrefs.showStickyFaults();
     //SmartDashboard.putData("Turn To Line", new TurnToLine());
   }
 
