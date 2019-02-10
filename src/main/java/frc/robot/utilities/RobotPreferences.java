@@ -47,7 +47,7 @@ public class RobotPreferences {
   	public final double max_jerk_ipspsps = 2400.0;  // max robot jerk, in inches per second per second per second
 
 	// Hatch piston positions
-	public enum PistonPositions { Extended, Retracted, Moving, Null }
+	public enum HatchPistonPositions { Grab, Release, Moving, Null }
 
 
 	/*

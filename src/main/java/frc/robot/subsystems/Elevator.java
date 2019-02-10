@@ -66,7 +66,7 @@ public class Elevator extends Subsystem {
 		elevatorMotor1.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
 
 		elevatorLimits = elevatorMotor1.getSensorCollection();
-		zeroElevatorEnc();
+		checkAndZeroElevatorEnc();
 
 		elevatorMotor1.config_kP(0, kP);
 		elevatorMotor1.config_kI(0, kI);
@@ -127,7 +127,7 @@ public class Elevator extends Subsystem {
 	/**
 	 * only zeros elevator encoder when it is at the zero position (lower limit)
 	 */
-	public void zeroElevatorEnc() {
+	public void checkAndZeroElevatorEnc() {
 		if (getElevatorLowerLimit()) {
 			elevatorMotor1.setSelectedSensorPosition(0, 0, 0);
 			Robot.log.writeLog("Elevator", "Zero Encoder", "");

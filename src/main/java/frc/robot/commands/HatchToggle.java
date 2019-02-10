@@ -9,7 +9,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.utilities.RobotPreferences.PistonPositions;
+import frc.robot.utilities.RobotPreferences.HatchPistonPositions;
 
 public class HatchToggle extends Command {
   public HatchToggle() {
@@ -21,10 +21,10 @@ public class HatchToggle extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    if (Robot.hatch.getHatchPiston() == PistonPositions.Retracted || Robot.hatch.getHatchPiston() == PistonPositions.Null) {
-      Robot.hatch.setHatchPiston(PistonPositions.Extended);
+    if (Robot.hatch.getHatchPiston() == HatchPistonPositions.Release || Robot.hatch.getHatchPiston() == HatchPistonPositions.Null) {
+      Robot.hatch.setHatchPiston(HatchPistonPositions.Grab);
     } else {
-      Robot.hatch.setHatchPiston(PistonPositions.Retracted);
+      Robot.hatch.setHatchPiston(HatchPistonPositions.Release);
     }
   }
 
