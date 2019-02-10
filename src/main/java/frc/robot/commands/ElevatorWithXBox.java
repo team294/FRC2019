@@ -20,7 +20,6 @@ public class ElevatorWithXBox extends Command {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.elevator);
-    requires(Robot.wrist);
   }
 
   // Called just before this Command runs the first time
@@ -34,7 +33,7 @@ public class ElevatorWithXBox extends Command {
     if (Robot.wrist.getWristEncoderDegrees() > -5 && Robot.wrist.getWristEncoderDegrees() < 5) {
       double value = -Robot.oi.xBoxController.getY(Hand.kRight);
       Robot.elevator.setElevatorMotorPercentOutput(value);
-      Robot.elevator.zeroElevatorEnc();
+      Robot.elevator.checkAndZeroElevatorEnc();
     }
   }
 

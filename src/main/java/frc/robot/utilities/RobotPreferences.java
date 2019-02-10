@@ -25,7 +25,7 @@ public class RobotPreferences {
 	public double robotOffset; //distance of elevator 0 value from the ground
 	public double elevatorBottomToFloor; //distance of elevator 0 value from the ground
 	public double cameraDistanceFromFrontOfBumper;  // (default = 12 inches)
-	public double wristGearRatio; 		// wrist gear ratio, gear with encoder / gear driving wrist
+	public double wristGearRatio; // wrist gear ratio, gear with encoder / gear driving wrist
 	public double wristCalZero;   		// Wrist encoder position at O degrees, in encoder ticks (i.e. the calibration factor)
 	public boolean wristCalibrated;     // Default to wrist being uncalibrated.  Calibrate from robot preferences or "Calibrate Wrist Zero" button on dashboard
 	 
@@ -33,7 +33,7 @@ public class RobotPreferences {
 	public static final double WristStowed = 107.36;
 	public static final double WristUp = 15.0;
 	public static final double WristStraight = 0.0;
-	public static final double WristDown = -57.0;
+	public static final double WristDown = -45.0;
 	public enum WristAngle {stowed, up, straight, down}
 
 	// TODO Update with 2019 base
@@ -47,7 +47,7 @@ public class RobotPreferences {
   	public final double max_jerk_ipspsps = 2400.0;  // max robot jerk, in inches per second per second per second
 
 	// Hatch piston positions
-	public enum PistonPositions { Extended, Retracted, Moving, Null }
+	public enum HatchPistonPositions { Grab, Release, Moving, Null }
 
 
 	/*

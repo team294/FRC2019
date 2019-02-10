@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
 import frc.robot.utilities.RobotPreferences;
-import frc.robot.utilities.RobotPreferences.PistonPositions;
+import frc.robot.utilities.RobotPreferences.HatchPistonPositions;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
@@ -20,7 +20,7 @@ public class Hatch extends Subsystem {
   // here. Call these from Commands.
 
   private final DoubleSolenoid hatchPiston = new DoubleSolenoid(RobotMap.pneumaticHatchOut, RobotMap.pneumaticHatchIn);
-  private PistonPositions hatchPosition = PistonPositions.Null;
+  private HatchPistonPositions hatchPosition = HatchPistonPositions.Null;
 
   public Hatch() {
   }
@@ -30,16 +30,16 @@ public class Hatch extends Subsystem {
 	 * 
 	 * @param position only accepts PistonPositions.Extended and PistonPositions.Retracted, other values are ignored
 	 */
-  public void setHatchPiston(RobotPreferences.PistonPositions position) {
-    if (position == RobotPreferences.PistonPositions.Extended) {
+  public void setHatchPiston(RobotPreferences.HatchPistonPositions position) {
+    if (position == RobotPreferences.HatchPistonPositions.Grab) {
       hatchPiston.set(Value.kForward);
-      hatchPosition = PistonPositions.Extended;
-      SmartDashboard.putString("Piston Position", "Extended");
+      hatchPosition = HatchPistonPositions.Grab;
+      SmartDashboard.putString("Disc Position", "Grab");
 		}
-		if (position == RobotPreferences.PistonPositions.Retracted) {
+		if (position == RobotPreferences.HatchPistonPositions.Release) {
       hatchPiston.set(Value.kReverse);
-      hatchPosition = PistonPositions.Retracted;
-      SmartDashboard.putString("Piston Position", "Retracted");
+      hatchPosition = HatchPistonPositions.Release;
+      SmartDashboard.putString("Disc Position", "Release");
     }
   }
 
@@ -47,7 +47,7 @@ public class Hatch extends Subsystem {
 	 * 
 	 * @return position of hatch piston
 	 */
-	public PistonPositions getHatchPiston() {
+	public HatchPistonPositions getHatchPiston() {
 		return hatchPosition;
 	}
 

@@ -126,12 +126,10 @@ public class OI {
     SmartDashboard.putData("Clear Sticky Faults", new ClearStickyFaults());
     Robot.robotPrefs.showStickyFaults();
     //SmartDashboard.putData("Turn To Line", new TurnToLine());
-    SmartDashboard.putData("Toggle Piston", new HatchToggle());
-    SmartDashboard.putData("Piston Grab", new HatchSet(true));
-    SmartDashboard.putData("Piston Release", new HatchSet(false));
-    SmartDashboard.putString("Piston Position", "Null");
-
-    trigWristElevEncoder.whenActive(new WristEncoderFail());
+    SmartDashboard.putData("Disc Toggle", new HatchToggle());
+    SmartDashboard.putData("Disc Grab", new HatchSet(true));
+    SmartDashboard.putData("Disc Release", new HatchSet(false));
+    SmartDashboard.putString("Disc Position", "Null");
   }
 
   public void setDriveDirection(boolean direction) {
