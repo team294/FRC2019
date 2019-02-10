@@ -59,21 +59,5 @@ public class RobotMap {
   public static final int elevatorMotor2PDP = 10; 
   public static final int cargoMotor1PDP = 5;  
   public static final int cargoMotor2PDP = 6;  
- public static final int wristMotorPDP = 3;  
-
-  //Elevator Level Heights (in inches)
-  //TODO Does this work?  How can a final variable be set using code from robot preferences?
-  public static final double hatchLow = 19.0 - Robot.robotPrefs.elevatorBottomToFloor;
-  public static final double hatchMid = 47.0 - Robot.robotPrefs.elevatorBottomToFloor;
-  public static final double hatchHigh = 75.0 - Robot.robotPrefs.elevatorBottomToFloor;
-  public static final double cargoShipCargo = 34.75 - Robot.robotPrefs.elevatorBottomToFloor;
-  public static final double ballOffset = 8.5;
-  
-  public enum ElevatorPosition {hatchLow, hatchMid, hatchHigh, cargoShipCargo};
-
-  //Climb Target Angles (in degrees)
-  public static final double climbStartingAngle = -50.0; //TODO Test when climb is built
-  public static final double vacuumTargetAngle = 180.0; //TODO Test when climb is built
-  public static final double robotLiftAngle = 0.0; //TODO Test when climb is built
-
+  public static final int wristMotorPDP = 3;  
 }

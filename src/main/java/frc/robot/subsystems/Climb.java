@@ -191,10 +191,10 @@ public class Climb extends Subsystem {
   public void periodic() {
     if (!Robot.robotPrefs.climbCalibrated || Robot.beforeFirstEnable) {
       if (climbLimit.isRevLimitSwitchClosed()) {
-        Robot.robotPrefs.setClimbCalibration(getClimbEncTicksRaw() - climbAngleToEncTicks(RobotMap.climbStartingAngle), false);
+        Robot.robotPrefs.setClimbCalibration(getClimbEncTicksRaw() - climbAngleToEncTicks(Robot.robotPrefs.climbStartingAngle), false);
       }
     }
-    if (getClimbAngle() > RobotMap.vacuumTargetAngle || getClimbAngle() < RobotMap.climbStartingAngle) {
+    if (getClimbAngle() > Robot.robotPrefs.vacuumTargetAngle || getClimbAngle() < Robot.robotPrefs.climbStartingAngle) {
       Robot.robotPrefs.climbCalibrated = false;
     }
     if (DriverStation.getInstance().isEnabled()) {
