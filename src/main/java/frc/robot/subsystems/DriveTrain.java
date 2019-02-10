@@ -69,8 +69,7 @@ public class DriveTrain extends Subsystem {
       leftMotor3.set(ControlMode.Follower, RobotMap.leftMotor2);
       rightMotor1.set(ControlMode.Follower, RobotMap.rightMotor2);
       rightMotor3.set(ControlMode.Follower, RobotMap.rightMotor2);
-    }
-    else {
+    } else {
       leftMotor1 = new WPI_VictorSPX(RobotMap.leftMotor1);
       leftMotor3 = new WPI_VictorSPX(RobotMap.leftMotor3);
       rightMotor1 = new WPI_VictorSPX(RobotMap.rightMotor1);
@@ -81,6 +80,7 @@ public class DriveTrain extends Subsystem {
       rightMotor1.follow(rightMotor2);
       rightMotor3.follow(rightMotor2);
     }
+
     leftMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		rightMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		zeroLeftEncoder();
@@ -313,22 +313,20 @@ public class DriveTrain extends Subsystem {
   }
 
   public void setDriveMode(boolean setCoast){
-   if(setCoast){
+   if (setCoast) {
     leftMotor1.setNeutralMode(NeutralMode.Coast);
     leftMotor2.setNeutralMode(NeutralMode.Coast);
     leftMotor3.setNeutralMode(NeutralMode.Coast);
     rightMotor1.setNeutralMode(NeutralMode.Coast);
     rightMotor2.setNeutralMode(NeutralMode.Coast);
     rightMotor3.setNeutralMode(NeutralMode.Coast);
-
-   }else{
+   } else {
     leftMotor1.setNeutralMode(NeutralMode.Brake);
     leftMotor2.setNeutralMode(NeutralMode.Brake);
     leftMotor3.setNeutralMode(NeutralMode.Brake);
     rightMotor1.setNeutralMode(NeutralMode.Brake);
     rightMotor2.setNeutralMode(NeutralMode.Brake);
     rightMotor3.setNeutralMode(NeutralMode.Brake);
-
    }
    
   }
@@ -489,8 +487,9 @@ public class DriveTrain extends Subsystem {
   }
 
   public void driveOnLine() {
-    // TODO: Integrate quadrants and gyro to correct based on which side of the line we're on
-    // TODO: Explain to Rob why that is needed
+    
+    SmartDashboard.putString("Line Following Routine", "center");
+
     double lPercentPower = 0;
     double rPercentPower = 0;
     double baseSpeed = 0.7; // Lowered from 1 for new line sensors further out, untested
@@ -537,32 +536,41 @@ public class DriveTrain extends Subsystem {
   }
 
   public void quadrantLineFollowing(double quadrant) {
+    if (quadrant == 0.0) {
+      driveOnLine();
+      return;
+    }
+
+    //quadrant = 1.5; // TEMPORARY FOR TESTING LEFT/RIGHT
+
     // add a special case for straight down (quadrant 3.5) because of roll over on 180
-    double angleTolerance = 3.0; // degrees
-    boolean left = Math.abs(getGyroRotation()) > Math.abs(getTargetAngle(quadrant) + angleTolerance);
-    boolean right = Math.abs(getGyroRotation()) < Math.abs(getTargetAngle(quadrant) - angleTolerance);
+    double angleTolerance = 1.5; // degrees
+    boolean left = getGyroRotation() > getTargetAngle(quadrant) + angleTolerance; // approaching from left, facing too far right
+    boolean right = getGyroRotation() < getTargetAngle(quadrant) - angleTolerance; // approaching from right
     if (!left && !right) {
       driveOnLine(); // if we're close to center just do the simple line following
       return;
     }
 
-    double baseSpeed = 0.7; // Lowered from 1 for new line sensors further out, untested
+    double baseSpeed = 0.8; // Lowered from 1 for new line sensors further out, untested
     int lineNum = Robot.lineFollowing.getLineNumber();
     double lPercentPower = 0.0, rPercentPower = 0.0;
+
+    SmartDashboard.putString("Line Following Routine", (left) ? "left" : "right");
 
     if (left) {
       if (lineNum == 0) {
         lPercentPower = 0.65*baseSpeed;
         rPercentPower = 0.65*baseSpeed;
       } else if (lineNum == 1) {
-        lPercentPower = 0.0*baseSpeed;
+        lPercentPower = 0.4*baseSpeed;
         rPercentPower = 0.6*baseSpeed;
       } else if (lineNum == -1) {
-        lPercentPower = 0.3*baseSpeed;
-        rPercentPower = 0.6*baseSpeed;
+        lPercentPower = 0.6*baseSpeed;
+        rPercentPower = 0.65*baseSpeed;
       } else if (lineNum == -2) {
-        lPercentPower = 0.5*baseSpeed;
-        rPercentPower = 0.8*baseSpeed;
+        lPercentPower = 0.6*baseSpeed; // originally less
+        rPercentPower = 0.65*baseSpeed;
       } else if (lineNum == 2) {
         lPercentPower = -0.4*baseSpeed;
         rPercentPower = 0.8*baseSpeed;
@@ -575,17 +583,17 @@ public class DriveTrain extends Subsystem {
         lPercentPower = 0.65*baseSpeed;
         rPercentPower = 0.65*baseSpeed;
       } else if (lineNum == 1) {
-        lPercentPower = 0.6*baseSpeed;
-        rPercentPower = 0.3*baseSpeed;
+        lPercentPower = 0.65*baseSpeed;
+        rPercentPower = 0.6*baseSpeed;
       } else if (lineNum == -1) {
         lPercentPower = 0.6*baseSpeed;
-        rPercentPower = 0.0*baseSpeed;
+        rPercentPower = 0.4*baseSpeed;
       } else if (lineNum == -2) {
         lPercentPower = 0.8*baseSpeed;
         rPercentPower = -0.4*baseSpeed;
       } else if (lineNum == 2) {
-        lPercentPower = 0.8*baseSpeed;
-        rPercentPower = 0.5*baseSpeed;
+        lPercentPower = 0.65*baseSpeed;
+        rPercentPower = 0.6*baseSpeed; // originally less
       } else {
         lPercentPower = 0.5*baseSpeed;
         rPercentPower = -0.3*baseSpeed;
@@ -606,7 +614,6 @@ public class DriveTrain extends Subsystem {
   public void quadrantLineFollowing() {
     quadrantLineFollowing(checkScoringQuadrant());
   }
-
 
   @Override
   public void initDefaultCommand() {

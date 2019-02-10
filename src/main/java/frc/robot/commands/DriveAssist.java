@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class DriveAssist extends CommandGroup {
   /**
-   * Pathfinder, Vision, and Line Follwing assisted driving to line up with scoring zone
+   * Pathfinder, Vision, and Line Following assisted driving (with gyro) to line up with scoring zone
    */
   public DriveAssist() {
     // Add Commands here:
@@ -33,7 +33,7 @@ public class DriveAssist extends CommandGroup {
 
     //addSequential(new Pathfinder());
     addSequential(new DriveWithVision(true, true));
-    addSequential(new DriveWithLineFollowing()); // Currently there is no exit status for this, so it will run indefinitely
+    addSequential(new DriveWithLineFollowing(true));
 
   }
 }

@@ -87,6 +87,11 @@ public class OI {
         left[i].whenReleased(new DriveWithJoysticks());
         right[i].whenPressed(new DriveWithVision(false, false)); // No line followers, no gyro
         right[i].whenReleased(new DriveWithJoysticks());
+      } else if (i == 11 || i == 10) {
+        left[i].whenPressed(new DriveWithLineFollowing(true));
+        left[i].whenReleased(new DriveWithJoysticks());
+        right[i].whenPressed(new DriveWithLineFollowing(false));
+        right[i].whenReleased(new DriveWithJoysticks());
       }
     }
 
@@ -98,8 +103,6 @@ public class OI {
     xBoxY.whenActive(new ElevatorMoveToLevel(RobotMap.ElevatorPosition.hatchHigh));
     xBoxX.whenActive(new ElevatorMoveToLevel(RobotMap.ElevatorPosition.cargoShipCargo));
     
-    SmartDashboard.putData("Turn To Target", new VisionTurnToTarget());
-
     SmartDashboard.putData("Drive on line", new DriveWithLineFollowing());
 
     SmartDashboard.putData("Move Elevator to Zero", new ElevatorMoveToLevel(0.0));

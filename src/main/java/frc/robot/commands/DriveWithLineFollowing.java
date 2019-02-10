@@ -24,7 +24,7 @@ public class DriveWithLineFollowing extends Command {
 
   /**
    * Drives following line sensors
-   * @param gyro Whether or not to use gyro enhancement. True means yes.
+   * @param gyro Whether or not to use gyro enhancement. True means yes. Default (no parameter) is false.
    */
   public DriveWithLineFollowing(boolean gyro) {
     requires(Robot.driveTrain);
@@ -34,10 +34,11 @@ public class DriveWithLineFollowing extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.driveTrain.setDriveMode(false);
     if (gyro) targetQuad = Robot.driveTrain.checkScoringQuadrant(); // Probably should compare this to the quadrant from the vision command too
     Robot.log.writeLogEcho("DriveTrain", "Line Tracking Init", "Gyro," + gyro + ",Quadrant," + targetQuad);
     //Robot.driveTrain.clearEncoderList();
-    Robot.driveTrain.driveOnLine();
+    //Robot.driveTrain.driveOnLine();
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -57,9 +58,7 @@ public class DriveWithLineFollowing extends Command {
   protected void end() {
     Robot.driveTrain.stop();
     Robot.log.writeLogEcho("DriveTrain", "Line Tracking Ended", "");
-    if (Math.abs(Robot.lineFollowing.getLineNumber()) <= 1) {
-      SmartDashboard.putBoolean("Ready to Score", true);
-    }
+    //Robot.driveTrain.setDriveMode(true); // Might depend on pathfinder or driver preference
   }
 
   // Called when another command which requires one or more of the same
