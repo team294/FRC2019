@@ -24,6 +24,7 @@ public class RobotPreferences {
 	public double elevatorGearCircumference; //circumference of the gear driving the elevator in inches
 	public double robotOffset; //distance of elevator 0 value from the ground
 	public double elevatorBottomToFloor; //distance of elevator 0 value from the ground
+	public double elevatorWristSafe; 	 //lowest elevator position (from ground) where wrist can't hit the floor at its lower limit switch.  Wrist can be stowed in this position.
 	public double cameraDistanceFromFrontOfBumper;  // (default = 12 inches)
 	public double wristGearRatio; 		// wrist gear ratio, gear with encoder / gear driving wrist
 	public double wristCalZero;   		// Wrist encoder position at O degrees, in encoder ticks (i.e. the calibration factor)
@@ -41,28 +42,28 @@ public class RobotPreferences {
   	// Robot Pathfinder data
   	public final double encoderTicksPerRevolution = 4096.0;
   	public final double wheelbase_in = 25.0;       // wheelbase, in inches
-  	// public static final double wheel_diameter_in = 6.0;   // wheel diamater, in inches  -- DO NOT USE -- USE VALUE IN PREFERENCES INSTEAD
+  	// public static final double wheel_diameter_in = 6.0;   // wheel diamater, in inches  -- DO NOT USE -- Use wheelCircumference preference instead
   	// public static final double wheel_distance_in_per_tick = wheel_diameter_in*Math.PI/encoderTicksPerRevolution;  // wheel distance traveled per encoder tick, in inches
   	public final double max_velocity_ips = 200.0;   // max robot velocity, in inches per second
   	public final double max_acceleration_ipsps = 130.0;  // max robot acceleration, in inches per second per second
   	public final double max_jerk_ipspsps = 2400.0;  // max robot jerk, in inches per second per second per second
 
 	// Hatch piston positions
-	public enum HatchPistonPositions { Grab, Release, Moving, Null }
+	public enum HatchPistonPositions { grab, release, moving, unknown }
 
 
 	/*
 	Measurement variables
 	*/
 
-	//Elevator level heights
+	// Field level heights (for elevator targeting), in inches
 	public final double hatchLow = 19.0;
   	public final double hatchMid = 47.0;
   	public final double hatchHigh = 75.0;
   	public final double cargoShipCargo = 34.75;
-  	public final double ballOffset = 8.5;
+  	public final double rocketBallOffset = 8.5;
 
-	public enum ElevatorPosition {hatchLow, hatchMid, hatchHigh, cargoShipCargo}
+	public enum ElevatorPosition {bottom, wristSafe, hatchLow, hatchMid, hatchHigh, cargoShipCargo}
 
 	//Climb Target Angles (in degrees)
 	public final double climbStartingAngle = -50.0; //TODO Test when climb is built
@@ -91,6 +92,7 @@ public class RobotPreferences {
 		elevatorGearCircumference = prefs.getDouble("elevatorGearDiameter", 1.7 * Math.PI); // TODO Change value when actual elevator is built, Conversion factor for makeshift elevator 18/32.3568952084);
 		driveTrainDistanceFudgeFactor = prefs.getDouble("driveTrainDistanceFudgeFactor", 1);
 		elevatorBottomToFloor = prefs.getDouble("elevatorBottomToFloor", 15.0); //TODO Change value when actual elevator is built
+		elevatorWristSafe = prefs.getDouble("elevatorWristSafe", 20.0); //TODO Change value when actual elevator is built (elevator position from floor where wrist can't hit the floor at its lower limit switch.  Wrist can be stowed in this position.)
 		/* if (driveTrainDistanceFudgeFactor == -9999) {
 			// If fudge factor for driving can't be read, then assume value of 1
 			driveTrainDistanceFudgeFactor = 1;  //0.96824;
@@ -157,6 +159,9 @@ public class RobotPreferences {
 		if (!prefs.containsKey("elevatorBottomToFloor")) {
 			prefs.putDouble("elevatorBottomToFloor", 15.0);
 		}
+		if (!prefs.containsKey("elevatorWristSafe")) {
+			prefs.putDouble("elevatorWristSafe", 20.0);
+		}
 		if (!prefs.containsKey("wristGearRatio")) {
 			prefs.putDouble("wristGearRatio", 1.0);
 		}
@@ -206,7 +211,7 @@ public class RobotPreferences {
 			}
 			problemSubsystem = problemSubsystem + subsystem;
 			putString("problemSubsystem", problemSubsystem);
-			Robot.log.writeLog(subsystem, "Sticky Fault Logged", "");
+			Robot.log.writeLogEcho(subsystem, "Sticky Fault Logged", "");
 		}
 		if(!problemExists) {
 			problemExists = true;

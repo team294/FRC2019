@@ -21,10 +21,10 @@ public class HatchToggle extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    if (Robot.hatch.getHatchPiston() == HatchPistonPositions.Release || Robot.hatch.getHatchPiston() == HatchPistonPositions.Null) {
-      Robot.hatch.setHatchPiston(HatchPistonPositions.Grab);
+    if (Robot.hatch.getHatchPiston() == HatchPistonPositions.release || Robot.hatch.getHatchPiston() == HatchPistonPositions.unknown) {
+      Robot.hatch.setHatchPiston(HatchPistonPositions.grab);
     } else {
-      Robot.hatch.setHatchPiston(HatchPistonPositions.Release);
+      Robot.hatch.setHatchPiston(HatchPistonPositions.release);
     }
   }
 

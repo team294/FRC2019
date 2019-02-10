@@ -27,9 +27,9 @@ public class HatchSet extends Command {
   @Override
   protected void initialize() {
     if (grab) {
-      Robot.hatch.setHatchPiston(HatchPistonPositions.Grab);
+      Robot.hatch.setHatchPiston(HatchPistonPositions.grab);
     } else {
-      Robot.hatch.setHatchPiston(HatchPistonPositions.Release);
+      Robot.hatch.setHatchPiston(HatchPistonPositions.release);
     }
   }
 

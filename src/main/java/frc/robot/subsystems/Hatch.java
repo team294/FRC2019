@@ -20,7 +20,7 @@ public class Hatch extends Subsystem {
   // here. Call these from Commands.
 
   private final DoubleSolenoid hatchPiston = new DoubleSolenoid(RobotMap.pneumaticHatchOut, RobotMap.pneumaticHatchIn);
-  private HatchPistonPositions hatchPosition = HatchPistonPositions.Null;
+  private HatchPistonPositions hatchPosition = HatchPistonPositions.unknown;
 
   public Hatch() {
   }
@@ -31,14 +31,14 @@ public class Hatch extends Subsystem {
 	 * @param position only accepts PistonPositions.Extended and PistonPositions.Retracted, other values are ignored
 	 */
   public void setHatchPiston(RobotPreferences.HatchPistonPositions position) {
-    if (position == RobotPreferences.HatchPistonPositions.Grab) {
+    if (position == RobotPreferences.HatchPistonPositions.grab) {
       hatchPiston.set(Value.kForward);
-      hatchPosition = HatchPistonPositions.Grab;
+      hatchPosition = HatchPistonPositions.grab;
       SmartDashboard.putString("Disc Position", "Grab");
 		}
-		if (position == RobotPreferences.HatchPistonPositions.Release) {
+		if (position == RobotPreferences.HatchPistonPositions.release) {
       hatchPiston.set(Value.kReverse);
-      hatchPosition = HatchPistonPositions.Release;
+      hatchPosition = HatchPistonPositions.release;
       SmartDashboard.putString("Disc Position", "Release");
     }
   }

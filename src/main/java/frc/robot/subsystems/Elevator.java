@@ -110,13 +110,27 @@ public class Elevator extends Subsystem {
 	}
 
 	/**
-	 * Returns the height that elevator is trying to move to in inches
+	 * Returns the height that elevator is trying to move to in inches from the floor.
+	 * Returns -1 if the elevator is in manual mode.
+	 * <p><b>NOTE:</b> This is the target height, not the current height.
 	 * 
 	 * @return desired inches of elevator height
 	 */
 	public double getCurrentElevatorTarget() {
-		return encoderTicksToInches(elevatorMotor1.getClosedLoopTarget(0));
-	  }
+		if (elevatorMode) {
+			return encoderTicksToInches(elevatorMotor1.getClosedLoopTarget(0)) + Robot.robotPrefs.elevatorBottomToFloor;
+		} else {
+			return -1;
+		}
+	}
+
+	/**
+	 * @return Current elevator position, in inches from floor
+	 */
+	public double getElevatorPosition() {
+		return encoderTicksToInches(getElevatorEncTicks()) + Robot.robotPrefs.elevatorBottomToFloor;
+	}
+
 	/**
 	 * stops elevator motors
 	 */
@@ -129,6 +143,7 @@ public class Elevator extends Subsystem {
 	 */
 	public void checkAndZeroElevatorEnc() {
 		if (getElevatorLowerLimit()) {
+			stopElevator();			// Make sure Talon PID loop won't move the robot to the last set position when we reset the enocder position
 			elevatorMotor1.setSelectedSensorPosition(0, 0, 0);
 			Robot.log.writeLog("Elevator", "Zero Encoder", "");
 		}
@@ -155,13 +170,6 @@ public class Elevator extends Subsystem {
 	 */
 	public double inchesToEncoderTicks(double inches) {
 		return (inches / (Robot.robotPrefs.elevatorGearCircumference * 2)) * Robot.robotPrefs.encoderTicksPerRevolution;
-	}
-
-	/**
-	 * @return current encoder ticks converted to inches
-	 */
-	public double getElevatorEncInches() {
-		return encoderTicksToInches(getElevatorEncTicks());
 	}
 
 	/**
@@ -218,7 +226,7 @@ public class Elevator extends Subsystem {
 						+ elevatorMotor2.getMotorOutputVoltage() + ",Talon Amps," + elevatorMotor1.getOutputCurrent() + ",Elev1 Amps,"
 						+ Robot.pdp.getCurrent(RobotMap.elevatorMotor1PDP) + ",Elev2 Amps,"
 						+ Robot.pdp.getCurrent(RobotMap.elevatorMotor2PDP) + ",Elev Enc Ticks," + getElevatorEncTicks()
-						+ ",Elev Enc Inches," + getElevatorEncInches() + ",Upper Limit," + getElevatorUpperLimit()
+						+ ",Elev Enc Inches," + getElevatorPosition() + ",Upper Limit," + getElevatorUpperLimit()
 						+ ",Lower Limit," + getElevatorLowerLimit() + ",Enc OK," + encOK + ",Elev Mode," + elevatorMode);
 	}
 
@@ -236,7 +244,7 @@ public class Elevator extends Subsystem {
 		SmartDashboard.putBoolean("mode", elevatorMode);
 		// SmartDashboard.putNumber("EncSnap", encSnapShot);
 		// SmartDashboard.putNumber("Enc Now", currEnc);
-		SmartDashboard.putNumber("Enc Inch", getElevatorEncInches());
+		SmartDashboard.putNumber("Enc Inch", getElevatorPosition());
 		// SmartDashboard.putNumber("Enc Tick", getElevatorEncTicks());
 		SmartDashboard.putBoolean("Lower Limit", getElevatorLowerLimit());
 		SmartDashboard.putBoolean("Upper Limit", getElevatorUpperLimit());
