@@ -19,7 +19,6 @@ public class RobotMap {
   public static final int rightMotor2 = 21;      // Talon
   public static final int rightMotor3 = 22;
   
-
   public static final int elevatorMotor1 = 30;   // Talon
   public static final int elevatorMotor2 = 31;
   public static final int cargoMotor1 = 40;
@@ -32,8 +31,6 @@ public class RobotMap {
 
   public static final int wristMotor = 60;      // Talon
 
-
-  
   // Pneumatic Addresses
   public static final int pnuematicShifterLow = 0;
   public static final int pnuematicShifterHigh = 1;
@@ -46,16 +43,6 @@ public class RobotMap {
   public static final int lineFollowerRight = 0;
   public static final int vacuumSwitch = 3;
   public static final int elevatorLowerLimit = 4;
-   
-  // TODO Update with 2019 base
-  // Robot Pathfinder data
-  public static final double encoderTicksPerRevolution = 4096.0;
-  public static final double wheelbase_in = 25.0;       // wheelbase, in inches
-  // public static final double wheel_diameter_in = 6.0;   // wheel diamater, in inches  -- DO NOT USE -- USE VALUE IN PREFERENCES INSTEAD
-  // public static final double wheel_distance_in_per_tick = wheel_diameter_in*Math.PI/encoderTicksPerRevolution;  // wheel distance traveled per encoder tick, in inches
-  public static final double max_velocity_ips = 200.0;   // max robot velocity, in inches per second
-  public static final double max_acceleration_ipsps = 130.0;  // max robot acceleration, in inches per second per second
-  public static final double max_jerk_ipspsps = 2400.0;  // max robot jerk, in inches per second per second per second
   
   // PDP Addresses
   public static final int leftMotor1PDP = 13; 
@@ -74,8 +61,6 @@ public class RobotMap {
   public static final int cargoMotor2PDP = 6;  
  public static final int wristMotorPDP = 3;  
 
-
-
   //Elevator Level Heights (in inches)
   //TODO Does this work?  How can a final variable be set using code from robot preferences?
   public static final double hatchLow = 19.0 - Robot.robotPrefs.elevatorBottomToFloor;
@@ -90,7 +75,5 @@ public class RobotMap {
   public static final double climbStartingAngle = -50.0; //TODO Test when climb is built
   public static final double vacuumTargetAngle = 180.0; //TODO Test when climb is built
   public static final double robotLiftAngle = 0.0; //TODO Test when climb is built
-
-  public enum PistonPositions { Extended, Retracted, Moving, Null }
 
 }

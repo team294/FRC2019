@@ -148,7 +148,7 @@ public class Elevator extends Subsystem {
 	 * @return parameter encoder ticks converted to equivalent inches
 	 */
 	public double encoderTicksToInches(double encoderTicks) {
-		return (encoderTicks / RobotMap.encoderTicksPerRevolution) * (Robot.robotPrefs.elevatorGearCircumference * 2);
+		return (encoderTicks / Robot.robotPrefs.encoderTicksPerRevolution) * (Robot.robotPrefs.elevatorGearCircumference * 2);
 	}
 
 	/**
@@ -156,7 +156,7 @@ public class Elevator extends Subsystem {
 	 * @return parameter inches converted to equivalent encoder ticks
 	 */
 	public double inchesToEncoderTicks(double inches) {
-		return (inches / (Robot.robotPrefs.elevatorGearCircumference * 2)) * RobotMap.encoderTicksPerRevolution;
+		return (inches / (Robot.robotPrefs.elevatorGearCircumference * 2)) * Robot.robotPrefs.encoderTicksPerRevolution;
 	}
 
 	/**

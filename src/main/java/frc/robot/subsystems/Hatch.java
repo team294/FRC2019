@@ -10,7 +10,8 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
-import frc.robot.RobotMap.PistonPositions;
+import frc.robot.utilities.RobotPreferences;
+import frc.robot.utilities.RobotPreferences.PistonPositions;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
@@ -29,13 +30,13 @@ public class Hatch extends Subsystem {
 	 * 
 	 * @param position only accepts PistonPositions.Extended and PistonPositions.Retracted, other values are ignored
 	 */
-  public void setHatchPiston(RobotMap.PistonPositions position) {
-    if (position == RobotMap.PistonPositions.Extended) {
+  public void setHatchPiston(RobotPreferences.PistonPositions position) {
+    if (position == RobotPreferences.PistonPositions.Extended) {
       hatchPiston.set(Value.kForward);
       hatchPosition = PistonPositions.Extended;
       SmartDashboard.putString("Piston Position", "Extended");
 		}
-		if (position == RobotMap.PistonPositions.Retracted) {
+		if (position == RobotPreferences.PistonPositions.Retracted) {
       hatchPiston.set(Value.kReverse);
       hatchPosition = PistonPositions.Retracted;
       SmartDashboard.putString("Piston Position", "Retracted");

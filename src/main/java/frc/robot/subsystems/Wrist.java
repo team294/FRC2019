@@ -34,8 +34,8 @@ public class Wrist extends Subsystem {
 	private double encSnapShot = 0.0; // snapshot of encoder value used to make sure encoder is working
   private boolean encOK = true; // true if encoder works, false if encoder broke
   private boolean wristMode = true; // true if automated, false if manual mode
-  private double encoderDegreesPerTicks = 360.0 / RobotMap.encoderTicksPerRevolution;
-  private double encoderTicksPerDegrees = RobotMap.encoderTicksPerRevolution / 360.0;
+  private double encoderDegreesPerTicks = 360.0 / Robot.robotPrefs.encoderTicksPerRevolution;
+  private double encoderTicksPerDegrees = Robot.robotPrefs.encoderTicksPerRevolution / 360.0;
 
   // TODO test PID terms with actual wrist
   private double kP = 0;

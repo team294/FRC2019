@@ -136,7 +136,7 @@ public class Climb extends Subsystem {
    * @param encoderTicks use getClimbEncoderTicks()
    */
   public double climbEncTicksToAngle (double encoderTicks) {
-    return ((encoderTicks * 360) / RobotMap.encoderTicksPerRevolution);
+    return ((encoderTicks * 360) / Robot.robotPrefs.encoderTicksPerRevolution);
   }
 
   /**
@@ -144,7 +144,7 @@ public class Climb extends Subsystem {
    * @param climbAngle in degrees
    */
   public double climbAngleToEncTicks (double climbAngle) {
-    return ((climbAngle * RobotMap.encoderTicksPerRevolution) / 360);
+    return ((climbAngle * Robot.robotPrefs.encoderTicksPerRevolution) / 360);
   }
 
   /**
