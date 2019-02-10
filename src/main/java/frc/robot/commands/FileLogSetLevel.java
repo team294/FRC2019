@@ -11,20 +11,20 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.utilities.FileLog;
 
-public class SetLogMode extends Command {
+public class FileLogSetLevel extends Command {
 
-  private int mode;
+  private int level;
 
-  public SetLogMode(int mode) {
+  public FileLogSetLevel(int level) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    this.mode = mode;
+    this.level = level;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.log.setLogWaitPeriod(mode);
+    Robot.log.setLogLevel(level);
   }
 
   // Called repeatedly when this Command is scheduled to run

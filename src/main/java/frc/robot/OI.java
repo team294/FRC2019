@@ -111,15 +111,17 @@ public class OI {
     SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero());
 
     // Buttons for controlling FileLogging
-    SmartDashboard.putData("InitialTesting Log Mode", new SetLogMode(1));
-    SmartDashboard.putData("PitTesting Log Mode", new SetLogMode(2));
-    SmartDashboard.putData("Competition Log Mode", new SetLogMode(3));
+    SmartDashboard.putData("Log 1 InitialTesting", new FileLogSetLevel(1));
+    SmartDashboard.putData("Log 2 PitTesting", new FileLogSetLevel(2));
+    SmartDashboard.putData("Log 3 Competition", new FileLogSetLevel(3));
+    Robot.log.setLogLevel(3);   // Also puts log level indicator on ShuffleBoard
 
     SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
     SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
     SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));
     
     SmartDashboard.putData("Clear Sticky Faults", new ClearStickyFaults());
+    Robot.robotPrefs.showStickyFaults();
     //SmartDashboard.putData("Turn To Line", new TurnToLine());
   }
 

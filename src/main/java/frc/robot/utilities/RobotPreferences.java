@@ -138,28 +138,39 @@ public class RobotPreferences {
 	 * @param subsystem String name of subsystem in which a problem exists
 	 */
 	public void recordStickyFaults(String subsystem) {
-		if(getString("problemSubsystem").indexOf(subsystem) == -1) {
-			if(getString("problemSubsystem").length() != 0) {
-				putString("problemSubsystem", (getString("problemSubsystem") + ", "));
+		if(problemSubsystem.indexOf(subsystem) == -1) {
+			if(problemSubsystem.length() != 0) {
+				problemSubsystem = problemSubsystem + ", ";
 			}
-			putString("problemSubsystem", getString("problemSubsystem") + subsystem);
+			problemSubsystem = problemSubsystem + subsystem;
+			putString("problemSubsystem", problemSubsystem);
 			Robot.log.writeLog(subsystem, "Sticky Fault Logged", "");
 		}
-		if(!getBoolean("problemExists")) {
-			putBoolean("problemExists", true);
+		if(!problemExists) {
+			problemExists = true;
+			putBoolean("problemExists", problemExists);
 		}
-		SmartDashboard.putString("problemSubsystem", getString("problemSubsystem"));
-		SmartDashboard.putBoolean("problemExists", getBoolean("problemExists"));
+		showStickyFaults();
 	}
+
 	/**
 	 * Clears any sticky faults in the RobotPreferences and Shuffleboard
 	 */
 	public void clearStickyFaults() {
-		putString("problemSubsystem", "");
-		putBoolean("problemExists", false);
-		SmartDashboard.putString("problemSubsystem", "");
-		SmartDashboard.putBoolean("problemExists", false);
+		problemSubsystem = "";
+		problemExists = false;
+		putString("problemSubsystem", problemSubsystem);
+		putBoolean("problemExists", problemExists);
+		showStickyFaults();
 		Robot.log.writeLog("RobotPrefs", "Sticky Faults Cleared", "");
+	}
+
+	/**
+	 * Show any sticky faults on Shuffleboard
+	 */
+	public void showStickyFaults() {
+		SmartDashboard.putString("problemSubsystem", problemSubsystem);
+		SmartDashboard.putBoolean("problemExists", problemExists);
 	}
 
 	public String getString(String k) {

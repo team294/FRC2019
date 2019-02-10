@@ -5,6 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class FileLog {
 	
 	private FileWriter fileWriter;
@@ -12,7 +14,7 @@ public class FileLog {
 	private static final SimpleDateFormat fileDateFormat = new SimpleDateFormat("yyyy-MM-dd.HH-mm-ss");
 	private String fileNameBase, fileNameFull;
 	private long startTime;
-	private int logMode;
+	private int logLevel = 3;			// File logging level of detail.  Value between 1-3, where 1 is the most detailed and 3 is the least detailed.
 
 	/**
 	 * Creates a new log file called "/home/lvuser/logfile.ver.date.time.txt"
@@ -110,17 +112,24 @@ public class FileLog {
 
 	/**
 	 * Changes level of detail for fileLog
-	 * @param mode between 1-3, where 1 is the most detailed and 3 is the least detailed
+	 * <ul><li>1 = full debugging logs.  Huge file log, so use sparingly.</li>
+	 * <li>2 = normal lab mode.  Moderate logging details.</li>
+	 * <li>3 = competition mode.  Minimal logging.</li></ul>
+	 * @param level between 1-3, where 1 is the most detailed and 3 is the least detailed.
 	 */
-	public void setLogWaitPeriod(int mode) {
-		logMode = mode;
+	public void setLogLevel(int level) {
+		logLevel = level;
+		SmartDashboard.putNumber("Log Level", level);
 	}
 
 	/**
 	 * Returns what level of detail the fileLog should be at (to be called in each subsystem)
+	 * <ul><li>1 = full debugging logs.  Huge file log, so use sparingly.</li>
+	 * <li>2 = normal lab mode.  Moderate logging details.</li>
+	 * <li>3 = competition mode.  Minimal logging.</li></ul>
 	 */
-	public int getLogWaitPeriod() {
-		return logMode;
+	public int getLogLevel() {
+		return logLevel;
 	}
 	
 	/**

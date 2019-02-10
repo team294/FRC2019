@@ -59,7 +59,7 @@
               "Crosshair/Crosshair color": "#FFFFFFFF",
               "Controls/Show controls": true,
               "Controls/Rotation": "NONE",
-              "compression": -1.0,
+              "compression": 0.0,
               "fps": -1,
               "imageWidth": 0,
               "imageHeight": 0
@@ -152,7 +152,7 @@
       }
     },
     {
-      "title": "PIt",
+      "title": "Pit",
       "autoPopulate": false,
       "autoPopulatePrefix": "",
       "widgetPane": {
@@ -169,10 +169,10 @@
             "content": {
               "_type": "Command",
               "_source0": "network_table:///SmartDashboard/Clear Sticky Faults",
-              "_title": "SmartDashboard/Clear Sticky Faults"
+              "_title": "Sticky Faults"
             }
           },
-          "4,1": {
+          "4,0": {
             "size": [
               1,
               1
@@ -180,12 +180,12 @@
             "content": {
               "_type": "Boolean Box",
               "_source0": "network_table:///SmartDashboard/problemExists",
-              "_title": "SmartDashboard/problemExists",
+              "_title": "Problem Exists",
               "Colors/Color when true": "#FF0000FF",
               "Colors/Color when false": "#00FF00FF"
             }
           },
-          "5,1": {
+          "5,0": {
             "size": [
               5,
               1
@@ -193,7 +193,7 @@
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/problemSubsystem",
-              "_title": "SmartDashboard/problemSubsystem"
+              "_title": "Problem Subsystem"
             }
           },
           "3,1": {
@@ -205,6 +205,58 @@
               "_type": "Command",
               "_source0": "network_table:///SmartDashboard/Zero Elev Enc (w/ Limit)",
               "_title": "SmartDashboard/Zero Elev Enc (w/ Limit)"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Debug",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "3,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Log Level",
+              "_title": "SmartDashboard/Log Level"
+            }
+          },
+          "4,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "List Layout",
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Log 1 InitialTesting",
+                  "_title": "SmartDashboard/Log 1 InitialTesting"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Log 2 PitTesting",
+                  "_title": "SmartDashboard/Log 2 PitTesting"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Log 3 Competition",
+                  "_title": "SmartDashboard/Log 3 Competition"
+                }
+              ]
             }
           }
         }
