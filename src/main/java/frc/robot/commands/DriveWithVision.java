@@ -59,7 +59,7 @@ public class DriveWithVision extends Command {
   @Override
   protected boolean isFinished() {
     Robot.driveTrain.areEncodersStopped(5.0);
-    return endOnLine && Robot.lineFollowing.isLinePresent() && Robot.vision.distanceFromTarget() < 30; // Stops when a line is detected by the line followers within a reasonable expected distance
+    return endOnLine && Robot.lineFollowing.isLinePresent() && Robot.vision.distanceFromTarget() < 40; // Stops when a line is detected by the line followers within a reasonable expected distance
     // TODO:: with an accurate distance measurement, we can stop automatically when close enough
   }
 

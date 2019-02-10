@@ -428,8 +428,8 @@ public class DriveTrain extends Subsystem {
 
     double xOffsetAdjustmentFactor = 1.7; // Should be tested to be perfect; 2 seems to go out of frame too quickly. Must be greater than 1.
 
-    //double minDistanceToTarget = 13; // Not used right now because changing distance forumla to use height
-    double distance = Robot.vision.distanceFromTarget();
+    //double minDistanceToTarget = 13;
+    double distance = Robot.vision.distanceFromTarget(); // Distance formula should work now; need to modulate speed based on dist
     System.out.println("Measured Distance: " + distance);
     double area = Robot.vision.areaFromCamera;
     double xVal = Robot.vision.horizOffset; // Alpha offset
@@ -461,7 +461,7 @@ public class DriveTrain extends Subsystem {
     if (/* distance > minDistanceToTarget && */ area != 0) tankDrive(lPercentOutput, rPercentOutput); // Just ignore the distance check for now...
     else tankDrive(0, 0);
 
-    Robot.log.writeLogEcho("DriveTrain", "Vision Tracking", "Crosshair Horiz Offset," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget()
+    Robot.log.writeLogEcho("DriveTrain", "Vision Tracking", "Crosshair Horiz Offset," + xVal + ",Inches from Target," + distance
      + ",Target Area," + area + ",Joystick Ouput," + lJoystickAdjust + ",Left Percent," + lPercentOutput + ",Right Percent," + rPercentOutput);
   }
 
