@@ -19,9 +19,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
 
 /**
@@ -32,7 +30,7 @@ public class Elevator extends Subsystem {
 	// here. Call these from Commands.
 
 	private WPI_TalonSRX elevatorMotor1;
-	private BaseMotorController elevatorMotor2;
+	private WPI_TalonSRX elevatorMotor2;
 	private SensorCollection elevatorLimits;
 
 	private int periodicCount = 0; // increments every cycle of periodic
@@ -57,7 +55,7 @@ public class Elevator extends Subsystem {
 
 	public Elevator() {
 		elevatorMotor1 = new WPI_TalonSRX(RobotMap.elevatorMotor1);
-		elevatorMotor2 = new WPI_VictorSPX(RobotMap.elevatorMotor2);
+		elevatorMotor2 = new WPI_TalonSRX(RobotMap.elevatorMotor2);
 		elevatorMotor2.follow(elevatorMotor1);
 		elevatorMotor1.setInverted(false);
 		elevatorMotor2.setInverted(false);

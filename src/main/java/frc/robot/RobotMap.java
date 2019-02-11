@@ -55,8 +55,8 @@ public class RobotMap {
   public static final int climbMotor2PDP = 11;  
   public static final int climbVacuum1PDP = 9; 
   public static final int climbVacuum2PDP = 8; 
-  public static final int elevatorMotor1PDP = 1;  // 4
-  public static final int elevatorMotor2PDP = 3;  // 10
+  public static final int elevatorMotor1PDP = 4;
+  public static final int elevatorMotor2PDP = 10;
   public static final int cargoMotor1PDP = 5;  
   public static final int cargoMotor2PDP = 6;  
   public static final int wristMotorPDP = 3;  
