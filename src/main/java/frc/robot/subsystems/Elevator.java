@@ -221,7 +221,7 @@ public class Elevator extends Subsystem {
 	public void updateElevatorLog() {
 		Robot.log.writeLog("Elevator", "Update Variables",
 				"Elev1 Volts," + elevatorMotor1.getMotorOutputVoltage() + ",Elev2 Volts,"
-						+ elevatorMotor2.getMotorOutputVoltage() + ",Talon Amps," + elevatorMotor1.getOutputCurrent() + ",Elev1 Amps,"
+						+ elevatorMotor2.getMotorOutputVoltage() + ",Elev Talon Amps," + elevatorMotor1.getOutputCurrent() + ",Elev1 Amps,"
 						+ Robot.pdp.getCurrent(RobotMap.elevatorMotor1PDP) + ",Elev2 Amps,"
 						+ Robot.pdp.getCurrent(RobotMap.elevatorMotor2PDP) + ",Elev Enc Ticks," + getElevatorEncTicks()
 						+ ",Elev Enc Inches," + getElevatorPos() + ",Upper Limit," + getElevatorUpperLimit()
@@ -238,16 +238,14 @@ public class Elevator extends Subsystem {
 
 	@Override
 	public void periodic() {
-		SmartDashboard.putBoolean("encOK", encOK);
-		SmartDashboard.putBoolean("mode", elevatorMode);
+		SmartDashboard.putBoolean("Elev encOK", encOK);
+		SmartDashboard.putBoolean("Elev Mode", elevatorMode);
 		// SmartDashboard.putNumber("EncSnap", encSnapShot);
 		// SmartDashboard.putNumber("Enc Now", currEnc);
-		SmartDashboard.putNumber("Enc Inch", getElevatorPos());
+		SmartDashboard.putNumber("Elev Pos", getElevatorPos());
 		// SmartDashboard.putNumber("Enc Tick", getElevatorEncTicks());
-		SmartDashboard.putBoolean("Lower Limit", getElevatorLowerLimit());
-		SmartDashboard.putBoolean("Upper Limit", getElevatorUpperLimit());
-		SmartDashboard.putNumber("Amps1", Robot.pdp.getCurrent(RobotMap.elevatorMotor1PDP));
-		SmartDashboard.putNumber("Amps2", Robot.pdp.getCurrent(RobotMap.elevatorMotor2PDP));
+		SmartDashboard.putBoolean("Elev Lower Limit", getElevatorLowerLimit());
+		SmartDashboard.putBoolean("Elev Upper Limit", getElevatorUpperLimit());
 		if (DriverStation.getInstance().isEnabled()) {
 			prevEnc = currEnc;
 			currEnc = getElevatorEncTicks();

@@ -28,6 +28,9 @@ public class RobotPreferences {
 	public double climbCalZero; // Climb encoder position at 0 degrees in encoder ticks
 	public boolean climbCalibrated = false; // Default to arm being uncalibrated
 	 
+	/*
+	* Measurements
+	*/
 	// Wrist Angles (in degrees)
 	//TODO update with actual wrist angles
 	public static final double WristStowed = 107.36;
@@ -48,11 +51,6 @@ public class RobotPreferences {
 
 	// Hatch piston positions
 	public enum HatchPistonPositions { grab, release, moving, unknown }
-
-
-	/*
-	Measurement variables
-	*/
 
 	// Field level heights (for elevator targeting), in inches
 	public final double hatchLow = 19.0;
