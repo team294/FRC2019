@@ -8,43 +8,53 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
+import frc.robot.utilities.RobotPreferences;
+import frc.robot.utilities.RobotPreferences.HatchPistonPositions;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class Hatch extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  private final Solenoid hatchPiston = new Solenoid(RobotMap.pneumaticHatchIntake);
+  private final DoubleSolenoid hatchPiston = new DoubleSolenoid(RobotMap.pneumaticHatchOut, RobotMap.pneumaticHatchIn);
+  private HatchPistonPositions hatchPosition = HatchPistonPositions.unknown;
 
   public Hatch() {
   }
 
   /**
-   * hatch panel is secured
-   */
-  public void grabHatch() {
-    hatchPiston.set(false);
+	 * Sets the position of the hatch piston
+	 * 
+	 * @param position only accepts PistonPositions.Extended and PistonPositions.Retracted, other values are ignored
+	 */
+  public void setHatchPiston(RobotPreferences.HatchPistonPositions position) {
+    if (position == RobotPreferences.HatchPistonPositions.grab) {
+      hatchPiston.set(Value.kForward);
+      hatchPosition = HatchPistonPositions.grab;
+      SmartDashboard.putString("Disc Position", "Grab");
+		}
+		if (position == RobotPreferences.HatchPistonPositions.release) {
+      hatchPiston.set(Value.kReverse);
+      hatchPosition = HatchPistonPositions.release;
+      SmartDashboard.putString("Disc Position", "Release");
+    }
   }
 
   /**
-   * hatch panel is not secured
-   */
-  public void releaseHatch() {
-    hatchPiston.set(true);
-  }
-
-  /**
-   * Check if hatch panel is in grab or release position
-   * @return true = grab position, false = release position
-   */
-  public boolean isHatchPistionGrabbed() {
-    return !hatchPiston.get();
-  }
+	 * 
+	 * @return position of hatch piston
+	 */
+	public HatchPistonPositions getHatchPiston() {
+		return hatchPosition;
+	}
 
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
   }
+
 }

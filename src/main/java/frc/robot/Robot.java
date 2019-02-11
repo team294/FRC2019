@@ -29,6 +29,7 @@ public class Robot extends TimedRobot {
   public static DriveTrain driveTrain;
   public static Shifter shifter;
   public static Elevator elevator;
+  public static Wrist wrist;
   public static Cargo cargo;
   public static Hatch hatch;
   public static VisionData vision;
@@ -62,6 +63,7 @@ public class Robot extends TimedRobot {
     driveTrain = new DriveTrain();
     shifter = new Shifter();
     elevator = new Elevator();
+    wrist = new Wrist();
     cargo = new Cargo();
     hatch = new Hatch();
     vision = new VisionData();
