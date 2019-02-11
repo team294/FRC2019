@@ -403,7 +403,6 @@ public class DriveTrain extends Subsystem {
    * @return a quadrant (corresponding to the unit circle) with axes in between quadrants numbered as x.5 values.
    */
   public double checkScoringQuadrant() {
-    // TODO: Add some console prints or SD to check
     // assuming the same quadrants as a unit circle, with 0 being straight up (+y axis) and -180 or 180 being straight down (-y axis)
     double quadrant = 0.0;
     double gyroAngle = getGyroRotation();
@@ -465,7 +464,9 @@ public class DriveTrain extends Subsystem {
    */
   public void driveToCrosshair(double quadrant) {
 
-    double xOffsetAdjustmentFactor = 1.7; // Should be tested to be perfect; 2 seems to go out of frame too quickly. Must be greater than 1.
+    //double xOffsetAdjustmentFactor = 1.5; // Should be tested to be perfect; 2 seems to go out of frame too quickly. Must be greater than 1.
+    double xOffsetAdjustmentFactor = 2.0 + Robot.oi.leftJoystick.getY(); // xAdjustment based on distance
+
 
     //double minDistanceToTarget = 13;
     double distance = Robot.vision.distanceFromTarget(); // Distance formula should work now; need to modulate speed based on dist
@@ -497,7 +498,13 @@ public class DriveTrain extends Subsystem {
     if (rEncStopped && rPercentOutput != 0) lPercentOutput = 1.0; 
     if (lPercentOutput == 1.0 || rPercentOutput == 1.0) System.out.println("STOP DETECTED, INITIATING EVASIVE MANEUVERS"); // TODO: test this because it doesn't look like it ever works
 
-    if (/* distance > minDistanceToTarget && */ area != 0) tankDrive(lPercentOutput, rPercentOutput); // Just ignore the distance check for now...
+    if (distance < 54) { // slow down when getting closer
+      lPercentOutput = Math.min(0.4, rPercentOutput * 0.7); // Doesn't account for negative speeds, but that shouldn't matter since it's backwards and we're only worried about forwards
+      rPercentOutput = Math.min(0.4, rPercentOutput * 0.7);
+
+    }
+
+    if (area != 0) tankDrive(lPercentOutput, rPercentOutput); // area goes to zero before the front hits the wall
     else tankDrive(0, 0);
 
     Robot.log.writeLogEcho("DriveTrain", "Vision Tracking", "Crosshair Horiz Offset," + xVal + ",Inches from Target," + distance

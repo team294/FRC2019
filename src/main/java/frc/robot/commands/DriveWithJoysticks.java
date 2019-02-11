@@ -36,10 +36,10 @@ public class DriveWithJoysticks extends Command {
     if (Robot.oi.getDriveDirection() == true)  {
       Robot.driveTrain.tankDrive(-leftValue, -rightValue);
     } else {
-      Robot.driveTrain.tankDrive(leftValue, rightValue);
+      Robot.driveTrain.tankDrive(leftValue, rightValue); // I think these need to be switched to drive properly in reverse
     }
 
-    //SmartDashboard.putBoolean("Vision Assistance Available", (Robot.vision.vertOffset <= 1.5 && Robot.vision.areaFromCamera != 0)); // Do we even need this anymore? Are there locations that we can score from and still see the side target? 
+    //SmartDashboard.putBoolean("Vision Assistance Available", Robot.vision.areaFromCamera != 0); // May move to teleopPeriodic
     // Tells us if vision is available for the rocket. Will need to be updated for when scoring balls.
   }
 
