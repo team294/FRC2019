@@ -168,9 +168,11 @@ public class Climb extends Subsystem {
    * @return true = vaccum is at the required pressure
    *          false = vacuum is not at the required pressure yet
    */
-  /* public boolean isVacuumAchieved() {
-    return vacuumSwitch.get();
-  } */
+  public boolean isVacuumAchieved() {
+    //return vacuumSwitch.get();
+    return false; /* TODO change once current threshold is known
+                    Robot.pdp.getCurrent(RobotMap.climbMotor1PDP) == threshold || Robot.pdp.getCurrent(RobotMap.climbMotor2PDP) == threshold*/
+  }
 
   /**
    * @return true = climb is at its calibration angle
