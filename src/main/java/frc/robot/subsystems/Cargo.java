@@ -20,7 +20,7 @@ import frc.robot.RobotMap;
 public class Cargo extends Subsystem {
   private final WPI_TalonSRX cargoMotor1 = new WPI_TalonSRX(RobotMap.cargoMotor1); // top motor
   private final WPI_TalonSRX cargoMotor2 = new WPI_TalonSRX(RobotMap.cargoMotor2); // bottom motor
-  private final DigitalInput photoSwitch = new DigitalInput(RobotMap.photoSwitchCargo);
+  private final DigitalInput photoSwitch = new DigitalInput(RobotMap.photoSwitchCargo); // Cargo Sensor
 
   public Cargo() {
     // TODO determine which motor to invert

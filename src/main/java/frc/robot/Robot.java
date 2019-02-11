@@ -90,6 +90,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     Robot.lineFollowing.displayLineSensors();
+    SmartDashboard.putBoolean("Cargo Sensor", Robot.cargo.getPhotoSwitch());
     Robot.driveTrain.getGyroRotation();
     // Robot.log.writeLog("Robot", "periodic", "current time," + System.currentTimeMillis());
   }
