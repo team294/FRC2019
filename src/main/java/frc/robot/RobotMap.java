@@ -21,7 +21,7 @@ public class RobotMap {
   
 
   public static final int elevatorMotor1 = 30;   // Talon
-  public static final int elevatorMotor2 = 31;
+  public static final int elevatorMotor2 = 31;   // Talon
 
   public static final int cargoMotor1 = 40;
   public static final int cargoMotor2 = 41;
