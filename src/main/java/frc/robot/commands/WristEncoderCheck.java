@@ -7,15 +7,19 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.buttons.Trigger;
 import frc.robot.Robot;
-import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class ClimbSequence extends CommandGroup {
-  /**
-   * Add your docs here.
-   */
-  public ClimbSequence() {
-    addSequential(new ClimbLift(Robot.robotPrefs.vacuumTargetAngle));
-    addSequential(new ClimbLiftRobot(Robot.robotPrefs.robotLiftAngle));
+/**
+ * Get() returns true if the Wrist encoder has failed (but not the elevator encoder)
+ */
+public class WristEncoderCheck extends Trigger {
+  @Override
+  public boolean get() {
+    if(!Robot.wrist.getEncOK()) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

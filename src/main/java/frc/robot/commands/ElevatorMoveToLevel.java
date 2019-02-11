@@ -8,18 +8,20 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.utilities.RobotPreferences;
 
 public class ElevatorMoveToLevel extends Command {
 
   private double target;
   private boolean targetInches; // true is target in inches, false is target in position
-  private RobotMap.ElevatorPosition pos;
+  private RobotPreferences.ElevatorPosition pos;
 
   /**
    * Moves elevator to target height
-   * @param inches target height in inches (keep in mind that there's a robotOffset)
+   * @param inches target height in inches from floor
    */
   public ElevatorMoveToLevel(double inches) {
     // Use requires() here to declare subsystem dependencies
@@ -31,9 +33,10 @@ public class ElevatorMoveToLevel extends Command {
   
   /**
    * Moves elevator to target height
-   * @param pos target height based on the position called from RobotMap
+   * @param pos target height based on the position per RobotPreferences.ElevatorPosition.  
+   * If the robot has a ball, then the position is raised as needed for the rocket.
    */
-  public ElevatorMoveToLevel(RobotMap.ElevatorPosition pos) {
+  public ElevatorMoveToLevel(RobotPreferences.ElevatorPosition pos) {
     requires(Robot.elevator);
     this.pos = pos;
     targetInches = false;
@@ -42,42 +45,53 @@ public class ElevatorMoveToLevel extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-  if(targetInches) {
+    if(!targetInches) {
+      if(false) { //TODO correct if statement when intake subsystem is coded -- Do this side if we have a ball
+        switch (pos) {
+          case bottom:
+            target = Robot.robotPrefs.elevatorBottomToFloor;
+            break;
+          case wristSafe:
+            target = Robot.robotPrefs.elevatorWristSafe;
+            break;
+          case hatchLow:
+            target = Robot.robotPrefs.hatchLow + Robot.robotPrefs.rocketBallOffset;
+            break;
+          case hatchMid:
+            target = Robot.robotPrefs.hatchMid + Robot.robotPrefs.rocketBallOffset;
+            break;
+          case hatchHigh:
+            target = Robot.robotPrefs.hatchHigh + Robot.robotPrefs.rocketBallOffset;
+            break;
+          case cargoShipCargo:
+            target = Robot.robotPrefs.cargoShipCargo;
+            break;
+        }
+      } else {
+        switch (pos) {
+          case bottom:
+            target = Robot.robotPrefs.elevatorBottomToFloor;
+            break;
+          case wristSafe:
+            target = Robot.robotPrefs.elevatorWristSafe;
+            break;
+          case hatchLow:
+            target = Robot.robotPrefs.hatchLow;
+            break;
+          case hatchMid:
+            target = Robot.robotPrefs.hatchMid;
+            break;
+          case hatchHigh:
+            target = Robot.robotPrefs.hatchHigh;
+            break;
+          case cargoShipCargo:
+            target = Robot.robotPrefs.cargoShipCargo;
+            break;
+        }
+      }
+    }
+
     Robot.elevator.setElevatorPos(target);
-  }
-  else {
-    /* if(isBall) { //TODO correct if statement when intake subsystem is coded
-      switch (pos) {
-        case hatchLow:
-          Robot.elevator.setElevatorPos(RobotMap.hatchLow + RobotMap.ballOffset);
-          break;
-        case hatchMid:
-          Robot.elevator.setElevatorPos(RobotMap.hatchMid + RobotMap.ballOffset);
-          break;
-        case hatchHigh:
-          Robot.elevator.setElevatorPos(RobotMap.hatchHigh + RobotMap.ballOffset);
-          break;
-        case cargoShipCargo:
-          Robot.elevator.setElevatorPos(RobotMap.cargoShipCargo);
-          break;
-      }
-    }
-    else { //TODO correct if statement when intake subsystem is coded */
-      switch (pos) {
-        case hatchLow:
-          Robot.elevator.setElevatorPos(RobotMap.hatchLow);
-          break;
-        case hatchMid:
-          Robot.elevator.setElevatorPos(RobotMap.hatchMid);
-          break;
-        case hatchHigh:
-          Robot.elevator.setElevatorPos(RobotMap.hatchHigh);
-          break;
-        case cargoShipCargo:
-          Robot.elevator.setElevatorPos(RobotMap.cargoShipCargo);
-          break;
-      }
-    }
   }
 
 
@@ -89,7 +103,7 @@ public class ElevatorMoveToLevel extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-   return !Robot.elevator.getEncOK() || Math.abs(Robot.elevator.getElevatorEncInches() - target) <= 0.5;
+   return !Robot.elevator.getEncOK() || Math.abs(Robot.elevator.getElevatorPos() - target) <= 0.5;
   }
 
   // Called once after isFinished returns true

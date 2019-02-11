@@ -42,7 +42,7 @@ public class ElevatorEncoderZero extends Command {
   @Override
   protected void end() {
     Robot.elevator.stopElevator();
-    Robot.elevator.zeroElevatorEnc();
+    Robot.elevator.checkAndZeroElevatorEnc();
   }
 
   // Called when another command which requires one or more of the same

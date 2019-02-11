@@ -8,11 +8,8 @@
 package frc.robot.commands;
 
 import java.io.File;
-
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
-import frc.robot.RobotMap;
 import frc.robot.pathfinder.Pathfinder;
 import frc.robot.pathfinder.Trajectory;
 import frc.robot.pathfinder.Waypoint;
@@ -52,8 +49,8 @@ public class DrivePathfinder extends Command {
     // Create DistanceFollowers for the Trajectories and configure them
     dfLeft = new DistanceFollower(trajLeft);
     dfRight = new DistanceFollower(trajRight);
-    dfLeft.configurePIDVA(0.2, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0032); // P = 0.05
-    dfRight.configurePIDVA(0.2, 0.0, 0.0, 1 / RobotMap.max_velocity_ips, 0.0032); // A = 0.0038
+    dfLeft.configurePIDVA(0.2, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.0032); // P = 0.05
+    dfRight.configurePIDVA(0.2, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.0032); // A = 0.0038
     
     for(int index = 0; index < 1000; index++) {
       logString += " ";

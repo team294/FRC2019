@@ -142,7 +142,7 @@ public class Climb extends Subsystem {
    * @param encoderTicks use getClimbEncoderTicks()
    */
   public double climbEncTicksToAngle (double encoderTicks) {
-    return ((encoderTicks * 360) / RobotMap.encoderTicksPerRevolution);
+    return ((encoderTicks * 360) / Robot.robotPrefs.encoderTicksPerRevolution);
   }
 
   /**
@@ -150,7 +150,7 @@ public class Climb extends Subsystem {
    * @param climbAngle in degrees
    */
   public double climbAngleToEncTicks (double climbAngle) {
-    return ((climbAngle * RobotMap.encoderTicksPerRevolution) / 360);
+    return ((climbAngle * Robot.robotPrefs.encoderTicksPerRevolution) / 360);
   }
 
   /**
@@ -199,10 +199,10 @@ public class Climb extends Subsystem {
   public void periodic() {
     if (!Robot.robotPrefs.climbCalibrated || Robot.beforeFirstEnable) {
       if (climbLimit.isRevLimitSwitchClosed()) {
-        Robot.robotPrefs.setClimbCalibration(getClimbEncTicksRaw() - climbAngleToEncTicks(RobotMap.climbStartingAngle), false);
+        Robot.robotPrefs.setClimbCalibration(getClimbEncTicksRaw() - climbAngleToEncTicks(Robot.robotPrefs.climbStartingAngle), false);
       }
     }
-    if (getClimbAngle() > RobotMap.vacuumTargetAngle || getClimbAngle() < RobotMap.climbStartingAngle) {
+    if (getClimbAngle() > Robot.robotPrefs.vacuumTargetAngle || getClimbAngle() < Robot.robotPrefs.climbStartingAngle) {
       Robot.robotPrefs.climbCalibrated = false;
     }
     if (DriverStation.getInstance().isEnabled()) {

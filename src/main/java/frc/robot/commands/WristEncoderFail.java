@@ -7,15 +7,18 @@
 
 package frc.robot.commands;
 
-import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import frc.robot.utilities.RobotPreferences;
 
-public class ClimbSequence extends CommandGroup {
+public class WristEncoderFail extends CommandGroup {
   /**
-   * Add your docs here.
+   * if wrist encoder fails, stop applying power to wrist until
+   * elevator hits its bottom limit switch (automatic), and then apply power until
+   * wrist hits its top limit switch
    */
-  public ClimbSequence() {
-    addSequential(new ClimbLift(Robot.robotPrefs.vacuumTargetAngle));
-    addSequential(new ClimbLiftRobot(Robot.robotPrefs.robotLiftAngle));
+  public WristEncoderFail() {
+    addParallel(new WristOff());
+    addSequential(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.wristSafe));
+    addSequential(new WristRaiseUntilStowed());
   }
 }

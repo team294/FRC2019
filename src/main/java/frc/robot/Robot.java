@@ -29,6 +29,7 @@ public class Robot extends TimedRobot {
   public static DriveTrain driveTrain;
   public static Shifter shifter;
   public static Elevator elevator;
+  public static Wrist wrist;
   public static Cargo cargo;
   public static Hatch hatch;
   public static VisionData vision;
@@ -49,14 +50,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    // Create file log first, so any other class constructors can log data
     log = new FileLog("1");
+
+    // Read robot preference next, so any other class constructros can use preferences 
     robotPrefs = new RobotPreferences();
+    robotPrefs.doExist();   // Sets up Robot Preferences if they do not exist : ie you just replaced RoboRio
     
     beforeFirstEnable = true; // set variable that robot has not been enabled
 
+    // Create all subsystems and utilities
     driveTrain = new DriveTrain();
     shifter = new Shifter();
     elevator = new Elevator();
+    wrist = new Wrist();
     cargo = new Cargo();
     hatch = new Hatch();
     vision = new VisionData();
@@ -67,9 +74,9 @@ public class Robot extends TimedRobot {
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
-    robotPrefs.doExist();   // Sets up Robot Preferences if they do not exist : ie you just replaced RoboRio
     climb.enableCompressor(true);
 
+    // Create OI last, so all subsystem and utility objects are created before OI
     oi = new OI();
   }
 
