@@ -87,7 +87,7 @@ public class RobotPreferences {
 		prototypeRobot = prefs.getBoolean("prototypeRobot", false); // true if testing code on a prototype, default to false (competition bot w/ Victors)
 		driveDirection = prefs.getBoolean("driveDirection", true);
 		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;	
-		elevatorGearCircumference = prefs.getDouble("elevatorGearDiameter", 1.7 * Math.PI); // TODO Change value when actual elevator is built, Conversion factor for makeshift elevator 18/32.3568952084);
+		elevatorGearCircumference = prefs.getDouble("elevatorGearDiameter", 1.7) * Math.PI; // TODO Change value when actual elevator is built, Conversion factor for makeshift elevator 18/32.3568952084);
 		elevatorBottomToFloor = prefs.getDouble("elevatorBottomToFloor", 15.0); //TODO Change value when actual elevator is built
 		elevatorWristSafe = prefs.getDouble("elevatorWristSafe", 20.0); //TODO Change value when actual elevator is built (elevator position from floor where wrist can't hit the floor at its lower limit switch.  Wrist can be stowed in this position.)
 		cameraDistanceFromFrontOfBumper = prefs.getDouble("cameraDistanceFromFrontOfBumper", 12);
@@ -96,14 +96,14 @@ public class RobotPreferences {
 		wristCalibrated = (wristCalZero != -9999);
 		if(!wristCalibrated) {
 			DriverStation.reportError("Error: Preferences missing from RoboRio for Wrist calibration.", false);
-			recordStickyFaults("Preferences,Wrist calibration");
+			recordStickyFaults("Preferences-wristCalZero");
 			wristCalZero = 0;
 		}	
 		climbCalZero = prefs.getDouble("climbCalZero", -9999);
 		climbCalibrated = (climbCalZero != -9999);
 		if(!climbCalibrated) {
 			DriverStation.reportError("Error: Preferences missing from RoboRio for Climb calibration.", false);
-			recordStickyFaults("Preferences,Climb calibration");
+			recordStickyFaults("Preferences-climbCalZero");
 			climbCalZero = 0;
 		}	
 	}
@@ -149,7 +149,7 @@ public class RobotPreferences {
 			prefs.putDouble("wheelDiameter", 6);
 		}
 		if (!prefs.containsKey("elevatorGearDiameter")) {
-			prefs.putDouble("elevatorGearDiameter", 1.7 * Math.PI);
+			prefs.putDouble("elevatorGearDiameter", 1.7);
 		}
 		if (!prefs.containsKey("elevatorBottomToFloor")) {
 			prefs.putDouble("elevatorBottomToFloor", 15.0);

@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.utilities.RobotPreferences;
@@ -102,8 +103,7 @@ public class ElevatorMoveToLevel extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    // TODO Verify that command ends when elevator gets to desired position
-   return !Robot.elevator.getEncOK() || Math.abs(Robot.elevator.getElevatorPosition() - target) <= 0.5;
+   return !Robot.elevator.getEncOK() || Math.abs(Robot.elevator.getElevatorPos() - target) <= 0.5;
   }
 
   // Called once after isFinished returns true
