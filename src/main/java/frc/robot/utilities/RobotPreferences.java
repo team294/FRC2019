@@ -22,7 +22,7 @@ public class RobotPreferences {
 	public double elevatorBottomToFloor; //distance of elevator 0 value from the ground
 	public double elevatorWristSafe; 	 //lowest elevator position (from ground) where wrist can't hit the floor at its lower limit switch.  Wrist can be stowed in this position.
 	public double cameraDistanceFromFrontOfBumper;  // (default = 12 inches)
-	public double wristGearRatio; // wrist gear ratio, gear with encoder / gear driving wrist
+	public double wristGearRatio; 		// wrist gear ratio, gear with encoder / gear driving wrist
 	public double wristCalZero;   		// Wrist encoder position at O degrees, in encoder ticks (i.e. the calibration factor)
 	public boolean wristCalibrated = false;     // Default to wrist being uncalibrated.  Calibrate from robot preferences or "Calibrate Wrist Zero" button on dashboard
 	public double climbCalZero; // Climb encoder position at 0 degrees in encoder ticks
