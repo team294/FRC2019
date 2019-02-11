@@ -110,7 +110,8 @@ public class OI {
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
     SmartDashboard.putData("Elevator Down", new ElevatorLower()); // For testing limit switch and encoder
-    SmartDashboard.putData("Move Elevator to Zero", new ElevatorMoveToLevel(Robot.robotPrefs.elevatorBottomToFloor)); // Move to encoder's zero position
+    SmartDashboard.putData("Move Elevator to Bottom", new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.bottom)); // Move to encoder's zero position
+    SmartDashboard.putData("Move Elevator to WristSafe", new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.wristSafe)); // Move to encoder's zero position
     SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero());
 
     // Buttons for controlling FileLogging

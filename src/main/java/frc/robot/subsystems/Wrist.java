@@ -90,7 +90,7 @@ public class Wrist extends Subsystem {
   public void setWristAngle(double degrees) {
     if (encOK && wristMode && Robot.robotPrefs.wristCalibrated) {
       // TODO determine max degrees and elevator height tolerance
-      if (degrees < 60 || (Robot.elevator.getElevatorLowerLimit() && Robot.elevator.getCurrentElevatorTarget() < 1)) {
+      if (degrees < 60 || (Robot.elevator.getElevatorLowerLimit() && Robot.elevator.getCurrentElevatorTarget() < (Robot.robotPrefs.elevatorBottomToFloor+1))) {
         wristMotor.set(ControlMode.Position, degreesToEncoderTicks(degrees) + Robot.robotPrefs.wristCalZero);
         if(Robot.log.getLogLevel() <= 2) {
           Robot.log.writeLog("Wrist", "Degrees set", ",Target," + degrees);

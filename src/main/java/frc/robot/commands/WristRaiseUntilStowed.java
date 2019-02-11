@@ -10,8 +10,12 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class WristApplyPowerUntilStowed extends Command {
-  public WristApplyPowerUntilStowed() {
+public class WristRaiseUntilStowed extends Command {
+  /**
+   * Raises wrist slowly until the upper limit switch is triggered.
+   * Stops wrist when the upper limit switch is triggered (stowed position).
+   */
+  public WristRaiseUntilStowed() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.wrist);
@@ -48,5 +52,6 @@ public class WristApplyPowerUntilStowed extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.wrist.stopWrist();
   }
 }
