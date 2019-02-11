@@ -7,13 +7,10 @@
 
 package frc.robot.commands;
 
-import java.io.File;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.pathfinder.Pathfinder;
 import frc.robot.pathfinder.Trajectory;
-import frc.robot.pathfinder.Waypoint;
-import frc.robot.pathfinder.Trajectory.Segment;
 import frc.robot.pathfinder.followers.DistanceFollower;
 
 public class DrivePathfinder extends Command {
