@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -39,23 +40,23 @@ public class Climb extends Subsystem {
   //private final DigitalInput vacuumSwitch = new DigitalInput(RobotMap.vacuumSwitch);
   private final SensorCollection climbLimit;
   private int periodicCount = 0;
-  public double climbStartingPoint = 0;
 
-  public double rampRate = .005;
-  public double kP = 1;
-  public double kI = 0;
-  public double kD = 0;
-  public double kFF = 0;
-  public int kIz = 0;
-  public double kMaxOutput = 1.0;	
-  public double kMinOutput = -1.0;
+  private double rampRate = .005;
+  private double kP = 1;
+  private double kI = 0;
+  private double kD = 0;
+  private double kFF = 0;
+  private int kIz = 0;
+  private double kMaxOutput = 0.4;	   // TODO change to 1.0 after testing for max speed
+  private double kMinOutput = -0.4;    // TODO change to -1.0 after testing for max speed
 
   public Climb() {
     enableCompressor(true);
 
     climbMotor2.follow(climbMotor1);
     climbMotor2.setInverted(true);
-    climbMotor1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+    climbMotor1.set(ControlMode.PercentOutput, 0);
+    climbMotor1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
     climbMotor1.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
     climbLimit = climbMotor1.getSensorCollection();
 
@@ -77,7 +78,7 @@ public class Climb extends Subsystem {
     climbVacuum1.setNeutralMode(NeutralMode.Brake);
     climbVacuum2.setNeutralMode(NeutralMode.Brake);
   }
-/*
+
   /**
    * Enables or disables the compressor
    * @param turnOn true = turn on compressor when pressure drops
@@ -92,7 +93,14 @@ public class Climb extends Subsystem {
    * @param percentPower between -1.0 and 1.0
    */
   public void setClimbMotorPercentOutput(double percentOutput) {
-    climbMotor1.set(percentOutput);
+    climbMotor1.set(ControlMode.PercentOutput, percentOutput);
+  }
+
+  /**
+   * Stops the climb motors
+   */
+  public void stopClimbMotor() {
+    setClimbMotorPercentOutput(0.0);
   }
 
   /**
@@ -100,7 +108,9 @@ public class Climb extends Subsystem {
    * @param angle target angle in degrees
    */
   public void setClimbPos(double angle) {
-    climbMotor1.set(ControlMode.Position, climbAngleToEncTicks(angle));
+    if (Robot.robotPrefs.climbCalibrated) {
+      climbMotor1.set(ControlMode.Position, climbAngleToEncTicks(angle) + Robot.robotPrefs.climbCalZero);
+    }
   }
 
   /**
@@ -122,19 +132,24 @@ public class Climb extends Subsystem {
    * Sets current value of the climbEncoder as the new "zero"
    */
   public void zeroClimbEnc() {
-    climbStartingPoint = climbMotor1.getSelectedSensorPosition(0);
+    Robot.robotPrefs.setClimbCalibration(getClimbEncTicksRaw(), false);
   }
 
   /**
-   * 
-   * @return raw encoder value
+   * Reads the climb encoder in raw ticks.
+   * @return raw climb encoder value, in ticks
    */
   public double getClimbEncTicksRaw() {
     return climbMotor1.getSelectedSensorPosition(0);
   }
 
-  public double getClimbEncoderTicks() {
-    return climbMotor1.getSelectedSensorPosition(0) - climbStartingPoint;
+  /**
+   * Reads the climb encoder in calibrated ticks (0 = horizontal, + = ??).
+   * Note that the raw encoder value may wrap.
+   * @return encoder value from horizontal
+   */
+  public double getClimbEncTicks() {
+    return getClimbEncTicksRaw() - Robot.robotPrefs.climbCalZero;
   }
 
   /**
@@ -157,11 +172,7 @@ public class Climb extends Subsystem {
    * @return angle in degrees
    */
   public double getClimbAngle() {
-    return climbEncTicksToAngle(getClimbEncoderTicks());
-  }
-
-  public void stopClimbMotor() {
-    climbMotor1.set(0.0);
+    return climbEncTicksToAngle(getClimbEncTicks());
   }
 
   /**
@@ -187,7 +198,7 @@ public class Climb extends Subsystem {
     ",ClimbVac1 Volts," + climbVacuum1.getMotorOutputVoltage() + ",ClimbVac2 Volts," + climbVacuum2.getMotorOutputVoltage() +
     ",Climb1 Amps," + Robot.pdp.getCurrent(RobotMap.climbMotor1PDP) + ",Climb2 Amps," + Robot.pdp.getCurrent(RobotMap.climbMotor2PDP) + 
     ",ClimbVac1 Amps," + Robot.pdp.getCurrent(RobotMap.climbVacuum1PDP) + ",ClimbVac2 Amps," + Robot.pdp.getCurrent(RobotMap.climbVacuum2PDP) +
-    ",ClimbEnc Ticks," + getClimbEncoderTicks());
+    ",ClimbEnc Ticks," + getClimbEncTicks());
   }
   
   @Override
@@ -197,6 +208,9 @@ public class Climb extends Subsystem {
   }
   @Override
   public void periodic() {
+    SmartDashboard.putBoolean("Climb calibrated", Robot.robotPrefs.climbCalibrated);
+    SmartDashboard.putNumber("Climb angle", getClimbAngle());
+    
     if (!Robot.robotPrefs.climbCalibrated || Robot.beforeFirstEnable) {
       if (climbLimit.isRevLimitSwitchClosed()) {
         Robot.robotPrefs.setClimbCalibration(getClimbEncTicksRaw() - climbAngleToEncTicks(Robot.robotPrefs.climbStartingAngle), false);

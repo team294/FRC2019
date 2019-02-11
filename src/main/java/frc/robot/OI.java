@@ -115,6 +115,12 @@ public class OI {
     SmartDashboard.putData("Move Elevator to WristSafe", new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.wristSafe)); // Move to encoder's zero position
     SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero());
 
+    // Buttons for controlling the climber
+    SmartDashboard.putData("Climb Up", new ClimbArmSetSpeed(0.2));  // For testing
+    SmartDashboard.putData("Climb Down", new ClimbArmSetSpeed(-0.2));  // For testing
+    SmartDashboard.putData("Climb move to 0", new ClimbArmSetAngle(0));  // For testing
+    SmartDashboard.putData("Climb move to 50", new ClimbArmSetAngle(0));  // For testing
+
     // Buttons for controlling FileLogging
     SmartDashboard.putData("Log 1 InitialTesting", new FileLogSetLevel(1));
     SmartDashboard.putData("Log 2 PitTesting", new FileLogSetLevel(2));
