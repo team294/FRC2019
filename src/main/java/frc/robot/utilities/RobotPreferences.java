@@ -17,18 +17,16 @@ public class RobotPreferences {
 	public boolean inBCRLab;			// Set true if in the BCR lab (with a big pole in the middle of the field)
 	public boolean prototypeRobot;		// Set true if using code for prototype bots, false for practice and competition bots
 	public boolean driveDirection;		// True for reversed
-	public boolean climbCalibrated = false; // Default to arm being uncalibrated
-	public double climbCalZero; // Climb encoder position at 0 degrees in encoder ticks
 	public double wheelCircumference;	// Wheel circumference, in inches
-	public double driveTrainDistanceFudgeFactor;  // Scaling factor for driving distance (default = 1)
 	public double elevatorGearCircumference; //circumference of the gear driving the elevator in inches
-	public double robotOffset; //distance of elevator 0 value from the ground
 	public double elevatorBottomToFloor; //distance of elevator 0 value from the ground
 	public double elevatorWristSafe; 	 //lowest elevator position (from ground) where wrist can't hit the floor at its lower limit switch.  Wrist can be stowed in this position.
 	public double cameraDistanceFromFrontOfBumper;  // (default = 12 inches)
 	public double wristGearRatio; 		// wrist gear ratio, gear with encoder / gear driving wrist
 	public double wristCalZero;   		// Wrist encoder position at O degrees, in encoder ticks (i.e. the calibration factor)
-	public boolean wristCalibrated;     // Default to wrist being uncalibrated.  Calibrate from robot preferences or "Calibrate Wrist Zero" button on dashboard
+	public boolean wristCalibrated = false;     // Default to wrist being uncalibrated.  Calibrate from robot preferences or "Calibrate Wrist Zero" button on dashboard
+	public double climbCalZero; // Climb encoder position at 0 degrees in encoder ticks
+	public boolean climbCalibrated = false; // Default to arm being uncalibrated
 	 
 	// Wrist Angles (in degrees)
 	//TODO update with actual wrist angles
@@ -90,32 +88,31 @@ public class RobotPreferences {
 		driveDirection = prefs.getBoolean("driveDirection", true);
 		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;	
 		elevatorGearCircumference = prefs.getDouble("elevatorGearDiameter", 1.7 * Math.PI); // TODO Change value when actual elevator is built, Conversion factor for makeshift elevator 18/32.3568952084);
-		driveTrainDistanceFudgeFactor = prefs.getDouble("driveTrainDistanceFudgeFactor", 1);
 		elevatorBottomToFloor = prefs.getDouble("elevatorBottomToFloor", 15.0); //TODO Change value when actual elevator is built
 		elevatorWristSafe = prefs.getDouble("elevatorWristSafe", 20.0); //TODO Change value when actual elevator is built (elevator position from floor where wrist can't hit the floor at its lower limit switch.  Wrist can be stowed in this position.)
-		/* if (driveTrainDistanceFudgeFactor == -9999) {
-			// If fudge factor for driving can't be read, then assume value of 1
-			driveTrainDistanceFudgeFactor = 1;  //0.96824;
-		} */
-		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;		
 		cameraDistanceFromFrontOfBumper = prefs.getDouble("cameraDistanceFromFrontOfBumper", 12);
 		wristGearRatio = prefs.getDouble("wristGearRatio", 1.0);
 		wristCalZero = prefs.getDouble("wristCalZero", -9999);
-		wristCalibrated = prefs.getBoolean("wristCalibrated", false);		
-		cameraDistanceFromFrontOfBumper = prefs.getDouble("cameraDistanceFromFrontOfBumper", 12);	
-		climbCalZero = prefs.getDouble("calibrationZeroDegrees", -9999);
+		wristCalibrated = (wristCalZero != -9999);
+		if(!wristCalibrated) {
+			DriverStation.reportError("Error: Preferences missing from RoboRio for Wrist calibration.", false);
+			recordStickyFaults("Preferences,Wrist calibration");
+			wristCalZero = 0;
+		}	
+		climbCalZero = prefs.getDouble("climbCalZero", -9999);
 		climbCalibrated = (climbCalZero != -9999);
 		if(!climbCalibrated) {
-			DriverStation.reportError("Error: Preferences missing from RoboRio for Climb calibration.", true);
+			DriverStation.reportError("Error: Preferences missing from RoboRio for Climb calibration.", false);
+			recordStickyFaults("Preferences,Climb calibration");
 			climbCalZero = 0;
 		}	
 	}
 
 	/**
-	 * Sets arm angle calibration factor and enables angle control modes for arm.
+	 * Sets arm angle calibration factor and enables angle control modes for climber.
 	 * 
 	 * @param climbCalZero
-	 *            Calibration factor for arm
+	 *            Calibration factor for climber
 	 * @param writeCalToPreferences
 	 *            true = store calibration in Robot Preferences, false = don't
 	 *            change Robot Preferences
@@ -123,10 +120,11 @@ public class RobotPreferences {
 	public void setClimbCalibration(double climbCalZero, boolean writeCalToPreferences) {
 		this.climbCalZero = climbCalZero;
 		climbCalibrated = true;
+		Robot.log.writeLog("Preferences", "Calibrate climber", "zero value," + climbCalZero);
 		if (writeCalToPreferences) {
-			prefs.putDouble("calibrationZeroDegrees", climbCalZero);
+			prefs.putDouble("climbCalZero", climbCalZero);
 		}
-}
+	}
 
 	/* Sets up Preferences if they haven't been set as when changing RoboRios or first start-up.
 		The values are set to defaults, so if using the prototype robots set inBCRLab to true
@@ -150,9 +148,6 @@ public class RobotPreferences {
 		if (!prefs.containsKey("wheelDiameter")){
 			prefs.putDouble("wheelDiameter", 6);
 		}
-		if (!prefs.containsKey("cameraDistanceFromFrontOfBumper")){
-			prefs.putDouble("cameraDistanceFromFrontOfBumper", 12);
-		}
 		if (!prefs.containsKey("elevatorGearDiameter")) {
 			prefs.putDouble("elevatorGearDiameter", 1.7 * Math.PI);
 		}
@@ -162,14 +157,17 @@ public class RobotPreferences {
 		if (!prefs.containsKey("elevatorWristSafe")) {
 			prefs.putDouble("elevatorWristSafe", 20.0);
 		}
+		if (!prefs.containsKey("cameraDistanceFromFrontOfBumper")){
+			prefs.putDouble("cameraDistanceFromFrontOfBumper", 12);
+		}
 		if (!prefs.containsKey("wristGearRatio")) {
 			prefs.putDouble("wristGearRatio", 1.0);
 		}
 		if (!prefs.containsKey("wristCalZero")) {
 			prefs.putDouble("wristCalZero", -9999);
 		}
-		if (!prefs.containsKey("wristCalibrated")) {
-			prefs.putBoolean("wristCalibrated", false);
+		if (!prefs.containsKey("climbCalZero")) {
+			prefs.putDouble("climbCalZero", -9999);
 		}
 	}
 
@@ -264,17 +262,17 @@ public class RobotPreferences {
 	public boolean getBoolean(String k) {
 		return getBoolean(k, false);
 	}
-	public void putString(String k, String d) {
-		prefs.putString(k, d);
+	public void putString(String key, String val) {
+		prefs.putString(key, val);
 	}
-	public void putDouble(String k, double d) {
-		prefs.putDouble(k, d);
+	public void putDouble(String key, double val) {
+		prefs.putDouble(key, val);
 	}	
-	public void putInt(String k, int d) {
-		prefs.putInt(k, d);
+	public void putInt(String key, int val) {
+		prefs.putInt(key, val);
 	}
-	public void putBoolean(String k, boolean d) {
-		prefs.putBoolean(k, d);
+	public void putBoolean(String key, boolean val) {
+		prefs.putBoolean(key, val);
 	}
 
 }
