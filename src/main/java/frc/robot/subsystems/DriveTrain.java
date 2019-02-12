@@ -236,10 +236,10 @@ public class DriveTrain extends Subsystem {
 	}
 
   public double encoderTicksToInches(double encoderTicks) {
-    return (encoderTicks / RobotMap.encoderTicksPerRevolution) * Robot.robotPrefs.wheelCircumference ;
+    return (encoderTicks / Robot.robotPrefs.encoderTicksPerRevolution) * Robot.robotPrefs.wheelCircumference ;
   }
   public double inchesToEncoderTicks(double inches) {
-    return (inches / Robot.robotPrefs.wheelCircumference) * RobotMap.encoderTicksPerRevolution;
+    return (inches / Robot.robotPrefs.wheelCircumference) * Robot.robotPrefs.encoderTicksPerRevolution;
   }
   public double getLeftEncoderInches() {
     SmartDashboard.putNumber("Left Inches", encoderTicksToInches(getLeftEncoderTicks()));
