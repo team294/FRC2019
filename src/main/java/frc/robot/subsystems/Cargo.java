@@ -79,10 +79,20 @@ public class Cargo extends Subsystem {
       Robot.log.writeLog("Cargo", "Stop Cargo", "");
     }
   }
+  
 
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
   }
+
+  @Override
+  public void periodic() {
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("Cargo", "Cargo Periodic", ",Photo Switch," + getPhotoSwitch());
+    }
+
+  }
+
 }

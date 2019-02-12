@@ -10,10 +10,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
 
 import frc.robot.commands.*;
+import frc.robot.triggers.*;
 import frc.robot.utilities.RobotPreferences;
 
 /**
@@ -61,6 +63,7 @@ public class OI {
   private Button xBoxX = new JoystickButton(xBoxController, 3);
   private Button xBoxY = new JoystickButton(xBoxController, 4);
 
+  private Trigger trigWristElevEncoder = new WristEncoderCheck();
 
   public OI() {
     Button[] left = new Button[12];
@@ -101,13 +104,15 @@ public class OI {
     xBoxY.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchHigh));
     xBoxX.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.cargoShipCargo));
     
+    SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true, true));
     SmartDashboard.putData("Turn To Target", new VisionTurnToTarget());
     SmartDashboard.putData("Drive on line", new DriveWithLineFollowing());
 
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
     SmartDashboard.putData("Elevator Down", new ElevatorLower()); // For testing limit switch and encoder
-    SmartDashboard.putData("Move Elevator to Zero", new ElevatorMoveToLevel(Robot.robotPrefs.elevatorBottomToFloor)); // Move to encoder's zero position
+    SmartDashboard.putData("Move Elevator to Bottom", new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.bottom)); // Move to encoder's zero position
+    SmartDashboard.putData("Move Elevator to WristSafe", new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.wristSafe)); // Move to encoder's zero position
     SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero());
 
     // Buttons for controlling FileLogging
@@ -123,6 +128,10 @@ public class OI {
     SmartDashboard.putData("Clear Sticky Faults", new ClearStickyFaults());
     Robot.robotPrefs.showStickyFaults();
     //SmartDashboard.putData("Turn To Line", new TurnToLine());
+    SmartDashboard.putData("Disc Toggle", new HatchToggle());
+    SmartDashboard.putData("Disc Grab", new HatchSet(true));
+    SmartDashboard.putData("Disc Release", new HatchSet(false));
+    SmartDashboard.putString("Disc Position", "Null");
   }
 
   public void setDriveDirection(boolean direction) {

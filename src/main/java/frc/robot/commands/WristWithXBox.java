@@ -11,15 +11,15 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ElevatorWithXBox extends Command {
-  
+public class WristWithXBox extends Command {
+
   /** 
-   * Drive elevator manually using right joystick on the xBox controller
+   * Drive wrist manually using left joystick on the xBox controller
   */
-  public ElevatorWithXBox() {
+  public WristWithXBox() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.elevator);
+    requires(Robot.wrist);
   }
 
   // Called just before this Command runs the first time
@@ -30,12 +30,9 @@ public class ElevatorWithXBox extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    if (Robot.wrist.getWristEncoderDegrees() > -5 && Robot.wrist.getWristEncoderDegrees() < 5) {
-      double value = -Robot.oi.xBoxController.getY(Hand.kRight);
-      System.out.println("xbox " + value);
-      Robot.elevator.setElevatorMotorPercentOutput(value);
-      Robot.elevator.checkAndZeroElevatorEnc();
-    }
+    double value = -Robot.oi.xBoxController.getY(Hand.kLeft);
+    Robot.wrist.setWristMotorPercentOutput(value);
+    Robot.wrist.zeroWristEncoder();
   }
 
   // Make this return true when this Command no longer needs to run execute()
