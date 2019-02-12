@@ -211,6 +211,7 @@ public class Climb extends Subsystem {
     SmartDashboard.putBoolean("Climb calibrated", Robot.robotPrefs.climbCalibrated);
     SmartDashboard.putNumber("Climb angle", getClimbAngle());
     SmartDashboard.putNumber("Climb enc raw", getClimbEncTicksRaw());
+    SmartDashboard.putBoolean("Climb limit switch", climbLimit.isRevLimitSwitchClosed());
     
     if (!Robot.robotPrefs.climbCalibrated || Robot.beforeFirstEnable) {
       if (climbLimit.isRevLimitSwitchClosed()) {
