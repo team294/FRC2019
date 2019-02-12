@@ -32,11 +32,10 @@ public class RobotPreferences {
 	* Measurements
 	*/
 	// Wrist Angles (in degrees)
-	//TODO update with actual wrist angles
 	public static final double WristStowed = 107.36;
 	public static final double WristUp = 15.0;
 	public static final double WristStraight = 0.0;
-	public static final double WristDown = -57.0;
+	public static final double WristDown = -45.0;
 	public enum WristAngle {stowed, up, straight, down}
 
 	// TODO Update with 2019 base
