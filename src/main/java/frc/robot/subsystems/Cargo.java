@@ -47,13 +47,13 @@ public class Cargo extends Subsystem {
     cargoMotor1.set(ControlMode.PercentOutput, percent1); 
     cargoMotor2.set(ControlMode.PercentOutput, percent2);
     if(Robot.log.getLogLevel() <= 2){
-      Robot.log.writeLog("Cargo", "Percent Power", ",Percent Power Top," + percent1 + ",Percent Power Bot," + percent2);
+      Robot.log.writeLog("Cargo", "Percent Power", "Percent Power Top," + percent1 + ",Percent Power Bot," + percent2);
     }
   }
 
   public boolean getPhotoSwitch(){
     if(Robot.log.getLogLevel() <= 2){
-      Robot.log.writeLog("Cargo", "Photo Sensor", ",Photo Sensor," + photoSwitch.get());
+      Robot.log.writeLog("Cargo", "Photo Sensor", "Photo Sensor," + photoSwitch.get());
     }
     return photoSwitch.get();
   }
@@ -90,7 +90,7 @@ public class Cargo extends Subsystem {
   @Override
   public void periodic() {
     if(Robot.log.getLogLevel() <= 2){
-      Robot.log.writeLog("Cargo", "Cargo Periodic", ",Photo Switch," + getPhotoSwitch());
+      Robot.log.writeLog("Cargo", "Cargo Periodic", "Photo Switch," + getPhotoSwitch());
     }
 
   }
