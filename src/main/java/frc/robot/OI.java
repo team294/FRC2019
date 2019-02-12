@@ -132,6 +132,12 @@ public class OI {
     SmartDashboard.putData("Disc Grab", new HatchSet(true));
     SmartDashboard.putData("Disc Release", new HatchSet(false));
     SmartDashboard.putString("Disc Position", "Null");
+
+    SmartDashboard.putData("LEDSet Purple", new LEDSetColor(0));
+    SmartDashboard.putData("LEDSet Red", new LEDSetColor(1));
+    SmartDashboard.putData("LEDSet Blue", new LEDSetColor(2));
+    SmartDashboard.putData("LEDSet Off", new LEDSetColor(3));
+
   }
 
   public void setDriveDirection(boolean direction) {

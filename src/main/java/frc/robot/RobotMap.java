@@ -44,6 +44,9 @@ public class RobotMap {
   public static final int lineFollowerRight = 0;
   public static final int vacuumSwitch = 3;
   public static final int elevatorLowerLimit = 4;
+
+  // Relay Addresses
+  public static final int ledRelay =0;
   
   // PDP Addresses
   public static final int leftMotor1PDP = 0; 
