@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
 
 import frc.robot.commands.*;
+import frc.robot.subsystems.Climb;
 import frc.robot.triggers.*;
 import frc.robot.utilities.RobotPreferences;
 
@@ -120,6 +121,7 @@ public class OI {
     SmartDashboard.putData("Climb Down", new ClimbArmSetSpeed(-0.2));  // For testing
     SmartDashboard.putData("Climb move to 0", new ClimbArmSetAngle(0));  // For testing
     SmartDashboard.putData("Climb move to 50", new ClimbArmSetAngle(0));  // For testing
+    SmartDashboard.putData("Climb Set Reference", new ClimbEncoderCalibrate());
 
     // Buttons for controlling FileLogging
     SmartDashboard.putData("Log 1 InitialTesting", new FileLogSetLevel(1));
