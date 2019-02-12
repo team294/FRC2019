@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -219,12 +220,11 @@ public class Elevator extends Subsystem {
 	 */
 	public void updateElevatorLog() {
 		Robot.log.writeLog("Elevator", "Update Variables",
-				"Elev1 Volts," + elevatorMotor1.getMotorOutputVoltage() + ",Elev2 Volts,"
-						+ elevatorMotor2.getMotorOutputVoltage() + ",Elev Talon Amps," + elevatorMotor1.getOutputCurrent() + ",Elev1 Amps,"
-						+ Robot.pdp.getCurrent(RobotMap.elevatorMotor1PDP) + ",Elev2 Amps,"
-						+ Robot.pdp.getCurrent(RobotMap.elevatorMotor2PDP) + ",Elev Enc Ticks," + getElevatorEncTicks()
-						+ ",Elev Enc Inches," + getElevatorPos() + ",Upper Limit," + getElevatorUpperLimit()
-						+ ",Lower Limit," + getElevatorLowerLimit() + ",Enc OK," + elevEncOK + ",Elev Mode," + elevatorMode);
+				"Volts1," + elevatorMotor1.getMotorOutputVoltage() + ",Volts2," + elevatorMotor2.getMotorOutputVoltage() + 
+				",Amps1," + Robot.pdp.getCurrent(RobotMap.elevatorMotor1PDP) + ",Amps2," + Robot.pdp.getCurrent(RobotMap.elevatorMotor2PDP) + 
+				",Enc Ticks," + getElevatorEncTicks() + ",Enc Inches," + getElevatorPos() + 
+				",Upper Limit," + getElevatorUpperLimit() + ",Lower Limit," + getElevatorLowerLimit() + 
+				",Enc OK," + elevEncOK + ",Elev Mode," + elevatorMode);
 	}
 
 	@Override
@@ -252,15 +252,19 @@ public class Elevator extends Subsystem {
 			verifyMotors();
 			prevEnc = currEnc;
 			currEnc = getElevatorEncTicks();
-			idleCount = (currEnc == prevEnc) ? idleCount++ : 0;
+			if (currEnc == prevEnc) {
+				idleCount++;
+			 } else {
+				 idleCount = 0;
+			 }
 			if(Robot.log.getLogLevel() == 1) {
 				updateElevatorLog();
 			} 
 			else if(Robot.log.getLogLevel() == 2) {
 				if (idleCount >= 25) {
-					if ((periodicCount++) >= 10) {
-					updateElevatorLog();
-					periodicCount = 0;
+					if(periodicCount++ >= 10) {
+						updateElevatorLog();
+						periodicCount = 0;
 					}
 				} else {
 				updateElevatorLog();
@@ -272,8 +276,11 @@ public class Elevator extends Subsystem {
 						updateElevatorLog();
 						periodicCount = 0;
 					}
-				} else if ((periodicCount++) >= 10) {
-					updateElevatorLog();
+				} else {
+					if ((periodicCount++) >= 10) {
+						updateElevatorLog();
+						periodicCount = 0;
+					}
 				}
 			}
 		}
