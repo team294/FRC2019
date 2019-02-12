@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.utilities.RobotPreferences;
 import frc.robot.utilities.RobotPreferences.HatchPistonPositions;
@@ -34,11 +35,17 @@ public class Hatch extends Subsystem {
     if (position == RobotPreferences.HatchPistonPositions.grab) {
       hatchPiston.set(Value.kForward);
       hatchPosition = HatchPistonPositions.grab;
+      if(Robot.log.getLogLevel() <= 2){
+        Robot.log.writeLog("Hatch", "Hatch Grab", "");
+      }
       SmartDashboard.putString("Disc Position", "Grab");
 		}
 		if (position == RobotPreferences.HatchPistonPositions.release) {
       hatchPiston.set(Value.kReverse);
       hatchPosition = HatchPistonPositions.release;
+      if(Robot.log.getLogLevel() <= 2){
+        Robot.log.writeLog("Hatch", "Hatch Release", "");
+      }
       SmartDashboard.putString("Disc Position", "Release");
     }
   }
@@ -56,5 +63,11 @@ public class Hatch extends Subsystem {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
   }
+  @Override
+  public void periodic() {
+    if(Robot.log.getLogLevel() == 1){
+      Robot.log.writeLog("Hatch", "Periodic", ",Hatch Position," + getHatchPiston());
+    }
+  }  
 
 }
