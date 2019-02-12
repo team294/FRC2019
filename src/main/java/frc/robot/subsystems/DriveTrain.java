@@ -128,6 +128,9 @@ public class DriveTrain extends Subsystem {
 	}
 
   public void tankDrive (double powerLeft, double powerRight) {
+    if(Robot.log.getLogLevel() == 1){
+      Robot.log.writeLog("DriveTrain", "Percent Power", "Left Percent Power," + powerLeft + ",Right Percent Power," + powerRight);
+    }
     robotDrive.tankDrive(powerLeft, powerRight);
   }
 
@@ -141,6 +144,9 @@ public class DriveTrain extends Subsystem {
 	 *            positive.
 	 */
 	public void driveAtCurve(double speedPct, double curve) {
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("DriveTrain", "Drive at Curve", "");
+    }
 		robotDrive.curvatureDrive(speedPct, curve, false);
   }
   
@@ -157,6 +163,9 @@ public class DriveTrain extends Subsystem {
    * Stops the motors by calling tankDrive(0, 0)
    */
   public void stop() {
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("DriveTrain", "Stop", "");
+    }
     tankDrive(0, 0);
   }
 
@@ -166,7 +175,10 @@ public class DriveTrain extends Subsystem {
 	 * @param powerPct Percent of power -1.0 (reverse) to 1.0 (forward)
 	 */
 	public void setLeftMotors(double powerPct) {
-		//TODO check if direction forward/backward is correct
+    //TODO check if direction forward/backward is correct
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("DriveTrain", "Left Percent Power", "Left Percent Power," + powerPct);
+    }
 		leftMotor2.set(ControlMode.PercentOutput, -powerPct);
 	}
 
@@ -176,7 +188,10 @@ public class DriveTrain extends Subsystem {
 	 * @param powerPct Percent of power -1.0 (reverse) to 1.0 (forward)
 	 */
 	public void setRightMotors(double powerPct) {
-		//TODO check if direction forward/backward is correct
+    //TODO check if direction forward/backward is correct
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("DriveTrain", "Right Percent Power", "Right Percent Power," + powerPct);
+    }
 		rightMotor2.set(ControlMode.PercentOutput, powerPct);
   }
 
@@ -184,6 +199,7 @@ public class DriveTrain extends Subsystem {
 	 * Stops all motors.
 	 */
 	public void stopAllMotors() {
+    Robot.log.writeLog("DriveTrain", "Stop All Motors", "");
 		setLeftMotors(0);
 		setRightMotors(0);
 	}
@@ -207,6 +223,9 @@ public class DriveTrain extends Subsystem {
 	 * Zeros the left encoder position in software
 	 */
 	public void zeroLeftEncoder() {
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("DriveTrain", "Zero Left Encoder", "");
+    }
 		leftEncoderZero = leftMotor2.getSelectedSensorPosition(0);
 	}
 
@@ -214,6 +233,9 @@ public class DriveTrain extends Subsystem {
 	 * Zeros the right encoder position in software
 	 */
 	public void zeroRightEncoder() {
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("DriveTrain", "Zero Right Encoder", "");
+    }
     rightEncoderZero = rightMotor2.getSelectedSensorPosition(0);
 	}
 
@@ -223,6 +245,9 @@ public class DriveTrain extends Subsystem {
 	 * @return encoder position, in ticks
 	 */
 	public double getLeftEncoderTicks() {
+    if(Robot.log.getLogLevel() == 1){
+      Robot.log.writeLog("DriveTrain", "Left Encoder Ticks", "Left Encoder Ticks," + (leftMotor2.getSelectedSensorPosition(0) - leftEncoderZero));
+    }
     return leftMotor2.getSelectedSensorPosition(0) - leftEncoderZero;
 	}
 
@@ -232,6 +257,9 @@ public class DriveTrain extends Subsystem {
 	 * @return encoder position, in ticks
 	 */
 	public double getRightEncoderTicks() {
+    if(Robot.log.getLogLevel() == 1){
+      Robot.log.writeLog("DriveTrain", "Right Encoder Ticks", "Right Encoder Ticks," + (-(rightMotor2.getSelectedSensorPosition(0) - rightEncoderZero)));
+    }
 		return -(rightMotor2.getSelectedSensorPosition(0) - rightEncoderZero);
 	}
 
@@ -242,11 +270,17 @@ public class DriveTrain extends Subsystem {
     return (inches / Robot.robotPrefs.wheelCircumference) * Robot.robotPrefs.encoderTicksPerRevolution;
   }
   public double getLeftEncoderInches() {
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("DriveTrain", "Left Encoder Inches", "Left Encoder Inches," + encoderTicksToInches(getLeftEncoderTicks()));
+    }
     SmartDashboard.putNumber("Left Inches", encoderTicksToInches(getLeftEncoderTicks()));
     return encoderTicksToInches(getLeftEncoderTicks());
   }
 
   public double getRightEncoderInches() {
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("DriveTrain", "Right Encoder Inches", "Right Encoder Inches," + encoderTicksToInches(getRightEncoderTicks()));
+    }
     SmartDashboard.putNumber("Right Inches", encoderTicksToInches(getRightEncoderTicks()));
     return encoderTicksToInches(getRightEncoderTicks());
   }
@@ -267,6 +301,7 @@ public class DriveTrain extends Subsystem {
    * Also removes the earliest element if above 50 elements.
    */
   public void updateEncoderList() {
+    Robot.log.writeLog("DriveTrain", "Update Encoder", "");
     lEncoderStack.add(getLeftEncoderTicks());
     rEncoderStack.add(getRightEncoderTicks());
     if (lEncoderStack.size() > 50) {
@@ -276,6 +311,9 @@ public class DriveTrain extends Subsystem {
   }
 
   public double getAverageDistance() {
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("DriveTrain", "Average Distance", "Average Distance," + (getRightEncoderInches() + getLeftEncoderInches()) / 2.0);
+    }
 		return (getRightEncoderInches() + getLeftEncoderInches()) / 2.0;
   }
 
@@ -283,6 +321,9 @@ public class DriveTrain extends Subsystem {
 	 * Zeros the gyro position in software
 	 */
 	public void zeroGyroRotation() {
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("DriveTrain", "Zero Gyro", "");
+    }
 		// set yawZero to gryo angle
 		yawZero = ahrs.getAngle();
 		// System.err.println("PLZ Never Zero the Gyro Rotation it is not good");
@@ -294,6 +335,9 @@ public class DriveTrain extends Subsystem {
 	 * @param currentHeading Gyro heading to reset to, in degrees
 	 */
 	public void setGyroRotation(double currentHeading) {
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("DriveTrain", "Set Gyro Rotation", "Set Gyro Rotation," + (ahrs.getAngle() - currentHeading));
+    }
 		// set yawZero to gryo angle, offset to currentHeading
 		yawZero = ahrs.getAngle() - currentHeading;
 		// System.err.println("PLZ Never Zero the Gyro Rotation it is not good");
@@ -305,6 +349,7 @@ public class DriveTrain extends Subsystem {
 	 * @return Current angle from -180 to 180 degrees
 	 */
 	public double getGyroRotation() {
+    
 		double angle = ahrs.getAngle() - yawZero;
 		// Angle will be in terms of raw gyro units (-inf,inf), so you need to convert
 		// to (-180, 180]
@@ -312,6 +357,9 @@ public class DriveTrain extends Subsystem {
 		angle = (angle <= -180) ? (angle + 360) : angle;
     angle = (angle > 180) ? (angle - 360) : angle;
     SmartDashboard.putNumber("Gyro Angle", angle);
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("DriveTrain", "Get Gyro Rotation","Get Gyro" + angle);
+    }
 		return angle;
   }
 
@@ -321,6 +369,9 @@ public class DriveTrain extends Subsystem {
    */
   public void setDriveMode(boolean setCoast){
    if(setCoast){
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("DriveTrain", "Drive Coast Mode", "");
+    }
     leftMotor1.setNeutralMode(NeutralMode.Coast);
     leftMotor2.setNeutralMode(NeutralMode.Coast);
     leftMotor3.setNeutralMode(NeutralMode.Coast);
@@ -329,6 +380,9 @@ public class DriveTrain extends Subsystem {
     rightMotor3.setNeutralMode(NeutralMode.Coast);
 
    }else{
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("DriveTrain", "Drive Brake Mode", "");
+    }
     leftMotor1.setNeutralMode(NeutralMode.Brake);
     leftMotor2.setNeutralMode(NeutralMode.Brake);
     leftMotor3.setNeutralMode(NeutralMode.Brake);
@@ -427,7 +481,9 @@ public class DriveTrain extends Subsystem {
     } else if (gyroAngle < 0) {
       quadrant = 2; // only negative angles left are Q2
     }
-    
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("DriveTrain", "Scoring Quadrant", "Quadrant," + quadrant);
+    }
     return quadrant; // Something must be wrong here, this result should never happen
   }
 
@@ -447,10 +503,16 @@ public class DriveTrain extends Subsystem {
     else if (quadrant == 3.5) out = 180;
     else if (quadrant == 4) out = 151.75;
     else if (quadrant == 4.5 || quadrant == 0.5) out = 90;
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("DriveTrain", "Target Angle", "Target Angle," + out);
+    }
     return out;
   }
 
   public double getTargetAngle() {
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("DriveTrain", "Target Angle", "Target Angle" + getTargetAngle(checkScoringQuadrant()));
+    }
     return getTargetAngle(checkScoringQuadrant());
   }
 
@@ -458,6 +520,9 @@ public class DriveTrain extends Subsystem {
    * Drives to the crosshair without gyro adjustment
    */
   public void driveToCrosshair() {
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("DriveTrain", "Drive To Crosshair", "");
+    }
     driveToCrosshair(0);
   }
 
@@ -501,9 +566,10 @@ public class DriveTrain extends Subsystem {
 
     if (/* distance > minDistanceToTarget && */ area != 0) tankDrive(lPercentOutput, rPercentOutput); // Just ignore the distance check for now...
     else tankDrive(0, 0);
-
-    Robot.log.writeLogEcho("DriveTrain", "Vision Tracking", "Crosshair Horiz Offset," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget()
-     + ",Target Area," + area + ",Joystick Ouput," + lJoystickAdjust + ",Left Percent," + lPercentOutput + ",Right Percent," + rPercentOutput);
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLogEcho("DriveTrain", "Vision Tracking", "Crosshair Horiz Offset," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget()
+      + ",Target Area," + area + ",Joystick Ouput," + lJoystickAdjust + ",Left Percent," + lPercentOutput + ",Right Percent," + rPercentOutput);
+    }
   }
 
    /**
@@ -524,6 +590,10 @@ public class DriveTrain extends Subsystem {
       this.robotDrive.tankDrive(0, 0);
     }
     updateEncoderList();
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("DriveTrain", "Vision Turning", "Degrees from Target," + xVal + ",Inches from Target," +
+       Robot.vision.distanceFromTarget() + ",Target Area," + Robot.vision.areaFromCamera);
+    }
     //Robot.log.writeLog("DriveTrain", "Vision Turning", "Degrees from Target," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget() + ",Target Area," + Robot.vision.areaFromCamera);
   }
 
@@ -563,8 +633,10 @@ public class DriveTrain extends Subsystem {
       lPercentPower = 0.3;
       rPercentPower = 0.3;
     }
-
-    Robot.log.writeLogEcho("DriveTrain", "Line Tracking", "Line Number," + lineNum + ",Left Percent," + lPercentPower + ",Right Percent," + rPercentPower);
+    
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLogEcho("DriveTrain", "Line Tracking", "Line Number," + lineNum + ",Left Percent," + lPercentPower + ",Right Percent," + rPercentPower);
+    }
 
     /* Untested auto-turn stuff */
     if (lEncStopped && lPercentPower != 0) rPercentPower = 1.0; // The goal here is to slam the right side so that we still line up to the wall
@@ -591,28 +663,46 @@ public class DriveTrain extends Subsystem {
 
     if (left) {
       if (lineNum == 0) {
+        if(Robot.log.getLogLevel() <= 2){
+          Robot.log.writeLog("DriveTrain", "Line Following", "Straight on Line,");
+        }
         // Straight
         //lPercentPower = .55*baseSpeed;
         //rPercentPower = .55*baseSpeed;
         lPercentPower = 0.65*baseSpeed;
         rPercentPower = 0.65*baseSpeed;
       } else if (lineNum == 1) {
+        if(Robot.log.getLogLevel() <= 2){
+          Robot.log.writeLog("DriveTrain", "Line Following", "Turn Left to Line,");
+        }
         // Turn left slight?
         lPercentPower = .6*baseSpeed;
         rPercentPower = 0*baseSpeed;
       } else if (lineNum == -1) {
+        if(Robot.log.getLogLevel() <= 2){
+          Robot.log.writeLog("DriveTrain", "Line Following", "Turn Right to Line,");
+        }
         // Turn right slight?
         lPercentPower = 0*baseSpeed;
         rPercentPower = .6*baseSpeed;
       } else if (lineNum == -2) {
+        if(Robot.log.getLogLevel() <= 2){
+          Robot.log.writeLog("DriveTrain", "Line Following", "Hard Left to Line,");
+        }
         // Turn left
         lPercentPower = .8*baseSpeed;
         rPercentPower = -.8*baseSpeed;
       } else if (lineNum == 2) {
+        if(Robot.log.getLogLevel() <= 2){
+          Robot.log.writeLog("DriveTrain", "Line Following", "Hard Right to Line,");
+        }
         // Turn right
         lPercentPower = -.8*baseSpeed;
         rPercentPower = .8*baseSpeed;
       } else {
+        if(Robot.log.getLogLevel() <= 2){
+          Robot.log.writeLog("DriveTrain", "Line Following", "Can Not Find Line,");
+        }
         // Drive forwards in hopes of recovering the line?
         lPercentPower = 0.3;
         rPercentPower = 0.3;
@@ -622,6 +712,9 @@ public class DriveTrain extends Subsystem {
   }
   
   public void quadrantLineFollowing() {
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("DriveTrain", "Line Following", "");
+    }
     quadrantLineFollowing(checkScoringQuadrant());
   }
 
@@ -632,7 +725,9 @@ public class DriveTrain extends Subsystem {
 
   @Override
   public void periodic() {
-
+    if(Robot.log.getLogLevel() == 1){
+      updateDriveLog();
+    }
     SmartDashboard.putNumber("RightEnc", getRightEncoderTicks());
     SmartDashboard.putNumber("LeftEnc", getLeftEncoderTicks());
 
