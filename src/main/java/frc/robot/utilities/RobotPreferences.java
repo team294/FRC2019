@@ -62,10 +62,11 @@ public class RobotPreferences {
 	public enum ElevatorPosition {bottom, wristSafe, hatchLow, hatchMid, hatchHigh, cargoShipCargo}
 
 	//Climb Target Angles (in degrees)
-	public final double climbStartingAngle = -135.0; //TODO Test when climb is built
-	public final double vacuumTargetAngle = 0.0; //TODO Test when climb is built
-	public final double robotLiftAngle = 60.0; //TODO Test when climb is built
-
+	//TODO Test and adjust angles when climb is built
+	public final double climbStartingAngle = 120.0;
+	public final double climbLiftAngle = 100.0;
+	public final double climbVacuumAngle = 0.0;
+	public final double climbMinAngle = -20.0;
 
 	/**
 	 * Creates a RobotPreferences object and reads the robot preferences.

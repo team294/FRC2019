@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DigitalInput;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -105,7 +104,7 @@ public class Climb extends Subsystem {
 
   /**
    * Sets angle of climb motors
-   * @param angle target angle in degrees
+   * @param angle target angle, in degrees (0 = horizontal behind robot, + = up, - = down)
    */
   public void setClimbPos(double angle) {
     if (Robot.robotPrefs.climbCalibrated) {
@@ -134,6 +133,15 @@ public class Climb extends Subsystem {
   public void zeroClimbEnc() {
     Robot.robotPrefs.setClimbCalibration(getClimbEncTicksRaw(), false);
   }
+
+  /**
+   * Calibrates the climb encoder, assuming we know the climber's current angle
+   * @param angle current angle that the arm is physically at, in degrees (0 = horizontal behind robot, + = up, - = down)
+   * @param saveToPrefs true = save the calibration to RobotPreferences
+   */
+  public void calibrateClimbEnc(double angle, boolean saveToPrefs) {
+    Robot.robotPrefs.setClimbCalibration(getClimbEncTicksRaw() - climbAngleToEncTicks(angle), saveToPrefs);
+  }  
 
   /**
    * Reads the climb encoder in raw ticks.
@@ -188,7 +196,7 @@ public class Climb extends Subsystem {
   /**
    * @return true = climb is at its calibration angle
    */
-  public boolean getClimbReferenceLimit() {
+  public boolean isClimbAtLimitSwitch() {
     return climbLimit.isRevLimitSwitchClosed();
   }
 
@@ -211,14 +219,14 @@ public class Climb extends Subsystem {
     SmartDashboard.putBoolean("Climb calibrated", Robot.robotPrefs.climbCalibrated);
     SmartDashboard.putNumber("Climb angle", getClimbAngle());
     SmartDashboard.putNumber("Climb enc raw", getClimbEncTicksRaw());
-    SmartDashboard.putBoolean("Climb limit switch", climbLimit.isRevLimitSwitchClosed());
+    SmartDashboard.putBoolean("Climb limit switch", isClimbAtLimitSwitch());
     
     if (!Robot.robotPrefs.climbCalibrated || Robot.beforeFirstEnable) {
-      if (climbLimit.isRevLimitSwitchClosed()) {
-        Robot.robotPrefs.setClimbCalibration(getClimbEncTicksRaw() - climbAngleToEncTicks(Robot.robotPrefs.climbStartingAngle), false);
+      if (isClimbAtLimitSwitch()) {
+        calibrateClimbEnc(Robot.robotPrefs.climbStartingAngle, false);
       }
     }
-    if (getClimbAngle() > Robot.robotPrefs.vacuumTargetAngle || getClimbAngle() < Robot.robotPrefs.climbStartingAngle) {
+    if (getClimbAngle() > Robot.robotPrefs.climbStartingAngle || getClimbAngle() < Robot.robotPrefs.climbMinAngle) {
       Robot.robotPrefs.climbCalibrated = false;
     }
     if (DriverStation.getInstance().isEnabled()) {
