@@ -29,12 +29,12 @@ public class ClimbLift extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {  
-    if (Robot.climb.getClimbAngle() >= (targetAng - 10)) {
-      Robot.climb.setClimbMotorPercentOutput(0.2);
+    if (Robot.climb.getClimbAngle() <= (targetAng + 10)) {
+      Robot.climb.setClimbMotorPercentOutput(-0.2);
       Robot.climb.enableVacuum(true);
     }
     else {
-      Robot.climb.setClimbMotorPercentOutput(0.5);
+      Robot.climb.setClimbMotorPercentOutput(-0.5);
     }
   }
 

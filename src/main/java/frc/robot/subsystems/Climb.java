@@ -89,10 +89,10 @@ public class Climb extends Subsystem {
 
   /**
    * Sets percent power of climb motors
-   * @param percentPower between -1.0 and 1.0
+   * @param percentPower between -1.0 (down full speed) and 1.0 (up full speed)
    */
   public void setClimbMotorPercentOutput(double percentOutput) {
-    climbMotor1.set(ControlMode.PercentOutput, percentOutput);
+    climbMotor1.set(ControlMode.PercentOutput, -percentOutput);
   }
 
   /**
