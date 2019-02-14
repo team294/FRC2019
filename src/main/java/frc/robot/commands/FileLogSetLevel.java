@@ -24,6 +24,7 @@ public class FileLogSetLevel extends Command {
   @Override
   protected void initialize() {
     Robot.log.setLogLevel(level);
+    Robot.log.writeLog("FileLog", "LevelSet", level + "");
   }
 
   // Called repeatedly when this Command is scheduled to run
