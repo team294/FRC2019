@@ -88,6 +88,15 @@ public class OI {
         left[i].whenReleased(new DriveWithJoysticks());
         right[i].whenPressed(new DriveWithVision(false, false)); // No line followers, no gyro
         right[i].whenReleased(new DriveWithJoysticks());
+      } else if (i == 4){
+        left[i].whenPressed(new LEDSetColor(0));
+        left[i].whenPressed(new DriveWithJoysticks());
+      } else if (i == 5){
+        left[i].whenPressed(new LEDBlink());
+        left[i].whenPressed(new DriveWithJoysticks());
+      } else if (i == 6){
+        left[i].whenPressed(new LEDSetColor(2));
+        left[i].whenPressed(new DriveWithJoysticks());
       }
     }
 

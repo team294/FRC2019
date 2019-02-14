@@ -7,7 +7,7 @@
 
 package frc.robot.subsystems;
 
-
+import java.util.Date;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
@@ -34,15 +34,17 @@ public class LedSet extends Subsystem {
 
     public void setRed(){
         ledRelay.set(Relay.Value.kReverse);
+        System.out.println("In set red");
     }
     
-    public void setBlue(){
+    public void setGreen(){
         ledRelay.set(Relay.Value.kForward);
     }
 
-    public void setPurple(){
+    public void setYellow(){
         ledRelay.set(Relay.Value.kOff);
     }
+    
 
   @Override
   public void initDefaultCommand() {

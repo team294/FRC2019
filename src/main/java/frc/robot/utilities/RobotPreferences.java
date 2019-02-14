@@ -91,18 +91,18 @@ public class RobotPreferences {
 		wristGearRatio = prefs.getDouble("wristGearRatio", 1.0);
 		wristCalZero = prefs.getDouble("wristCalZero", -9999);
 		wristCalibrated = (wristCalZero != -9999);
-		if(!wristCalibrated) {
+		/* if(!wristCalibrated) {
 			DriverStation.reportError("Error: Preferences missing from RoboRio for Wrist calibration.", false);
 			recordStickyFaults("Preferences-wristCalZero");
 			wristCalZero = 0;
-		}	
+		}	*/
 		climbCalZero = prefs.getDouble("climbCalZero", -9999);
 		climbCalibrated = (climbCalZero != -9999);
-		if(!climbCalibrated) {
+		/* if(!climbCalibrated) {
 			DriverStation.reportError("Error: Preferences missing from RoboRio for Climb calibration.", false);
 			recordStickyFaults("Preferences-climbCalZero");
 			climbCalZero = 0;
-		}	
+		} */	 
 	}
 
 	/**

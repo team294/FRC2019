@@ -5,50 +5,41 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-// TODO  change blue to green.  Red/Green is more useful  That will change purple also. check
-// TODO  add blink function 
-// TODO  add call to green when robot is in scoring position
-// TODO  add call to flash green when vision tracking is acquired
-
-
 package frc.robot.commands;
 
-import frc.robot.Robot;
-import frc.robot.subsystems.LedSet;
+import java.util.Date;
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
 
-public class LEDSetColor extends Command {
-
-  private double colorValue;
+public class LEDBlink extends Command {
   
-  public LEDSetColor(double myColorValue) {
-    // Use requires() here to declare subsystem dependencies
+  private long currentTime = 0;
+  private long initialTime = 0;
+  private Date date = new Date();
+
+  public LEDBlink() {
+    // Use requires() here to declare subsystem  
     // eg. requires(chassis);
     requires(Robot.leds);
-    colorValue = myColorValue;
   }
-
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    // 0 is purple; 1 is green; 2 is red; defaults to yellow
-    if(colorValue == 0){
-      Robot.leds.setYellow();
-    } else if(colorValue == 1){
-      Robot.leds.setGreen();
-    } else if (colorValue == 2){
-      Robot.leds.setRed();
-    } else {
-      Robot.leds.setOff();
-    }
+    initialTime = date.getTime();
     
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    System.out.println("yes it works.");
+    currentTime = date.getTime();
+        System.out.println("Current Time is: " + currentTime);
+        if (currentTime > initialTime + 800){
+            Robot.leds.setRed();
+        } else {
+            Robot.leds.setGreen();
+        }
   }
 
   // Make this return true when this Command no longer needs to run execute()
