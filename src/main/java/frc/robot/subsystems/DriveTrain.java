@@ -476,11 +476,11 @@ public class DriveTrain extends Subsystem {
     double finalAngle;
 
     if (quadrant != 0) {
-      System.out.println("Measured Angle: " + xVal);
+      SmartDashboard.putNumber("Measured Angle", xVal);
       double alphaT = xVal + getGyroRotation() - getTargetAngle(quadrant); // true angle for measuring x displacement
-      System.out.println("Adjusted (true) angle: " + alphaT);
+      SmartDashboard.putNumber("Adjusted (true) angle to target ", alphaT);
       double alphaA = Math.toDegrees(Math.atan(xOffsetAdjustmentFactor * Math.tan(Math.toRadians(alphaT)))); // Adjusted angle for x displacement
-      System.out.println("False displacement angle:" + alphaA);
+      SmartDashboard.putNumber("False displacement angle", alphaA);
       finalAngle = alphaA + getTargetAngle(quadrant) - getGyroRotation();
     } else {
       finalAngle = xVal;
