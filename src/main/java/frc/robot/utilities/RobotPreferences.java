@@ -48,7 +48,6 @@ public class RobotPreferences {
 	// Hatch piston positions
 	public enum HatchPistonPositions { grab, release, moving, unknown }
 
-
 	/*
 	Measurement variables
 	*/
@@ -63,9 +62,9 @@ public class RobotPreferences {
 	public enum ElevatorPosition {bottom, wristSafe, hatchLow, hatchMid, hatchHigh, cargoShipCargo}
 
 	//Climb Target Angles (in degrees)
-	public final double climbStartingAngle = -50.0; //TODO Test when climb is built
-	public final double vacuumTargetAngle = 180.0; //TODO Test when climb is built
-	public final double robotLiftAngle = 0.0; //TODO Test when climb is built
+	public final double climbStartingAngle = -135.0; //TODO Test when climb is built
+	public final double vacuumTargetAngle = 0.0; //TODO Test when climb is built
+	public final double robotLiftAngle = 60.0; //TODO Test when climb is built
 
 
 	/**
