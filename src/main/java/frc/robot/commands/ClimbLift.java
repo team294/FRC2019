@@ -41,7 +41,7 @@ public class ClimbLift extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Robot.climb.isVacuumAchieved();
+    return (Robot.climb.isVacuumAchieved() || (Robot.climb.getClimbAngle() <= targetAng - 5));
   }
 
   // Called once after isFinished returns true

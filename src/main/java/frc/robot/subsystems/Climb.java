@@ -46,8 +46,8 @@ public class Climb extends Subsystem {
   private double kD = 0;
   private double kFF = 0;
   private int kIz = 0;
-  private double kMaxOutput = 0.4;	   // TODO change to 1.0 after testing for max speed
-  private double kMinOutput = -0.4;    // TODO change to -1.0 after testing for max speed
+  private double kMaxOutput = 0.3;	   // TODO change to 1.0 after testing for max speed
+  private double kMinOutput = -0.3;    // TODO change to -1.0 after testing for max speed
 
   public Climb() {
     enableCompressor(true);
@@ -92,7 +92,13 @@ public class Climb extends Subsystem {
    * @param percentPower between -1.0 (down full speed) and 1.0 (up full speed)
    */
   public void setClimbMotorPercentOutput(double percentOutput) {
-    climbMotor1.set(ControlMode.PercentOutput, -percentOutput);
+    // Invert due to sign convention
+    percentOutput = -percentOutput;
+    // Cap to max power output allowed
+    percentOutput = (percentOutput>kMaxOutput ? kMaxOutput : percentOutput);
+    percentOutput = (percentOutput<kMinOutput ? kMinOutput : percentOutput);  
+
+    climbMotor1.set(ControlMode.PercentOutput, percentOutput);
   }
 
   /**
