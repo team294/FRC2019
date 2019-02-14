@@ -76,8 +76,8 @@ public class OI {
       right[i] = new JoystickButton(rightJoystick, i);
 
       if (i == 1) {
-        left[i].whenPressed(new Shift(false));
-        right[i].whenPressed(new Shift(true));
+        left[i].whenPressed(new Shift(true));
+        right[i].whenPressed(new Shift(false));
       } else if (i == 2) {
         left[i].whenPressed(new DriveAssist());
         right[i].whenPressed(new DriveAssist());

@@ -464,8 +464,8 @@ public class DriveTrain extends Subsystem {
    */
   public void driveToCrosshair(double quadrant) {
 
-    //double xOffsetAdjustmentFactor = 1.5; // Should be tested to be perfect; 2 seems to go out of frame too quickly. Must be greater than 1.
-    double xOffsetAdjustmentFactor = 2.0 + Robot.oi.leftJoystick.getY(); // xAdjustment based on distance
+    double xOffsetAdjustmentFactor = 1.5; // Should be tested to be perfect; 2 seems to go out of frame too quickly. Must be greater than 1.
+    //double xOffsetAdjustmentFactor = 2.0 + Robot.oi.leftJoystick.getY(); // xAdjustment based on distance
 
 
     //double minDistanceToTarget = 13;
@@ -489,7 +489,12 @@ public class DriveTrain extends Subsystem {
     double gainConstant = 1.0/30.0;
 
     //double lJoystickAdjust = Math.abs(Robot.oi.leftJoystick.getY());
-    double lJoystickAdjust = 0.7 * Math.sqrt(Math.abs(Robot.oi.leftJoystick.getY()));
+    double lJoystickRaw = Math.abs(Robot.oi.leftJoystick.getY());
+    //double lJoystickAdjust = 0.7 * Math.sqrt(lJoystickRaw);
+    //double lJoystickAdjust = 0.55 / (1 + Math.exp(-10 * (lJoystickRaw - 0.35)));
+    double lJoystickAdjust = 0.55 / (1 + Math.exp(-8 * (lJoystickRaw - 0.4))); // Slightly longer acceleration curve than previous sigmoid
+
+    SmartDashboard.putNumber("Vision Joystick Value", lJoystickAdjust);
     double lPercentOutput = lJoystickAdjust + (gainConstant * finalAngle); //xVal
     double rPercentOutput = lJoystickAdjust - (gainConstant * finalAngle); //xVal
 
@@ -497,12 +502,6 @@ public class DriveTrain extends Subsystem {
     if (lEncStopped && lPercentOutput != 0) rPercentOutput = 1.0; // The goal here is to slam the right side so that we still line up to the wall
     if (rEncStopped && rPercentOutput != 0) lPercentOutput = 1.0; 
     if (lPercentOutput == 1.0 || rPercentOutput == 1.0) System.out.println("STOP DETECTED, INITIATING EVASIVE MANEUVERS"); // TODO: test this because it doesn't look like it ever works
-
-    if (distance < 54) { // slow down when getting closer
-      lPercentOutput = Math.min(0.4, rPercentOutput * 0.7); // Doesn't account for negative speeds, but that shouldn't matter since it's backwards and we're only worried about forwards
-      rPercentOutput = Math.min(0.4, rPercentOutput * 0.7);
-
-    }
 
     if (area != 0) tankDrive(lPercentOutput, rPercentOutput); // area goes to zero before the front hits the wall
     else tankDrive(0, 0);
