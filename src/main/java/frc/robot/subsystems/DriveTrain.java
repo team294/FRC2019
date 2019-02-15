@@ -180,6 +180,8 @@ public class DriveTrain extends Subsystem {
 		rightMotor2.set(ControlMode.PercentOutput, powerPct);
   }
 
+  // Why does this exist? We have stop() for the same purpose. We don't need stopAllMotors()
+
   /**
 	 * Stops all motors.
 	 */
@@ -300,7 +302,7 @@ public class DriveTrain extends Subsystem {
 	}
 
 	/**
-	 * Gets the rotation of the gyro
+	 * Gets the rotation of the gyro and updates SmartDashboard with it
 	 * 
 	 * @return Current angle from -180 to 180 degrees
 	 */
@@ -405,7 +407,6 @@ public class DriveTrain extends Subsystem {
    * @return a quadrant (corresponding to the unit circle) with axes in between quadrants numbered as x.5 values.
    */
   public double checkScoringQuadrant() {
-    // TODO: Add some console prints or SD to check
     // assuming the same quadrants as a unit circle, with 0 being straight up (+y axis) and -180 or 180 being straight down (-y axis)
     double quadrant = 0.0;
     double gyroAngle = getGyroRotation();
@@ -428,7 +429,7 @@ public class DriveTrain extends Subsystem {
       quadrant = 2; // only negative angles left are Q2
     }
     
-    return quadrant; // Something must be wrong here, this result should never happen
+    return quadrant;
   }
 
   /**
@@ -638,7 +639,7 @@ public class DriveTrain extends Subsystem {
 
     if (DriverStation.getInstance().isEnabled()) {
       if ((++periodicCount) >= 10) {
-        updateDriveLog();
+        updateDriveLog(); // TODO: Check if logs are the source of the loop over run
         verifyMotors(RobotMap.leftMotor1PDP, RobotMap.leftMotor2PDP, RobotMap.leftMotor3PDP, true);
         verifyMotors(RobotMap.rightMotor1PDP, RobotMap.rightMotor2PDP, RobotMap.rightMotor3PDP, false);
         Robot.lineFollowing.logLineFollowers(); // This is the best place for this I guess -- only updates about every 0.5 second

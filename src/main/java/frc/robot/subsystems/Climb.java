@@ -187,6 +187,8 @@ public class Climb extends Subsystem {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
   }
+
+  
   @Override
   public void periodic() {
     if (!Robot.robotPrefs.climbCalibrated || Robot.beforeFirstEnable) {
@@ -199,9 +201,10 @@ public class Climb extends Subsystem {
     }
     if (DriverStation.getInstance().isEnabled()) {
       if ((++periodicCount) >= 25) {
-        updateClimbLog();
+        updateClimbLog(); // TODO: check if logs are the cause of the over run
         periodicCount=0;  
       }
     }
   }
+  
 }

@@ -247,8 +247,10 @@ public class Wrist extends Subsystem {
     // setDefaultCommand(new MySpecialCommand());
   }
 
+
+  
   @Override
-  public void periodic() {
+  public void periodic() { // The sheer amount of code here is probably pushing the loop over 20 ms. There are way too many call in this periodic function.
     if(getWristLowerLimit()){
       if (Robot.log.getLogLevel() <= 2) {
         Robot.log.writeLog("Wrist", "Encoder Calibrated Low", "old value," + Robot.robotPrefs.wristCalZero + ",new value," + getWristEncoderTicksRaw());
@@ -309,7 +311,7 @@ public class Wrist extends Subsystem {
 			if (negMoveCount > 3) {
 				encOK = (currEnc - encSnapShot) < -100;
 				if (!encOK) {
-					setDefaultCommand(new WristWithXBox());
+					setDefaultCommand(new WristWithXBox()); // If something is broken, it's just as easy for the codriver to press the joystick button in before moving it. There's no time savings by having this in periodic.
 					wristMode = false;
 				}
 				negMoveCount = 0;
@@ -324,4 +326,5 @@ public class Wrist extends Subsystem {
 			}
 		}
   }
+ 
 }

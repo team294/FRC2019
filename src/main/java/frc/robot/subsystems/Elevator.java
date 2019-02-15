@@ -235,8 +235,10 @@ public class Elevator extends Subsystem {
 		}
 	}
 
+	
 	@Override
-	public void periodic() {
+	public void periodic() { // TODO: This is a possible candidate for loop over run
+		
 		SmartDashboard.putBoolean("Elev encOK", elevEncOK);
 		SmartDashboard.putBoolean("Elev Mode", elevatorMode);
 		// SmartDashboard.putNumber("EncSnap", encSnapShot);
@@ -245,6 +247,7 @@ public class Elevator extends Subsystem {
 		// SmartDashboard.putNumber("Enc Tick", getElevatorEncTicks());
 		SmartDashboard.putBoolean("Elev Lower Limit", getElevatorLowerLimit());
 		SmartDashboard.putBoolean("Elev Upper Limit", getElevatorUpperLimit());
+		
 		
 		// Following code changes the frequency of variable logging depending
 		// on the set logLevel, Motors are checked every cycle regardless
@@ -328,5 +331,6 @@ public class Elevator extends Subsystem {
 				negMoveCount = 0;
 			}
 		}
+		
 	}
 }
