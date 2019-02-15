@@ -21,6 +21,11 @@ public class LedSet extends Subsystem {
 
   private final Relay ledRelay;
 
+  private long currentTime = System.currentTimeMillis();
+  private long initialTime = System.currentTimeMillis();
+  private boolean lightRed = false;
+  private int colorValue = 0;
+
     public LedSet(){
         ledRelay = new Relay(RobotMap.ledRelay);
     }
@@ -33,16 +38,45 @@ public class LedSet extends Subsystem {
     }
 
     public void setRed(){
-        ledRelay.set(Relay.Value.kReverse);
-        System.out.println("In set red");
+        ledRelay.set(Relay.Value.kForward);
     }
     
     public void setGreen(){
-        ledRelay.set(Relay.Value.kForward);
+        ledRelay.set(Relay.Value.kReverse);
     }
 
     public void setYellow(){
         ledRelay.set(Relay.Value.kOff);
+    }
+
+    
+
+    public void setBlink(int pColorValue){
+        currentTime = System.currentTimeMillis();
+
+        //switches the boolean between true and false every 1800 seconds
+        //resets the time after every switch
+        if(currentTime > initialTime + 800){
+          if(lightRed == true){
+            lightRed = false;
+          } else {
+            lightRed = true;
+          }
+          currentTime = System.currentTimeMillis();
+          initialTime = System.currentTimeMillis();
+        }
+
+        if(lightRed == true){
+          System.out.println("Setting off in blink");
+            setOff();
+        } else {
+          if(colorValue == 1){
+            setGreen();
+          } else {
+            setRed();
+          }
+          
+        }
     }
     
 

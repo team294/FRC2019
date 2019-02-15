@@ -92,10 +92,16 @@ public class OI {
         left[i].whenPressed(new LEDSetColor(0));
         left[i].whenPressed(new DriveWithJoysticks());
       } else if (i == 5){
-        left[i].whenPressed(new LEDBlink());
+        left[i].whenPressed(new LEDBlink(1));
         left[i].whenPressed(new DriveWithJoysticks());
       } else if (i == 6){
         left[i].whenPressed(new LEDSetColor(2));
+        left[i].whenPressed(new DriveWithJoysticks());
+      } else if (i == 11){
+        left[i].whenPressed(new LEDBlink(1));
+        left[i].whenPressed(new DriveWithJoysticks());
+      } else if (i == 10){
+        left[i].whenPressed(new LEDBlink(2));
         left[i].whenPressed(new DriveWithJoysticks());
       }
     }

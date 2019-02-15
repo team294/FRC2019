@@ -7,38 +7,59 @@
 
 package frc.robot.commands;
 
-import java.util.Date;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.subsystems.LedSet;
 
 public class LEDBlink extends Command {
   
   private long currentTime = 0;
   private long initialTime = 0;
-  private Date date = new Date();
+  private boolean lightRed = false;
+  private int colorValue = 0;
 
-  public LEDBlink() {
+  public LEDBlink(int pColorValue) {
     // Use requires() here to declare subsystem  
     // eg. requires(chassis);
     requires(Robot.leds);
+    colorValue = pColorValue;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    initialTime = date.getTime();
+    initialTime = System.currentTimeMillis();
+    lightRed = false;
     
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    currentTime = date.getTime();
-        System.out.println("Current Time is: " + currentTime);
-        if (currentTime > initialTime + 800){
-            Robot.leds.setRed();
+      currentTime = System.currentTimeMillis();
+
+        //switches the boolean between true and false every 1800 seconds
+        //resets the time after every switch
+        if(currentTime > initialTime + 800){
+          if(lightRed == true){
+            lightRed = false;
+          } else {
+            lightRed = true;
+          }
+          currentTime = System.currentTimeMillis();
+          initialTime = System.currentTimeMillis();
+        }
+
+        if(lightRed == true){
+          System.out.println("Setting off in blink");
+            Robot.leds.setOff();
         } else {
+          if(colorValue == 1){
             Robot.leds.setGreen();
+          } else {
+            Robot.leds.setRed();
+          }
+          
         }
   }
 
