@@ -15,11 +15,13 @@ import frc.robot.pathfinder.followers.DistanceFollower;
 
 public class DrivePathfinder extends Command {
   private DistanceFollower dfLeft, dfRight;
-  Trajectory trajCenter;
-  Trajectory trajRight;
-  Trajectory trajLeft;
-  boolean resetGyro;
-  String logString = "";
+  private Trajectory trajCenter;
+  private Trajectory trajRight;
+  private Trajectory trajLeft;
+  private boolean resetGyro;
+  private String logString = "";
+  private static boolean enablePathfinder = true; // true = all paths loaded and allow pathfinder to work,
+                                                  // false = a path did not load, stop pathfinder
 
   /**
    * Drive following a path
@@ -42,13 +44,24 @@ public class DrivePathfinder extends Command {
       trajRight = Pathfinder.readFromCSV(pathName + ".right.pf1.csv", driveDirection);
       trajLeft = Pathfinder.readFromCSV(pathName + ".left.pf1.csv", driveDirection);
     }
+
+    if (trajCenter == null || trajRight == null || trajLeft == null) {
+      enablePathfinder = false;
+      Robot.robotPrefs.recordStickyFaults("Pathfinder");
+      Robot.log.writeLogEcho("Pathfinder", "", "Missing path " + pathName);
+      return;
+    }
     
+    if (!enablePathfinder) {
+      return;
+    }
+
     // Create DistanceFollowers for the Trajectories and configure them
     dfLeft = new DistanceFollower(trajLeft);
     dfRight = new DistanceFollower(trajRight);
     dfLeft.configurePIDVA(0.2, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.0032); // P = 0.05
     dfRight.configurePIDVA(0.2, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.0032); // A = 0.0038
-    
+        
     for(int index = 0; index < 1000; index++) {
       logString += " ";
     }
@@ -58,18 +71,22 @@ public class DrivePathfinder extends Command {
     double l = 0, r = 0, turn = 0, gyro_heading = 0;
 
     logString = "time," + ((double)(System.currentTimeMillis() - dfLeft.getStartTimeMillis()) / 1000.0 +
-                           ",left power," + l + ",right power," + r + ",turn power," + turn +
-                           ",left distance," + Robot.driveTrain.getLeftEncoderInches() + ",right distance," + Robot.driveTrain.getRightEncoderInches()) +
-                           ",heading," + gyro_heading + ",left isFinished," + dfLeft.isFinished() +
-                           ",left segPos," + segLeft.position + ",left segVel," + segLeft.velocity + ",left segAccel," + segLeft.acceleration + 
-                           ",left segJerk," + segLeft.jerk + ",left segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segLeft.heading)) + ",left segdt," + segLeft.dt + ",right isFinished," + dfRight.isFinished() + 
-                           ",right segPos," + segRight.position + ",right segVel," + segRight.velocity + ",right segAccel," + segRight.acceleration + 
-                           ",right segJerk," + segRight.jerk + ",right segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segRight.heading)) + ",right segdt," + segRight.dt;
+                          ",left power," + l + ",right power," + r + ",turn power," + turn +
+                          ",left distance," + Robot.driveTrain.getLeftEncoderInches() + ",right distance," + Robot.driveTrain.getRightEncoderInches()) +
+                          ",heading," + gyro_heading + ",left isFinished," + dfLeft.isFinished() +
+                          ",left segPos," + segLeft.position + ",left segVel," + segLeft.velocity + ",left segAccel," + segLeft.acceleration + 
+                          ",left segJerk," + segLeft.jerk + ",left segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segLeft.heading)) + ",left segdt," + segLeft.dt + ",right isFinished," + dfRight.isFinished() + 
+                          ",right segPos," + segRight.position + ",right segVel," + segRight.velocity + ",right segAccel," + segRight.acceleration + 
+                          ",right segJerk," + segRight.jerk + ",right segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segRight.heading)) + ",right segdt," + segRight.dt;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    if (!enablePathfinder) {
+      return;
+    }
+      
     Robot.log.writeLog("Pathfinder", "initialize", "current time," + System.currentTimeMillis() + ",start time," + dfLeft.getStartTimeMillis());
     Robot.driveTrain.setDriveMode(true);
     Robot.driveTrain.zeroLeftEncoder();
@@ -87,41 +104,48 @@ public class DrivePathfinder extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-      double l = dfLeft.calculate(Robot.driveTrain.getLeftEncoderInches());
-      double r = dfRight.calculate(Robot.driveTrain.getRightEncoderInches());
+    if (!enablePathfinder) {
+      return;
+    }
 
-      Trajectory.Segment segLeft = dfLeft.getSegment();
-      Trajectory.Segment segRight = dfRight.getSegment();
+    double l = dfLeft.calculate(Robot.driveTrain.getLeftEncoderInches());
+    double r = dfRight.calculate(Robot.driveTrain.getRightEncoderInches());
 
-      double gyro_heading = Robot.driveTrain.getGyroRotation();    // Assuming the gyro is giving a value in degrees
-      double desired_heading = Pathfinder.r2d(dfLeft.getHeading());  // Should also be in degrees
+    Trajectory.Segment segLeft = dfLeft.getSegment();
+    Trajectory.Segment segRight = dfRight.getSegment();
 
-      double angleDifference = Pathfinder.boundHalfDegrees(desired_heading - gyro_heading);
-      double turn = 0.04 * angleDifference;
+    double gyro_heading = Robot.driveTrain.getGyroRotation();    // Assuming the gyro is giving a value in degrees
+    double desired_heading = Pathfinder.r2d(dfLeft.getHeading());  // Should also be in degrees
 
-      Robot.driveTrain.setLeftMotors(-(l + turn));
-      Robot.driveTrain.setRightMotors(-(r - turn));
-      
-      logString = "time," + ((double)(System.currentTimeMillis() - dfLeft.getStartTimeMillis()) / 1000.0 +
-                            ",left power," + l + ",right power," + r + ",turn power," + turn +
-                            ",left distance," + Robot.driveTrain.getLeftEncoderInches() + ",right distance," + Robot.driveTrain.getRightEncoderInches()) +
-                            ",heading," + gyro_heading + ",left isFinished," + dfLeft.isFinished() +
-                            ",left segPos," + segLeft.position + ",left segVel," + segLeft.velocity + ",left segAccel," + segLeft.acceleration + 
-                            ",left segJerk," + segLeft.jerk + ",left segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segLeft.heading)) + ",left segdt," + segLeft.dt + ",right isFinished," + dfRight.isFinished() + 
-                            ",right segPos," + segRight.position + ",right segVel," + segRight.velocity + ",right segAccel," + segRight.acceleration + 
-                            ",right segJerk," + segRight.jerk + ",right segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segRight.heading)) + ",right segdt," + segRight.dt;
-      Robot.log.writeLog("Pathfinder", "execute", logString);
+    double angleDifference = Pathfinder.boundHalfDegrees(desired_heading - gyro_heading);
+    double turn = 0.04 * angleDifference;
+
+    Robot.driveTrain.setLeftMotors(-(l + turn));
+    Robot.driveTrain.setRightMotors(-(r - turn));
+        
+    logString = "time," + ((double)(System.currentTimeMillis() - dfLeft.getStartTimeMillis()) / 1000.0 +
+                          ",left power," + l + ",right power," + r + ",turn power," + turn +
+                          ",left distance," + Robot.driveTrain.getLeftEncoderInches() + ",right distance," + Robot.driveTrain.getRightEncoderInches()) +
+                          ",heading," + gyro_heading + ",left isFinished," + dfLeft.isFinished() +
+                          ",left segPos," + segLeft.position + ",left segVel," + segLeft.velocity + ",left segAccel," + segLeft.acceleration + 
+                          ",left segJerk," + segLeft.jerk + ",left segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segLeft.heading)) + ",left segdt," + segLeft.dt + ",right isFinished," + dfRight.isFinished() + 
+                          ",right segPos," + segRight.position + ",right segVel," + segRight.velocity + ",right segAccel," + segRight.acceleration + 
+                          ",right segJerk," + segRight.jerk + ",right segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segRight.heading)) + ",right segdt," + segRight.dt;
+    Robot.log.writeLog("Pathfinder", "execute", logString);
    }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    if (dfLeft.isFinished()) {
+    if (!enablePathfinder) {
+      return true;
+    } else if (dfLeft.isFinished()) {
       Robot.driveTrain.setVoltageCompensation(false);
       Robot.driveTrain.setDriveMode(false);
       return true;
+    } else {
+      return false;
     }
-    return false;
   }
 
   
@@ -134,5 +158,6 @@ public class DrivePathfinder extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.driveTrain.tankDrive(0, 0);
   }
 }

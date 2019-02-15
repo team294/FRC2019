@@ -92,19 +92,18 @@ public class OI {
     }
 
     SmartDashboard.putData("LoadToRocketPT1", new DrivePathfinder("RLoadToRocketPT1-A", true, false));
-    SmartDashboard.putData("LoadToRocketPT2-2", new DrivePathfinder("RLoadToRocketPT2-A", false, true));
+    SmartDashboard.putData("LoadToRocketPT2", new DrivePathfinder("RLoadToRocketPT2-A", false, true));
     SmartDashboard.putData("LoadToRocket", new PathfinderLoadToRocket());
     // SmartDashboard.putData("Turn Gyro 90", new TurnGyro(90));
     // SmartDashboard.putData("LoadToRocket", new PathfinderLoadToRocket());
     // The conditional logic needs to go in the command itself. No logic can be done in OI since OI is constructed at the start and not run repeatedly
-    // SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true));
+    // SmartDashboard.putData("Crash Test", new DrivePathfinder("Test", true, true));
 
     xBoxA.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchLow));
     xBoxB.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchMid));
     xBoxY.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchHigh));
     xBoxX.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.cargoShipCargo));
     
-    SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true, true));
     SmartDashboard.putData("Turn To Target", new VisionTurnToTarget());
     SmartDashboard.putData("Drive on line", new DriveWithLineFollowing());
 
