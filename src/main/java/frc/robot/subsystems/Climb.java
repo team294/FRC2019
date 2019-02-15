@@ -191,14 +191,21 @@ public class Climb extends Subsystem {
   
   @Override
   public void periodic() {
+
+    // Checks if the climb is not calibrated and automatically calibrates it once the reverse limit switch is pressed
+    // If the climb isn't calibrated at the start of the match, does that mean we can't control the climber at all?
+
     if (!Robot.robotPrefs.climbCalibrated || Robot.beforeFirstEnable) {
       if (climbLimit.isRevLimitSwitchClosed()) {
         Robot.robotPrefs.setClimbCalibration(getClimbEncTicksRaw() - climbAngleToEncTicks(Robot.robotPrefs.climbStartingAngle), false);
       }
     }
+
+    // Un-calibrates the climb if the angle is outside of bounds... can we figure out a way to not put this in periodic()?
     if (getClimbAngle() > Robot.robotPrefs.vacuumTargetAngle || getClimbAngle() < Robot.robotPrefs.climbStartingAngle) {
       Robot.robotPrefs.climbCalibrated = false;
     }
+
     if (DriverStation.getInstance().isEnabled()) {
       if ((++periodicCount) >= 25) {
         updateClimbLog(); // TODO: check if logs are the cause of the over run

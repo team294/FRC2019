@@ -204,6 +204,7 @@ public class Elevator extends Subsystem {
 			Robot.robotPrefs.recordStickyFaults("Elevator");
 			motorFaultCount = 0;
 		}
+
 		if(amps1 > 8 && amps2 < 3) {
 			motorFaultCount++;
 		}
@@ -237,10 +238,12 @@ public class Elevator extends Subsystem {
 
 	
 	@Override
-	public void periodic() { // TODO: This is a possible candidate for loop over run
+	public void periodic() {
 		
+		// Can some of these be eliminated by competition? Do all of the SmartDashboard method calls need to be run *every* 20 ms?
+
 		SmartDashboard.putBoolean("Elev encOK", elevEncOK);
-		SmartDashboard.putBoolean("Elev Mode", elevatorMode);
+		SmartDashboard.putBoolean("Elev Mode", elevatorMode); // See below for note on this
 		// SmartDashboard.putNumber("EncSnap", encSnapShot);
 		// SmartDashboard.putNumber("Enc Now", currEnc);
 		SmartDashboard.putNumber("Elev Pos", getElevatorPos());
@@ -252,28 +255,31 @@ public class Elevator extends Subsystem {
 		// Following code changes the frequency of variable logging depending
 		// on the set logLevel, Motors are checked every cycle regardless
 		if (DriverStation.getInstance().isEnabled()) {
-			verifyMotors();
+
+			verifyMotors(); // What is the concrete use for this?
 			prevEnc = currEnc;
 			currEnc = getElevatorEncTicks();
 			if (currEnc == prevEnc) {
 				idleCount++;
-			 } else {
-				 idleCount = 0;
-			 }
-			if(Robot.log.getLogLevel() == 1) {
+			} else {
+				idleCount = 0;
+			}
+
+			/* Are we better off handling elevator position tracking in a command where the elevator is moving (like execute() in 
+			ElevatorSetToLevel) rather than in periodic every single cycle? That would simplify logic immensely and reduce most of the code below. */
+
+			if (Robot.log.getLogLevel() == 1) {
 				updateElevatorLog();
-			} 
-			else if(Robot.log.getLogLevel() == 2) {
+			} else if (Robot.log.getLogLevel() == 2) {
 				if (idleCount >= 25) {
-					if(periodicCount++ >= 10) {
+					if (periodicCount++ >= 10) {
 						updateElevatorLog();
 						periodicCount = 0;
 					}
 				} else {
 				updateElevatorLog();
 				}
-			} 
-			else if(Robot.log.getLogLevel() == 3) {
+			} else if (Robot.log.getLogLevel() == 3) {
 				if (idleCount >= 50) {
 					if ((periodicCount++) >= 25) {
 						updateElevatorLog();
@@ -286,50 +292,56 @@ public class Elevator extends Subsystem {
 					}
 				}
 			}
-		}
+		
+			// Following code checks whether the encoder is incrementing in the same direction as the 
+			// motor is moving and changes control modes based on state of encoder
 
-		// Following code checks whether the encoder is incrementing in the same direction as the 
-		// motor is moving and changes control modes based on state of encoder
+			/* All of the code below should be gotten rid of. It doesn't speed anything up in competition - the codriver still has to recognize that the encoders are broken
+			and the elevator is stalled. This is just more code to run in periodic() */
+			// TODO: Delete everything below this
 
-		if (elevatorMotor1.getMotorOutputVoltage() > 5) {
-			if (posMoveCount == 0) {
-				encSnapShot = getElevatorEncTicks();
-			}
-			negMoveCount = 0;
-			posMoveCount++;
-			if (posMoveCount > 3) {
-				elevEncOK = (currEnc - encSnapShot) > 100;
-				if (!elevEncOK) {
-					Robot.robotPrefs.recordStickyFaults("Elevator Enc");
-					setDefaultCommand(new ElevatorWithXBox());
-					elevatorMode = false;
-				}
-				posMoveCount = 0;
-			}
-		}
-		if (elevatorMotor1.getMotorOutputVoltage() < -5) {
-			if (negMoveCount == 0) {
-				encSnapShot = getElevatorEncTicks();
-			}
-			posMoveCount = 0;
-			negMoveCount++;
-			if (negMoveCount > 3) {
-				elevEncOK = (currEnc - encSnapShot) < -100;
-				if (!elevEncOK) {
-					Robot.robotPrefs.recordStickyFaults("Elevator Enc");
-					setDefaultCommand(new ElevatorWithXBox());
-					elevatorMode = false;
+			if (elevatorMotor1.getMotorOutputVoltage() > 5) {
+				if (posMoveCount == 0) {
+					encSnapShot = getElevatorEncTicks();
 				}
 				negMoveCount = 0;
-			}
-		}
-		if (!elevatorMode && elevEncOK) {
-			if (getElevatorLowerLimit() && getElevatorEncTicks() == 0) {
-				setDefaultCommand(null);
-				elevatorMode = true;
+				posMoveCount++;
+				if (posMoveCount > 3) {
+					elevEncOK = (currEnc - encSnapShot) > 100;
+					if (!elevEncOK) {
+						Robot.robotPrefs.recordStickyFaults("Elevator Enc");
+						setDefaultCommand(new ElevatorWithXBox()); 
+						// We can probably ignore the automatic switch to xbox. By the time the codriver realizes, they can just push the joystick button in anyways.
+						elevatorMode = false;
+					}
+					posMoveCount = 0;
+				}
+			} else if (elevatorMotor1.getMotorOutputVoltage() < -5) {
+				if (negMoveCount == 0) {
+					encSnapShot = getElevatorEncTicks();
+				}
 				posMoveCount = 0;
-				negMoveCount = 0;
+				negMoveCount++;
+				if (negMoveCount > 3) {
+					elevEncOK = (currEnc - encSnapShot) < -100;
+					if (!elevEncOK) {
+						Robot.robotPrefs.recordStickyFaults("Elevator Enc");
+						setDefaultCommand(new ElevatorWithXBox());
+						// We can probably ignore the automatic switch to xbox. By the time the codriver realizes, they can just push the joystick button in anyways.
+						elevatorMode = false;
+					}
+					negMoveCount = 0;
+				}
 			}
+			if (!elevatorMode && elevEncOK) {
+				if (getElevatorLowerLimit() && getElevatorEncTicks() == 0) {
+					setDefaultCommand(null);
+					elevatorMode = true;
+					posMoveCount = 0;
+					negMoveCount = 0;
+				}
+			}
+
 		}
 		
 	}

@@ -250,22 +250,23 @@ public class Wrist extends Subsystem {
 
   
   @Override
-  public void periodic() { // The sheer amount of code here is probably pushing the loop over 20 ms. There are way too many call in this periodic function.
-    if(getWristLowerLimit()){
+  public void periodic() {
+
+    if (getWristLowerLimit()){
       if (Robot.log.getLogLevel() <= 2) {
         Robot.log.writeLog("Wrist", "Encoder Calibrated Low", "old value," + Robot.robotPrefs.wristCalZero + ",new value," + getWristEncoderTicksRaw());
       }
       Robot.robotPrefs.setWristCalibration(getWristEncoderTicksRaw(), true);
-    }
-
-    if(getWristUpperLimit()){
+    } else if (getWristUpperLimit()){
       // TODO Add code to calibrate for wrist upper limit switch?
     }
 
-    if(Robot.log.getLogLevel() == 1) {
-      updateWristLog();
+    // Like with elevator, we should just track every 25 or 50 ms in periodic() and handle real-time tracking at the command level
+
+    if (Robot.log.getLogLevel() == 1) {
+      updateWristLog(); // Probably don't need this level of debugging even on max settings. Real-time should be in move command or method basis
     }
-    
+
     if (DriverStation.getInstance().isEnabled()) {
 			prevEnc = currEnc;
 			currEnc = getWristEncoderTicks();
@@ -283,6 +284,12 @@ public class Wrist extends Subsystem {
 				updateWristLog();
 			}
 		}
+
+    /* All of the code below should be gotten rid of for the same reason as the elevator stuff. It doesn't speed anything up in competition - 
+    the codriver still has to recognize that the encoders are broken and the elevator is stalled. This is just more code to run in periodic() */
+    
+    // TODO: Delete everything below this
+
 
 		// Following code checks whether the encoder is incrementing in the same direction as the 
     // motor is moving and changes control modes based on state of encoder
