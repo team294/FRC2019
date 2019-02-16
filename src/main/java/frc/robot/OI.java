@@ -84,22 +84,25 @@ public class OI {
         left[i].whenReleased(new DriveWithJoysticks());
         right[i].whenReleased(new DriveWithJoysticks());
       } else if (i == 3) {
-        left[i].whenPressed(new LEDSetColor(0));
+        left[i].whenPressed(new LEDSet(0));
         left[i].whenReleased(new DriveWithJoysticks());
       } else if (i == 4){
-        left[i].whenPressed(new LEDSetColor(1));
+        left[i].whenPressed(new LEDSet(1));
         left[i].whenPressed(new DriveWithJoysticks());
       } else if (i == 5){
-        left[i].whenPressed(new LEDSetColor(2));
+        left[i].whenPressed(new LEDSet(2));
         left[i].whenPressed(new DriveWithJoysticks());
       } else if (i == 6){
-        left[i].whenPressed(new LEDSetColor(3));
+        left[i].whenPressed(new LEDSet(3));
         left[i].whenPressed(new DriveWithJoysticks());
       } else if (i == 11){
-        left[i].whenPressed(new LEDBlink(1));
+        left[i].whenPressed(new LEDSet(1,true));
         left[i].whenPressed(new DriveWithJoysticks());
       } else if (i == 10){
-        left[i].whenPressed(new LEDBlink(2));
+        left[i].whenPressed(new LEDSet(2,true));
+        left[i].whenPressed(new DriveWithJoysticks());
+      } else if (i == 9){
+        left[i].whenPressed(new LEDSet(3,true));
         left[i].whenPressed(new DriveWithJoysticks());
       }
     }
@@ -146,10 +149,10 @@ public class OI {
     SmartDashboard.putData("Disc Release", new HatchSet(false));
     SmartDashboard.putString("Disc Position", "Null");
 
-    SmartDashboard.putData("LEDSet Purple", new LEDSetColor(0));
-    SmartDashboard.putData("LEDSet Red", new LEDSetColor(1));
-    SmartDashboard.putData("LEDSet Blue", new LEDSetColor(2));
-    SmartDashboard.putData("LEDSet Off", new LEDSetColor(3));
+    SmartDashboard.putData("LEDSet Purple", new LEDSet(0));
+    SmartDashboard.putData("LEDSet Red", new LEDSet(1));
+    SmartDashboard.putData("LEDSet Blue", new LEDSet(2));
+    SmartDashboard.putData("LEDSet Off", new LEDSet(3));
 
   }
 

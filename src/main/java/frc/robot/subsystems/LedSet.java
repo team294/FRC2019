@@ -60,37 +60,6 @@ public class LedSet extends Subsystem {
       System.out.println("Red");
     }
 
-    
-
-    public void setBlink(int pColorValue){
-        currentTime = System.currentTimeMillis();
-
-        //switches the boolean between true and false every 1800 seconds
-        //resets the time after every switch
-        if(currentTime > initialTime + 800){
-          if(lightRed == true){
-            lightRed = false;
-          } else {
-            lightRed = true;
-          }
-          currentTime = System.currentTimeMillis();
-          initialTime = System.currentTimeMillis();
-        }
-
-        if(lightRed == true){
-          System.out.println("Setting off in blink");
-            setOff();
-        } else {
-          if(colorValue == 1){
-            setGreen();
-          } else {
-            setBlue();
-          }
-          
-        }
-    }
-    
-
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
