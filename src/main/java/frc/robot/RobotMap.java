@@ -33,8 +33,8 @@ public class RobotMap {
   public static final int wristMotor = 60;      // Talon
 
   // Pneumatic Addresses
-  public static final int pnuematicShifterLow = 0;
-  public static final int pnuematicShifterHigh = 1;
+  //public static final int pnuematicShifterLow = 0;
+  public static final int pnuematicShifterHigh = 0;   // Changed to single ended  Default Low
   public static final int pneumaticHatchIn = 2;
   public static final int pneumaticHatchOut = 3;
  
