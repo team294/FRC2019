@@ -28,6 +28,9 @@ public class RobotPreferences {
 	public double climbCalZero; // Climb encoder position at 0 degrees in encoder ticks
 	public boolean climbCalibrated = false; // Default to arm being uncalibrated
 	 
+	/*
+	* Measurements
+	*/
 	// Wrist Angles (in degrees)
 	public static final double WristStowed = 107.36;
 	public static final double WristUp = 15.0;
