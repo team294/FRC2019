@@ -8,7 +8,10 @@
 package frc.robot.subsystems;
 
 import java.util.Date;
+
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
 
@@ -25,7 +28,9 @@ public class LedSet extends Subsystem {
   private long initialTime = System.currentTimeMillis();
   private boolean lightRed = false;
   private int colorValue = 0;
-
+  private final Solenoid PneumaticLedsBlue = new Solenoid(RobotMap.pneumaticLedsBlue);
+  private final Solenoid PneumaticLedsRed = new Solenoid(RobotMap.pneumaticLedsRed);
+  private final Solenoid PneumaticLedsGreen = new Solenoid(RobotMap.pneumaticLedsGreen);
     public LedSet(){
         ledRelay = new Relay(RobotMap.ledRelay);
     }
@@ -33,20 +38,26 @@ public class LedSet extends Subsystem {
     /**
      * turn on LED lights
      */
-    public void setOff(){
-        ledRelay.set(Relay.Value.kOn);
-    }
 
-    public void setRed(){
-        ledRelay.set(Relay.Value.kForward);
+    public void setBlue(){
+        PneumaticLedsBlue.set(true);
+        System.out.println("Blue");
     }
     
     public void setGreen(){
-        ledRelay.set(Relay.Value.kReverse);
+      
+      PneumaticLedsGreen.set(true);
+      System.out.println("Green");
     }
 
-    public void setYellow(){
-        ledRelay.set(Relay.Value.kOff);
+    public void setOff(){
+      PneumaticLedsGreen.set(false);
+      PneumaticLedsBlue.set(false);
+      PneumaticLedsRed.set(false);
+    }
+    public void setRed(){
+      PneumaticLedsRed.set(true);
+      System.out.println("Red");
     }
 
     
@@ -73,7 +84,7 @@ public class LedSet extends Subsystem {
           if(colorValue == 1){
             setGreen();
           } else {
-            setRed();
+            setBlue();
           }
           
         }

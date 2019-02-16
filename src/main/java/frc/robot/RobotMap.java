@@ -33,10 +33,13 @@ public class RobotMap {
   public static final int wristMotor = 60;      // Talon
 
   // Pneumatic Addresses
-  //public static final int pnuematicShifterLow = 0;
-  public static final int pnuematicShifterHigh = 0;   // Changed to single ended  Default Low
+  public static final int pnuematicShifterLow = 0;
+  public static final int pnuematicShifterHigh = 1;
   public static final int pneumaticHatchIn = 2;
   public static final int pneumaticHatchOut = 3;
+  public static final int pneumaticLedsBlue = 4;
+  public static final int pneumaticLedsRed = 5;
+  public static final int pneumaticLedsGreen = 6;
  
   //RoboRIO digital I/O Addresses
   public static final int lineFollowerLeft = 2;
@@ -47,6 +50,9 @@ public class RobotMap {
 
   // Relay Addresses
   public static final int ledRelay =0;
+  
+  //CAN Pneumatic Control Module
+  public static final int ledPCM = 0;
   
   // PDP Addresses
   public static final int leftMotor1PDP = 0; 

@@ -34,13 +34,18 @@ public class LEDSetColor extends Command {
   protected void initialize() {
     // 0 is purple; 1 is green; 2 is red; defaults to yellow
     if(colorValue == 0){
-      Robot.leds.setYellow();
+      Robot.leds.setOff();
     } else if(colorValue == 1){
+      Robot.leds.setOff();
       Robot.leds.setGreen();
     } else if (colorValue == 2){
-      Robot.leds.setRed();
-    } else {
       Robot.leds.setOff();
+      Robot.leds.setBlue();
+    } else if(colorValue == 3){
+      Robot.leds.setOff();
+      Robot.leds.setRed();
+    }else{
+
     }
     
   }
@@ -48,7 +53,7 @@ public class LEDSetColor extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    System.out.println("yes it works.");
+
   }
 
   // Make this return true when this Command no longer needs to run execute()

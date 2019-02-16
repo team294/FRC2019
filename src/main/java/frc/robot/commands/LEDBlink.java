@@ -57,7 +57,7 @@ public class LEDBlink extends Command {
           if(colorValue == 1){
             Robot.leds.setGreen();
           } else {
-            Robot.leds.setRed();
+            Robot.leds.setBlue();
           }
           
         }
