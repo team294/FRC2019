@@ -15,7 +15,7 @@ public class ClimbSequence extends CommandGroup {
    * Add your docs here.
    */
   public ClimbSequence() {
-    addSequential(new ClimbLift(Robot.robotPrefs.climbVacuumAngle));
+    addSequential(new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
     addSequential(new ClimbLiftRobot(Robot.robotPrefs.climbLiftAngle));
   }
 }

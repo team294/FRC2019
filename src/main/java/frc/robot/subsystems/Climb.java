@@ -34,11 +34,12 @@ public class Climb extends Subsystem {
   private final Compressor compressor = new Compressor(0);
   private final WPI_TalonSRX climbMotor1 = new WPI_TalonSRX(RobotMap.climbMotor1);
   private final WPI_TalonSRX climbMotor2 = new WPI_TalonSRX(RobotMap.climbMotor2);
-  private final BaseMotorController climbVacuum1 = new WPI_VictorSPX(RobotMap.climbVacuum1);
-  private final BaseMotorController climbVacuum2 = new WPI_VictorSPX(RobotMap.climbVacuum2);
+  private final BaseMotorController climbVacuum = new WPI_VictorSPX(RobotMap.climbVacuum1); //left Vacuum system
+  //private final BaseMotorController climbVacuum2 = new WPI_VictorSPX(RobotMap.climbVacuum2); //right Vacuum system
   //private final DigitalInput vacuumSwitch = new DigitalInput(RobotMap.vacuumSwitch);
   private final SensorCollection climbLimit;
   private int periodicCount = 0;
+  private int vacuumAchievedCount = 0; //increments every cycle vacuum is achieved
 
   private double rampRate = .005;
   private double kP = 1;
@@ -69,12 +70,12 @@ public class Climb extends Subsystem {
 
     climbMotor1.clearStickyFaults(0);
     climbMotor2.clearStickyFaults(0);
-    climbVacuum1.clearStickyFaults();
-    climbVacuum2.clearStickyFaults();
+    climbVacuum.clearStickyFaults();
+    //climbVacuum2.clearStickyFaults();
     climbMotor1.setNeutralMode(NeutralMode.Brake);
     climbMotor2.setNeutralMode(NeutralMode.Brake);
-    climbVacuum1.setNeutralMode(NeutralMode.Brake);
-    climbVacuum2.setNeutralMode(NeutralMode.Brake);
+    climbVacuum.setNeutralMode(NeutralMode.Brake);
+    //climbVacuum2.setNeutralMode(NeutralMode.Brake);
 
     Robot.robotPrefs.adjustClimbCalZero();
   }
@@ -125,12 +126,12 @@ public class Climb extends Subsystem {
    */
   public void enableVacuum(boolean turnOn) {
     if (turnOn) {
-      climbVacuum1.set(ControlMode.PercentOutput, 0.5);
-      climbVacuum2.set(ControlMode.PercentOutput, 0.5);
+      climbVacuum.set(ControlMode.PercentOutput, 0.5);
+      //climbVacuum2.set(ControlMode.PercentOutput, 0.5);
     }
     else {
-      climbVacuum1.set(ControlMode.PercentOutput, 0.0);
-      climbVacuum2.set(ControlMode.PercentOutput, 0.0);
+      climbVacuum.set(ControlMode.PercentOutput, 0.0);
+      //climbVacuum2.set(ControlMode.PercentOutput, 0.0);
     }
   }
 
@@ -195,9 +196,13 @@ public class Climb extends Subsystem {
    *          false = vacuum is not at the required pressure yet
    */
   public boolean isVacuumAchieved() {
-    //return vacuumSwitch.get();
-    return false; /* TODO change once current threshold is known
-                    Robot.pdp.getCurrent(RobotMap.climbMotor2PDP) == threshold || Robot.pdp.getCurrent(RobotMap.climbMotor1PDP) == threshold*/
+    if(Robot.pdp.getCurrent(RobotMap.climbVacuum1PDP) > Robot.robotPrefs.vacuumCurrentThreshold) {
+     //|| Robot.pdp.getCurrent(RobotMap.climbVacuum2PDP) > Robot.robotPrefs.rightVacuumCurrentThreshold) {
+       vacuumAchievedCount++;
+     } else {
+       vacuumAchievedCount = 0;
+     }
+    return vacuumAchievedCount >= 5; // TODO change once current threshold is known
   }
 
   /**
@@ -210,9 +215,9 @@ public class Climb extends Subsystem {
   public void updateClimbLog() {
     Robot.log.writeLog("Climb", "Update Variables", 
     "Volts1" + climbMotor2.getMotorOutputVoltage() + ",Volts2," + climbMotor1.getMotorOutputVoltage() + 
-    ",VacVolts1," + climbVacuum1.getMotorOutputVoltage() + ",VacVolts2," + climbVacuum2.getMotorOutputVoltage() +
+    ",VacVolts," + climbVacuum.getMotorOutputVoltage() + //",VacVolts2," + climbVacuum2.getMotorOutputVoltage() +
     ",Amps1," + Robot.pdp.getCurrent(RobotMap.climbMotor2PDP) + ",Amps2," + Robot.pdp.getCurrent(RobotMap.climbMotor1PDP) + 
-    ",VacAmps1," + Robot.pdp.getCurrent(RobotMap.climbVacuum1PDP) + ",VacAmps2," + Robot.pdp.getCurrent(RobotMap.climbVacuum2PDP) +
+    ",VacAmps," + Robot.pdp.getCurrent(RobotMap.climbVacuum1PDP) + //",VacAmps2," + Robot.pdp.getCurrent(RobotMap.climbVacuum2PDP) +
     ",Enc Ticks," + getClimbEncTicks() + ",Enc Ang," + getClimbAngle());
   }
   

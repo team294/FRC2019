@@ -10,11 +10,11 @@ package frc.robot.commands;
 import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class ClimbLift extends Command {
+public class ClimbMoveUntilVacuum extends Command {
   
   double targetAng;
   
-  public ClimbLift(double targetAng) {
+  public ClimbMoveUntilVacuum(double targetAng) {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.climb);
     this.targetAng = targetAng;
@@ -54,5 +54,6 @@ public class ClimbLift extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.climb.stopClimbMotor();
   }
 }
