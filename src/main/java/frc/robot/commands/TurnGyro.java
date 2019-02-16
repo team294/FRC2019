@@ -10,9 +10,9 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class DriveFakePathfinder extends Command {
+public class TurnGyro extends Command {
   double targetAngleA;
-  public DriveFakePathfinder(double angle) {
+  public TurnGyro(double angle) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     targetAngleA = angle;
