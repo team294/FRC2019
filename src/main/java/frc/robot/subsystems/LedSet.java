@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
+import frc.robot.commands.LEDSet;
 
 /**
  * Add your docs here.
@@ -22,7 +23,6 @@ public class LedSet extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  private final Relay ledRelay;
 
   private long currentTime = System.currentTimeMillis();
   private long initialTime = System.currentTimeMillis();
@@ -32,8 +32,8 @@ public class LedSet extends Subsystem {
   private final Solenoid PneumaticLedsRed = new Solenoid(RobotMap.pneumaticLedsRed);
   private final Solenoid PneumaticLedsGreen = new Solenoid(RobotMap.pneumaticLedsGreen);
     public LedSet(){
-        ledRelay = new Relay(RobotMap.ledRelay);
     }
+
 
     /**
      * turn on LED lights
@@ -64,6 +64,7 @@ public class LedSet extends Subsystem {
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
+    setDefaultCommand(new LEDSet(1, false));
   }
 
 }
