@@ -92,8 +92,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    Robot.lineFollowing.displayLineSensors();
-    Robot.driveTrain.getGyroRotation();
+    log.advanceRotation(); // This moves the log up by one every period tick, which other subsystems' periodic functions reference
+    lineFollowing.displayLineSensors();
+    driveTrain.getGyroRotation();
   }
 
   /**
@@ -105,12 +106,11 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     log.writeLogEcho("Robot", "Disabled", "");
     climb.enableCompressor(true);
-    Robot.vision.setCameraMode(1); // Moved because it doesn't need to be called every time
+    vision.setCameraMode(1);
     
-    // These functions are called on disabledInit and on teleopInit. No need to call them during periodic.
-    Robot.driveTrain.zeroGyroRotation(); 
-    Robot.driveTrain.zeroLeftEncoder();
-    Robot.driveTrain.zeroRightEncoder();
+    driveTrain.zeroGyroRotation(); 
+    driveTrain.zeroLeftEncoder();
+    driveTrain.zeroRightEncoder();
   }
 
   @Override
@@ -167,13 +167,13 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     climb.enableCompressor(true);
-    Robot.vision.setCameraMode(3);
+    vision.setCameraMode(3);
     log.writeLogEcho("Robot", "Teleop mode init", "");
     beforeFirstEnable = false; // set variable that robot has been enabled
     
-    Robot.driveTrain.zeroGyroRotation(); 
-    Robot.driveTrain.zeroLeftEncoder();
-    Robot.driveTrain.zeroRightEncoder();
+    driveTrain.zeroGyroRotation(); 
+    driveTrain.zeroLeftEncoder();
+    driveTrain.zeroRightEncoder();
     }
 
   /**
@@ -182,7 +182,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
-    Robot.vision.readCameraData(); // Don't think this is the issue of the loop time over run
+    vision.readCameraData(); // Don't think this is the issue of the loop time over run
 
     //SmartDashboard.putNumber("Target Distance", Robot.vision.distanceFromTarget()); // Distance isn't used for any segmentation
     SmartDashboard.putNumber("Target Quadrant", Robot.driveTrain.checkScoringQuadrant());

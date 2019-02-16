@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.ElevatorWithXBox;
+import frc.robot.utilities.FileLog;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -34,7 +35,6 @@ public class Elevator extends Subsystem {
 	private WPI_TalonSRX elevatorMotor2;
 	private SensorCollection elevatorLimits;
 
-	private int periodicCount = 0; // increments every cycle of periodic
 	private int posMoveCount = 0; // increments every cycle the elevator moves up
 	private int negMoveCount = 0; // increments every cycle the elevator moves down
 	private int motorFaultCount = 0; // increments every cycle the motor detects an issue
@@ -268,6 +268,7 @@ public class Elevator extends Subsystem {
 			/* Are we better off handling elevator position tracking in a command where the elevator is moving (like execute() in 
 			ElevatorSetToLevel) rather than in periodic every single cycle? That would simplify logic immensely and reduce most of the code below. */
 
+			/*
 			if (Robot.log.getLogLevel() == 1) {
 				updateElevatorLog();
 			} else if (Robot.log.getLogLevel() == 2) {
@@ -291,6 +292,10 @@ public class Elevator extends Subsystem {
 						periodicCount = 0;
 					}
 				}
+			}*/
+
+			if (Robot.log.getLogRotation() == FileLog.ELEVATOR_CYCLE) {
+				updateElevatorLog();
 			}
 		
 			// Following code checks whether the encoder is incrementing in the same direction as the 

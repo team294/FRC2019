@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveWithJoysticks;
+import frc.robot.utilities.FileLog;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.I2C;
 
@@ -47,8 +48,6 @@ public class DriveTrain extends Subsystem {
   // Gyro variables
   private AHRS ahrs;
   private double yawZero = 0;
-  
-  private int periodicCount = 0;
   
   private double leftMotorFaultCount; // increments every cycle the left side detects an issue
   private double rightMotorFaultCount; // increments every cycle the right side detects an issue
@@ -529,8 +528,6 @@ public class DriveTrain extends Subsystem {
   }
 
   public void driveOnLine() {
-    // TODO: Integrate quadrants and gyro to correct based on which side of the line we're on
-    // TODO: Explain to Rob why that is needed
     double lPercentPower = 0;
     double rPercentPower = 0;
     double baseSpeed = 0.7; // Lowered from 1 for new line sensors further out, untested
@@ -638,12 +635,11 @@ public class DriveTrain extends Subsystem {
     SmartDashboard.putNumber("LeftEnc", getLeftEncoderTicks());
 
     if (DriverStation.getInstance().isEnabled()) {
-      if ((++periodicCount) >= 10) {
-        updateDriveLog(); // TODO: Check if logs are the source of the loop over run
+      if (Robot.log.getLogRotation() == FileLog.WRIST_CYCLE) { // Log on int 1
+        updateDriveLog();
         verifyMotors(RobotMap.leftMotor1PDP, RobotMap.leftMotor2PDP, RobotMap.leftMotor3PDP, true);
         verifyMotors(RobotMap.rightMotor1PDP, RobotMap.rightMotor2PDP, RobotMap.rightMotor3PDP, false);
-        Robot.lineFollowing.logLineFollowers(); // This is the best place for this I guess -- only updates about every 0.5 second
-        periodicCount=0;  
+        Robot.lineFollowing.logLineFollowers();
       }
     }
   }

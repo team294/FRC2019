@@ -203,15 +203,15 @@ public class RobotPreferences {
 	 * @param subsystem String name of subsystem in which a problem exists
 	 */
 	public void recordStickyFaults(String subsystem) {
-		if(problemSubsystem.indexOf(subsystem) == -1) {
-			if(problemSubsystem.length() != 0) {
+		if (problemSubsystem.indexOf(subsystem) == -1) {
+			if (problemSubsystem.length() != 0) {
 				problemSubsystem = problemSubsystem + ", ";
 			}
 			problemSubsystem = problemSubsystem + subsystem;
 			putString("problemSubsystem", problemSubsystem);
 			Robot.log.writeLogEcho(subsystem, "Sticky Fault Logged", "");
 		}
-		if(!problemExists) {
+		if (!problemExists) {
 			problemExists = true;
 			putBoolean("problemExists", problemExists);
 		}

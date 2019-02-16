@@ -24,6 +24,7 @@ import com.ctre.phoenix.motorcontrol.SensorCollection;
 
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.utilities.FileLog;
 
 /**
  * Add your docs here.
@@ -38,7 +39,6 @@ public class Climb extends Subsystem {
   private final WPI_TalonSRX climbVacuum2 = new WPI_TalonSRX(RobotMap.climbVacuum2);
   private final DigitalInput vacuumSwitch = new DigitalInput(RobotMap.vacuumSwitch);
   private final SensorCollection climbLimit;
-  private int periodicCount = 0;
   public double climbStartingPoint = 0;
 
   public double rampRate = .005; 
@@ -207,9 +207,8 @@ public class Climb extends Subsystem {
     }
 
     if (DriverStation.getInstance().isEnabled()) {
-      if ((++periodicCount) >= 25) {
-        updateClimbLog(); // TODO: check if logs are the cause of the over run
-        periodicCount=0;  
+      if (Robot.log.getLogRotation() == FileLog.CLIMB_CYCLE) {
+        updateClimbLog(); 
       }
     }
   }
