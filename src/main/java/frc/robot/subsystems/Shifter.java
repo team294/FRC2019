@@ -7,8 +7,8 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.Solenoid;
+//import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
 
@@ -20,8 +20,7 @@ public class Shifter extends Subsystem {
   // here. Call these from Commands.
 
   //private final Solenoid shifter = new Solenoid(RobotMap.pnuematicShifter);
-  private final DoubleSolenoid shifter = new DoubleSolenoid(RobotMap.pnuematicShifterLow, RobotMap.pnuematicShifterHigh);
-  
+  private final Solenoid shifter = new Solenoid(RobotMap.pnuematicShifterHigh);
 
   public Shifter() {
 		super();
@@ -34,8 +33,8 @@ public class Shifter extends Subsystem {
 	 *            true for high gear, false for low gear
 	 */
 	public void setShift(boolean high) {
-		// shifter.set(high ? false : true); // shifter true is high gear, shifter false is low gear
-		shifter.set(high ? Value.kForward : Value.kReverse); // shifter Forward is high gear, shifter Reverse is low gear
+		shifter.set(high ? false : true); // shifter true is high gear, shifter false is low gear
+		//shifter.set(high ? Value.kForward : Value.kReverse); // shifter Forward is high gear, shifter Reverse is low gear
 	}
 
 	/**
@@ -44,8 +43,8 @@ public class Shifter extends Subsystem {
 	 * @return true for high gear, false for low
 	 */
 	public boolean isShifterInHighGear() {
-		// return shifter.get() == false; // get() false is high gear, get() true is low gear
-		return shifter.get() == Value.kForward; // get() Forward is high gear, get() Reverse is low gear
+		return shifter.get() == false; // get() false is high gear, get() true is low gear
+		//return shifter.get() == Value.kForward; // get() Forward is high gear, get() Reverse is low gear
 	}
 
   @Override

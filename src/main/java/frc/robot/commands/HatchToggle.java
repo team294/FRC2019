@@ -9,18 +9,23 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.utilities.RobotPreferences.HatchPistonPositions;
 
-public class ElevatorManualZero extends Command {
-  public ElevatorManualZero() {
+public class HatchToggle extends Command {
+  public HatchToggle() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.elevator);
+    requires(Robot.hatch);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.elevator.zeroElevatorEnc();
+    if (Robot.hatch.getHatchPiston() == HatchPistonPositions.release || Robot.hatch.getHatchPiston() == HatchPistonPositions.unknown) {
+      Robot.hatch.setHatchPiston(HatchPistonPositions.grab);
+    } else {
+      Robot.hatch.setHatchPiston(HatchPistonPositions.release);
+    }
   }
 
   // Called repeatedly when this Command is scheduled to run

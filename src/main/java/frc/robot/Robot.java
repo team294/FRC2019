@@ -9,11 +9,13 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Utilities.*;
+import frc.robot.utilities.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
@@ -28,13 +30,18 @@ public class Robot extends TimedRobot {
   public static DriveTrain driveTrain;
   public static Shifter shifter;
   public static Elevator elevator;
+  public static Wrist wrist;
+  public static Cargo cargo;
+  public static Hatch hatch;
   public static VisionData vision;
   public static LineFollowing lineFollowing;
+  public static Climb climb;
   public static OI oi;
   public static FileLog log;
   public static RobotPreferences robotPrefs;
   public static PowerDistributionPanel pdp;
 
+  public static boolean beforeFirstEnable = true; // true before the first time the robot is enabled after loading code
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
@@ -44,19 +51,33 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    // Create file log first, so any other class constructors can log data
     log = new FileLog("1");
+
+    // Read robot preference next, so any other class constructros can use preferences 
     robotPrefs = new RobotPreferences();
+    robotPrefs.doExist();   // Sets up Robot Preferences if they do not exist : ie you just replaced RoboRio
+    
+    beforeFirstEnable = true; // set variable that robot has not been enabled
+
+    // Create all subsystems and utilities
     driveTrain = new DriveTrain();
     shifter = new Shifter();
     elevator = new Elevator();
+    wrist = new Wrist();
+    cargo = new Cargo();
+    hatch = new Hatch();
     vision = new VisionData();
     lineFollowing = new LineFollowing();
+    climb = new Climb();
     pdp = new PowerDistributionPanel();
+    // pdp.clearStickyFaults();
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
-    robotPrefs.doExist();   // Sets up Robot Preferences if they do not exist : ie you just replaced RoboRio
+    climb.enableCompressor(true);
 
+    // Create OI last, so all subsystem and utility objects are created before OI
     oi = new OI();
   }
 
@@ -71,6 +92,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    Robot.lineFollowing.displayLineSensors();
     Robot.driveTrain.getGyroRotation();
     // Robot.log.writeLog("Robot", "periodic", "current time," + System.currentTimeMillis());
   }
@@ -83,7 +105,8 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     log.writeLogEcho("Robot", "Disabled", "");
-  }  
+    climb.enableCompressor(true);
+  }
 
   @Override
   public void disabledPeriodic() {
@@ -112,6 +135,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     log.writeLogEcho("Robot", "Autonomous mode init", "");
+    beforeFirstEnable = false; // set variable that robot has been enabled
     m_autonomousCommand = m_chooser.getSelected();
 
     /*
@@ -120,6 +144,8 @@ public class Robot extends TimedRobot {
      * = new MyAutoCommand(); break; case "Default Auto": default:
      * autonomousCommand = new ExampleCommand(); break; }
      */
+
+    climb.enableCompressor(true);
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -141,12 +167,12 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    climb.enableCompressor(true);
     log.writeLogEcho("Robot", "Teleop mode init", "");
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    beforeFirstEnable = false; // set variable that robot has been enabled
+    //if (m_autonomousCommand != null) {
+     // m_autonomousCommand.cancel();
     }
-    log.writeLogEcho("Robot", "Teleop mode init", "");
-  }
 
   /**
    * This function is called periodically during operator control.
@@ -155,6 +181,10 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
     Robot.vision.readCameraData();
+    SmartDashboard.putBoolean("Is Line Present?", lineFollowing.isLinePresent());
+    SmartDashboard.putNumber("Target Distance", Robot.vision.distanceFromTarget());
+    SmartDashboard.putNumber("Target Quadrant", Robot.driveTrain.checkScoringQuadrant());
+    //SmartDashboard.putBoolean("Vision Assistance Available", vision.areaFromCamera != 0);
   }
 
   /**

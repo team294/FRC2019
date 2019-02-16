@@ -10,44 +10,48 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ElevatorEncoderZero extends Command {
+public class WristRaiseUntilStowed extends Command {
   /**
-   * Drives the elevator down slowly until it reaches
-   * the lower limit switch, zeros the encoder
+   * Raises wrist slowly until the upper limit switch is triggered.
+   * Stops wrist when the upper limit switch is triggered (stowed position).
    */
-  public ElevatorEncoderZero() {
+  public WristRaiseUntilStowed() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.elevator);
+    requires(Robot.wrist);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.wrist.setWristMotorPercentOutput(0.1);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.elevator.setElevatorMotorPercentOutput(-0.2);
+    Robot.wrist.setWristMotorPercentOutput(0.1);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Robot.elevator.getElevatorLowerLimit();
-  }
+    if (Robot.wrist.getWristUpperLimit()) {
+      return true;
+    } else {
+      return false;
+    }  }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.elevator.stopElevator();
-    Robot.elevator.checkAndZeroElevatorEnc();
+    Robot.wrist.stopWrist();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.wrist.stopWrist();
   }
 }

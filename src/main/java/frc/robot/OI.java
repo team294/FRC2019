@@ -11,12 +11,12 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.Trigger;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
 
 import frc.robot.commands.*;
-import frc.robot.subsystems.Elevator;
+import frc.robot.triggers.*;
+import frc.robot.utilities.RobotPreferences;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -63,6 +63,7 @@ public class OI {
   private Button xBoxX = new JoystickButton(xBoxController, 3);
   private Button xBoxY = new JoystickButton(xBoxController, 4);
 
+  private Trigger trigWristElevEncoder = new WristEncoderCheck();
 
   public OI() {
     Button[] left = new Button[12];
@@ -77,60 +78,60 @@ public class OI {
       if (i == 1) {
         left[i].whenPressed(new Shift(false));
         right[i].whenPressed(new Shift(true));
+      } else if (i == 2) {
+        left[i].whenPressed(new DriveAssist());
+        right[i].whenPressed(new DriveAssist());
+        left[i].whenReleased(new DriveWithJoysticks());
+        right[i].whenReleased(new DriveWithJoysticks());
       } else if (i == 3) {
-        left[i].whenPressed(new DriveWithVision());
+        left[i].whenPressed(new DriveWithVision(false, true)); // No line followers, but gyro correction
         left[i].whenReleased(new DriveWithJoysticks());
-        right[i].whenPressed(new VisionTurnToTarget());
-        right[i].whenReleased(new DriveWithJoysticks()); // We should be able to cancel the commands when the button is released. This is a better method to do that.
-      } else if (i == 6){
-        left[i].whenPressed(new DriveFakePathfinder(0));
-        left[i].whenReleased(new DriveWithJoysticks());
-      }
-      else if (i == 7 ){
-        left[i].whenPressed(new DriveFakePathfinder(-118.75));
-        left[i].whenReleased(new DriveWithJoysticks());
-      } else if (i == 8){
-        left[i].whenPressed(new DriveFakePathfinder(118.75));
-        left[i].whenReleased(new DriveWithJoysticks());
-      } else if (i == 9){
-        left[i].whenPressed(new DriveFakePathfinder(-90));
-        left[i].whenReleased(new DriveWithJoysticks());
-      } else if (i == 10){
-        left[i].whenPressed(new DriveFakePathfinder(90));
-        left[i].whenReleased(new DriveWithJoysticks());
-      } else if (i == 11){
-        left[i].whenPressed(new DriveFakePathfinder(-61.25));
-        left[i].whenReleased(new DriveWithJoysticks());
-      } else if (i == 4){
-        left[i].whenPressed(new DriveFakePathfinder(61.25));
-        left[i].whenReleased(new DriveWithJoysticks());
+        right[i].whenPressed(new DriveWithVision(false, false)); // No line followers, no gyro
+        right[i].whenReleased(new DriveWithJoysticks());
       }
     }
 
-    SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true));
+    SmartDashboard.putData("LoadToRocketPT1", new DrivePathfinder("RLoadToRocketPT1-A", true, false));
+    SmartDashboard.putData("LoadToRocketPT2-2", new DrivePathfinder("RLoadToRocketPT2-A", false, true));
+    SmartDashboard.putData("LoadToRocket", new PathfinderLoadToRocket());
+    // SmartDashboard.putData("Turn Gyro 90", new TurnGyro(90));
+    // SmartDashboard.putData("LoadToRocket", new PathfinderLoadToRocket());
+    // The conditional logic needs to go in the command itself. No logic can be done in OI since OI is constructed at the start and not run repeatedly
+    // SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true));
 
-    /*
-    if (isBall) { //TODO uncomment when the sensor that tells whether we have a ball or hatch is added
-    xBoxA.whenActive(new ElevatorMoveToLevel(RobotMap.HatchLow + RobotMap.ballOffset));
-    xBoxB.whenActive(new ElevatorMoveToLevel(RobotMap.HatchMid + RobotMap.ballOffset));
-    xBoxY.whenActive(new ElevatorMoveToLevel(RobotMap.HatchHigh + RobotMap.ballOffset));
-    xBoxX.whenActive(new ElevatorMoveToLevel(RobotMap.CargoShipCargo));
-    }
-    else {
-      */
-    xBoxA.whenActive(new ElevatorMoveToLevel(RobotMap.HatchLow));
-    xBoxB.whenActive(new ElevatorMoveToLevel(RobotMap.HatchMid));
-    xBoxY.whenActive(new ElevatorMoveToLevel(RobotMap.HatchHigh));
-    xBoxX.whenActive(new ElevatorMoveToLevel(RobotMap.CargoShipCargo));
+    xBoxA.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchLow));
+    xBoxB.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchMid));
+    xBoxY.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchHigh));
+    xBoxX.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.cargoShipCargo));
     
+    SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true, true));
     SmartDashboard.putData("Turn To Target", new VisionTurnToTarget());
-    SmartDashboard.putData("Move Elevator to Zero", new ElevatorMoveToLevel(0.0));
+    SmartDashboard.putData("Drive on line", new DriveWithLineFollowing());
+
+    // Buttons for controlling the elevator
+    SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
+    SmartDashboard.putData("Elevator Down", new ElevatorLower()); // For testing limit switch and encoder
+    SmartDashboard.putData("Move Elevator to Bottom", new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.bottom)); // Move to encoder's zero position
+    SmartDashboard.putData("Move Elevator to WristSafe", new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.wristSafe)); // Move to encoder's zero position
     SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero());
-    SmartDashboard.putData("Manual Zero Elev Enc (w/out Limit)", new ElevatorManualZero());
-    SmartDashboard.putData("Turn To Line", new TurnToLine());
+
+    // Buttons for controlling FileLogging
+    SmartDashboard.putData("Log 1 InitialTesting", new FileLogSetLevel(1));
+    SmartDashboard.putData("Log 2 PitTesting", new FileLogSetLevel(2));
+    SmartDashboard.putData("Log 3 Competition", new FileLogSetLevel(3));
+    Robot.log.setLogLevel(3);   // Also puts log level indicator on ShuffleBoard
+
     SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
     SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
     SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));
+    
+    SmartDashboard.putData("Clear Sticky Faults", new ClearStickyFaults());
+    Robot.robotPrefs.showStickyFaults();
+    //SmartDashboard.putData("Turn To Line", new TurnToLine());
+    SmartDashboard.putData("Disc Toggle", new HatchToggle());
+    SmartDashboard.putData("Disc Grab", new HatchSet(true));
+    SmartDashboard.putData("Disc Release", new HatchSet(false));
+    SmartDashboard.putString("Disc Position", "Null");
   }
 
   public void setDriveDirection(boolean direction) {

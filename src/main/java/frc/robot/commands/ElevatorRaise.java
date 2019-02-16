@@ -8,29 +8,27 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
-public class TurnToLine extends Command {
-  public TurnToLine() {
+public class ElevatorRaise extends Command {
+  /**
+   * Slowly moves elevator UP
+   */
+  public ElevatorRaise() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.driveTrain);
+    requires(Robot.elevator);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.driveTrain.turnToLine();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.driveTrain.turnToLine();
-    SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
-    SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
-    SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));
+    Robot.elevator.setElevatorMotorPercentOutput(0.2);
   }
 
   // Make this return true when this Command no longer needs to run execute()

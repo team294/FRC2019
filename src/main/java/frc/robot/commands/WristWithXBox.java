@@ -7,18 +7,19 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ElevatorEncoderZero extends Command {
-  /**
-   * Drives the elevator down slowly until it reaches
-   * the lower limit switch, zeros the encoder
-   */
-  public ElevatorEncoderZero() {
+public class WristWithXBox extends Command {
+
+  /** 
+   * Drive wrist manually using left joystick on the xBox controller
+  */
+  public WristWithXBox() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.elevator);
+    requires(Robot.wrist);
   }
 
   // Called just before this Command runs the first time
@@ -29,20 +30,20 @@ public class ElevatorEncoderZero extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.elevator.setElevatorMotorPercentOutput(-0.2);
+    double value = -Robot.oi.xBoxController.getY(Hand.kLeft);
+    Robot.wrist.setWristMotorPercentOutput(value);
+    Robot.wrist.zeroWristEncoder();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Robot.elevator.getElevatorLowerLimit();
+    return false;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.elevator.stopElevator();
-    Robot.elevator.checkAndZeroElevatorEnc();
   }
 
   // Called when another command which requires one or more of the same
