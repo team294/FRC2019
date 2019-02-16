@@ -94,6 +94,7 @@ public class OI {
     SmartDashboard.putData("LoadToRocketPT1", new DrivePathfinder("RLoadToRocketPT1-A", true, false));
     SmartDashboard.putData("LoadToRocketPT2", new DrivePathfinder("RLoadToRocketPT2-A", false, true));
     SmartDashboard.putData("LoadToRocket", new PathfinderLoadToRocket());
+    SmartDashboard.putData("Straight", new DrivePathfinder("Straight", true, true));
     // SmartDashboard.putData("Turn Gyro 90", new TurnGyro(90));
     // SmartDashboard.putData("LoadToRocket", new PathfinderLoadToRocket());
     // The conditional logic needs to go in the command itself. No logic can be done in OI since OI is constructed at the start and not run repeatedly

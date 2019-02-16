@@ -59,8 +59,8 @@ public class DrivePathfinder extends Command {
     // Create DistanceFollowers for the Trajectories and configure them
     dfLeft = new DistanceFollower(trajLeft);
     dfRight = new DistanceFollower(trajRight);
-    dfLeft.configurePIDVA(0.2, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.0032); // P = 0.05
-    dfRight.configurePIDVA(0.2, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.0032); // A = 0.0038
+    dfLeft.configurePIDVA(0.07, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.003); // P = 0.07, A = 0.003
+    dfRight.configurePIDVA(0.07, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.003); // 
         
     for(int index = 0; index < 1000; index++) {
       logString += " ";
@@ -118,7 +118,8 @@ public class DrivePathfinder extends Command {
     double desired_heading = Pathfinder.r2d(dfLeft.getHeading());  // Should also be in degrees
 
     double angleDifference = Pathfinder.boundHalfDegrees(desired_heading - gyro_heading);
-    double turn = 0.04 * angleDifference;
+    double turn = 0.04 * angleDifference *0.0;
+    //TODO Check gyro, then check turning robot, then add P turn for angle (remove *0.0 in row above)
 
     Robot.driveTrain.setLeftMotors(-(l + turn));
     Robot.driveTrain.setRightMotors(-(r - turn));

@@ -41,12 +41,12 @@ public class RobotPreferences {
 	// TODO Update with 2019 base
   	// Robot Pathfinder data
   	public final double encoderTicksPerRevolution = 4096.0;
-  	public final double wheelbase_in = 25.0;       // wheelbase, in inches
+  	public final double wheelbase_in = 23.0;       // wheelbase, in inches
   	// public static final double wheel_diameter_in = 6.0;   // wheel diamater, in inches  -- DO NOT USE -- Use wheelCircumference preference instead
   	// public static final double wheel_distance_in_per_tick = wheel_diameter_in*Math.PI/encoderTicksPerRevolution;  // wheel distance traveled per encoder tick, in inches
-  	public final double max_velocity_ips = 200.0;   // max robot velocity, in inches per second
-  	public final double max_acceleration_ipsps = 130.0;  // max robot acceleration, in inches per second per second
-  	public final double max_jerk_ipspsps = 2400.0;  // max robot jerk, in inches per second per second per second
+  	public final double max_velocity_ips = 100.0;   // max robot velocity, in inches per second
+  	public final double max_acceleration_ipsps = 200.0;  // max robot acceleration, in inches per second per second
+  	public final double max_jerk_ipspsps = 1200.0;  // max robot jerk, in inches per second per second per second
 
 	// Hatch piston positions
 	public enum HatchPistonPositions { grab, release, moving, unknown }
