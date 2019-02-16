@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 public class ClimbEncoderCalibrate extends Command {
+  /**
+   * Drives climb motor up slowly, calibrates encoder when climb reaches the limit switch
+   */
   public ClimbEncoderCalibrate() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
@@ -25,7 +28,7 @@ public class ClimbEncoderCalibrate extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.climb.setClimbMotorPercentOutput(-0.2);
+    Robot.climb.setClimbMotorPercentOutput(0.1);
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -38,6 +41,7 @@ public class ClimbEncoderCalibrate extends Command {
   @Override
   protected void end() {
     Robot.climb.stopClimbMotor();
+    Robot.climb.calibrateClimbEnc(Robot.robotPrefs.climbStartingAngle, false);
     // TODO Something to set climb reference angle
   }
 
@@ -45,5 +49,6 @@ public class ClimbEncoderCalibrate extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.climb.stopClimbMotor();
   }
 }

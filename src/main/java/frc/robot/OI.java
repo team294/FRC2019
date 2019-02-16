@@ -117,10 +117,10 @@ public class OI {
     SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero());
 
     // Buttons for controlling the climber
-    SmartDashboard.putData("Climb Up", new ClimbArmSetSpeed(0.2));  // For testing
-    SmartDashboard.putData("Climb Down", new ClimbArmSetSpeed(-0.2));  // For testing
+    SmartDashboard.putData("Climb Up", new ClimbArmSetPercentOutput(0.2));  // For testing
+    SmartDashboard.putData("Climb Down", new ClimbArmSetPercentOutput(-0.2));  // For testing
     SmartDashboard.putData("Climb move to 0", new ClimbArmSetAngle(0));  // For testing
-    SmartDashboard.putData("Climb move to 50", new ClimbArmSetAngle(0));  // For testing
+    SmartDashboard.putData("Climb move to 50", new ClimbArmSetAngle(50));  // For testing
     SmartDashboard.putData("Climb Set Reference", new ClimbEncoderCalibrate());
 
     // Buttons for controlling FileLogging

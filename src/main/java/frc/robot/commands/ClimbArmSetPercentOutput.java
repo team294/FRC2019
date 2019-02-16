@@ -10,7 +10,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ClimbArmSetSpeed extends Command {
+public class ClimbArmSetPercentOutput extends Command {
   private double percentOutput;
 
   /**
@@ -18,7 +18,7 @@ public class ClimbArmSetSpeed extends Command {
    * If the command is interrupted, then the motors stop.
    * @param percentPower between -1.0 and 1.0
    */
-  public ClimbArmSetSpeed(double percentOutput) {
+  public ClimbArmSetPercentOutput(double percentOutput) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.climb);

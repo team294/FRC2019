@@ -52,21 +52,20 @@ public class Climb extends Subsystem {
   public Climb() {
     enableCompressor(true);
 
-    climbMotor2.follow(climbMotor1);
-    climbMotor2.setInverted(true);
-    climbMotor1.set(ControlMode.PercentOutput, 0);
-    climbMotor1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
-    climbMotor1.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
-    climbLimit = climbMotor1.getSensorCollection();
+    climbMotor1.follow(climbMotor2);
+    climbMotor2.set(ControlMode.PercentOutput, 0);
+    climbMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
+    climbMotor2.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+    climbLimit = climbMotor2.getSensorCollection();
 
-    climbMotor1.config_kP(0, kP);
-    climbMotor1.config_kI(0, kI);
-    climbMotor1.config_kD(0, kD);
-    climbMotor1.config_kF(0, kFF);
-    climbMotor1.config_IntegralZone(0, kIz);
-    climbMotor1.configClosedloopRamp(rampRate);
-    climbMotor1.configPeakOutputForward(kMaxOutput);
-    climbMotor1.configPeakOutputReverse(kMinOutput);
+    climbMotor2.config_kP(0, kP);
+    climbMotor2.config_kI(0, kI);
+    climbMotor2.config_kD(0, kD);
+    climbMotor2.config_kF(0, kFF);
+    climbMotor2.config_IntegralZone(0, kIz);
+    climbMotor2.configClosedloopRamp(rampRate);
+    climbMotor2.configPeakOutputForward(kMaxOutput);
+    climbMotor2.configPeakOutputReverse(kMinOutput);
 
     climbMotor1.clearStickyFaults(0);
     climbMotor2.clearStickyFaults(0);
@@ -76,6 +75,8 @@ public class Climb extends Subsystem {
     climbMotor2.setNeutralMode(NeutralMode.Brake);
     climbVacuum1.setNeutralMode(NeutralMode.Brake);
     climbVacuum2.setNeutralMode(NeutralMode.Brake);
+
+    Robot.robotPrefs.adjustClimbCalZero();
   }
 
   /**
@@ -98,7 +99,7 @@ public class Climb extends Subsystem {
     percentOutput = (percentOutput>kMaxOutput ? kMaxOutput : percentOutput);
     percentOutput = (percentOutput<kMinOutput ? kMinOutput : percentOutput);  
 
-    climbMotor1.set(ControlMode.PercentOutput, percentOutput);
+    climbMotor2.set(ControlMode.PercentOutput, percentOutput);
   }
 
   /**
@@ -114,7 +115,7 @@ public class Climb extends Subsystem {
    */
   public void setClimbPos(double angle) {
     if (Robot.robotPrefs.climbCalibrated) {
-      climbMotor1.set(ControlMode.Position, climbAngleToEncTicks(angle) + Robot.robotPrefs.climbCalZero);
+      climbMotor2.set(ControlMode.Position, climbAngleToEncTicks(angle) + Robot.robotPrefs.climbCalZero);
     }
   }
 
@@ -154,7 +155,7 @@ public class Climb extends Subsystem {
    * @return raw climb encoder value, in ticks
    */
   public double getClimbEncTicksRaw() {
-    return climbMotor1.getSelectedSensorPosition(0);
+    return climbMotor2.getSelectedSensorPosition(0);
   }
 
   /**
@@ -196,23 +197,23 @@ public class Climb extends Subsystem {
   public boolean isVacuumAchieved() {
     //return vacuumSwitch.get();
     return false; /* TODO change once current threshold is known
-                    Robot.pdp.getCurrent(RobotMap.climbMotor1PDP) == threshold || Robot.pdp.getCurrent(RobotMap.climbMotor2PDP) == threshold*/
+                    Robot.pdp.getCurrent(RobotMap.climbMotor2PDP) == threshold || Robot.pdp.getCurrent(RobotMap.climbMotor1PDP) == threshold*/
   }
 
   /**
    * @return true = climb is at its calibration angle
    */
   public boolean isClimbAtLimitSwitch() {
-    return climbLimit.isRevLimitSwitchClosed();
+    return climbLimit.isFwdLimitSwitchClosed();
   }
 
   public void updateClimbLog() {
     Robot.log.writeLog("Climb", "Update Variables", 
-    "Climb1 Volts" + climbMotor1.getMotorOutputVoltage() + ",Climb2 Volts," + climbMotor2.getMotorOutputVoltage() + 
-    ",ClimbVac1 Volts," + climbVacuum1.getMotorOutputVoltage() + ",ClimbVac2 Volts," + climbVacuum2.getMotorOutputVoltage() +
-    ",Climb1 Amps," + Robot.pdp.getCurrent(RobotMap.climbMotor1PDP) + ",Climb2 Amps," + Robot.pdp.getCurrent(RobotMap.climbMotor2PDP) + 
-    ",ClimbVac1 Amps," + Robot.pdp.getCurrent(RobotMap.climbVacuum1PDP) + ",ClimbVac2 Amps," + Robot.pdp.getCurrent(RobotMap.climbVacuum2PDP) +
-    ",ClimbEnc Ticks," + getClimbEncTicks());
+    "Volts1" + climbMotor2.getMotorOutputVoltage() + ",Volts2," + climbMotor1.getMotorOutputVoltage() + 
+    ",VacVolts1," + climbVacuum1.getMotorOutputVoltage() + ",VacVolts2," + climbVacuum2.getMotorOutputVoltage() +
+    ",Amps1," + Robot.pdp.getCurrent(RobotMap.climbMotor2PDP) + ",Amps2," + Robot.pdp.getCurrent(RobotMap.climbMotor1PDP) + 
+    ",VacAmps1," + Robot.pdp.getCurrent(RobotMap.climbVacuum1PDP) + ",VacAmps2," + Robot.pdp.getCurrent(RobotMap.climbVacuum2PDP) +
+    ",Enc Ticks," + getClimbEncTicks() + ",Enc Ang," + getClimbAngle());
   }
   
   @Override
@@ -223,9 +224,9 @@ public class Climb extends Subsystem {
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("Climb calibrated", Robot.robotPrefs.climbCalibrated);
+    SmartDashboard.putBoolean("Climb limit switch", isClimbAtLimitSwitch());
     SmartDashboard.putNumber("Climb angle", getClimbAngle());
     SmartDashboard.putNumber("Climb enc raw", getClimbEncTicksRaw());
-    SmartDashboard.putBoolean("Climb limit switch", isClimbAtLimitSwitch());
     
     if (!Robot.robotPrefs.climbCalibrated || Robot.beforeFirstEnable) {
       if (isClimbAtLimitSwitch()) {

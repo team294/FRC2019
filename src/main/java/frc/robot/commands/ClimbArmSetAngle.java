@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 public class ClimbArmSetAngle extends Command {
+  
   private double angle;
 
   public ClimbArmSetAngle(double angle) {

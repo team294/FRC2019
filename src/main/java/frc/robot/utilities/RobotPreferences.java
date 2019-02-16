@@ -121,9 +121,25 @@ public class RobotPreferences {
 	public void setClimbCalibration(double climbCalZero, boolean writeCalToPreferences) {
 		this.climbCalZero = climbCalZero;
 		climbCalibrated = true;
+		Robot.climb.stopClimbMotor();
 		Robot.log.writeLog("Preferences", "Calibrate climber", "zero value," + climbCalZero);
 		if (writeCalToPreferences) {
 			prefs.putDouble("climbCalZero", climbCalZero);
+		}
+	}
+
+	/**
+	 * If the angle is reading >/< max/min angle, add/subtract 360 degrees to the climbCalZero accordingly
+	 * Note: when the motor is not inverted, upon booting up, an absolute encoder reads a value between 0 and 4096
+	 * 		 when the motor is inverted, upon booting up, an absolute encoder reads a value between 0 and -4096
+	 * Note: absolute encoder values don't wrap during operation
+	 */
+	public void adjustClimbCalZero() {
+		if(Robot.climb.getClimbAngle() < climbMinAngle) {
+			climbCalZero -= encoderTicksPerRevolution;
+		}
+		else if(Robot.climb.getClimbAngle() > climbStartingAngle) {
+			climbCalZero += encoderTicksPerRevolution;
 		}
 	}
 
