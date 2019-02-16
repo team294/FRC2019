@@ -81,7 +81,7 @@ public class Climb extends Subsystem {
   /**
    * Enables or disables the compressor
    * @param turnOn true = turn on compressor when pressure drops
-   * 				false = keep compressor off
+   * 				      false = keep compressor off
    */
   public void enableCompressor(boolean turnOn) {
 	  compressor.setClosedLoopControl(turnOn);
@@ -233,7 +233,7 @@ public class Climb extends Subsystem {
       }
     }
     if (getClimbAngle() > Robot.robotPrefs.climbStartingAngle || getClimbAngle() < Robot.robotPrefs.climbMinAngle) {
-      Robot.robotPrefs.climbCalibrated = false;
+      Robot.robotPrefs.setClimbUncalibrated();
     }
     if (DriverStation.getInstance().isEnabled()) {
       if ((++periodicCount) >= 10) {

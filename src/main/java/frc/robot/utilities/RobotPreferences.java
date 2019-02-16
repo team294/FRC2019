@@ -26,7 +26,7 @@ public class RobotPreferences {
 	public double wristCalZero;   		// Wrist encoder position at O degrees, in encoder ticks (i.e. the calibration factor)
 	public boolean wristCalibrated = false;     // Default to wrist being uncalibrated.  Calibrate from robot preferences or "Calibrate Wrist Zero" button on dashboard
 	public double climbCalZero; // Climb encoder position at 0 degrees in encoder ticks
-	public boolean climbCalibrated = false; // Default to arm being uncalibrated
+	public boolean climbCalibrated = false; // Default to climb being uncalibrated
 	 
 	/*
 	* Measurements
@@ -125,6 +125,14 @@ public class RobotPreferences {
 		if (writeCalToPreferences) {
 			prefs.putDouble("climbCalZero", climbCalZero);
 		}
+	}
+
+	/**
+	 * Stops climb motor and sets climbCalibrated to false
+	 */
+	public void setClimbUncalibrated() {
+		Robot.climb.stopClimbMotor();
+		climbCalibrated = false;
 	}
 
 	/* Sets up Preferences if they haven't been set as when changing RoboRios or first start-up.
