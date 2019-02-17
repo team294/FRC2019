@@ -206,8 +206,8 @@ public class Climb extends Subsystem {
       Robot.robotPrefs.climbCalibrated = false;
     }
 
-    if (DriverStation.getInstance().isEnabled()) {
-      if (Robot.log.getLogRotation() == FileLog.CLIMB_CYCLE) {
+    if (Robot.log.getLogRotation() == FileLog.CLIMB_CYCLE) {
+      if (DriverStation.getInstance().isEnabled()) {
         updateClimbLog(); 
       }
     }

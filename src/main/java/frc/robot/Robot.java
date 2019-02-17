@@ -93,8 +93,10 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     log.advanceLogRotation(); // This moves the log up by one every period tick, which other subsystems' periodic functions reference
-    lineFollowing.displayLineSensors();
-    driveTrain.getGyroRotation();
+
+    if (Robot.log.getLogRotation() == FileLog.DRIVE_CYCLE) {
+      lineFollowing.displayLineSensors();
+    }
   }
 
   /**

@@ -243,12 +243,10 @@ public class DriveTrain extends Subsystem {
     return (inches / Robot.robotPrefs.wheelCircumference) * Robot.robotPrefs.encoderTicksPerRevolution;
   }
   public double getLeftEncoderInches() {
-    SmartDashboard.putNumber("Left Inches", encoderTicksToInches(getLeftEncoderTicks()));
     return encoderTicksToInches(getLeftEncoderTicks());
   }
 
   public double getRightEncoderInches() {
-    SmartDashboard.putNumber("Right Inches", encoderTicksToInches(getRightEncoderTicks()));
     return encoderTicksToInches(getRightEncoderTicks());
   }
   
@@ -301,7 +299,7 @@ public class DriveTrain extends Subsystem {
 	}
 
 	/**
-	 * Gets the rotation of the gyro and updates SmartDashboard with it
+	 * Gets the rotation of the gyro
 	 * 
 	 * @return Current angle from -180 to 180 degrees
 	 */
@@ -312,7 +310,6 @@ public class DriveTrain extends Subsystem {
 		angle = angle % 360;
 		angle = (angle <= -180) ? (angle + 360) : angle;
     angle = (angle > 180) ? (angle - 360) : angle;
-    SmartDashboard.putNumber("Gyro Angle", angle);
 		return angle;
   }
 
@@ -631,11 +628,12 @@ public class DriveTrain extends Subsystem {
   @Override
   public void periodic() {
 
-    SmartDashboard.putNumber("RightEnc", getRightEncoderTicks());
-    SmartDashboard.putNumber("LeftEnc", getLeftEncoderTicks());
+    if (Robot.log.getLogRotation() == FileLog.DRIVE_CYCLE) {
+      SmartDashboard.putNumber("Drive Left Inches", getLeftEncoderInches());
+      SmartDashboard.putNumber("Drive Right Inches", getRightEncoderInches());
+      SmartDashboard.putNumber("Gyro Angle", getGyroRotation());
 
-    if (DriverStation.getInstance().isEnabled()) {
-      if (Robot.log.getLogRotation() == FileLog.DRIVE_CYCLE) {
+      if (DriverStation.getInstance().isEnabled()) {
         updateDriveLog();
         Robot.lineFollowing.logLineFollowers();
 

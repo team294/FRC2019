@@ -240,17 +240,18 @@ public class Elevator extends Subsystem {
 	@Override
 	public void periodic() {
 		
-		// Can some of these be eliminated by competition? Do all of the SmartDashboard method calls need to be run *every* 20 ms?
+		// Can some of these be eliminated by competition?
 
-		SmartDashboard.putBoolean("Elev encOK", elevEncOK);
-		SmartDashboard.putBoolean("Elev Mode", elevatorMode); // See below for note on this
-		// SmartDashboard.putNumber("EncSnap", encSnapShot);
-		// SmartDashboard.putNumber("Enc Now", currEnc);
-		SmartDashboard.putNumber("Elev Pos", getElevatorPos());
-		// SmartDashboard.putNumber("Enc Tick", getElevatorEncTicks());
-		SmartDashboard.putBoolean("Elev Lower Limit", getElevatorLowerLimit());
-		SmartDashboard.putBoolean("Elev Upper Limit", getElevatorUpperLimit());
-		
+		if (Robot.log.getLogRotation() == FileLog.ELEVATOR_CYCLE) {
+			SmartDashboard.putBoolean("Elev encOK", elevEncOK);
+			SmartDashboard.putBoolean("Elev Mode", elevatorMode); // See below for note on this
+			// SmartDashboard.putNumber("EncSnap", encSnapShot);
+			// SmartDashboard.putNumber("Enc Now", currEnc);
+			SmartDashboard.putNumber("Elev Pos", getElevatorPos());
+			// SmartDashboard.putNumber("Enc Tick", getElevatorEncTicks());
+			SmartDashboard.putBoolean("Elev Lower Limit", getElevatorLowerLimit());
+			SmartDashboard.putBoolean("Elev Upper Limit", getElevatorUpperLimit());
+		}		
 		
 		// Following code changes the frequency of variable logging depending
 		// on the set logLevel, Motors are checked every cycle regardless
