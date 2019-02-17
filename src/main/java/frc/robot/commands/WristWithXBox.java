@@ -33,6 +33,7 @@ public class WristWithXBox extends Command {
     double value = -Robot.oi.xBoxController.getY(Hand.kLeft);
     Robot.wrist.setWristMotorPercentOutput(value);
     Robot.wrist.zeroWristEncoder();
+    Robot.wrist.updateWristLog();
   }
 
   // Make this return true when this Command no longer needs to run execute()

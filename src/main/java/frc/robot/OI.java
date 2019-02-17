@@ -106,7 +106,6 @@ public class OI {
     xBoxX.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.cargoShipCargo));
     
     SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true, true));
-    SmartDashboard.putData("Turn To Target", new VisionTurnToTarget());
     SmartDashboard.putData("Drive on line", new DriveWithLineFollowing());
 
     // Buttons for controlling the elevator

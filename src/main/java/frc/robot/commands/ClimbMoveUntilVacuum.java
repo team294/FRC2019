@@ -24,15 +24,16 @@ public class ClimbMoveUntilVacuum extends Command {
   @Override
   protected void initialize() {
     Robot.climb.enableCompressor(false);
+    Robot.climb.setClimbPos(targetAng);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
-  protected void execute() {  
-    Robot.climb.setClimbPos(targetAng);
+  protected void execute() {
     if (Robot.climb.getClimbAngle() <= (targetAng + 10)) {
       Robot.climb.enableVacuum(true);
     }
+    Robot.climb.updateClimbLog();
   }
 
   // Make this return true when this Command no longer needs to run execute()

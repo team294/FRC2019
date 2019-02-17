@@ -24,6 +24,7 @@ import com.ctre.phoenix.motorcontrol.SensorCollection;
 
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.utilities.FileLog;
 
 /**
  * Add your docs here.
@@ -38,7 +39,6 @@ public class Climb extends Subsystem {
   //private final BaseMotorController climbVacuum2 = new WPI_VictorSPX(RobotMap.climbVacuum2); //right Vacuum system
   //private final DigitalInput vacuumSwitch = new DigitalInput(RobotMap.vacuumSwitch);
   private final SensorCollection climbLimit;
-  private int periodicCount = 0;
   private int vacuumAchievedCount = 0; //increments every cycle vacuum is achieved
   private boolean vacuumOn = false; //true is on, false is off
 
@@ -251,26 +251,33 @@ public class Climb extends Subsystem {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
   }
+
+  
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("Climb calibrated", Robot.robotPrefs.climbCalibrated);
-    SmartDashboard.putBoolean("Climb limit switch", isClimbAtLimitSwitch());
-    SmartDashboard.putNumber("Climb angle", getClimbAngle());
-    SmartDashboard.putNumber("Climb enc raw", getClimbEncTicksRaw());
+    if (Robot.log.getLogRotation() == FileLog.CLIMB_CYCLE) {
+      SmartDashboard.putBoolean("Climb calibrated", Robot.robotPrefs.climbCalibrated);
+      SmartDashboard.putBoolean("Climb limit switch", isClimbAtLimitSwitch());
+      SmartDashboard.putNumber("Climb angle", getClimbAngle());
+      SmartDashboard.putNumber("Climb enc raw", getClimbEncTicksRaw());
+
+      if (DriverStation.getInstance().isEnabled()) {
+        updateClimbLog(); 
+      }
+    }
     
+    // Checks if the climb is not calibrated and automatically calibrates it once the reverse limit switch is pressed
+    // If the climb isn't calibrated at the start of the match, does that mean we can't control the climber at all?
     if (!Robot.robotPrefs.climbCalibrated ) {  // || Robot.beforeFirstEnable
       if (isClimbAtLimitSwitch()) {
         calibrateClimbEnc(Robot.robotPrefs.climbStartingAngle, false);
       }
     }
+    
+    // Un-calibrates the climb if the angle is outside of bounds... can we figure out a way to not put this in periodic()?
     if (getClimbAngle() > Robot.robotPrefs.climbStartingAngle || getClimbAngle() < Robot.robotPrefs.climbMinAngle) {
       Robot.robotPrefs.setClimbUncalibrated();
     }
-    if (DriverStation.getInstance().isEnabled()) {
-      if ((++periodicCount) >= 10) {
-        updateClimbLog();
-        periodicCount=0;  
-      }
-    }
   }
+  
 }
