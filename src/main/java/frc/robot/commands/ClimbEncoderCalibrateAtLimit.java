@@ -10,11 +10,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ClimbEncoderCalibrate extends Command {
+public class ClimbEncoderCalibrateAtLimit extends Command {
   /**
    * Drives climb motor up slowly, calibrates encoder when climb reaches the limit switch
    */
-  public ClimbEncoderCalibrate() {
+  public ClimbEncoderCalibrateAtLimit() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.climb);

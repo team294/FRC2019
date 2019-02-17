@@ -120,8 +120,13 @@ public class OI {
     SmartDashboard.putData("Climb Up", new ClimbArmSetPercentOutput(0.2));  // For testing
     SmartDashboard.putData("Climb Down", new ClimbArmSetPercentOutput(-0.2));  // For testing
     SmartDashboard.putData("Climb move to 0", new ClimbArmSetAngle(0));  // For testing
-    SmartDashboard.putData("Climb move to 50", new ClimbArmSetAngle(50));  // For testing
-    SmartDashboard.putData("Climb Set Reference", new ClimbEncoderCalibrate());
+    SmartDashboard.putData("Climb move to start", new ClimbArmSetAngle(Robot.robotPrefs.climbStartingAngle + 5));  // For testing
+    SmartDashboard.putData("Climb Vacuum On", new ClimbVacuumTurnOn(true));
+    SmartDashboard.putData("Climb Vacuum Off", new ClimbVacuumTurnOn(false));
+    SmartDashboard.putData("Climb Set Reference", new ClimbEncoderCalibrateAtLimit());
+    SmartDashboard.putData("ClimbMoveUntilVacuum", new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
+    SmartDashboard.putData("ClimbLiftRobot", new ClimbLiftRobot(Robot.robotPrefs.climbLiftAngle));
+    SmartDashboard.putData("ClimbSequnce", new ClimbSequence());
 
     // Buttons for controlling FileLogging
     SmartDashboard.putData("Log 1 InitialTesting", new FileLogSetLevel(1));

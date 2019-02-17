@@ -40,15 +40,16 @@ public class Climb extends Subsystem {
   private final SensorCollection climbLimit;
   private int periodicCount = 0;
   private int vacuumAchievedCount = 0; //increments every cycle vacuum is achieved
+  private boolean vacuumOn = false; //true is on, false is off
 
-  private double rampRate = .005;
-  private double kP = 1;
+  private double rampRate = 0.5;
+  private double kP = 2;
   private double kI = 0;
   private double kD = 0;
   private double kFF = 0;
   private int kIz = 0;
-  private double kMaxOutput = 0.3;	   // TODO change to 1.0 after testing for max speed
-  private double kMinOutput = -0.3;    // TODO change to -1.0 after testing for max speed
+  private double kMaxOutput = 1.0;	   // TODO change to 1.0 after testing for max speed
+  private double kMinOutput = -1.0;    // TODO change to -1.0 after testing for max speed
 
   public Climb() {
     enableCompressor(true);
@@ -56,6 +57,7 @@ public class Climb extends Subsystem {
     climbMotor1.follow(climbMotor2);
     climbMotor2.set(ControlMode.PercentOutput, 0);
     climbMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
+    climbMotor2.setSensorPhase(true);
     climbMotor2.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
     climbLimit = climbMotor2.getSensorCollection();
 
@@ -77,7 +79,7 @@ public class Climb extends Subsystem {
     climbVacuum.setNeutralMode(NeutralMode.Brake);
     //climbVacuum2.setNeutralMode(NeutralMode.Brake);
 
-    Robot.robotPrefs.adjustClimbCalZero();
+    adjustClimbCalZero();
   }
 
   /**
@@ -95,7 +97,7 @@ public class Climb extends Subsystem {
    */
   public void setClimbMotorPercentOutput(double percentOutput) {
     // Invert due to sign convention
-    percentOutput = -percentOutput;
+    // percentOutput = -percentOutput;
     // Cap to max power output allowed
     percentOutput = (percentOutput>kMaxOutput ? kMaxOutput : percentOutput);
     percentOutput = (percentOutput<kMinOutput ? kMinOutput : percentOutput);  
@@ -126,10 +128,12 @@ public class Climb extends Subsystem {
    */
   public void enableVacuum(boolean turnOn) {
     if (turnOn) {
-      climbVacuum.set(ControlMode.PercentOutput, 0.5);
+      climbVacuum.set(ControlMode.PercentOutput, 1.0);
+      vacuumOn = true;
       //climbVacuum2.set(ControlMode.PercentOutput, 0.5);
     }
     else {
+      vacuumOn = false;
       climbVacuum.set(ControlMode.PercentOutput, 0.0);
       //climbVacuum2.set(ControlMode.PercentOutput, 0.0);
     }
@@ -150,6 +154,27 @@ public class Climb extends Subsystem {
   public void calibrateClimbEnc(double angle, boolean saveToPrefs) {
     Robot.robotPrefs.setClimbCalibration(getClimbEncTicksRaw() - climbAngleToEncTicks(angle), saveToPrefs);
   }  
+  
+	/**
+	 * If the angle is reading >/< max/min angle, add/subtract 360 degrees to the climbCalZero accordingly
+	 * Note: when the motor is not inverted, upon booting up, an absolute encoder reads a value between 0 and 4096
+	 * 		 when the motor is inverted, upon booting up, an absolute encoder reads a value between 0 and -4096
+	 * Note: absolute encoder values don't wrap during operation
+	 */
+	public void adjustClimbCalZero() {
+    Robot.log.writeLogEcho("Climb", "Adjust climb pre", "climb angle," + getClimbAngle() + 
+      "raw ticks" + getClimbEncTicksRaw() + ",climbCalZero," + Robot.robotPrefs.climbCalZero);
+		if(getClimbAngle() < Robot.robotPrefs.climbMinAngle) {
+      Robot.log.writeLogEcho("Climb", "Adjust climb", "Below min angle");
+			Robot.robotPrefs.climbCalZero -= Robot.robotPrefs.encoderTicksPerRevolution;
+		}
+		else if(getClimbAngle() > Robot.robotPrefs.climbStartingAngle) {
+      Robot.log.writeLogEcho("Climb", "Adjust climb", "Above max angle");
+			Robot.robotPrefs.climbCalZero += Robot.robotPrefs.encoderTicksPerRevolution;
+		}
+    Robot.log.writeLogEcho("Climb", "Adjust climb post", "climb angle," + getClimbAngle() + 
+      "raw ticks" + getClimbEncTicksRaw() + ",climbCalZero," + Robot.robotPrefs.climbCalZero);
+	}
 
   /**
    * Reads the climb encoder in raw ticks.
@@ -196,13 +221,13 @@ public class Climb extends Subsystem {
    *          false = vacuum is not at the required pressure yet
    */
   public boolean isVacuumAchieved() {
-    if(Robot.pdp.getCurrent(RobotMap.climbVacuum1PDP) > Robot.robotPrefs.vacuumCurrentThreshold) {
+    if(getClimbAngle() < Robot.robotPrefs.climbVacuumAngle + 4) { //Robot.pdp.getCurrent(RobotMap.climbVacuum1PDP) > Robot.robotPrefs.vacuumCurrentThreshold) {
      //|| Robot.pdp.getCurrent(RobotMap.climbVacuum2PDP) > Robot.robotPrefs.rightVacuumCurrentThreshold) {
        vacuumAchievedCount++;
      } else {
        vacuumAchievedCount = 0;
      }
-    return vacuumAchievedCount >= 5; // TODO change once current threshold is known
+    return vacuumAchievedCount >= 300; //TODO change once current threshold is known
   }
 
   /**
@@ -214,7 +239,7 @@ public class Climb extends Subsystem {
 
   public void updateClimbLog() {
     Robot.log.writeLog("Climb", "Update Variables", 
-    "Volts1" + climbMotor2.getMotorOutputVoltage() + ",Volts2," + climbMotor1.getMotorOutputVoltage() + 
+    "Volts1," + climbMotor2.getMotorOutputVoltage() + ",Volts2," + climbMotor1.getMotorOutputVoltage() + 
     ",VacVolts," + climbVacuum.getMotorOutputVoltage() + //",VacVolts2," + climbVacuum2.getMotorOutputVoltage() +
     ",Amps1," + Robot.pdp.getCurrent(RobotMap.climbMotor2PDP) + ",Amps2," + Robot.pdp.getCurrent(RobotMap.climbMotor1PDP) + 
     ",VacAmps," + Robot.pdp.getCurrent(RobotMap.climbVacuum1PDP) + //",VacAmps2," + Robot.pdp.getCurrent(RobotMap.climbVacuum2PDP) +
@@ -233,7 +258,7 @@ public class Climb extends Subsystem {
     SmartDashboard.putNumber("Climb angle", getClimbAngle());
     SmartDashboard.putNumber("Climb enc raw", getClimbEncTicksRaw());
     
-    if (!Robot.robotPrefs.climbCalibrated || Robot.beforeFirstEnable) {
+    if (!Robot.robotPrefs.climbCalibrated ) {  // || Robot.beforeFirstEnable
       if (isClimbAtLimitSwitch()) {
         calibrateClimbEnc(Robot.robotPrefs.climbStartingAngle, false);
       }

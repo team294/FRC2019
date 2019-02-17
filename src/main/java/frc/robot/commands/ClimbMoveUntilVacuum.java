@@ -29,25 +29,21 @@ public class ClimbMoveUntilVacuum extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {  
+    Robot.climb.setClimbPos(targetAng);
     if (Robot.climb.getClimbAngle() <= (targetAng + 10)) {
-      Robot.climb.setClimbMotorPercentOutput(-0.2);
       Robot.climb.enableVacuum(true);
-    }
-    else {
-      Robot.climb.setClimbMotorPercentOutput(-0.5);
     }
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return (Robot.climb.isVacuumAchieved() || (Robot.climb.getClimbAngle() <= targetAng - 5));
+    return (Robot.climb.isVacuumAchieved());// || (Robot.climb.getClimbAngle() <= targetAng + 5));
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.climb.stopClimbMotor();
   }
 
   // Called when another command which requires one or more of the same
