@@ -24,6 +24,7 @@ import com.ctre.phoenix.motorcontrol.SensorCollection;
 
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.utilities.FileLog;
 
 /**
  * Add your docs here.
@@ -38,7 +39,6 @@ public class Climb extends Subsystem {
   private final WPI_TalonSRX climbVacuum2 = new WPI_TalonSRX(RobotMap.climbVacuum2);
   private final DigitalInput vacuumSwitch = new DigitalInput(RobotMap.vacuumSwitch);
   private final SensorCollection climbLimit;
-  private int periodicCount = 0;
   public double climbStartingPoint = 0;
 
   public double rampRate = .005; 
@@ -187,21 +187,30 @@ public class Climb extends Subsystem {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
   }
+
+  
   @Override
   public void periodic() {
+
+    // Checks if the climb is not calibrated and automatically calibrates it once the reverse limit switch is pressed
+    // If the climb isn't calibrated at the start of the match, does that mean we can't control the climber at all?
+
     if (!Robot.robotPrefs.climbCalibrated || Robot.beforeFirstEnable) {
       if (climbLimit.isRevLimitSwitchClosed()) {
         Robot.robotPrefs.setClimbCalibration(getClimbEncTicksRaw() - climbAngleToEncTicks(Robot.robotPrefs.climbStartingAngle), false);
       }
     }
+
+    // Un-calibrates the climb if the angle is outside of bounds... can we figure out a way to not put this in periodic()?
     if (getClimbAngle() > Robot.robotPrefs.vacuumTargetAngle || getClimbAngle() < Robot.robotPrefs.climbStartingAngle) {
       Robot.robotPrefs.climbCalibrated = false;
     }
-    if (DriverStation.getInstance().isEnabled()) {
-      if ((++periodicCount) >= 25) {
-        updateClimbLog();
-        periodicCount=0;  
+
+    if (Robot.log.getLogRotation() == FileLog.CLIMB_CYCLE) {
+      if (DriverStation.getInstance().isEnabled()) {
+        updateClimbLog(); 
       }
     }
   }
+  
 }

@@ -32,10 +32,11 @@ public class ClimbLift extends Command {
     if (Robot.climb.getClimbAngle() >= (targetAng - 10)) {
       Robot.climb.setClimbMotorPercentOutput(0.2);
       Robot.climb.enableVacuum(true);
-    }
-    else {
+    } else {
       Robot.climb.setClimbMotorPercentOutput(0.5);
     }
+
+    Robot.climb.updateClimbLog();
   }
 
   // Make this return true when this Command no longer needs to run execute()

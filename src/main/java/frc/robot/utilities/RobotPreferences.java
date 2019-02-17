@@ -194,21 +194,24 @@ public class RobotPreferences {
 		}
 	}
 
+	// Much of this is not going to be useful in competition. The drivers are not going to look at the laptop screen to see if a subsystem has thrown an error.
+	// TODO: delete the method(s) below by competition time
+
 	/**
 	 * Records in robotPreferences, fileLog, and Shuffleboard that a problem was found in a subsystem
 	 * (only records if the subsystem wasn't already flagged)
 	 * @param subsystem String name of subsystem in which a problem exists
 	 */
 	public void recordStickyFaults(String subsystem) {
-		if(problemSubsystem.indexOf(subsystem) == -1) {
-			if(problemSubsystem.length() != 0) {
+		if (problemSubsystem.indexOf(subsystem) == -1) {
+			if (problemSubsystem.length() != 0) {
 				problemSubsystem = problemSubsystem + ", ";
 			}
 			problemSubsystem = problemSubsystem + subsystem;
 			putString("problemSubsystem", problemSubsystem);
 			Robot.log.writeLogEcho(subsystem, "Sticky Fault Logged", "");
 		}
-		if(!problemExists) {
+		if (!problemExists) {
 			problemExists = true;
 			putBoolean("problemExists", problemExists);
 		}

@@ -30,6 +30,7 @@ public class ClimbLiftRobot extends Command {
   @Override
   protected void execute() {
     Robot.climb.setClimbMotorPercentOutput(-0.5);
+    Robot.climb.updateClimbLog();
   }
 
   // Make this return true when this Command no longer needs to run execute()
