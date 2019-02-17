@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.*;
 import frc.robot.triggers.*;
 import frc.robot.utilities.RobotPreferences;
+import frc.robot.subsystems.*;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -83,7 +84,7 @@ public class OI {
         right[i].whenPressed(new DriveAssist());
         left[i].whenReleased(new DriveWithJoysticks());
         right[i].whenReleased(new DriveWithJoysticks());
-      } else if (i == 3) {
+      } /*else if (i == 3) {
         left[i].whenPressed(new LEDSet(0));
         left[i].whenReleased(new DriveWithJoysticks());
       } else if (i == 4){
@@ -104,7 +105,7 @@ public class OI {
       } else if (i == 9){
         left[i].whenPressed(new LEDSet(3,true));
         left[i].whenPressed(new DriveWithJoysticks());
-      }
+      }*/
     }
 
     SmartDashboard.putData("LoadToRocketPT1", new DrivePathfinder("RLoadToRocketPT1-A", true, false));
@@ -148,12 +149,12 @@ public class OI {
     SmartDashboard.putData("Disc Grab", new HatchSet(true));
     SmartDashboard.putData("Disc Release", new HatchSet(false));
     SmartDashboard.putString("Disc Position", "Null");
-
+/*
     SmartDashboard.putData("LEDSet Purple", new LEDSet(0));
     SmartDashboard.putData("LEDSet Red", new LEDSet(1));
     SmartDashboard.putData("LEDSet Blue", new LEDSet(2));
     SmartDashboard.putData("LEDSet Off", new LEDSet(3));
-
+*/
   }
 
   public void setDriveDirection(boolean direction) {
