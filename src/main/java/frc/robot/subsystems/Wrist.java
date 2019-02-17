@@ -247,7 +247,7 @@ public class Wrist extends Subsystem {
     // setDefaultCommand(new MySpecialCommand());
   }
 
-  @Override
+  /* @Override
   public void periodic() {
     if(getWristLowerLimit()){
       if (Robot.log.getLogLevel() <= 2) {
@@ -323,5 +323,5 @@ public class Wrist extends Subsystem {
 				negMoveCount = 0;
 			}
 		}
-  }
+  } */
 }

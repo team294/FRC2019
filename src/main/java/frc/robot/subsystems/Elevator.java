@@ -235,7 +235,7 @@ public class Elevator extends Subsystem {
 		}
 	}
 
-	@Override
+	/* @Override
 	public void periodic() {
 		SmartDashboard.putBoolean("Elev encOK", elevEncOK);
 		SmartDashboard.putBoolean("Elev Mode", elevatorMode);
@@ -328,5 +328,5 @@ public class Elevator extends Subsystem {
 				negMoveCount = 0;
 			}
 		}
-	}
+	} */
 }

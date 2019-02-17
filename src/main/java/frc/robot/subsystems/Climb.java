@@ -187,7 +187,8 @@ public class Climb extends Subsystem {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
   }
-  @Override
+
+/*   @Override
   public void periodic() {
     if (!Robot.robotPrefs.climbCalibrated || Robot.beforeFirstEnable) {
       if (climbLimit.isRevLimitSwitchClosed()) {
@@ -203,5 +204,5 @@ public class Climb extends Subsystem {
         periodicCount=0;  
       }
     }
-  }
+  } */
 }

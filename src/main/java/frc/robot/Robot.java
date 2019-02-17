@@ -111,10 +111,8 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
-    //Robot.vision.turnOffCamLeds();  
     Robot.vision.setCameraMode(1); // Turn off camera LEDs
     Robot.driveTrain.zeroGyroRotation(); 
-    // Robot.driveTrain.getGyroRotation();
     Robot.driveTrain.zeroLeftEncoder();
     Robot.driveTrain.zeroRightEncoder();
   }
@@ -137,13 +135,6 @@ public class Robot extends TimedRobot {
     log.writeLogEcho("Robot", "Autonomous mode init", "");
     beforeFirstEnable = false; // set variable that robot has been enabled
     m_autonomousCommand = m_chooser.getSelected();
-
-    /*
-     * String autoSelected = SmartDashboard.getString("Auto Selector",
-     * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-     * = new MyAutoCommand(); break; case "Default Auto": default:
-     * autonomousCommand = new ExampleCommand(); break; }
-     */
 
     climb.enableCompressor(true);
 
