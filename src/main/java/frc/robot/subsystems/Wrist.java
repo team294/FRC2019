@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.*;
+import frc.robot.utilities.FileLog;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -25,11 +26,8 @@ public class Wrist extends Subsystem {
   private WPI_TalonSRX wristMotor = new WPI_TalonSRX(RobotMap.wristMotor);
   private SensorCollection wristLimits;
 
-  private int periodicCount = 0; // increments every cycle of periodic
 	private int posMoveCount = 0; // increments every cycle the wrist moves up
 	private int negMoveCount = 0; // increments every cycle the wrist moves down
-	private int idleCount = 0; // increments every cycle the wrist isn't moving
-	private double prevEnc = 0.0; // last recorded encoder value
 	private double currEnc = 0.0; // current recorded encoder value
 	private double encSnapShot = 0.0; // snapshot of encoder value used to make sure encoder is working
   private boolean encOK = true; // true if encoder works, false if encoder broke
@@ -247,81 +245,75 @@ public class Wrist extends Subsystem {
     // setDefaultCommand(new MySpecialCommand());
   }
 
-  /* @Override
+
+  
+  @Override
   public void periodic() {
-    if(getWristLowerLimit()){
+
+    if (getWristLowerLimit()){
       if (Robot.log.getLogLevel() <= 2) {
         Robot.log.writeLog("Wrist", "Encoder Calibrated Low", "old value," + Robot.robotPrefs.wristCalZero + ",new value," + getWristEncoderTicksRaw());
       }
       Robot.robotPrefs.setWristCalibration(getWristEncoderTicksRaw(), true);
-    }
-
-    if(getWristUpperLimit()){
+    } else if (getWristUpperLimit()){
       // TODO Add code to calibrate for wrist upper limit switch?
     }
 
-    if(Robot.log.getLogLevel() == 1) {
-      updateWristLog();
-    }
-    
     if (DriverStation.getInstance().isEnabled()) {
-			prevEnc = currEnc;
-			currEnc = getWristEncoderTicks();
-			if (currEnc == prevEnc) {
-				idleCount++;
-			} else {
-				idleCount = 0;
-			}
-			if (idleCount >= 50) {
-				if ((++periodicCount) >= 25) {
-					updateWristLog();
-					periodicCount = 0;
-				}
-			} else {
-				updateWristLog();
-			}
-		}
+ 
+      if (Robot.log.getLogRotation() == FileLog.WRIST_CYCLE) {
+        updateWristLog();
+      }
 
-		// Following code checks whether the encoder is incrementing in the same direction as the 
-    // motor is moving and changes control modes based on state of encoder
-    
-		if (wristMotor.getMotorOutputVoltage() > 5) {
-			if (posMoveCount == 0) {
-				encSnapShot = getWristEncoderTicks();
-			}
-			negMoveCount = 0;
-			posMoveCount++;
-			if (posMoveCount > 3) {
-				encOK = (currEnc - encSnapShot) > 100;
-				if (!encOK) {
-					setDefaultCommand(new WristWithXBox());
-					wristMode = false;
-				}
-				posMoveCount = 0;
-			}
-		}
-		if (wristMotor.getMotorOutputVoltage() < -5) {
-			if (negMoveCount == 0) {
-				encSnapShot = getWristEncoderTicks();
-			}
-			posMoveCount = 0;
-			negMoveCount++;
-			if (negMoveCount > 3) {
-				encOK = (currEnc - encSnapShot) < -100;
-				if (!encOK) {
-					setDefaultCommand(new WristWithXBox());
-					wristMode = false;
-				}
-				negMoveCount = 0;
-			}
-		}
-		if (!wristMode && encOK) {
-			if (getWristLowerLimit() && getWristEncoderTicks() == 0) {
-				setDefaultCommand(null);
-				wristMode = true;
-				posMoveCount = 0;
-				negMoveCount = 0;
-			}
-		}
-  } */
+      /* All of the code below should be gotten rid of for the same reason as the elevator stuff. It doesn't speed anything up in competition - 
+      the codriver still has to recognize that the encoders are broken and the wrist is stalled. This is just more code to run in periodic() */
+      
+      // TODO: Delete everything below this
+
+
+      // Following code checks whether the encoder is incrementing in the same direction as the 
+      // motor is moving and changes control modes based on state of encoder
+      
+			currEnc = getWristEncoderTicks();
+      if (wristMotor.getMotorOutputVoltage() > 5) {
+        if (posMoveCount == 0) {
+          encSnapShot = getWristEncoderTicks();
+        }
+        negMoveCount = 0;
+        posMoveCount++;
+        if (posMoveCount > 3) {
+          encOK = (currEnc - encSnapShot) > 100;
+          if (!encOK) {
+            setDefaultCommand(new WristWithXBox());
+            wristMode = false;
+          }
+          posMoveCount = 0;
+        }
+      }
+      if (wristMotor.getMotorOutputVoltage() < -5) {
+        if (negMoveCount == 0) {
+          encSnapShot = getWristEncoderTicks();
+        }
+        posMoveCount = 0;
+        negMoveCount++;
+        if (negMoveCount > 3) {
+          encOK = (currEnc - encSnapShot) < -100;
+          if (!encOK) {
+            setDefaultCommand(new WristWithXBox()); // If something is broken, it's just as easy for the codriver to press the joystick button in before moving it. There's no time savings by having this in periodic.
+            wristMode = false;
+          }
+          negMoveCount = 0;
+        }
+      }
+      if (!wristMode && encOK) {
+        if (getWristLowerLimit() && getWristEncoderTicks() == 0) {
+          setDefaultCommand(null);
+          wristMode = true;
+          posMoveCount = 0;
+          negMoveCount = 0;
+        }
+      }
+    }
+  }
+ 
 }

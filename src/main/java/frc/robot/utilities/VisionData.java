@@ -34,7 +34,6 @@ public class VisionData {
     }
 
     public void readCameraData() {       
-        setCameraMode(3);       // turn on camera LEDs
         horizOffset = xValue.getDouble(0);
         vertOffset = yValue.getDouble(0);
         areaFromCamera = aValue.getDouble(0); 

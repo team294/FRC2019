@@ -10,14 +10,14 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ElevatorLower extends Command {
+public class ClimbEncoderCalibrateAtLimit extends Command {
   /**
-   * Slowly moves elevator DOWN
+   * Drives climb motor up slowly, calibrates encoder when climb reaches the limit switch
    */
-  public ElevatorLower() {
+  public ClimbEncoderCalibrateAtLimit() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.elevator);
+    requires(Robot.climb);
   }
 
   // Called just before this Command runs the first time
@@ -28,24 +28,27 @@ public class ElevatorLower extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.elevator.setElevatorMotorPercentOutput(-0.2);
-    Robot.elevator.updateElevatorLog();
+    Robot.climb.setClimbMotorPercentOutput(0.1);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return Robot.climb.isClimbAtLimitSwitch();
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.climb.stopClimbMotor();
+    Robot.climb.calibrateClimbEnc(Robot.robotPrefs.climbStartingAngle, false);
+    // TODO Something to set climb reference angle
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.climb.stopClimbMotor();
   }
 }

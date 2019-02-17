@@ -8,7 +8,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 /**
@@ -24,7 +23,6 @@ public class DriveWithJoysticks extends Command {
   @Override
   protected void initialize() {
     Robot.log.writeLogEcho("DriveTrain", "Driver Control Init", "");
-    //Robot.vision.setPipe(1);
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -38,7 +36,6 @@ public class DriveWithJoysticks extends Command {
     } else {
       Robot.driveTrain.tankDrive(leftValue, rightValue);
     }
-
     //SmartDashboard.putBoolean("Vision Assistance Available", Robot.vision.areaFromCamera != 0); // May move to teleopPeriodic
     // Tells us if vision is available for the rocket. Will need to be updated for when scoring balls.
   }
@@ -54,7 +51,6 @@ public class DriveWithJoysticks extends Command {
   protected void end() {
     Robot.driveTrain.stop();
     Robot.log.writeLogEcho("DriveTrain", "Driver Control Ended", "");
-    //Robot.vision.setPipe(0); // Return the pipeline to the original vision tracking one
   }
 
   // Called when another command which requires one or more of the same

@@ -8,12 +8,12 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.ElevatorWithXBox;
+import frc.robot.utilities.FileLog;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -34,12 +34,9 @@ public class Elevator extends Subsystem {
 	private WPI_TalonSRX elevatorMotor2;
 	private SensorCollection elevatorLimits;
 
-	private int periodicCount = 0; // increments every cycle of periodic
 	private int posMoveCount = 0; // increments every cycle the elevator moves up
 	private int negMoveCount = 0; // increments every cycle the elevator moves down
 	private int motorFaultCount = 0; // increments every cycle the motor detects an issue
-	private int idleCount = 0; // increments every cycle the elevator isn't moving
-	private double prevEnc = 0.0; // last recorded encoder value
 	private double currEnc = 0.0; // current recorded encoder value
 	private double encSnapShot = 0.0; // snapshot of encoder value used to make sure encoder is working
 	private boolean elevEncOK = true; // true is encoder working, false is encoder broken
@@ -204,6 +201,7 @@ public class Elevator extends Subsystem {
 			Robot.robotPrefs.recordStickyFaults("Elevator");
 			motorFaultCount = 0;
 		}
+
 		if(amps1 > 8 && amps2 < 3) {
 			motorFaultCount++;
 		}
@@ -235,98 +233,84 @@ public class Elevator extends Subsystem {
 		}
 	}
 
-	/* @Override
+	
+	@Override
 	public void periodic() {
-		SmartDashboard.putBoolean("Elev encOK", elevEncOK);
-		SmartDashboard.putBoolean("Elev Mode", elevatorMode);
-		// SmartDashboard.putNumber("EncSnap", encSnapShot);
-		// SmartDashboard.putNumber("Enc Now", currEnc);
-		SmartDashboard.putNumber("Elev Pos", getElevatorPos());
-		// SmartDashboard.putNumber("Enc Tick", getElevatorEncTicks());
-		SmartDashboard.putBoolean("Elev Lower Limit", getElevatorLowerLimit());
-		SmartDashboard.putBoolean("Elev Upper Limit", getElevatorUpperLimit());
+		
+		// Can some of these be eliminated by competition?
+
+		if (Robot.log.getLogRotation() == FileLog.ELEVATOR_CYCLE) {
+			SmartDashboard.putBoolean("Elev encOK", elevEncOK);
+			SmartDashboard.putBoolean("Elev Mode", elevatorMode); // See below for note on this
+			// SmartDashboard.putNumber("EncSnap", encSnapShot);
+			// SmartDashboard.putNumber("Enc Now", currEnc);
+			SmartDashboard.putNumber("Elev Pos", getElevatorPos());
+			// SmartDashboard.putNumber("Enc Tick", getElevatorEncTicks());
+			SmartDashboard.putBoolean("Elev Lower Limit", getElevatorLowerLimit());
+			SmartDashboard.putBoolean("Elev Upper Limit", getElevatorUpperLimit());
+		}		
 		
 		// Following code changes the frequency of variable logging depending
 		// on the set logLevel, Motors are checked every cycle regardless
 		if (DriverStation.getInstance().isEnabled()) {
-			verifyMotors();
-			prevEnc = currEnc;
+
+			verifyMotors(); // What is the concrete use for this?  Move to a pit command, instead of live during match?
+
+			if (Robot.log.getLogRotation() == FileLog.ELEVATOR_CYCLE) {
+				updateElevatorLog();
+			}
+		
+			// Following code checks whether the encoder is incrementing in the same direction as the 
+			// motor is moving and changes control modes based on state of encoder
+
+			/* All of the code below should be gotten rid of. It doesn't speed anything up in competition - the codriver still has to recognize that the encoders are broken
+			and the elevator is stalled. This is just more code to run in periodic() */
+			// TODO: Delete everything below this
+
 			currEnc = getElevatorEncTicks();
-			if (currEnc == prevEnc) {
-				idleCount++;
-			 } else {
-				 idleCount = 0;
-			 }
-			if(Robot.log.getLogLevel() == 1) {
-				updateElevatorLog();
-			} 
-			else if(Robot.log.getLogLevel() == 2) {
-				if (idleCount >= 25) {
-					if(periodicCount++ >= 10) {
-						updateElevatorLog();
-						periodicCount = 0;
-					}
-				} else {
-				updateElevatorLog();
-				}
-			} 
-			else if(Robot.log.getLogLevel() == 3) {
-				if (idleCount >= 50) {
-					if ((periodicCount++) >= 25) {
-						updateElevatorLog();
-						periodicCount = 0;
-					}
-				} else {
-					if ((periodicCount++) >= 10) {
-						updateElevatorLog();
-						periodicCount = 0;
-					}
-				}
-			}
-		}
-
-		// Following code checks whether the encoder is incrementing in the same direction as the 
-		// motor is moving and changes control modes based on state of encoder
-
-		if (elevatorMotor1.getMotorOutputVoltage() > 5) {
-			if (posMoveCount == 0) {
-				encSnapShot = getElevatorEncTicks();
-			}
-			negMoveCount = 0;
-			posMoveCount++;
-			if (posMoveCount > 3) {
-				elevEncOK = (currEnc - encSnapShot) > 100;
-				if (!elevEncOK) {
-					Robot.robotPrefs.recordStickyFaults("Elevator Enc");
-					setDefaultCommand(new ElevatorWithXBox());
-					elevatorMode = false;
-				}
-				posMoveCount = 0;
-			}
-		}
-		if (elevatorMotor1.getMotorOutputVoltage() < -5) {
-			if (negMoveCount == 0) {
-				encSnapShot = getElevatorEncTicks();
-			}
-			posMoveCount = 0;
-			negMoveCount++;
-			if (negMoveCount > 3) {
-				elevEncOK = (currEnc - encSnapShot) < -100;
-				if (!elevEncOK) {
-					Robot.robotPrefs.recordStickyFaults("Elevator Enc");
-					setDefaultCommand(new ElevatorWithXBox());
-					elevatorMode = false;
+			if (elevatorMotor1.getMotorOutputVoltage() > 5) {
+				if (posMoveCount == 0) {
+					encSnapShot = getElevatorEncTicks();
 				}
 				negMoveCount = 0;
-			}
-		}
-		if (!elevatorMode && elevEncOK) {
-			if (getElevatorLowerLimit() && getElevatorEncTicks() == 0) {
-				setDefaultCommand(null);
-				elevatorMode = true;
+				posMoveCount++;
+				if (posMoveCount > 3) {
+					elevEncOK = (currEnc - encSnapShot) > 100;
+					if (!elevEncOK) {
+						Robot.robotPrefs.recordStickyFaults("Elevator Enc");
+						setDefaultCommand(new ElevatorWithXBox()); 
+						// We can probably ignore the automatic switch to xbox. By the time the codriver realizes, they can just push the joystick button in anyways.
+						elevatorMode = false;
+					}
+					posMoveCount = 0;
+				}
+			} else if (elevatorMotor1.getMotorOutputVoltage() < -5) {
+				if (negMoveCount == 0) {
+					encSnapShot = getElevatorEncTicks();
+				}
 				posMoveCount = 0;
-				negMoveCount = 0;
+				negMoveCount++;
+				if (negMoveCount > 3) {
+					elevEncOK = (currEnc - encSnapShot) < -100;
+					if (!elevEncOK) {
+						Robot.robotPrefs.recordStickyFaults("Elevator Enc");
+						setDefaultCommand(new ElevatorWithXBox());
+						// We can probably ignore the automatic switch to xbox. By the time the codriver realizes, they can just push the joystick button in anyways.
+						elevatorMode = false;
+					}
+					negMoveCount = 0;
+				}
 			}
+			if (!elevatorMode && elevEncOK) {
+				if (getElevatorLowerLimit() && getElevatorEncTicks() == 0) {
+					setDefaultCommand(null);
+					elevatorMode = true;
+					posMoveCount = 0;
+					negMoveCount = 0;
+				}
+			}
+
 		}
-	} */
+		
+	}
 }
