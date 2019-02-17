@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -37,9 +38,8 @@ public class Climb extends Subsystem {
   private final WPI_TalonSRX climbMotor2 = new WPI_TalonSRX(RobotMap.climbMotor2);
   private final BaseMotorController climbVacuum = new WPI_VictorSPX(RobotMap.climbVacuum1); //left Vacuum system
   //private final BaseMotorController climbVacuum2 = new WPI_VictorSPX(RobotMap.climbVacuum2); //right Vacuum system
-  //private final DigitalInput vacuumSwitch = new DigitalInput(RobotMap.vacuumSwitch);
+  private final DigitalInput vacuumSwitch = new DigitalInput(RobotMap.vacuumSwitch);
   private final SensorCollection climbLimit;
-  private int vacuumAchievedCount = 0; //increments every cycle vacuum is achieved
 
   private double rampRate = 0.5;
   private double kP = 2;
@@ -137,6 +137,14 @@ public class Climb extends Subsystem {
   }
 
   /**
+   * Returns true if pressure is low enough to initiate climb
+   * @return true = vacuum sufficient for climb, false = not enough vacuum
+   */
+  public boolean isVacuumPresent(){
+    return vacuumSwitch.get();
+  }
+
+  /**
    * Sets current value of the climbEncoder as the new "zero"
    */
   public void zeroClimbEnc() {
@@ -213,19 +221,6 @@ public class Climb extends Subsystem {
     return climbEncTicksToAngle(getClimbEncTicks());
   }
 
-  /**
-   * @return true = vaccum is at the required pressure
-   *          false = vacuum is not at the required pressure yet
-   */
-  public boolean isVacuumAchieved() {
-    if(getClimbAngle() < Robot.robotPrefs.climbVacuumAngle + 4) { //Robot.pdp.getCurrent(RobotMap.climbVacuum1PDP) > Robot.robotPrefs.vacuumCurrentThreshold) {
-     //|| Robot.pdp.getCurrent(RobotMap.climbVacuum2PDP) > Robot.robotPrefs.rightVacuumCurrentThreshold) {
-       vacuumAchievedCount++;
-     } else {
-       vacuumAchievedCount = 0;
-     }
-    return vacuumAchievedCount >= 300; //TODO change once current threshold is known
-  }
 
   /**
    * @return true = climb is at its calibration angle
@@ -240,7 +235,9 @@ public class Climb extends Subsystem {
     ",VacVolts," + climbVacuum.getMotorOutputVoltage() + //",VacVolts2," + climbVacuum2.getMotorOutputVoltage() +
     ",Amps1," + Robot.pdp.getCurrent(RobotMap.climbMotor2PDP) + ",Amps2," + Robot.pdp.getCurrent(RobotMap.climbMotor1PDP) + 
     ",VacAmps," + Robot.pdp.getCurrent(RobotMap.climbVacuum1PDP) + //",VacAmps2," + Robot.pdp.getCurrent(RobotMap.climbVacuum2PDP) +
-    ",Enc Ticks," + getClimbEncTicks() + ",Enc Ang," + getClimbAngle());
+    ",EncCalZero," + Robot.robotPrefs.climbCalZero + ",Enc Raw," + getClimbEncTicksRaw() + ",Enc Ang," + getClimbAngle() + 
+    ",Climb limit," + isClimbAtLimitSwitch() + ",Vacuum Achieved," + isVacuumPresent()
+    );
   }
   
   @Override
@@ -257,6 +254,7 @@ public class Climb extends Subsystem {
       SmartDashboard.putBoolean("Climb limit switch", isClimbAtLimitSwitch());
       SmartDashboard.putNumber("Climb angle", getClimbAngle());
       SmartDashboard.putNumber("Climb enc raw", getClimbEncTicksRaw());
+      SmartDashboard.putBoolean("Climb vacuum", isVacuumPresent());
 
       if (DriverStation.getInstance().isEnabled()) {
         updateClimbLog(); 
