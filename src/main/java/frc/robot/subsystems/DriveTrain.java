@@ -45,10 +45,10 @@ public class DriveTrain extends Subsystem {
   private double yawZero = 0;
 
   private int periodicCount = 0;
-  
+
   private double leftMotorFaultCount; // increments every cycle the left side detects an issue
   private double rightMotorFaultCount; // increments every cycle the right side detects an issue
-  
+
   // Encoders
   private double leftEncoderZero = 0, rightEncoderZero = 0;
   private LinkedList<Double> lEncoderStack = new LinkedList<Double>();
@@ -107,41 +107,40 @@ public class DriveTrain extends Subsystem {
     rightMotor3.setNeutralMode(NeutralMode.Brake);
 
     // Configure navX
-		try {
-			/* Communicate w/navX MXP via the MXP SPI Bus.
-			 * Alternatively: I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB
-			 * See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for
-			 * details.
-			 */
+    try {
+      /*
+       * Communicate w/navX MXP via the MXP SPI Bus. Alternatively: I2C.Port.kMXP,
+       * SerialPort.Port.kMXP or SerialPort.Port.kUSB See
+       * http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for details.
+       */
 
-			ahrs = new AHRS(I2C.Port.kMXP);
+      ahrs = new AHRS(I2C.Port.kMXP);
 
-		} catch (RuntimeException ex) {
-			DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
-		}
-		ahrs.zeroYaw();
-		// zeroGyroRotation();
-	}
+    } catch (RuntimeException ex) {
+      DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
+    }
+    ahrs.zeroYaw();
+    // zeroGyroRotation();
+  }
 
-  public void tankDrive (double powerLeft, double powerRight) {
+  public void tankDrive(double powerLeft, double powerRight) {
     robotDrive.tankDrive(powerLeft, powerRight);
   }
 
   /**
-	 * Sets the robot to drive at a curve.
-	 * 
-	 * @param speedPct
-	 *            Percent output of motor -1.0 to 1.0
-	 * @param curve
-	 *            the rate at which the robot will curve -1.0 to 1.0. Clockwise is
-	 *            positive.
-	 */
-	public void driveAtCurve(double speedPct, double curve) {
-		robotDrive.curvatureDrive(speedPct, curve, false);
+   * Sets the robot to drive at a curve.
+   * 
+   * @param speedPct Percent output of motor -1.0 to 1.0
+   * @param curve    the rate at which the robot will curve -1.0 to 1.0. Clockwise
+   *                 is positive.
+   */
+  public void driveAtCurve(double speedPct, double curve) {
+    robotDrive.curvatureDrive(speedPct, curve, false);
   }
-  
+
   /**
    * Drives the robot along a curve
+   * 
    * @param speedPct Percent output of motor [-1.0, 1.0]
    * @param rotation Rotation rate (rate of heading change) from [-1.0, 1.0]
    */
@@ -235,7 +234,7 @@ public class DriveTrain extends Subsystem {
   }
 
   public double encoderTicksToInches(double encoderTicks) {
-    return (encoderTicks / Robot.robotPrefs.encoderTicksPerRevolution) * Robot.robotPrefs.wheelCircumference ;
+    return (encoderTicks / Robot.robotPrefs.encoderTicksPerRevolution) * Robot.robotPrefs.wheelCircumference;
   }
 
   public double inchesToEncoderTicks(double inches) {
@@ -251,7 +250,7 @@ public class DriveTrain extends Subsystem {
     SmartDashboard.putNumber("Right Inches", encoderTicksToInches(getRightEncoderTicks()));
     return encoderTicksToInches(getRightEncoderTicks());
   }
-  
+
   /**
    * Empties the ecoder tracking stack and zeroes the left and right encoders
    */
@@ -259,13 +258,13 @@ public class DriveTrain extends Subsystem {
     Robot.log.writeLogEcho("DriveTrain", "Encoders Cleared", "");
     lEncoderStack.clear();
     rEncoderStack.clear();
-    zeroLeftEncoder();  // Theoretically these don't need to be zeroed; the stack just adds their values
+    zeroLeftEncoder(); // Theoretically these don't need to be zeroed; the stack just adds their values
     zeroRightEncoder();
   }
 
   /**
-   * Averages the ticks of the left and right encoder and adds them to the encoder stacks.
-   * Also removes the earliest element if above 50 elements.
+   * Averages the ticks of the left and right encoder and adds them to the encoder
+   * stacks. Also removes the earliest element if above 50 elements.
    */
   public void updateEncoderList() {
     lEncoderStack.add(getLeftEncoderTicks());
@@ -277,40 +276,40 @@ public class DriveTrain extends Subsystem {
   }
 
   public double getAverageDistance() {
-		return (getRightEncoderInches() + getLeftEncoderInches()) / 2.0;
+    return (getRightEncoderInches() + getLeftEncoderInches()) / 2.0;
   }
 
-	/**
-	 * Zeros the gyro position in software
-	 */
-	public void zeroGyroRotation() {
-		// set yawZero to gryo angle
-		yawZero = ahrs.getAngle();
-		// System.err.println("PLZ Never Zero the Gyro Rotation it is not good");
-	}
+  /**
+   * Zeros the gyro position in software
+   */
+  public void zeroGyroRotation() {
+    // set yawZero to gryo angle
+    yawZero = ahrs.getAngle();
+    // System.err.println("PLZ Never Zero the Gyro Rotation it is not good");
+  }
 
-	/**
-	 * Resets the gyro position in software to a specified angle
-	 * 
-	 * @param currentHeading Gyro heading to reset to, in degrees
-	 */
-	public void setGyroRotation(double currentHeading) {
-		// set yawZero to gryo angle, offset to currentHeading
-		yawZero = ahrs.getAngle() - currentHeading;
-		// System.err.println("PLZ Never Zero the Gyro Rotation it is not good");
-	}
+  /**
+   * Resets the gyro position in software to a specified angle
+   * 
+   * @param currentHeading Gyro heading to reset to, in degrees
+   */
+  public void setGyroRotation(double currentHeading) {
+    // set yawZero to gryo angle, offset to currentHeading
+    yawZero = ahrs.getAngle() - currentHeading;
+    // System.err.println("PLZ Never Zero the Gyro Rotation it is not good");
+  }
 
-	/**
-	 * Gets the rotation of the gyro
-	 * 
-	 * @return Current angle from -180 to 180 degrees
-	 */
-	public double getGyroRotation() {
-		double angle = ahrs.getAngle() - yawZero;
-		// Angle will be in terms of raw gyro units (-inf,inf), so you need to convert
-		// to (-180, 180]
-		angle = angle % 360;
-		angle = (angle <= -180) ? (angle + 360) : angle;
+  /**
+   * Gets the rotation of the gyro
+   * 
+   * @return Current angle from -180 to 180 degrees
+   */
+  public double getGyroRotation() {
+    double angle = ahrs.getAngle() - yawZero;
+    // Angle will be in terms of raw gyro units (-inf,inf), so you need to convert
+    // to (-180, 180]
+    angle = angle % 360;
+    angle = (angle <= -180) ? (angle + 360) : angle;
     angle = (angle > 180) ? (angle - 360) : angle;
     SmartDashboard.putNumber("Gyro Angle", angle);
     return angle;
@@ -318,25 +317,9 @@ public class DriveTrain extends Subsystem {
 
   /**
    * 
-   * @param setCoast true if want to put driveTrain in coast mode false to put in brake mode.
+   * @param setCoast true if want to put driveTrain in coast mode false to put in
+   *                 brake mode.
    */
-  public void setDriveMode(boolean setCoast){
-   if(setCoast){
-    leftMotor1.setNeutralMode(NeutralMode.Coast);
-    leftMotor2.setNeutralMode(NeutralMode.Coast);
-    leftMotor3.setNeutralMode(NeutralMode.Coast);
-    rightMotor1.setNeutralMode(NeutralMode.Coast);
-    rightMotor2.setNeutralMode(NeutralMode.Coast);
-    rightMotor3.setNeutralMode(NeutralMode.Coast);
-
-   }else{
-    leftMotor1.setNeutralMode(NeutralMode.Brake);
-    leftMotor2.setNeutralMode(NeutralMode.Brake);
-    leftMotor3.setNeutralMode(NeutralMode.Brake);
-    rightMotor1.setNeutralMode(NeutralMode.Brake);
-    rightMotor2.setNeutralMode(NeutralMode.Brake);
-    rightMotor3.setNeutralMode(NeutralMode.Brake);
-
   public void setDriveMode(boolean setCoast) {
     if (setCoast) {
       leftMotor1.setNeutralMode(NeutralMode.Coast);
@@ -347,84 +330,102 @@ public class DriveTrain extends Subsystem {
       rightMotor3.setNeutralMode(NeutralMode.Coast);
 
     } else {
-      leftMotor1.setNeutralMode(NeutralMode.Coast);
+      leftMotor1.setNeutralMode(NeutralMode.Brake);
       leftMotor2.setNeutralMode(NeutralMode.Brake);
       leftMotor3.setNeutralMode(NeutralMode.Brake);
       rightMotor1.setNeutralMode(NeutralMode.Brake);
       rightMotor2.setNeutralMode(NeutralMode.Brake);
       rightMotor3.setNeutralMode(NeutralMode.Brake);
-
     }
-
   }
 
   /**
-   * Checks if both encoders are turning. Make sure you have been calling updateEncoderList enough times before.
-   * @param precision Precision, in ticks (i.e. number of ticks by which the average can differ from the last reading)
-   * @return true if the difference between the average and the last element is less than the precision specified (this means both encoders are stopped)
+   * Checks if both encoders are turning. Make sure you have been calling
+   * updateEncoderList enough times before.
+   * 
+   * @param precision Precision, in ticks (i.e. number of ticks by which the
+   *                  average can differ from the last reading)
+   * @return true if the difference between the average and the last element is
+   *         less than the precision specified (this means both encoders are
+   *         stopped)
    */
   public boolean areEncodersStopped(double precision) {
-    if (lEncoderStack.size()<50) return (lEncStopped = false) || (rEncStopped = false); // Sets both to false while returning.
+    if (lEncoderStack.size() < 50)
+      return (lEncStopped = false) || (rEncStopped = false); // Sets both to false while returning.
     double lSum = 0.0, rSum = 0.0;
     Iterator<Double> lIterator = lEncoderStack.descendingIterator();
     Iterator<Double> rIterator = rEncoderStack.descendingIterator();
-    while(lIterator.hasNext()) {
+    while (lIterator.hasNext()) {
       lSum += lIterator.next();
       rSum += rIterator.next();
     }
-    return ((lEncStopped = Math.abs(lSum/lEncoderStack.size()-lEncoderStack.peekLast()) <= precision) & (rEncStopped = Math.abs(rSum/rEncoderStack.size()-rEncoderStack.peekLast()) <= precision));
+    return ((lEncStopped = Math.abs(lSum / lEncoderStack.size() - lEncoderStack.peekLast()) <= precision)
+        & (rEncStopped = Math.abs(rSum / rEncoderStack.size() - rEncoderStack.peekLast()) <= precision));
   }
-  
+
   /**
-   * Checks drive motor currents, records sticky faults if a motor is faulty for more than 5 cycles
+   * Checks drive motor currents, records sticky faults if a motor is faulty for
+   * more than 5 cycles
+   * 
    * @param motor1PDP RobotMap PDP address for motor1
    * @param motor2PDP RobotMap PDP address for motor2
    * @param motor3PDP RobotMap PDP address for motor3
-   * @param side true is left, false is right
+   * @param side      true is left, false is right
    */
-	public void verifyMotors(int motor1PDP, int motor2PDP, int motor3PDP, boolean side) {
-      double amps1 = Robot.pdp.getCurrent(motor1PDP);
-      double amps2 = Robot.pdp.getCurrent(motor2PDP);
-      double amps3 = Robot.pdp.getCurrent(motor3PDP);
-      double averageAmps = (amps1 + amps2 + amps3) / 3;
+  public void verifyMotors(int motor1PDP, int motor2PDP, int motor3PDP, boolean side) {
+    double amps1 = Robot.pdp.getCurrent(motor1PDP);
+    double amps2 = Robot.pdp.getCurrent(motor2PDP);
+    double amps3 = Robot.pdp.getCurrent(motor3PDP);
+    double averageAmps = (amps1 + amps2 + amps3) / 3;
 
-		if(leftMotorFaultCount >= 5) {
+    if (leftMotorFaultCount >= 5) {
       Robot.robotPrefs.recordStickyFaults("Left" + " Drive Train");
       leftMotorFaultCount = 0;
     } else if (rightMotorFaultCount >= 5) {
       Robot.robotPrefs.recordStickyFaults("Right" + " Drive Train");
       rightMotorFaultCount = 0;
     }
-		if(averageAmps > 7) {
-			if(amps1 < 4 || amps2 < 4 || amps3 < 4) {
-        if(side) leftMotorFaultCount++;
-        else  rightMotorFaultCount++;
-      }
-      else {
-        if (side) leftMotorFaultCount = 0;
-        else rightMotorFaultCount = 0;
+    if (averageAmps > 7) {
+      if (amps1 < 4 || amps2 < 4 || amps3 < 4) {
+        if (side)
+          leftMotorFaultCount++;
+        else
+          rightMotorFaultCount++;
+      } else {
+        if (side)
+          leftMotorFaultCount = 0;
+        else
+          rightMotorFaultCount = 0;
       }
     }
   }
 
   public void updateDriveLog() {
     Robot.log.writeLog("DriveTrain", "Update Variables",
-      "Drive L1 Volts," + leftMotor1.getMotorOutputVoltage() + ",Drive L2 Volts," + leftMotor2.getMotorOutputVoltage() + ",Drive L3 Volts," + leftMotor3.getMotorOutputVoltage() +
-      ",Drive L1 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor1PDP) + ",Drive L2 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor2PDP) + ",Drive L3 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor3PDP) + 
-      ",Drive R1 Volts," + rightMotor1.getMotorOutputVoltage() + ",Drive R2 Volts," + rightMotor2.getMotorOutputVoltage() + ",Drive R3 Volts," + rightMotor3.getMotorOutputVoltage() + 
-      ",Drive R1 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor1PDP) + ",Drive R2 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor2PDP) + ",Drive R3 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor3PDP) + 
-      ",L Enc Ticks," + getLeftEncoderTicks() + ",L Drive Inches," + getLeftEncoderInches() + 
-      ",R Enc Ticks," + getRightEncoderTicks() + ",R Drive Inches," + getRightEncoderInches() + 
-      ",High Gear," + Robot.shifter.isShifterInHighGear());
+        "Drive L1 Volts," + leftMotor1.getMotorOutputVoltage() + ",Drive L2 Volts," + leftMotor2.getMotorOutputVoltage()
+            + ",Drive L3 Volts," + leftMotor3.getMotorOutputVoltage() + ",Drive L1 Amps,"
+            + Robot.pdp.getCurrent(RobotMap.leftMotor1PDP) + ",Drive L2 Amps,"
+            + Robot.pdp.getCurrent(RobotMap.leftMotor2PDP) + ",Drive L3 Amps,"
+            + Robot.pdp.getCurrent(RobotMap.leftMotor3PDP) + ",Drive R1 Volts," + rightMotor1.getMotorOutputVoltage()
+            + ",Drive R2 Volts," + rightMotor2.getMotorOutputVoltage() + ",Drive R3 Volts,"
+            + rightMotor3.getMotorOutputVoltage() + ",Drive R1 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor1PDP)
+            + ",Drive R2 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor2PDP) + ",Drive R3 Amps,"
+            + Robot.pdp.getCurrent(RobotMap.rightMotor3PDP) + ",L Enc Ticks," + getLeftEncoderTicks()
+            + ",L Drive Inches," + getLeftEncoderInches() + ",R Enc Ticks," + getRightEncoderTicks()
+            + ",R Drive Inches," + getRightEncoderInches() + ",High Gear," + Robot.shifter.isShifterInHighGear());
   }
 
   /**
-   * Gets the predicted scoring quadrant of the robot based on what the gyro currently reads
-   * @return a quadrant (corresponding to the unit circle) with axes in between quadrants numbered as x.5 values.
+   * Gets the predicted scoring quadrant of the robot based on what the gyro
+   * currently reads
+   * 
+   * @return a quadrant (corresponding to the unit circle) with axes in between
+   *         quadrants numbered as x.5 values.
    */
   public double checkScoringQuadrant() {
     // TODO: Add some console prints or SD to check
-    // assuming the same quadrants as a unit circle, with 0 being straight up (+y axis) and -180 or 180 being straight down (-y axis)
+    // assuming the same quadrants as a unit circle, with 0 being straight up (+y
+    // axis) and -180 or 180 being straight down (-y axis)
     double quadrant = 0.0;
     double gyroAngle = getGyroRotation();
 
@@ -445,26 +446,37 @@ public class DriveTrain extends Subsystem {
     } else if (gyroAngle < 0) {
       quadrant = 2; // only negative angles left are Q2
     }
-    
+
     return quadrant; // Something must be wrong here, this result should never happen
   }
 
   /**
    * Returns the target angle we expect to try to score at
-   * @param quadrant scoring quadrant from 0.5 to 4 (inclusive) from checkScoringQuadrant()
-   * @return double in the range (-180, 180] (in actual practice, a small array of standard values)
-   * </br> The default value is 0.
+   * 
+   * @param quadrant scoring quadrant from 0.5 to 4 (inclusive) from
+   *                 checkScoringQuadrant()
+   * @return double in the range (-180, 180] (in actual practice, a small array of
+   *         standard values) </br>
+   *         The default value is 0.
    */
   public double getTargetAngle(double quadrant) {
     double out = 0.0;
-    if (quadrant == 1) out = 28.75;
-    else if (quadrant == 1.5) out = 0;
-    else if (quadrant == 2) out = -28.75;
-    else if (quadrant == 2.5) out = -90;
-    else if (quadrant == 3) out = -151.75;
-    else if (quadrant == 3.5) out = 180;
-    else if (quadrant == 4) out = 151.75;
-    else if (quadrant == 4.5 || quadrant == 0.5) out = 90;
+    if (quadrant == 1)
+      out = 28.75;
+    else if (quadrant == 1.5)
+      out = 0;
+    else if (quadrant == 2)
+      out = -28.75;
+    else if (quadrant == 2.5)
+      out = -90;
+    else if (quadrant == 3)
+      out = -151.75;
+    else if (quadrant == 3.5)
+      out = 180;
+    else if (quadrant == 4)
+      out = 151.75;
+    else if (quadrant == 4.5 || quadrant == 0.5)
+      out = 90;
     return out;
   }
 
@@ -485,9 +497,11 @@ public class DriveTrain extends Subsystem {
    */
   public void driveToCrosshair(double quadrant) {
 
-    double xOffsetAdjustmentFactor = 1.7; // Should be tested to be perfect; 2 seems to go out of frame too quickly. Must be greater than 1.
+    double xOffsetAdjustmentFactor = 1.7; // Should be tested to be perfect; 2 seems to go out of frame too quickly.
+                                          // Must be greater than 1.
 
-    //double minDistanceToTarget = 13; // Not used right now because changing distance forumla to use height
+    // double minDistanceToTarget = 13; // Not used right now because changing
+    // distance forumla to use height
     double distance = Robot.vision.distanceFromTarget();
     System.out.println("Measured Distance: " + distance);
     double area = Robot.vision.areaFromCamera;
@@ -498,30 +512,41 @@ public class DriveTrain extends Subsystem {
       System.out.println("Measured Angle: " + xVal);
       double alphaT = xVal + getGyroRotation() - getTargetAngle(quadrant); // true angle for measuring x displacement
       System.out.println("Adjusted (true) angle: " + alphaT);
-      double alphaA = Math.toDegrees(Math.atan(xOffsetAdjustmentFactor * Math.tan(Math.toRadians(alphaT)))); // Adjusted angle for x displacement
+      double alphaA = Math.toDegrees(Math.atan(xOffsetAdjustmentFactor * Math.tan(Math.toRadians(alphaT)))); // Adjusted
+                                                                                                             // angle
+                                                                                                             // for x
+                                                                                                             // displacement
       System.out.println("False displacement angle:" + alphaA);
       finalAngle = alphaA + getTargetAngle(quadrant) - getGyroRotation();
     } else {
       finalAngle = xVal;
     }
 
-    double gainConstant = 1.0/30.0;
+    double gainConstant = 1.0 / 30.0;
 
-    //double lJoystickAdjust = Math.abs(Robot.oi.leftJoystick.getY());
+    // double lJoystickAdjust = Math.abs(Robot.oi.leftJoystick.getY());
     double lJoystickAdjust = 0.7 * Math.sqrt(Math.abs(Robot.oi.leftJoystick.getY()));
-    double lPercentOutput = lJoystickAdjust + (gainConstant * finalAngle); //xVal
-    double rPercentOutput = lJoystickAdjust - (gainConstant * finalAngle); //xVal
+    double lPercentOutput = lJoystickAdjust + (gainConstant * finalAngle); // xVal
+    double rPercentOutput = lJoystickAdjust - (gainConstant * finalAngle); // xVal
 
     /* Untested auto-turn stuff */
-    if (lEncStopped && lPercentOutput != 0) rPercentOutput = 1.0; // The goal here is to slam the right side so that we still line up to the wall
-    if (rEncStopped && rPercentOutput != 0) lPercentOutput = 1.0; 
-    if (lPercentOutput == 1.0 || rPercentOutput == 1.0) System.out.println("STOP DETECTED, INITIATING EVASIVE MANEUVERS"); // TODO: test this because it doesn't look like it ever works
+    if (lEncStopped && lPercentOutput != 0)
+      rPercentOutput = 1.0; // The goal here is to slam the right side so that we still line up to the wall
+    if (rEncStopped && rPercentOutput != 0)
+      lPercentOutput = 1.0;
+    if (lPercentOutput == 1.0 || rPercentOutput == 1.0)
+      System.out.println("STOP DETECTED, INITIATING EVASIVE MANEUVERS"); // TODO: test this because it doesn't look like
+                                                                         // it ever works
 
-    if (/* distance > minDistanceToTarget && */ area != 0) tankDrive(lPercentOutput, rPercentOutput); // Just ignore the distance check for now...
-    else tankDrive(0, 0);
+    if (/* distance > minDistanceToTarget && */ area != 0)
+      tankDrive(lPercentOutput, rPercentOutput); // Just ignore the distance check for now...
+    else
+      tankDrive(0, 0);
 
-    Robot.log.writeLogEcho("DriveTrain", "Vision Tracking", "Crosshair Horiz Offset," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget()
-     + ",Target Area," + area + ",Joystick Ouput," + lJoystickAdjust + ",Left Percent," + lPercentOutput + ",Right Percent," + rPercentOutput);
+    Robot.log.writeLogEcho("DriveTrain", "Vision Tracking",
+        "Crosshair Horiz Offset," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget() + ",Target Area,"
+            + area + ",Joystick Ouput," + lJoystickAdjust + ",Left Percent," + lPercentOutput + ",Right Percent,"
+            + rPercentOutput);
   }
 
   /**
@@ -542,59 +567,67 @@ public class DriveTrain extends Subsystem {
       this.robotDrive.tankDrive(0, 0);
     }
     updateEncoderList();
-    //Robot.log.writeLog("DriveTrain", "Vision Turning", "Degrees from Target," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget() + ",Target Area," + Robot.vision.areaFromCamera);
+    // Robot.log.writeLog("DriveTrain", "Vision Turning", "Degrees from Target," +
+    // xVal + ",Inches from Target," + Robot.vision.distanceFromTarget() + ",Target
+    // Area," + Robot.vision.areaFromCamera);
   }
 
   public void driveOnLine() {
-    // TODO: Integrate quadrants and gyro to correct based on which side of the line we're on
+    // TODO: Integrate quadrants and gyro to correct based on which side of the line
+    // we're on
     // TODO: Explain to Rob why that is needed
     double lPercentPower = 0;
     double rPercentPower = 0;
     double baseSpeed = 0.7; // Lowered from 1 for new line sensors further out, untested
 
     int lineNum = Robot.lineFollowing.getLineNumber();
-    //System.out.println("Line Number:" + lineNum);
+    // System.out.println("Line Number:" + lineNum);
     if (lineNum == 0) {
       // Straight
-      //lPercentPower = .55*baseSpeed;
-      //rPercentPower = .55*baseSpeed;
-      lPercentPower = 0.65*baseSpeed;
-      rPercentPower = 0.65*baseSpeed;
+      // lPercentPower = .55*baseSpeed;
+      // rPercentPower = .55*baseSpeed;
+      lPercentPower = 0.65 * baseSpeed;
+      rPercentPower = 0.65 * baseSpeed;
     } else if (lineNum == 1) {
       // Turn left slight?
-      lPercentPower = .6*baseSpeed;
-      rPercentPower = 0*baseSpeed;
+      lPercentPower = .6 * baseSpeed;
+      rPercentPower = 0 * baseSpeed;
     } else if (lineNum == -1) {
       // Turn right slight?
-      lPercentPower = 0*baseSpeed;
-      rPercentPower = .6*baseSpeed;
+      lPercentPower = 0 * baseSpeed;
+      rPercentPower = .6 * baseSpeed;
     } else if (lineNum == -2) {
       // Turn left
-      lPercentPower = .8*baseSpeed;
-      rPercentPower = -.8*baseSpeed;
+      lPercentPower = .8 * baseSpeed;
+      rPercentPower = -.8 * baseSpeed;
     } else if (lineNum == 2) {
       // Turn right
-      lPercentPower = -.8*baseSpeed;
-      rPercentPower = .8*baseSpeed;
+      lPercentPower = -.8 * baseSpeed;
+      rPercentPower = .8 * baseSpeed;
     } else {
       // Drive forwards in hopes of recovering the line?
       lPercentPower = 0.3;
       rPercentPower = 0.3;
     }
 
-    Robot.log.writeLogEcho("DriveTrain", "Line Tracking", "Line Number," + lineNum + ",Left Percent," + lPercentPower + ",Right Percent," + rPercentPower);
+    Robot.log.writeLogEcho("DriveTrain", "Line Tracking",
+        "Line Number," + lineNum + ",Left Percent," + lPercentPower + ",Right Percent," + rPercentPower);
 
     /* Untested auto-turn stuff */
-    if (lEncStopped && lPercentPower != 0) rPercentPower = 1.0; // The goal here is to slam the right side so that we still line up to the wall
-    if (rEncStopped && rPercentPower != 0) lPercentPower = 1.0;
-    if (lPercentPower == 1 || rPercentPower == 1) System.out.println("STOP DETECTED, INITIATING EVASIVE MANEUVERS"); 
+    if (lEncStopped && lPercentPower != 0)
+      rPercentPower = 1.0; // The goal here is to slam the right side so that we still line up to the wall
+    if (rEncStopped && rPercentPower != 0)
+      lPercentPower = 1.0;
+    if (lPercentPower == 1 || rPercentPower == 1)
+      System.out.println("STOP DETECTED, INITIATING EVASIVE MANEUVERS");
 
     this.robotDrive.tankDrive(lPercentPower, rPercentPower);
     updateEncoderList();
   }
 
   public void quadrantLineFollowing(double quadrant) {
-    // add a special case for straight down (quadrant 3.5) because of roll over on 180
+    // add a special case for straight down (quadrant 3.5) because of roll over on
+    // 180
     double angleTolerance = 3.0; // degrees
     boolean left = Math.abs(getGyroRotation()) > Math.abs(getTargetAngle(quadrant) + angleTolerance);
     boolean right = Math.abs(getGyroRotation()) < Math.abs(getTargetAngle(quadrant) - angleTolerance);
@@ -612,20 +645,23 @@ public class DriveTrain extends Subsystem {
 
   public void turnToAngle(double pTargetAngle) {
     double turnAngle = 0;
-    double fixSpeed = 0.42;
+    double fixSpeed = 0.4;
     double currentAngle = Robot.driveTrain.getGyroRotation();
     double targetAngle = pTargetAngle; // Depends on a button press TBD
     boolean sameSide = false;
     boolean inRightRange = false;
     boolean fasterToGoThroughZero = false;
-    
+
     if (((targetAngle > 0) && (currentAngle > 0) || ((targetAngle < 0) && (currentAngle < 0)))) {
-      sameSide = true;
+      //when the angles are on the same side, you obtain the turn angle by
+      // subtracting one angle from the other
       turnAngle = Math.abs((Math.abs(currentAngle) - Math.abs(targetAngle)));
     } else {
       sameSide = false;
+      //when the angles are on opposite sides, you obtain the turn angle by
+      // checking whether it's faster to go through zero degrees or if its faster to go through 180
       if (180 > (180 - Math.abs(currentAngle) + (180 - Math.abs(targetAngle)))) {
-        turnAngle = (180 - Math.abs(currentAngle) + 180 - Math.abs(targetAngle));
+        turnAngle = ((180 - Math.abs(currentAngle)) + (180 - Math.abs(targetAngle)));
         fasterToGoThroughZero = false;
       } else {
         turnAngle = Math.abs(currentAngle) + Math.abs(targetAngle);
@@ -633,60 +669,56 @@ public class DriveTrain extends Subsystem {
       }
     }
 
-  if(targetAngle == 90 && ((currentAngle <90 && currentAngle > 0) || (currentAngle > -90 && currentAngle < 0))){
-    inRightRange = false;
-  }
-  else if ((currentAngle > 0 && targetAngle > 0) && (Math.abs(currentAngle) > Math.abs(targetAngle))){
+
+    if (targetAngle == 90 && ((currentAngle < 90 && currentAngle > 0) || (currentAngle > -90 && currentAngle < 0))) {
+      inRightRange = false;
+    } else if ((currentAngle > 0 && targetAngle > 0) && (Math.abs(currentAngle) > Math.abs(targetAngle))) {
       inRightRange = true;
-    } else if ((currentAngle < 0) && (targetAngle < 0) && (Math.abs(targetAngle) > Math.abs(currentAngle))){
+    } else if ((currentAngle < 0) && (targetAngle < 0) && (Math.abs(targetAngle) > Math.abs(currentAngle))) {
       inRightRange = true;
-    } else if ((currentAngle > targetAngle) && fasterToGoThroughZero == true){
+    } else if ((currentAngle > targetAngle) && fasterToGoThroughZero == true) {
       inRightRange = true;
     } else {
       inRightRange = false;
     }
 
-
-    if(inRightRange == false){
+    if (inRightRange == false) {
       turnAngle = turnAngle * (-1);
-
-    double baseSpeed = 0.7; // Lowered from 1 for new line sensors further out, untested
-    int lineNum = Robot.lineFollowing.getLineNumber();
-    double lPercentPower = 0.0, rPercentPower = 0.0;
-
-    if (left) {
-      if (lineNum == 0) {
-        // Straight
-        //lPercentPower = .55*baseSpeed;
-        //rPercentPower = .55*baseSpeed;
-        lPercentPower = 0.65*baseSpeed;
-        rPercentPower = 0.65*baseSpeed;
-      } else if (lineNum == 1) {
-        // Turn left slight?
-        lPercentPower = .6*baseSpeed;
-        rPercentPower = 0*baseSpeed;
-      } else if (lineNum == -1) {
-        // Turn right slight?
-        lPercentPower = 0*baseSpeed;
-        rPercentPower = .6*baseSpeed;
-      } else if (lineNum == -2) {
-        // Turn left
-        lPercentPower = .8*baseSpeed;
-        rPercentPower = -.8*baseSpeed;
-      } else if (lineNum == 2) {
-        // Turn right
-        lPercentPower = -.8*baseSpeed;
-        rPercentPower = .8*baseSpeed;
-      } else {
-        // Drive forwards in hopes of recovering the line?
-        lPercentPower = 0.3;
-        rPercentPower = 0.3;
-      }
     }
+
+    /*
+     * double baseSpeed = 0.7; // Lowered from 1 for new line sensors further out,
+     * untested int lineNum = Robot.lineFollowing.getLineNumber(); double
+     * lPercentPower = 0.0, rPercentPower = 0.0;
+     * 
+     * if (left) { if (lineNum == 0) { // Straight // lPercentPower = .55*baseSpeed;
+     * // rPercentPower = .55*baseSpeed; lPercentPower = 0.65 * baseSpeed;
+     * rPercentPower = 0.65 * baseSpeed; } else if (lineNum == 1) { // Turn left
+     * slight? lPercentPower = .6 * baseSpeed; rPercentPower = 0 * baseSpeed; } else
+     * if (lineNum == -1) { // Turn right slight? lPercentPower = 0 * baseSpeed;
+     * rPercentPower = .6 * baseSpeed; } else if (lineNum == -2) { // Turn left
+     * lPercentPower = .8 * baseSpeed; rPercentPower = -.8 * baseSpeed; } else if
+     * (lineNum == 2) { // Turn right lPercentPower = -.8 * baseSpeed; rPercentPower
+     * = .8 * baseSpeed; } else { // Drive forwards in hopes of recovering the line?
+     * lPercentPower = 0.3; rPercentPower = 0.3; } }
+     */
+
+    System.out.println("turn angle is " + turnAngle + "current angle is " + currentAngle);
+    System.out.println("is right boolean " + inRightRange);
+
+    double lPercentOutput = fixSpeed + (0.037 * turnAngle);
+    double rPercentOutput = fixSpeed + (0.037 * turnAngle);
+
+    if (turnAngle > 5) {
+      this.robotDrive.tankDrive(lPercentOutput, -lPercentOutput);
+    } else if (turnAngle < -5) {
+      this.robotDrive.tankDrive(-rPercentOutput, rPercentOutput);
+    } else {
+      this.robotDrive.tankDrive(0, 0);
+    }
+
   }
-    
-  }
-  
+
   public void quadrantLineFollowing() {
     quadrantLineFollowing(checkScoringQuadrant());
   }
@@ -707,26 +739,12 @@ public class DriveTrain extends Subsystem {
         updateDriveLog();
         verifyMotors(RobotMap.leftMotor1PDP, RobotMap.leftMotor2PDP, RobotMap.leftMotor3PDP, true);
         verifyMotors(RobotMap.rightMotor1PDP, RobotMap.rightMotor2PDP, RobotMap.rightMotor3PDP, false);
-        Robot.lineFollowing.logLineFollowers(); // This is the best place for this I guess -- only updates about every 0.5 second
-        periodicCount=0;  
+        Robot.lineFollowing.logLineFollowers(); // This is the best place for this I guess -- only updates about every
+                                                // 0.5 second
+        periodicCount = 0;
       }
-    }
-    
-      System.out.println("turn angle is " + turnAngle + "current angle is " + currentAngle);
-      System.out.println("is right boolean " + inRightRange);
-
-      double lPercentOutput = fixSpeed + (0.02 * turnAngle);
-    double rPercentOutput = fixSpeed - (0.02 * turnAngle);
-
-    
-   if (turnAngle > 0.5) {
-      this.robotDrive.tankDrive(lPercentOutput, -lPercentOutput);
-    } else if (turnAngle < -0.5) {
-      this.robotDrive.tankDrive(-rPercentOutput, rPercentOutput);
-    } else {
-      this.robotDrive.tankDrive(0, 0);
-    }
-    
     }
 
   }
+
+}
