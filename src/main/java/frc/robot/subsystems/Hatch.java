@@ -11,16 +11,16 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
 import frc.robot.utilities.RobotPreferences;
-import frc.robot.utilities.RobotPreferences.HatchPistonPositions;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.Solenoid;
+
 
 public class Hatch extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  private final DoubleSolenoid hatchPiston = new DoubleSolenoid(RobotMap.pneumaticHatchOut, RobotMap.pneumaticHatchIn);
-  private HatchPistonPositions hatchPosition = HatchPistonPositions.unknown;
+  private final Solenoid hatchPiston = new Solenoid(RobotMap.pneumaticHatchOut);
+  //private HatchPistonPositions hatchPosition = HatchPistonPositions.unknown;
+  private boolean hatchPosition = true;
 
   public Hatch() {
   }
@@ -28,17 +28,17 @@ public class Hatch extends Subsystem {
   /**
 	 * Sets the position of the hatch piston
 	 * 
-	 * @param position only accepts PistonPositions.Extended and PistonPositions.Retracted, other values are ignored
+	 * @param position true is grab hatch; false is release hatch
 	 */
-  public void setHatchPiston(RobotPreferences.HatchPistonPositions position) {
-    if (position == RobotPreferences.HatchPistonPositions.grab) {
-      hatchPiston.set(Value.kForward);
-      hatchPosition = HatchPistonPositions.grab;
+  public void setHatchPiston(boolean position) {
+    if (position == true) {
+      hatchPiston.set(true);
+      hatchPosition = true;
       SmartDashboard.putString("Disc Position", "Grab");
 		}
-		if (position == RobotPreferences.HatchPistonPositions.release) {
-      hatchPiston.set(Value.kReverse);
-      hatchPosition = HatchPistonPositions.release;
+		if (position == false) {
+      hatchPiston.set(false);
+      hatchPosition = false;
       SmartDashboard.putString("Disc Position", "Release");
     }
   }
@@ -47,7 +47,7 @@ public class Hatch extends Subsystem {
 	 * 
 	 * @return position of hatch piston
 	 */
-	public HatchPistonPositions getHatchPiston() {
+	public boolean getHatchPiston() {
 		return hatchPosition;
 	}
 
