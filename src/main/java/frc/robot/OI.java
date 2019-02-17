@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
 
 import frc.robot.commands.*;
-import frc.robot.subsystems.Climb;
 import frc.robot.triggers.*;
 import frc.robot.utilities.RobotPreferences;
 

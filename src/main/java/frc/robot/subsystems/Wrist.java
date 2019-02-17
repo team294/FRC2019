@@ -28,8 +28,6 @@ public class Wrist extends Subsystem {
 
 	private int posMoveCount = 0; // increments every cycle the wrist moves up
 	private int negMoveCount = 0; // increments every cycle the wrist moves down
-	private int idleCount = 0; // increments every cycle the wrist isn't moving
-	private double prevEnc = 0.0; // last recorded encoder value
 	private double currEnc = 0.0; // current recorded encoder value
 	private double encSnapShot = 0.0; // snapshot of encoder value used to make sure encoder is working
   private boolean encOK = true; // true if encoder works, false if encoder broke
@@ -262,24 +260,7 @@ public class Wrist extends Subsystem {
     }
 
     if (DriverStation.getInstance().isEnabled()) {
-			prevEnc = currEnc;
-			currEnc = getWristEncoderTicks();
-			if (currEnc == prevEnc) {
-				idleCount++;
-			} else {
-				idleCount = 0;
-      }
-      
-      /*
-			if (idleCount >= 50) {
-				if ((++periodicCount) >= 25) {
-					updateWristLog();
-					periodicCount = 0;
-				}
-			} else {
-				updateWristLog();
-      }*/
-      
+ 
       if (Robot.log.getLogRotation() == FileLog.WRIST_CYCLE) {
         updateWristLog();
       }
@@ -293,6 +274,7 @@ public class Wrist extends Subsystem {
       // Following code checks whether the encoder is incrementing in the same direction as the 
       // motor is moving and changes control modes based on state of encoder
       
+			currEnc = getWristEncoderTicks();
       if (wristMotor.getMotorOutputVoltage() > 5) {
         if (posMoveCount == 0) {
           encSnapShot = getWristEncoderTicks();

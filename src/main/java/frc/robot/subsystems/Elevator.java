@@ -37,8 +37,6 @@ public class Elevator extends Subsystem {
 	private int posMoveCount = 0; // increments every cycle the elevator moves up
 	private int negMoveCount = 0; // increments every cycle the elevator moves down
 	private int motorFaultCount = 0; // increments every cycle the motor detects an issue
-	private int idleCount = 0; // increments every cycle the elevator isn't moving
-	private double prevEnc = 0.0; // last recorded encoder value
 	private double currEnc = 0.0; // current recorded encoder value
 	private double encSnapShot = 0.0; // snapshot of encoder value used to make sure encoder is working
 	private boolean elevEncOK = true; // true is encoder working, false is encoder broken
@@ -257,13 +255,6 @@ public class Elevator extends Subsystem {
 		if (DriverStation.getInstance().isEnabled()) {
 
 			verifyMotors(); // What is the concrete use for this?  Move to a pit command, instead of live during match?
-			prevEnc = currEnc;
-			currEnc = getElevatorEncTicks();
-			if (currEnc == prevEnc) {
-				idleCount++;
-			} else {
-				idleCount = 0;
-			}
 
 			if (Robot.log.getLogRotation() == FileLog.ELEVATOR_CYCLE) {
 				updateElevatorLog();
@@ -276,6 +267,7 @@ public class Elevator extends Subsystem {
 			and the elevator is stalled. This is just more code to run in periodic() */
 			// TODO: Delete everything below this
 
+			currEnc = getElevatorEncTicks();
 			if (elevatorMotor1.getMotorOutputVoltage() > 5) {
 				if (posMoveCount == 0) {
 					encSnapShot = getElevatorEncTicks();

@@ -40,7 +40,6 @@ public class Climb extends Subsystem {
   //private final DigitalInput vacuumSwitch = new DigitalInput(RobotMap.vacuumSwitch);
   private final SensorCollection climbLimit;
   private int vacuumAchievedCount = 0; //increments every cycle vacuum is achieved
-  private boolean vacuumOn = false; //true is on, false is off
 
   private double rampRate = 0.5;
   private double kP = 2;
@@ -48,8 +47,8 @@ public class Climb extends Subsystem {
   private double kD = 0;
   private double kFF = 0;
   private int kIz = 0;
-  private double kMaxOutput = 1.0;	   // TODO change to 1.0 after testing for max speed
-  private double kMinOutput = -1.0;    // TODO change to -1.0 after testing for max speed
+  private double kMaxOutput = 1.0;
+  private double kMinOutput = -1.0;
 
   public Climb() {
     enableCompressor(true);
@@ -129,11 +128,9 @@ public class Climb extends Subsystem {
   public void enableVacuum(boolean turnOn) {
     if (turnOn) {
       climbVacuum.set(ControlMode.PercentOutput, 1.0);
-      vacuumOn = true;
       //climbVacuum2.set(ControlMode.PercentOutput, 0.5);
     }
     else {
-      vacuumOn = false;
       climbVacuum.set(ControlMode.PercentOutput, 0.0);
       //climbVacuum2.set(ControlMode.PercentOutput, 0.0);
     }
