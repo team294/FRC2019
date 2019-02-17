@@ -10,33 +10,32 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ClimbLiftRobot extends Command {
+public class ClimbArmSetAngle extends Command {
+  
+  private double angle;
 
-  double climbAng;
-
-  public ClimbLiftRobot(double climbAng) {
+  public ClimbArmSetAngle(double angle) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.climb);
-    this.climbAng = climbAng;
+    this.angle = angle;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.climb.setClimbPos(climbAng);
+    Robot.climb.setClimbPos(angle);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.climb.updateClimbLog();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Robot.climb.getClimbAngle() >= climbAng - 8;
+    return (!Robot.robotPrefs.climbCalibrated || Math.abs(angle - Robot.climb.getClimbAngle())<5.0);
   }
 
   // Called once after isFinished returns true

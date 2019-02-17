@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
     // Create file log first, so any other class constructors can log data
     log = new FileLog("1");
 
-    // Read robot preference next, so any other class constructros can use preferences 
+    // Read robot preference next, so any other class constructors can use preferences 
     robotPrefs = new RobotPreferences();
     robotPrefs.doExist();   // Sets up Robot Preferences if they do not exist : ie you just replaced RoboRio
     
