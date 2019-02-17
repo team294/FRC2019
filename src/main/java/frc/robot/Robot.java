@@ -27,7 +27,8 @@ import frc.robot.subsystems.*;
  * project.
  */
 public class Robot extends TimedRobot {
-  public static DriveTrain driveTrain;
+  public static final String ClimbPressure = null;
+public static DriveTrain driveTrain;
   public static Shifter shifter;
   public static Elevator elevator;
   public static Wrist wrist;
@@ -35,6 +36,7 @@ public class Robot extends TimedRobot {
   public static Hatch hatch;
   public static VisionData vision;
   public static LineFollowing lineFollowing;
+  public static ClimbPressure climbPressure;
   public static Climb climb;
   public static OI oi;
   public static FileLog log;
@@ -69,6 +71,7 @@ public class Robot extends TimedRobot {
     hatch = new Hatch();
     vision = new VisionData();
     lineFollowing = new LineFollowing();
+    climbPressure = new ClimbPressure();
     climb = new Climb();
     pdp = new PowerDistributionPanel();
     // pdp.clearStickyFaults();
@@ -93,6 +96,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     Robot.lineFollowing.displayLineSensors();
+    Robot.climbPressure.displayVacuum();
     Robot.driveTrain.getGyroRotation();
     // Robot.log.writeLog("Robot", "periodic", "current time," + System.currentTimeMillis());
   }
