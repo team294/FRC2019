@@ -42,7 +42,7 @@ public class WristMoveToAngle extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    if(targetAngle) {
+    if (targetAngle) {
       Robot.wrist.setWristAngle(target);
     } else {
       switch (angle) {
@@ -65,6 +65,7 @@ public class WristMoveToAngle extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    Robot.wrist.updateWristLog();
   }
 
   // Make this return true when this Command no longer needs to run execute()
