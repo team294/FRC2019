@@ -256,7 +256,7 @@ public class Elevator extends Subsystem {
 		// on the set logLevel, Motors are checked every cycle regardless
 		if (DriverStation.getInstance().isEnabled()) {
 
-			verifyMotors(); // What is the concrete use for this?
+			verifyMotors(); // What is the concrete use for this?  Move to a pit command, instead of live during match?
 			prevEnc = currEnc;
 			currEnc = getElevatorEncTicks();
 			if (currEnc == prevEnc) {
@@ -264,35 +264,6 @@ public class Elevator extends Subsystem {
 			} else {
 				idleCount = 0;
 			}
-
-			/* Are we better off handling elevator position tracking in a command where the elevator is moving (like execute() in 
-			ElevatorSetToLevel) rather than in periodic every single cycle? That would simplify logic immensely and reduce most of the code below. */
-
-			/*
-			if (Robot.log.getLogLevel() == 1) {
-				updateElevatorLog();
-			} else if (Robot.log.getLogLevel() == 2) {
-				if (idleCount >= 25) {
-					if (periodicCount++ >= 10) {
-						updateElevatorLog();
-						periodicCount = 0;
-					}
-				} else {
-				updateElevatorLog();
-				}
-			} else if (Robot.log.getLogLevel() == 3) {
-				if (idleCount >= 50) {
-					if ((periodicCount++) >= 25) {
-						updateElevatorLog();
-						periodicCount = 0;
-					}
-				} else {
-					if ((periodicCount++) >= 10) {
-						updateElevatorLog();
-						periodicCount = 0;
-					}
-				}
-			}*/
 
 			if (Robot.log.getLogRotation() == FileLog.ELEVATOR_CYCLE) {
 				updateElevatorLog();

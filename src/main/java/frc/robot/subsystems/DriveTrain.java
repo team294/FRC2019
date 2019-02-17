@@ -635,11 +635,13 @@ public class DriveTrain extends Subsystem {
     SmartDashboard.putNumber("LeftEnc", getLeftEncoderTicks());
 
     if (DriverStation.getInstance().isEnabled()) {
-      if (Robot.log.getLogRotation() == FileLog.WRIST_CYCLE) { // Log on int 1
+      if (Robot.log.getLogRotation() == FileLog.DRIVE_CYCLE) {
         updateDriveLog();
+        Robot.lineFollowing.logLineFollowers();
+
+        // TODO move verifyMotors to a pit command, instead of a live command during a match
         verifyMotors(RobotMap.leftMotor1PDP, RobotMap.leftMotor2PDP, RobotMap.leftMotor3PDP, true);
         verifyMotors(RobotMap.rightMotor1PDP, RobotMap.rightMotor2PDP, RobotMap.rightMotor3PDP, false);
-        Robot.lineFollowing.logLineFollowers();
       }
     }
   }

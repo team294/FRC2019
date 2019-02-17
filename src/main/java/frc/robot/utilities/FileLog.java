@@ -15,8 +15,9 @@ public class FileLog {
 	private String fileNameBase, fileNameFull;
 	private long startTime;
 	private int logLevel = 3;			// File logging level of detail.  Value between 1-3, where 1 is the most detailed and 3 is the least detailed.
+	
+	// File logging rotation cycles, to spread out logging times between subsystems	
 	public int rotation = 0;
-
 	public final static int DRIVE_CYCLE = 1;
 	public final static int ELEVATOR_CYCLE = 3;
 	public final static int WRIST_CYCLE = 5;
@@ -140,20 +141,20 @@ public class FileLog {
 	}
 
 	/** 
-	 * Advances the rotation counter by one place, and resets if above threshhold
+	 * Advances the log rotation counter by one place, and resets if above threshhold for the current log level
 	 */
-	public void advanceRotation() {
+	public void advanceLogRotation() {
 		rotation++;
 		if (logLevel == 3) {
-			if (rotation > 25) rotation = 0;
+			if (rotation >= 25) rotation = 0;
 		} else {
-			if (rotation > 10) rotation = 0;
+			if (rotation >= 10) rotation = 0;
 		}
 	}
 
 	/**
 	 * Gets the index of the file log rotation
-	 * @return int between 0 and 10 (log levels 1 or 2) or between 0 and 25 (log level 3)
+	 * @return int between 0 and 9 (log levels 1 or 2) or between 0 and 24 (log level 3)
 	 */
 	public int getLogRotation() {
 		return rotation;
