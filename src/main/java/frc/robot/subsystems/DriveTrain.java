@@ -643,21 +643,29 @@ public class DriveTrain extends Subsystem {
     }
   }
 
+  
+
   public void turnToAngle(double pTargetAngle) {
     double turnAngle = 0;
-    double fixSpeed = 0.4;
+    double fixSpeed = 0.3;
     double currentAngle = Robot.driveTrain.getGyroRotation();
     double targetAngle = pTargetAngle; // Depends on a button press TBD
-    boolean sameSide = false;
     boolean inRightRange = false;
     boolean fasterToGoThroughZero = false;
+    boolean isFinished = false;
 
+    while(isFinished == false){
+    currentAngle = Robot.driveTrain.getGyroRotation();
     if (((targetAngle > 0) && (currentAngle > 0) || ((targetAngle < 0) && (currentAngle < 0)))) {
       //when the angles are on the same side, you obtain the turn angle by
       // subtracting one angle from the other
       turnAngle = Math.abs((Math.abs(currentAngle) - Math.abs(targetAngle)));
+      if((targetAngle > 0 && currentAngle > 0) && (targetAngle > currentAngle)){
+        inRightRange = true;
+      } else if ((targetAngle < 0 && currentAngle < 0) && (currentAngle < targetAngle)){
+        inRightRange = true;
+      }
     } else {
-      sameSide = false;
       //when the angles are on opposite sides, you obtain the turn angle by
       // checking whether it's faster to go through zero degrees or if its faster to go through 180
       if (180 > (180 - Math.abs(currentAngle) + (180 - Math.abs(targetAngle)))) {
@@ -667,24 +675,32 @@ public class DriveTrain extends Subsystem {
         turnAngle = Math.abs(currentAngle) + Math.abs(targetAngle);
         fasterToGoThroughZero = true;
       }
-    }
-
-
-    if (targetAngle == 90 && ((currentAngle < 90 && currentAngle > 0) || (currentAngle > -90 && currentAngle < 0))) {
-      inRightRange = false;
-    } else if ((currentAngle > 0 && targetAngle > 0) && (Math.abs(currentAngle) > Math.abs(targetAngle))) {
-      inRightRange = true;
-    } else if ((currentAngle < 0) && (targetAngle < 0) && (Math.abs(targetAngle) > Math.abs(currentAngle))) {
-      inRightRange = true;
-    } else if ((currentAngle > targetAngle) && fasterToGoThroughZero == true) {
-      inRightRange = true;
-    } else {
-      inRightRange = false;
-    }
+      if(fasterToGoThroughZero == true && currentAngle < 0){
+        inRightRange = true;
+      } else if (fasterToGoThroughZero == false && currentAngle > 0){
+        inRightRange = true;
+      }
+    }    
 
     if (inRightRange == false) {
       turnAngle = turnAngle * (-1);
     }
+  
+    System.out.println("turn angle is " + turnAngle + "current angle is " + currentAngle);
+    System.out.println("is right boolean " + inRightRange);
+
+    double rPercentOutput = fixSpeed + (0.03 * turnAngle);
+    double lPercentOutput = fixSpeed - (0.03 * turnAngle);
+
+    if (turnAngle > 5) {
+      this.robotDrive.tankDrive(rPercentOutput, -rPercentOutput);
+    } else if (turnAngle < -5) {
+      System.out.println("turning left");
+      this.robotDrive.tankDrive(-lPercentOutput, lPercentOutput);
+    } else {
+      isFinished = true;
+      this.robotDrive.tankDrive(0, 0);
+    } 
 
     /*
      * double baseSpeed = 0.7; // Lowered from 1 for new line sensors further out,
@@ -702,20 +718,7 @@ public class DriveTrain extends Subsystem {
      * = .8 * baseSpeed; } else { // Drive forwards in hopes of recovering the line?
      * lPercentPower = 0.3; rPercentPower = 0.3; } }
      */
-
-    System.out.println("turn angle is " + turnAngle + "current angle is " + currentAngle);
-    System.out.println("is right boolean " + inRightRange);
-
-    double lPercentOutput = fixSpeed + (0.037 * turnAngle);
-    double rPercentOutput = fixSpeed + (0.037 * turnAngle);
-
-    if (turnAngle > 5) {
-      this.robotDrive.tankDrive(lPercentOutput, -lPercentOutput);
-    } else if (turnAngle < -5) {
-      this.robotDrive.tankDrive(-rPercentOutput, rPercentOutput);
-    } else {
-      this.robotDrive.tankDrive(0, 0);
-    }
+     }
 
   }
 
