@@ -88,18 +88,7 @@ public class VisionData {
     * 
     */
     public double distanceFromTarget (){
-        double myDistance = 0.0;
-        double cameraOffset = 12.0;
-    
-        // reference distance = 23.75 inches
-        // reference area =  3.5 (the units that are used in limelight)
-        //myDistance = 23.75 * Math.sqrt(areaFromCamera/3.5);
-        myDistance = 23.75 * Math.sqrt(3.5/areaFromCamera) - cameraOffset;
-
-        //myDistance = (targetHeight - camMountHeight) / Math.tan(camMountAngle + vertOffset);
-
-        return myDistance;
+        double distance = 3.7 * vertOffset + 65.9; // Based on crosshair at default for camera mount on 2018 practice; will need to be updated for real robot
+        return distance;
     }
-
-    // TODO: Redo entire distance formula to be based on height (horiz offset) which also means standardizing crosshair y value
 }
