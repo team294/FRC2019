@@ -9,13 +9,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class PathfinderLoadToRocket extends CommandGroup {
+public class PathfinderRLoadToRocket extends CommandGroup {
   /**
    * Add your docs here.
    */
-  public PathfinderLoadToRocket() {
+  public PathfinderRLoadToRocket() {
     addSequential(new DrivePathfinder("RLoadToRocketPT1-A", true, false));
-    // addSequential(new TurnGyro(90)); //TODO add TurnGyro command
+    addSequential(new TurnGyro(90)); // TODO test TurnGyro
     addSequential(new DrivePathfinder("RLoadToRocketPT2-A", false, true));
   }
 }

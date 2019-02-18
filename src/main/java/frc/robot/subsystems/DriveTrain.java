@@ -625,6 +625,69 @@ public class DriveTrain extends Subsystem {
     quadrantLineFollowing(checkScoringQuadrant());
   }
 
+  /**
+   * 
+   * @param target target angle to turn to
+   */
+  public void turnToAngle(double target) {
+    double turnAngle = 0;
+    double fixSpeed = 0.3;
+    double currentAngle = Robot.driveTrain.getGyroRotation();
+    double targetAngle = target;
+    boolean inCorrectRange = false;
+    boolean fasterToGoThroughZero = false;
+    boolean turnComplete = false;
+
+    while (!turnComplete) {
+      currentAngle = Robot.driveTrain.getGyroRotation();
+      if (((targetAngle > 0) && (currentAngle > 0) || ((targetAngle < 0) && (currentAngle < 0)))) {
+        // when the angles are on the same side, you obtain the turn angle by subtracting one angle from the other
+        turnAngle = Math.abs((Math.abs(currentAngle) - Math.abs(targetAngle)));
+        if ((targetAngle > 0 && currentAngle > 0) && (targetAngle > currentAngle)){
+          inCorrectRange = true;
+        } else if ((targetAngle < 0 && currentAngle < 0) && (currentAngle < targetAngle)){
+          inCorrectRange = true;
+        }
+      } else {
+        // when the angles are on opposite sides, you obtain the turn angle by checking whether
+        // it is faster to go through zero degrees or if it is faster to go through 180
+        if (180 > (180 - Math.abs(currentAngle) + (180 - Math.abs(targetAngle)))) {
+          turnAngle = ((180 - Math.abs(currentAngle)) + (180 - Math.abs(targetAngle)));
+          fasterToGoThroughZero = false;
+        } else {
+          turnAngle = Math.abs(currentAngle) + Math.abs(targetAngle);
+          fasterToGoThroughZero = true;
+        }
+        if (fasterToGoThroughZero == true && currentAngle < 0){
+          inCorrectRange = true;
+        } else if (fasterToGoThroughZero == false && currentAngle > 0){
+          inCorrectRange = true;
+        }
+      }    
+
+      if (inCorrectRange == false) {
+        turnAngle = turnAngle * (-1);
+      }
+    
+      // System.out.println("Turn angle is " + turnAngle + "current angle is " + currentAngle);
+      // System.out.println("Is right boolean " + inCorrectRange);
+
+      double rPercentOutput = fixSpeed + (0.03 * turnAngle);
+      double lPercentOutput = fixSpeed - (0.03 * turnAngle);
+
+      if (turnAngle > 5) {
+        this.robotDrive.tankDrive(rPercentOutput, -rPercentOutput);
+      } else if (turnAngle < -5) {
+        System.out.println("turning left");
+        this.robotDrive.tankDrive(-lPercentOutput, lPercentOutput);
+      } else {
+        turnComplete = true;
+        this.robotDrive.tankDrive(0, 0);
+      } 
+    }
+
+  }
+
   @Override
   public void initDefaultCommand() {
     setDefaultCommand(new DriveWithJoysticks());
