@@ -42,7 +42,7 @@ public class RobotMap {
   public static final int lineFollowerLeft = 2;
   public static final int lineFollowerCenter = 1;
   public static final int lineFollowerRight = 0;
-  //public static final int vacuumSwitch = 3;
+  public static final int vacuumSwitch = 3;  // Gnd (black) = "C" common, White (sense) = "NC" normally closed
   public static final int elevatorLowerLimit = 4;
   
   // PDP Addresses
