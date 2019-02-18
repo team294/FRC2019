@@ -76,8 +76,8 @@ public class OI {
       right[i] = new JoystickButton(rightJoystick, i);
 
       if (i == 1) {
-        left[i].whenPressed(new Shift(false));
-        right[i].whenPressed(new Shift(true));
+        left[i].whenPressed(new Shift(true));
+        right[i].whenPressed(new Shift(false));
       } else if (i == 2) {
         left[i].whenPressed(new DriveAssist());
         right[i].whenPressed(new DriveAssist());
@@ -87,6 +87,11 @@ public class OI {
         left[i].whenPressed(new DriveWithVision(false, true)); // No line followers, but gyro correction
         left[i].whenReleased(new DriveWithJoysticks());
         right[i].whenPressed(new DriveWithVision(false, false)); // No line followers, no gyro
+        right[i].whenReleased(new DriveWithJoysticks());
+      } else if (i == 11 || i == 10) {
+        left[i].whenPressed(new DriveWithLineFollowing(true));
+        left[i].whenReleased(new DriveWithJoysticks());
+        right[i].whenPressed(new DriveWithLineFollowing(false));
         right[i].whenReleased(new DriveWithJoysticks());
       }
     }
@@ -105,7 +110,6 @@ public class OI {
     xBoxX.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.cargoShipCargo));
     
     SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true, true));
-    SmartDashboard.putData("Drive on line", new DriveWithLineFollowing());
 
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
@@ -132,6 +136,7 @@ public class OI {
     SmartDashboard.putData("Log 3 Competition", new FileLogSetLevel(3));
     Robot.log.setLogLevel(3);   // Also puts log level indicator on ShuffleBoard
 
+    // These aren't useful; they don't update when the robot is running
     SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
     SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
     SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));

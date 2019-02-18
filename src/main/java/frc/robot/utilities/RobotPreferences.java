@@ -71,7 +71,7 @@ public class RobotPreferences {
 	//TODO Test and adjust angles when climb is built
 	public final double climbStartingAngle = 120.0;
 	public final double climbLiftAngle = 125.0;
-	public final double climbVacuumAngle = 0.0;
+	public final double climbVacuumAngle = -5.0;
 	public final double climbMinAngle = -20.0;
 
 	/**
