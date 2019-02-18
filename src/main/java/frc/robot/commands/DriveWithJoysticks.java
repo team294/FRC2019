@@ -36,6 +36,8 @@ public class DriveWithJoysticks extends Command {
     } else {
       Robot.driveTrain.tankDrive(leftValue, rightValue);
     }
+    //SmartDashboard.putBoolean("Vision Assistance Available", Robot.vision.areaFromCamera != 0); // May move to teleopPeriodic
+    // Tells us if vision is available for the rocket. Will need to be updated for when scoring balls.
   }
 
   // Make this return true when this Command no longer needs to run execute()
