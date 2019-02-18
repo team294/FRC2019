@@ -33,10 +33,11 @@ public class RobotPreferences {
 	* Measurements
 	*/
 	// Wrist Angles (in degrees)
-	public static final double WristStowed = 107.36;
-	public static final double WristUp = 15.0;
-	public static final double WristStraight = 0.0;
-	public static final double WristDown = -45.0;
+	public final double wristStowed = 107.36;
+	public final double wristUp = 15.0;
+	public final double wristStraight = 0.0;
+	public final double wristDown = -45.0;
+	public final double wristClimbSafe = 100.0; //TODO check when wrist and climb are testable
 	public enum WristAngle {stowed, up, straight, down}
 
 	// TODO Update with 2019 base
@@ -67,7 +68,9 @@ public class RobotPreferences {
 
 	//Climb Target Angles (in degrees)
 	//TODO Test and adjust angles when climb is built
-	public final double climbStartingAngle = 120.0;
+	public final double climbLimitAngle = 160.0;
+	public final double climbWristStowedSafe = 145.0;
+	public final double climbWristMovingSafe = 130.0;
 	public final double climbLiftAngle = 125.0;
 	public final double climbVacuumAngle = -5.0;
 	public final double climbMinAngle = -20.0;
@@ -196,9 +199,9 @@ public class RobotPreferences {
 	public void setWristCalibration(double wristCalZero, boolean writeCalToPreferences) {
 		this.wristCalZero = wristCalZero;
 		if (Robot.wrist.getWristUpperLimit()) {
-			wristCalZero = Robot.wrist.getWristEncoderTicksRaw() - Robot.wrist.degreesToEncoderTicks(WristStowed);
+			wristCalZero = Robot.wrist.getWristEncoderTicksRaw() - Robot.wrist.degreesToEncoderTicks(wristStowed);
 		} else if (Robot.wrist.getWristLowerLimit()) {
-			wristCalZero = Robot.wrist.getWristEncoderTicksRaw() - Robot.wrist.degreesToEncoderTicks(WristDown);
+			wristCalZero = Robot.wrist.getWristEncoderTicksRaw() - Robot.wrist.degreesToEncoderTicks(wristDown);
 		} else {
 			return;
 		}

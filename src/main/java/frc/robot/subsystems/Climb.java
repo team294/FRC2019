@@ -117,6 +117,8 @@ public class Climb extends Subsystem {
    */
   public void setClimbPos(double angle) {
     if (Robot.robotPrefs.climbCalibrated) {
+      angle = (getClimbAngle() <= Robot.robotPrefs.climbWristMovingSafe && Robot.wrist.getWristAngle() >= Robot.robotPrefs.wristClimbSafe && angle >= Robot.robotPrefs.climbWristMovingSafe) ? Robot.robotPrefs.climbWristMovingSafe : angle;
+      angle = (getClimbAngle() <= Robot.robotPrefs.climbWristStowedSafe && Robot.wrist.getWristAngle() >= Robot.robotPrefs.wristStowed - 5 && angle >= Robot.robotPrefs.climbWristStowedSafe) ? Robot.robotPrefs.climbWristMovingSafe : angle;
       climbMotor2.set(ControlMode.Position, climbAngleToEncTicks(angle) + Robot.robotPrefs.climbCalZero);
     }
   }
@@ -175,7 +177,7 @@ public class Climb extends Subsystem {
       Robot.log.writeLogEcho("Climb", "Adjust climb", "Below min angle");
 			Robot.robotPrefs.climbCalZero -= Robot.robotPrefs.encoderTicksPerRevolution;
 		}
-		else if(getClimbAngle() > Robot.robotPrefs.climbStartingAngle) {
+		else if(getClimbAngle() > Robot.robotPrefs.climbLimitAngle) {
       Robot.log.writeLogEcho("Climb", "Adjust climb", "Above max angle");
 			Robot.robotPrefs.climbCalZero += Robot.robotPrefs.encoderTicksPerRevolution;
 		}
@@ -267,12 +269,12 @@ public class Climb extends Subsystem {
     // If the climb isn't calibrated at the start of the match, does that mean we can't control the climber at all?
     if (!Robot.robotPrefs.climbCalibrated ) {  // || Robot.beforeFirstEnable
       if (isClimbAtLimitSwitch()) {
-        calibrateClimbEnc(Robot.robotPrefs.climbStartingAngle, false);
+        calibrateClimbEnc(Robot.robotPrefs.climbLimitAngle, false);
       }
     }
     
     // Un-calibrates the climb if the angle is outside of bounds... can we figure out a way to not put this in periodic()?
-    if (getClimbAngle() > Robot.robotPrefs.climbStartingAngle || getClimbAngle() < Robot.robotPrefs.climbMinAngle) {
+    if (getClimbAngle() > Robot.robotPrefs.climbLimitAngle || getClimbAngle() < Robot.robotPrefs.climbMinAngle) {
       Robot.robotPrefs.setClimbUncalibrated();
     }
   }

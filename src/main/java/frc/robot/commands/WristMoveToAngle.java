@@ -47,16 +47,16 @@ public class WristMoveToAngle extends Command {
     } else {
       switch (angle) {
         case stowed:
-          Robot.wrist.setWristAngle(RobotPreferences.WristStowed);
+          Robot.wrist.setWristAngle(Robot.robotPrefs.wristStowed);
           break;
         case up:
-          Robot.wrist.setWristAngle(RobotPreferences.WristUp);
+          Robot.wrist.setWristAngle(Robot.robotPrefs.wristUp);
           break;
         case straight:
-          Robot.wrist.setWristAngle(RobotPreferences.WristStraight);
+          Robot.wrist.setWristAngle(Robot.robotPrefs.wristStraight);
           break;
         case down:
-          Robot.wrist.setWristAngle(RobotPreferences.WristDown);
+          Robot.wrist.setWristAngle(Robot.robotPrefs.wristDown);
           break;
       }
     }

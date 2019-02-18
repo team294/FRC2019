@@ -122,7 +122,7 @@ public class OI {
     SmartDashboard.putData("Climb Up", new ClimbArmSetPercentOutput(0.2));  // For testing
     SmartDashboard.putData("Climb Down", new ClimbArmSetPercentOutput(-0.2));  // For testing
     SmartDashboard.putData("Climb move to 0", new ClimbArmSetAngle(0));  // For testing
-    SmartDashboard.putData("Climb move to start", new ClimbArmSetAngle(Robot.robotPrefs.climbStartingAngle + 5));  // For testing
+    SmartDashboard.putData("Climb move to start", new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe + 5));  // For testing
     SmartDashboard.putData("Climb Vacuum On", new ClimbVacuumTurnOn(true));
     SmartDashboard.putData("Climb Vacuum Off", new ClimbVacuumTurnOn(false));
     SmartDashboard.putData("Climb Set Reference", new ClimbEncoderCalibrateAtLimit());

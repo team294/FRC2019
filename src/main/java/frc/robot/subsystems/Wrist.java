@@ -87,6 +87,8 @@ public class Wrist extends Subsystem {
     if (encOK && wristMode && Robot.robotPrefs.wristCalibrated) {
       // TODO determine max degrees and elevator height tolerance
       if (degrees < 60 || (Robot.elevator.getElevatorLowerLimit() && Robot.elevator.getCurrentElevatorTarget() < (Robot.robotPrefs.elevatorBottomToFloor+1))) {
+        degrees = (getWristAngle() >= Robot.robotPrefs.wristClimbSafe && Robot.climb.getClimbAngle() >= Robot.robotPrefs.climbWristMovingSafe && degrees >= Robot.robotPrefs.wristClimbSafe) ? Robot.robotPrefs.wristClimbSafe : degrees;
+        degrees = (getWristAngle() >= Robot.robotPrefs.wristClimbSafe && Robot.climb.getClimbAngle() >= Robot.robotPrefs.climbWristMovingSafe) ? getWristAngle() : degrees;
         wristMotor.set(ControlMode.Position, degreesToEncoderTicks(degrees) + Robot.robotPrefs.wristCalZero);
         if(Robot.log.getLogLevel() <= 2) {
           Robot.log.writeLog("Wrist", "Degrees set", "Target," + degrees);
