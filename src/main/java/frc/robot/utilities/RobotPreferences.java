@@ -26,8 +26,9 @@ public class RobotPreferences {
 	public double wristCalZero;   		// Wrist encoder position at O degrees, in encoder ticks (i.e. the calibration factor)
 	public boolean wristCalibrated = false;     // Default to wrist being uncalibrated.  Calibrate from robot preferences or "Calibrate Wrist Zero" button on dashboard
 	public double climbCalZero; // Climb encoder position at 0 degrees in encoder ticks
-	public boolean climbCalibrated = false; // Default to arm being uncalibrated
-	 
+	public boolean climbCalibrated = false; // Default to climb being uncalibrated
+	public double vacuumCurrentThreshold; // assume left climb vacuum is achieved if this threshold is passed TODO needs to be tested
+
 	/*
 	* Measurements
 	*/
@@ -51,6 +52,10 @@ public class RobotPreferences {
 	// Hatch piston positions
 	public enum HatchPistonPositions { grab, release, moving, unknown }
 
+	/*
+	Measurement variables
+	*/
+
 	// Field level heights (for elevator targeting), in inches
 	public final double hatchLow = 19.0;
   	public final double hatchMid = 47.0;
@@ -61,10 +66,11 @@ public class RobotPreferences {
 	public enum ElevatorPosition {bottom, wristSafe, hatchLow, hatchMid, hatchHigh, cargoShipCargo}
 
 	//Climb Target Angles (in degrees)
-	public final double climbStartingAngle = -50.0; //TODO Test when climb is built
-	public final double vacuumTargetAngle = 180.0; //TODO Test when climb is built
-	public final double robotLiftAngle = 0.0; //TODO Test when climb is built
-
+	//TODO Test and adjust angles when climb is built
+	public final double climbStartingAngle = 120.0;
+	public final double climbLiftAngle = 125.0;
+	public final double climbVacuumAngle = -5.0;
+	public final double climbMinAngle = -20.0;
 
 	/**
 	 * Creates a RobotPreferences object and reads the robot preferences.
@@ -103,24 +109,33 @@ public class RobotPreferences {
 			recordStickyFaults("Preferences-climbCalZero");
 			climbCalZero = 0;
 		}	
+		vacuumCurrentThreshold = prefs.getDouble("vacuumCurrentThreshold", 3.0);
 	}
 
 	/**
-	 * Sets arm angle calibration factor and enables angle control modes for climber.
+	 * Sets climb angle calibration factor and enables angle control modes for climb.
 	 * 
 	 * @param climbCalZero
-	 *            Calibration factor for climber
+	 *            Calibration factor for climb
 	 * @param writeCalToPreferences
-	 *            true = store calibration in Robot Preferences, false = don't
-	 *            change Robot Preferences
+	 *            true = store calibration in RobotPrefs, false = don't change RobotPrefs
 	 */
 	public void setClimbCalibration(double climbCalZero, boolean writeCalToPreferences) {
 		this.climbCalZero = climbCalZero;
 		climbCalibrated = true;
+		Robot.climb.stopClimbMotor();
 		Robot.log.writeLog("Preferences", "Calibrate climber", "zero value," + climbCalZero);
 		if (writeCalToPreferences) {
 			prefs.putDouble("climbCalZero", climbCalZero);
 		}
+	}
+
+	/**
+	 * Stops climb motor and sets climbCalibrated to false
+	 */
+	public void setClimbUncalibrated() {
+		Robot.climb.stopClimbMotor();
+		climbCalibrated = false;
 	}
 
 	/* Sets up Preferences if they haven't been set as when changing RoboRios or first start-up.
@@ -166,6 +181,9 @@ public class RobotPreferences {
 		if (!prefs.containsKey("climbCalZero")) {
 			prefs.putDouble("climbCalZero", -9999);
 		}
+		if (!prefs.containsKey("vacuumCurrentThreshold")) {
+			prefs.putDouble("vacuumCurrentThreshold", 3.0);
+		}
 	}
 
 	/**
@@ -194,21 +212,24 @@ public class RobotPreferences {
 		}
 	}
 
+	// Much of this is not going to be useful in competition. The drivers are not going to look at the laptop screen to see if a subsystem has thrown an error.
+	// TODO: delete the method(s) below by competition time
+
 	/**
 	 * Records in robotPreferences, fileLog, and Shuffleboard that a problem was found in a subsystem
 	 * (only records if the subsystem wasn't already flagged)
 	 * @param subsystem String name of subsystem in which a problem exists
 	 */
 	public void recordStickyFaults(String subsystem) {
-		if(problemSubsystem.indexOf(subsystem) == -1) {
-			if(problemSubsystem.length() != 0) {
+		if (problemSubsystem.indexOf(subsystem) == -1) {
+			if (problemSubsystem.length() != 0) {
 				problemSubsystem = problemSubsystem + ", ";
 			}
 			problemSubsystem = problemSubsystem + subsystem;
 			putString("problemSubsystem", problemSubsystem);
 			Robot.log.writeLogEcho(subsystem, "Sticky Fault Logged", "");
 		}
-		if(!problemExists) {
+		if (!problemExists) {
 			problemExists = true;
 			putBoolean("problemExists", problemExists);
 		}

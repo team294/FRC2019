@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveWithJoysticks;
+import frc.robot.utilities.FileLog;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.I2C;
 
@@ -47,8 +48,6 @@ public class DriveTrain extends Subsystem {
   // Gyro variables
   private AHRS ahrs;
   private double yawZero = 0;
-  
-  private int periodicCount = 0;
   
   private double leftMotorFaultCount; // increments every cycle the left side detects an issue
   private double rightMotorFaultCount; // increments every cycle the right side detects an issue
@@ -180,6 +179,8 @@ public class DriveTrain extends Subsystem {
 		rightMotor2.set(ControlMode.PercentOutput, powerPct);
   }
 
+  // Why does this exist? We have stop() for the same purpose. We don't need stopAllMotors()
+
   /**
 	 * Stops all motors.
 	 */
@@ -242,12 +243,10 @@ public class DriveTrain extends Subsystem {
     return (inches / Robot.robotPrefs.wheelCircumference) * Robot.robotPrefs.encoderTicksPerRevolution;
   }
   public double getLeftEncoderInches() {
-    SmartDashboard.putNumber("Left Inches", encoderTicksToInches(getLeftEncoderTicks()));
     return encoderTicksToInches(getLeftEncoderTicks());
   }
 
   public double getRightEncoderInches() {
-    SmartDashboard.putNumber("Right Inches", encoderTicksToInches(getRightEncoderTicks()));
     return encoderTicksToInches(getRightEncoderTicks());
   }
   
@@ -311,7 +310,6 @@ public class DriveTrain extends Subsystem {
 		angle = angle % 360;
 		angle = (angle <= -180) ? (angle + 360) : angle;
     angle = (angle > 180) ? (angle - 360) : angle;
-    SmartDashboard.putNumber("Gyro Angle", angle);
 		return angle;
   }
 
@@ -425,7 +423,7 @@ public class DriveTrain extends Subsystem {
       quadrant = 2; // only negative angles left are Q2
     }
     
-    return quadrant; // Something must be wrong here, this result should never happen
+    return quadrant;
   }
 
   /**
@@ -493,8 +491,7 @@ public class DriveTrain extends Subsystem {
     double lJoystickRaw = Math.abs(Robot.oi.leftJoystick.getY());
     //double lJoystickAdjust = 0.7 * Math.sqrt(lJoystickRaw);
     //double lJoystickAdjust = 0.55 / (1 + Math.exp(-10 * (lJoystickRaw - 0.35)));
-    double lJoystickAdjust = 0.55 / (1 + Math.exp(-8 * (lJoystickRaw - 0.4))); // Slightly longer acceleration curve than previous sigmoid
-
+    double lJoystickAdjust = 0.50 / (1 + Math.exp(-8 * (lJoystickRaw - 0.4))); // Slightly longer acceleration curve than previous sigmoid
     SmartDashboard.putNumber("Vision Joystick Value", lJoystickAdjust);
     double lPercentOutput = lJoystickAdjust + (gainConstant * finalAngle); //xVal
     double rPercentOutput = lJoystickAdjust - (gainConstant * finalAngle); //xVal
@@ -665,16 +662,18 @@ public class DriveTrain extends Subsystem {
   @Override
   public void periodic() {
 
-    SmartDashboard.putNumber("RightEnc", getRightEncoderTicks());
-    SmartDashboard.putNumber("LeftEnc", getLeftEncoderTicks());
+    if (Robot.log.getLogRotation() == FileLog.DRIVE_CYCLE) {
+      SmartDashboard.putNumber("Drive Left Inches", getLeftEncoderInches());
+      SmartDashboard.putNumber("Drive Right Inches", getRightEncoderInches());
+      SmartDashboard.putNumber("Gyro Angle", getGyroRotation());
 
-    if (DriverStation.getInstance().isEnabled()) {
-      if ((++periodicCount) >= 10) {
+      if (DriverStation.getInstance().isEnabled()) {
         updateDriveLog();
+        Robot.lineFollowing.logLineFollowers();
+
+        // TODO move verifyMotors to a pit command, instead of a live command during a match
         verifyMotors(RobotMap.leftMotor1PDP, RobotMap.leftMotor2PDP, RobotMap.leftMotor3PDP, true);
         verifyMotors(RobotMap.rightMotor1PDP, RobotMap.rightMotor2PDP, RobotMap.rightMotor3PDP, false);
-        Robot.lineFollowing.logLineFollowers(); // This is the best place for this I guess -- only updates about every 0.5 second
-        periodicCount=0;  
       }
     }
   }

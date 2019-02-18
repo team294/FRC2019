@@ -10,32 +10,36 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ElevatorLower extends Command {
+public class ClimbVacuumTurnOn extends Command {
+  private boolean turnOn;
+
   /**
-   * Slowly moves elevator DOWN
+   * Turns the vacuum motor on/off.  Disables the compressor when the vacuum motor is on
+   * @param turnOn true = on, false = off
    */
-  public ElevatorLower() {
+  public ClimbVacuumTurnOn(boolean turnOn) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.elevator);
+    requires(Robot.climb);
+    this.turnOn = turnOn;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.climb.enableCompressor(!turnOn);
+    Robot.climb.enableVacuum(turnOn);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.elevator.setElevatorMotorPercentOutput(-0.2);
-    Robot.elevator.updateElevatorLog();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return true;
   }
 
   // Called once after isFinished returns true
