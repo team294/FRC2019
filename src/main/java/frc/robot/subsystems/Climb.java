@@ -137,11 +137,13 @@ public class Climb extends Subsystem {
   }
 
   /**
-   * Returns true if pressure is low enough to initiate climb
+   * Returns true if pressure is low enough to initiate climb.
+   * If switch is disconnected, isVacuumPresent reads false.
    * @return true = vacuum sufficient for climb, false = not enough vacuum
    */
   public boolean isVacuumPresent(){
-    return vacuumSwitch.get();
+    // Note:  Need to invert polarity from switch.
+    return !vacuumSwitch.get();
   }
 
   /**

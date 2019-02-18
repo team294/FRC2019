@@ -40,7 +40,7 @@ public class ClimbMoveUntilVacuum extends Command {
 
     // Record the first time when we are within 4 degrees of climb angle, 
     // in case vacuum switch disconnects from Rio and we need a timeout
-    if (!isAtClimbAngle && Robot.climb.getClimbAngle() <= (targetAng + 4) {
+    if (!isAtClimbAngle && Robot.climb.getClimbAngle() <= (targetAng + 4)) {
       timeAtClimbAngle = timeSinceInitialized();
       isAtClimbAngle = true;
     }
