@@ -151,6 +151,10 @@ public class OI {
     SmartDashboard.putData("ClimbLiftRobot", new ClimbLiftRobot(Robot.robotPrefs.climbLiftAngle));
     SmartDashboard.putData("ClimbSequnce", new ClimbSequence());
 
+    // Buttons for the Cargo rollers
+    SmartDashboard.putData("Cargo Intake", new CargoIntake());
+    SmartDashboard.putData("Cargo Outtake", new CargoOuttake());
+
     // Buttons for controlling FileLogging
     SmartDashboard.putData("Log 1 InitialTesting", new FileLogSetLevel(1));
     SmartDashboard.putData("Log 2 PitTesting", new FileLogSetLevel(2));

@@ -9,29 +9,31 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
+import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.utilities.FileLog;
 
 public class Cargo extends Subsystem {
-  private final WPI_TalonSRX cargoMotor1 = new WPI_TalonSRX(RobotMap.cargoMotor1); // top motor
-  private final WPI_TalonSRX cargoMotor2 = new WPI_TalonSRX(RobotMap.cargoMotor2); // bottom motor
-  private final DigitalInput photoSwitch = new DigitalInput(RobotMap.photoSwitchCargo); // cargo sensor
+  private final BaseMotorController cargoMotor1 = new WPI_VictorSPX(RobotMap.cargoMotor1); // top motor
+  private final BaseMotorController cargoMotor2 = new WPI_VictorSPX(RobotMap.cargoMotor2); // bottom motor
+  private final DigitalInput photoSwitch = new DigitalInput(RobotMap.photoSwitchCargo); // Cargo Sensor
 
   public Cargo() {
     // TODO determine which motor to invert
     cargoMotor1.set(ControlMode.PercentOutput, 0);
-    cargoMotor1.setNeutralMode(NeutralMode.Coast);
+    cargoMotor1.setNeutralMode(NeutralMode.Brake);
     cargoMotor1.configVoltageCompSaturation(11.0, 0);
     cargoMotor1.enableVoltageCompensation(true);
     cargoMotor1.setInverted(false);
 
     cargoMotor2.set(ControlMode.PercentOutput, 0);
-    cargoMotor2.setNeutralMode(NeutralMode.Coast);
+    cargoMotor2.setNeutralMode(NeutralMode.Brake);
     cargoMotor2.configVoltageCompSaturation(11.0, 0);
     cargoMotor2.enableVoltageCompensation(true);
     cargoMotor2.setInverted(true);
@@ -46,9 +48,16 @@ public class Cargo extends Subsystem {
   public void setCargoMotorPercent(double percent1, double percent2) {
     cargoMotor1.set(ControlMode.PercentOutput, percent1); 
     cargoMotor2.set(ControlMode.PercentOutput, percent2);
-    if(Robot.log.getLogLevel() <= 2){
-      Robot.log.writeLog("Cargo", "Percent Power", "Percent Power Top," + percent1 + ",Percent Power Bot," + percent2);
-    }
+
+    Robot.log.writeLog("Cargo", "Percent Power", "Percent Power Top," + percent1 + ",Percent Power Bot," + percent2);
+  }
+
+  /**
+   * Stop the cargo intake motors
+   */
+  public void stopCargoIntake() {
+    setCargoMotorPercent(0.0, 0.0);
+    Robot.log.writeLog("Cargo", "Stop Cargo", "");
   }
 
   public boolean getPhotoSwitch(){
@@ -58,28 +67,16 @@ public class Cargo extends Subsystem {
     return photoSwitch.get();
   }
 
-  //TODO Change percent power when we get a cargo intake
-  public void intakeCargo() {
-    setCargoMotorPercent(0.5, 0.3);
+  /**
+   * Reads the photo switch to see if we have a ball
+   * @return true = has ball, false = does not have ball
+   */
+  public boolean hasBall(){
     if(Robot.log.getLogLevel() <= 2){
-      Robot.log.writeLog("Cargo", "Intake Cargo", "");
+      Robot.log.writeLog("Cargo", "Photo Sensor", "Photo Sensor," + photoSwitch.get());
     }
+    return photoSwitch.get();
   }
-
-  public void outtakeCargo() {
-    setCargoMotorPercent(-0.3, -0.3);
-    if(Robot.log.getLogLevel() <= 2){
-      Robot.log.writeLog("Cargo", "Outtake Cargo", "");
-    }
-  }
-
-  public void stopCargoIntake() {
-    setCargoMotorPercent(0, 0);
-    if(Robot.log.getLogLevel() == 1){
-      Robot.log.writeLog("Cargo", "Stop Cargo", "");
-    }
-  }
-  
 
   @Override
   public void initDefaultCommand() {
@@ -89,8 +86,16 @@ public class Cargo extends Subsystem {
 
   @Override
   public void periodic() {
-    if(Robot.log.getLogLevel() <= 2){
-      Robot.log.writeLog("Cargo", "Cargo Periodic", "Photo Switch," + getPhotoSwitch());
+
+		if (Robot.log.getLogRotation() == FileLog.CARGO_CYCLE) {
+      SmartDashboard.putBoolean("Cargo Has Ball", hasBall());
+
+      if (DriverStation.getInstance().isEnabled()) {
+        Robot.log.writeLog("Cargo", "Periodic", "Photo Switch," + hasBall() + 
+          ",Volt1," + cargoMotor1.getMotorOutputVoltage() + ",Amp1," + Robot.pdp.getCurrent(RobotMap.cargoMotor1PDP) +
+          ",Volt2," + cargoMotor2.getMotorOutputVoltage() + ",Amp2," + Robot.pdp.getCurrent(RobotMap.cargoMotor2PDP)
+          );
+      }
     }
 
   }

@@ -43,8 +43,8 @@ public class ElevatorMoveToLevel extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    if (!targetInches) {
-      if (Robot.cargo.getPhotoSwitch()) {
+    if(!targetInches) {
+      if(Robot.cargo.hasBall()) { 
         switch (pos) {
           case bottom:
             target = Robot.robotPrefs.elevatorBottomToFloor;
