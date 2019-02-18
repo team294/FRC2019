@@ -9,15 +9,19 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.DigitalInput;
+
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.Robot;
 import frc.robot.RobotMap;
 
 public class Cargo extends Subsystem {
-  private final WPI_VictorSPX cargoMotor1 = new WPI_VictorSPX(RobotMap.cargoMotor1); // top motor
-  private final WPI_VictorSPX cargoMotor2 = new WPI_VictorSPX(RobotMap.cargoMotor2); // bottom motor
+  private final WPI_TalonSRX cargoMotor1 = new WPI_TalonSRX(RobotMap.cargoMotor1); // top motor
+  private final WPI_TalonSRX cargoMotor2 = new WPI_TalonSRX(RobotMap.cargoMotor2); // bottom motor
+  private final DigitalInput photoSwitch = new DigitalInput(RobotMap.photoSwitchCargo); // Cargo Sensor
 
   public Cargo() {
     // TODO determine which motor to invert
@@ -32,6 +36,7 @@ public class Cargo extends Subsystem {
     cargoMotor2.configVoltageCompSaturation(11.0, 0);
     cargoMotor2.enableVoltageCompensation(true);
     cargoMotor2.setInverted(true);
+
   } 
 
   /**
@@ -42,23 +47,53 @@ public class Cargo extends Subsystem {
   public void setCargoMotorPercent(double percent1, double percent2) {
     cargoMotor1.set(ControlMode.PercentOutput, percent1); 
     cargoMotor2.set(ControlMode.PercentOutput, percent2);
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("Cargo", "Percent Power", "Percent Power Top," + percent1 + ",Percent Power Bot," + percent2);
+    }
   }
 
+  public boolean getPhotoSwitch(){
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("Cargo", "Photo Sensor", "Photo Sensor," + photoSwitch.get());
+    }
+    return photoSwitch.get();
+  }
+
+  //TODO Change percent power when we get a cargo intake
   public void intakeCargo() {
     setCargoMotorPercent(0.5, 0.3);
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("Cargo", "Intake Cargo", "");
+    }
   }
 
   public void outtakeCargo() {
     setCargoMotorPercent(-0.3, -0.3);
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("Cargo", "Outtake Cargo", "");
+    }
   }
 
   public void stopCargoIntake() {
     setCargoMotorPercent(0, 0);
+    if(Robot.log.getLogLevel() == 1){
+      Robot.log.writeLog("Cargo", "Stop Cargo", "");
+    }
   }
+  
 
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
   }
+
+  @Override
+  public void periodic() {
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("Cargo", "Cargo Periodic", "Photo Switch," + getPhotoSwitch());
+    }
+
+  }
+
 }
