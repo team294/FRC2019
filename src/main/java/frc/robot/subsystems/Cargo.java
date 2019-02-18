@@ -10,18 +10,17 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import edu.wpi.first.wpilibj.DigitalInput;
-
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
+
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 
 public class Cargo extends Subsystem {
   private final WPI_TalonSRX cargoMotor1 = new WPI_TalonSRX(RobotMap.cargoMotor1); // top motor
   private final WPI_TalonSRX cargoMotor2 = new WPI_TalonSRX(RobotMap.cargoMotor2); // bottom motor
-  private final DigitalInput photoSwitch = new DigitalInput(RobotMap.photoSwitchCargo); // Cargo Sensor
+  private final DigitalInput photoSwitch = new DigitalInput(RobotMap.photoSwitchCargo); // cargo sensor
 
   public Cargo() {
     // TODO determine which motor to invert

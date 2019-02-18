@@ -11,12 +11,10 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class HatchScoreAndIntake extends CommandGroup {
   /**
-   * Add your docs here.
+   * Toggle hatch piston (release hatch) and back up
    */
   public HatchScoreAndIntake() {
-
-   addParallel(new HatchToggle());
-   addParallel(new DriveStraight(-0.3, 3.0));
-
+    addParallel(new HatchToggle());
+    addParallel(new DriveStraight(-0.3, 3.0));
   }
 }

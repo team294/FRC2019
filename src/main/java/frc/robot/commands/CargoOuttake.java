@@ -18,7 +18,6 @@ public class CargoOuttake extends Command {
 
   public CargoOuttake() {
     // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
     requires(Robot.cargo);
   }
 

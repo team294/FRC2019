@@ -11,9 +11,11 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 public class WristOff extends Command {
+  /**
+   * Turns off wrist motor
+   */
   public WristOff() {
     // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
     requires(Robot.wrist);
   }
 

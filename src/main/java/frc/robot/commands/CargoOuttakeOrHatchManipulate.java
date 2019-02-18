@@ -13,7 +13,8 @@ import frc.robot.Robot;
 
 public class CargoOuttakeOrHatchManipulate extends CommandGroup {
   /**
-   * Add your docs here.
+   * If robot has cargo (photoswitch triggered) outtake cargo,
+   * otherwise toggle hatch piston (release hatch) and back up
    */
   public CargoOuttakeOrHatchManipulate() {
 

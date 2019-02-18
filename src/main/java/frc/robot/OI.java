@@ -12,8 +12,7 @@ import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.XboxController;
-
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.commands.*;
 import frc.robot.triggers.*;
 import frc.robot.utilities.RobotPreferences;
@@ -101,6 +100,7 @@ public class OI {
       xbB[i] = new JoystickButton(xBoxController, i);
     }
 
+    // XBox controller buttons/triggers
     xbB[1].whenPressed(new ElevatorMoveAndScore(RobotPreferences.ElevatorPosition.hatchLow));
     xbB[2].whenPressed(new ElevatorMoveAndScore(RobotPreferences.ElevatorPosition.hatchMid));
     xbB[3].whenPressed(new ElevatorMoveAndScore(RobotPreferences.ElevatorPosition.hatchHigh));
@@ -117,6 +117,8 @@ public class OI {
     xbLeft.whenActive(new HatchSet(true));
     xbLT.whenActive(new CargoOuttake());
     xbRT.whenActive(new CargoOuttake());
+
+    trigWristElevEncoder.whenActive(new WristEncoderFail());
 
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
@@ -147,7 +149,7 @@ public class OI {
     SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
     SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
     SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));
-    
+
     SmartDashboard.putData("Clear Sticky Faults", new ClearStickyFaults());
     Robot.robotPrefs.showStickyFaults();
     //SmartDashboard.putData("Turn To Line", new TurnToLine());
@@ -158,10 +160,28 @@ public class OI {
     SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true, true));
   }
 
+  /**
+	 * Sets the Xbox controller rumble power.
+	 * 
+	 * @param percentRumble value 0 to 1
+	 */
+	public void setXBoxRumble(double percentRumble) {
+		xBoxController.setRumble(RumbleType.kLeftRumble, percentRumble);
+		xBoxController.setRumble(RumbleType.kRightRumble, percentRumble);
+	}
+
+  /**
+   * 
+   * @param direction true = forward; false = reverse
+   */
   public void setDriveDirection(boolean direction) {
     this.driveDirection = direction;
   }
 
+  /**
+   * 
+   * @return drive direction (true = forward, false = reverse)
+   */
   public boolean getDriveDirection() {
     return driveDirection;
   }
