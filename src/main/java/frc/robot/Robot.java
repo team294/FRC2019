@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utilities.*;
-import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
 /**
@@ -26,7 +25,7 @@ import frc.robot.subsystems.*;
  */
 public class Robot extends TimedRobot {
   public static final String ClimbPressure = null;
-public static DriveTrain driveTrain;
+  public static DriveTrain driveTrain;
   public static Shifter shifter;
   public static Elevator elevator;
   public static Wrist wrist;
@@ -80,7 +79,6 @@ public static DriveTrain driveTrain;
     oi = new OI();
   }
 
-  
   /**
    * This function is called every robot packet, no matter the mode. Use
    * this for items like diagnostics that you want ran during disabled,
@@ -119,7 +117,6 @@ public static DriveTrain driveTrain;
     Scheduler.getInstance().run();
   }
 
-  
   /**
    * This autonomous (along with the chooser code above) shows how to select
    * between different autonomous modes using the dashboard. The sendable chooser

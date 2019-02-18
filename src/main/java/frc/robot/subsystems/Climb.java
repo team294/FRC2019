@@ -175,7 +175,7 @@ public class Climb extends Subsystem {
       Robot.log.writeLogEcho("Climb", "Adjust climb", "Below min angle");
 			Robot.robotPrefs.climbCalZero -= Robot.robotPrefs.encoderTicksPerRevolution;
 		}
-		else if(getClimbAngle() > Robot.robotPrefs.climbStartingAngle) {
+		else if(getClimbAngle() > Robot.robotPrefs.climbLimitAngle) {
       Robot.log.writeLogEcho("Climb", "Adjust climb", "Above max angle");
 			Robot.robotPrefs.climbCalZero += Robot.robotPrefs.encoderTicksPerRevolution;
 		}
@@ -267,12 +267,12 @@ public class Climb extends Subsystem {
     // If the climb isn't calibrated at the start of the match, does that mean we can't control the climber at all?
     if (!Robot.robotPrefs.climbCalibrated ) {  // || Robot.beforeFirstEnable
       if (isClimbAtLimitSwitch()) {
-        calibrateClimbEnc(Robot.robotPrefs.climbStartingAngle, false);
+        calibrateClimbEnc(Robot.robotPrefs.climbLimitAngle, false);
       }
     }
     
     // Un-calibrates the climb if the angle is outside of bounds... can we figure out a way to not put this in periodic()?
-    if (getClimbAngle() > Robot.robotPrefs.climbStartingAngle || getClimbAngle() < Robot.robotPrefs.climbMinAngle) {
+    if (getClimbAngle() > Robot.robotPrefs.climbLimitAngle || getClimbAngle() < Robot.robotPrefs.climbMinAngle) {
       Robot.robotPrefs.setClimbUncalibrated();
     }
   }

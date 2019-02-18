@@ -74,30 +74,14 @@ public class OI {
     for (int i = 1; i < left.length; i++) {
       left[i] = new JoystickButton(leftJoystick, i);
       right[i] = new JoystickButton(rightJoystick, i);
-
-      if (i == 1) {
-        left[i].whenPressed(new Shift(true));
-        right[i].whenPressed(new Shift(false));
-      } else if (i == 2) {
-        left[i].whenPressed(new DriveAssist());
-        right[i].whenPressed(new DriveAssist());
-        left[i].whenReleased(new DriveWithJoysticks());
-        right[i].whenReleased(new DriveWithJoysticks());
-      } else if (i == 3) {
-        left[i].whenPressed(new DriveWithVision(false, true)); // No line followers, but gyro correction
-        left[i].whenReleased(new DriveWithJoysticks());
-        right[i].whenPressed(new DriveWithVision(false, false)); // No line followers, no gyro
-        right[i].whenReleased(new DriveWithJoysticks());
-      } else if (i == 11 || i == 10) {
-        left[i].whenPressed(new DriveWithLineFollowing(true));
-        left[i].whenReleased(new DriveWithJoysticks());
-        right[i].whenPressed(new DriveWithLineFollowing(false));
-        right[i].whenReleased(new DriveWithJoysticks());
-      }
     }
 
     for (int i = 1; i < xbB.length; i++) {
       xbB[i] = new JoystickButton(xBoxController, i);
+    }
+
+    for (int i = 0; i < coP.length; i++) {
+      coP[i] = new JoystickButton(coPanel, i);
     }
 
     // XBox controller buttons/triggers
@@ -118,6 +102,34 @@ public class OI {
     xbLT.whenActive(new CargoOuttake());
     xbRT.whenActive(new CargoOuttake());
 
+    // Joystick buttons
+    left[1].whenPressed(new Shift(true));
+    right[1].whenPressed(new Shift(false));
+    left[2].whenPressed(new DriveAssist());
+    right[2].whenPressed(new DriveAssist());
+    left[2].whenReleased(new DriveWithJoysticks());
+    right[2].whenReleased(new DriveWithJoysticks());
+    left[3].whenPressed(new DriveWithVision(false, true)); // No line followers, but gyro correction
+    left[3].whenReleased(new DriveWithJoysticks());
+    right[3].whenPressed(new DriveWithVision(false, false)); // No line followers, no gyro
+    right[3].whenReleased(new DriveWithJoysticks());
+    left[10].whenPressed(new DriveWithLineFollowing(true));
+    left[10].whenReleased(new DriveWithJoysticks());
+    right[10].whenPressed(new DriveWithLineFollowing(false));
+    right[10].whenReleased(new DriveWithJoysticks());
+    left[11].whenPressed(new DriveWithLineFollowing(true));
+    left[11].whenReleased(new DriveWithJoysticks());
+    right[11].whenPressed(new DriveWithLineFollowing(false));
+    right[11].whenReleased(new DriveWithJoysticks());
+
+    // Copanel buttons
+    coP[1].whenPressed(new ClimbSequence());
+    coP[2].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe));
+    coP[3].whenPressed(new ClimbArmSetPercentOutput(0.3));  // TODO determine manual control percent
+    coP[4].whenPressed(new ClimbArmSetPercentOutput(-0.3));  // TODO determine manual control percent
+    // coP[5].whenPressed(new Command());  // TODO add turning on vacuum
+    // coP[6].whenPressed(new Command());  // TODO add turning off vacuum
+
     trigWristElevEncoder.whenActive(new WristEncoderFail());
 
     // Buttons for controlling the elevator
@@ -131,7 +143,7 @@ public class OI {
     SmartDashboard.putData("Climb Up", new ClimbArmSetPercentOutput(0.2));  // For testing
     SmartDashboard.putData("Climb Down", new ClimbArmSetPercentOutput(-0.2));  // For testing
     SmartDashboard.putData("Climb move to 0", new ClimbArmSetAngle(0));  // For testing
-    SmartDashboard.putData("Climb move to start", new ClimbArmSetAngle(Robot.robotPrefs.climbStartingAngle + 5));  // For testing
+    SmartDashboard.putData("Climb move to start", new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe + 5));  // For testing
     SmartDashboard.putData("Climb Vacuum On", new ClimbVacuumTurnOn(true));
     SmartDashboard.putData("Climb Vacuum Off", new ClimbVacuumTurnOn(false));
     SmartDashboard.putData("Climb Set Reference", new ClimbEncoderCalibrateAtLimit());

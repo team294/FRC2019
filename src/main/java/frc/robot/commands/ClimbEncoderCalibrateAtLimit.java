@@ -41,7 +41,7 @@ public class ClimbEncoderCalibrateAtLimit extends Command {
   @Override
   protected void end() {
     Robot.climb.stopClimbMotor();
-    Robot.climb.calibrateClimbEnc(Robot.robotPrefs.climbStartingAngle, false);
+    Robot.climb.calibrateClimbEnc(Robot.robotPrefs.climbLimitAngle, false);
     // TODO Something to set climb reference angle
   }
 
