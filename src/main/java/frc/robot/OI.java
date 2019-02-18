@@ -55,13 +55,8 @@ public class OI {
   public Joystick leftJoystick = new Joystick(0);
   public Joystick rightJoystick = new Joystick(1);
   public Joystick coPanel = new Joystick(2);
-  public XboxController xBoxController = new XboxController(3);
+  public Joystick xBoxController = new Joystick(3);
   private boolean driveDirection = true;
-
-  private Button xBoxA = new JoystickButton(xBoxController, 1);
-  private Button xBoxB = new JoystickButton(xBoxController, 2);
-  private Button xBoxX = new JoystickButton(xBoxController, 3);
-  private Button xBoxY = new JoystickButton(xBoxController, 4);
 
   private Trigger trigWristElevEncoder = new WristEncoderCheck();
 
@@ -70,6 +65,12 @@ public class OI {
     Button[] right = new Button[12];
     Button[] coP = new Button[15];
     Button[] xbB = new Button[10];
+    Trigger xbUp = new POVTrigger(xBoxController, 0);
+    Trigger xbRight = new POVTrigger(xBoxController, 90);
+    Trigger xbDown = new POVTrigger(xBoxController, 180);
+    Trigger xbLeft = new POVTrigger(xBoxController, 270);
+    Trigger xbLT = new AxisTrigger(xBoxController, 2, 0.9);
+    Trigger xbRT = new AxisTrigger(xBoxController, 3, 0.9);
     
     for (int i = 1; i < left.length; i++) {
       left[i] = new JoystickButton(leftJoystick, i);
@@ -96,20 +97,26 @@ public class OI {
       }
     }
 
-    SmartDashboard.putData("LoadToRocketPT1", new DrivePathfinder("RLoadToRocketPT1-A", true, false));
-    SmartDashboard.putData("LoadToRocketPT2-2", new DrivePathfinder("RLoadToRocketPT2-A", false, true));
-    SmartDashboard.putData("LoadToRocket", new PathfinderLoadToRocket());
-    // SmartDashboard.putData("Turn Gyro 90", new TurnGyro(90));
-    // SmartDashboard.putData("LoadToRocket", new PathfinderLoadToRocket());
-    // The conditional logic needs to go in the command itself. No logic can be done in OI since OI is constructed at the start and not run repeatedly
-    // SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true));
+    for (int i = 1; i < xbB.length; i++) {
+      xbB[i] = new JoystickButton(xBoxController, i);
+    }
 
-    xBoxA.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchLow));
-    xBoxB.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchMid));
-    xBoxY.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchHigh));
-    xBoxX.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.cargoShipCargo));
-    
-    SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true, true));
+    xbB[1].whenPressed(new ElevatorMoveAndScore(RobotPreferences.ElevatorPosition.hatchLow));
+    xbB[2].whenPressed(new ElevatorMoveAndScore(RobotPreferences.ElevatorPosition.hatchMid));
+    xbB[3].whenPressed(new ElevatorMoveAndScore(RobotPreferences.ElevatorPosition.hatchHigh));
+    xbB[4].whenPressed(new ElevatorWristStow());
+    xbB[5].whenPressed(new CargoStop());
+    xbB[6].whenPressed(new CargoStop());
+    // xbB[7].whenPressed(new Command());
+    // xbB[8].whenPressed(new Command());
+    xbB[9].toggleWhenPressed(new ElevatorWithXBox());
+    xbB[10].toggleWhenPressed(new WristWithXBox());
+    xbUp.whenActive(new CargoIntakeFromLoad());
+    xbRight.whenActive(new HatchSet(false));
+    xbDown.whenActive(new CargoIntakeFromGround());
+    xbLeft.whenActive(new HatchSet(true));
+    xbLT.whenActive(new CargoOuttake());
+    xbRT.whenActive(new CargoOuttake());
 
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
@@ -148,6 +155,7 @@ public class OI {
     SmartDashboard.putData("Disc Grab", new HatchSet(true));
     SmartDashboard.putData("Disc Release", new HatchSet(false));
     SmartDashboard.putString("Disc Position", "Null");
+    SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true, true));
   }
 
   public void setDriveDirection(boolean direction) {
