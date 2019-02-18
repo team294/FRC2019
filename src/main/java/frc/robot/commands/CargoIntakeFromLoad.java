@@ -18,7 +18,7 @@ public class CargoIntakeFromLoad extends CommandGroup {
    */
   public CargoIntakeFromLoad() {
     addSequential(new WristMoveToAngle(WristAngle.straight));
-    addSequential(new ElevatorMoveToLevel(Robot.robotPrefs.loadCargo));
+    addSequential(new ElevatorMoveToLevel(ElevatorPosition.loadCargo));
     addSequential(new CargoIntake());
     addSequential(new ElevatorMoveToLevel(ElevatorPosition.hatchLow));
   }

@@ -8,20 +8,29 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import frc.robot.Robot;
+import frc.robot.utilities.RobotPreferences;
 import frc.robot.utilities.RobotPreferences.ElevatorPosition;
 import frc.robot.utilities.RobotPreferences.WristAngle;
 
-public class CargoIntakeFromGround extends CommandGroup {
+public class ElevatorMoveAndScore extends CommandGroup {
   /**
    * Add your docs here.
    */
-  public CargoIntakeFromGround() {
+  public ElevatorMoveAndScore(RobotPreferences.ElevatorPosition position) {
     addSequential(new WristMoveToAngle(WristAngle.straight));
-    addSequential(new ElevatorMoveToLevel(ElevatorPosition.groundCargo));
-    addSequential(new WristMoveToAngle(WristAngle.down));
-    addSequential(new CargoIntake());
-    addSequential(new ElevatorMoveToLevel(ElevatorPosition.hatchLow));
-    addSequential(new WristMoveToAngle(WristAngle.straight));
+    addSequential(new ElevatorMoveToLevel(position));
+    addSequential(new ConditionalCommand(new WristMoveToAngle(WristAngle.up)) {
+      @Override
+      protected boolean condition() {
+        if (Robot.cargo.getPhotoSwitch() && position == ElevatorPosition.hatchHigh) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    });
+    addSequential(new CargoOuttakeOrHatchManipulate());
   }
 }

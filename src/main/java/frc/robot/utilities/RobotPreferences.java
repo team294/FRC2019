@@ -63,9 +63,9 @@ public class RobotPreferences {
   	public final double cargoShipCargo = 34.75;
 	public final double rocketBallOffset = 8.5;
 	public final double loadCargo = 44.125;
-	public final double cargoGround = 10.0; 
+	public final double groundCargo = 10.0; 
 
-	public enum ElevatorPosition {bottom, wristSafe, hatchLow, hatchMid, hatchHigh, cargoShipCargo}
+	public enum ElevatorPosition {bottom, wristSafe, hatchLow, hatchMid, hatchHigh, cargoShipCargo, loadCargo, groundCargo}
 
 	//Climb Target Angles (in degrees)
 	//TODO Test and adjust angles when climb is built

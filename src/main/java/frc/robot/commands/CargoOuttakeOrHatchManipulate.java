@@ -20,10 +20,12 @@ public class CargoOuttakeOrHatchManipulate extends CommandGroup {
     addSequential(new ConditionalCommand(new CargoOuttake(), new HatchScoreAndIntake()) {
       @Override
       protected boolean condition() {
-        return false;
+        if (Robot.cargo.getPhotoSwitch()) {
+          return true;
+        } else {
+          return false;
+        }
       }
     });
-
-
   }
 }

@@ -59,10 +59,16 @@ public class ElevatorMoveToLevel extends Command {
             target = Robot.robotPrefs.hatchMid + Robot.robotPrefs.rocketBallOffset;
             break;
           case hatchHigh:
-            target = Robot.robotPrefs.hatchHigh + Robot.robotPrefs.rocketBallOffset;
+            target = Robot.robotPrefs.hatchHigh;
             break;
           case cargoShipCargo:
             target = Robot.robotPrefs.cargoShipCargo;
+            break;
+          case loadCargo:
+            target = Robot.robotPrefs.loadCargo;
+            break;
+          case groundCargo:
+            target = Robot.robotPrefs.groundCargo;
             break;
         }
       } else {
@@ -84,6 +90,12 @@ public class ElevatorMoveToLevel extends Command {
             break;
           case cargoShipCargo:
             target = Robot.robotPrefs.cargoShipCargo;
+            break;
+          case loadCargo:
+            target = Robot.robotPrefs.loadCargo;
+            break;
+          case groundCargo:
+            target = Robot.robotPrefs.groundCargo;
             break;
         }
       }
