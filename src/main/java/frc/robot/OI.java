@@ -65,6 +65,8 @@ public class OI {
 
   private Trigger trigWristElevEncoder = new WristEncoderCheck();
 
+  // TODO: Add some way to change the limelight pipeline for sandstorm
+
   public OI() {
     Button[] left = new Button[12];
     Button[] right = new Button[12];
@@ -104,6 +106,7 @@ public class OI {
     // The conditional logic needs to go in the command itself. No logic can be done in OI since OI is constructed at the start and not run repeatedly
     // SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true));
 
+    // We already have a button array for the xBox, like with the coPanel and joysticks. Use those instead of creating individual buttons.
     xBoxA.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchLow));
     xBoxB.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchMid));
     xBoxY.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchHigh));
