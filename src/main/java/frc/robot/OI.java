@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.commands.*;
 import frc.robot.triggers.*;
 import frc.robot.utilities.RobotPreferences;
+import frc.robot.utilities.RobotPreferences.WristAngle;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -55,7 +56,6 @@ public class OI {
   public Joystick rightJoystick = new Joystick(1);
   public Joystick coPanel = new Joystick(2);
   public Joystick xBoxController = new Joystick(3);
-  private boolean driveDirection = true;
 
   private Trigger trigWristElevEncoder = new WristEncoderCheck();
 
@@ -96,31 +96,43 @@ public class OI {
     xbB[9].whenPressed(new ElevatorWithXBox()); // LStick
     xbB[10].whenPressed(new WristWithXBox()); // RStick
     xbUp.whenActive(new CargoIntakeFromLoad()); // DPadUp
-    xbRight.whenActive(new HatchSet(false)); // DPadRight
+    // xbRight.whenActive(new Command()); // DPadRight
     xbDown.whenActive(new CargoIntakeFromGround()); // DPadDown
-    xbLeft.whenActive(new HatchSet(true)); // DPadLeft
+    // xbLeft.whenActive(new Command()); // DPadLeft
     xbLT.whenActive(new CargoOuttake()); // LT
     xbRT.whenActive(new CargoOuttake()); // RT
 
     // Joystick buttons
     left[1].whenPressed(new Shift(true));
     right[1].whenPressed(new Shift(false));
-    left[2].whenPressed(new DriveAssist());
+    // left[2].whenPressed(new Command());
     right[2].whenPressed(new DriveAssist());
-    left[2].whenReleased(new DriveWithJoysticks());
     right[2].whenReleased(new DriveWithJoysticks());
-    left[3].whenPressed(new DriveWithVision(false, true)); // No line followers, but gyro correction
-    left[3].whenReleased(new DriveWithJoysticks());
-    right[3].whenPressed(new DriveWithVision(false, false)); // No line followers, no gyro
-    right[3].whenReleased(new DriveWithJoysticks());
-    left[10].whenPressed(new DriveWithLineFollowing(true));
-    left[10].whenReleased(new DriveWithJoysticks());
-    right[10].whenPressed(new DriveWithLineFollowing(false));
-    right[10].whenReleased(new DriveWithJoysticks());
-    left[11].whenPressed(new DriveWithLineFollowing(true));
-    left[11].whenReleased(new DriveWithJoysticks());
-    right[11].whenPressed(new DriveWithLineFollowing(false));
-    right[11].whenReleased(new DriveWithJoysticks());
+    left[3].whenPressed(new WristMoveToAngle(WristAngle.straight));
+    right[3].whenPressed(new DriveStraight(0.6, 2)); // TODO adjust with desired speed/time
+    left[4].whenPressed(new HatchSet(true));
+    right[4].whenPressed(new DriveSetDirection(false));
+    left[5].whenPressed(new HatchSet(false));
+    right[5].whenPressed(new DriveSetDirection(true));
+
+    // left[1].whenPressed(new Shift(true));
+    // right[1].whenPressed(new Shift(false));
+    // left[2].whenPressed(new DriveAssist());
+    // right[2].whenPressed(new DriveAssist()); // Hatch grab
+    // left[3].whenPressed(new DriveWithVision(false, true)); // No line followers, but gyro correction
+    // right[3].whenPressed(new DriveWithVision(false, false)); // No line followers, no gyro
+    // left[4].whenPressed(new DriveWithLineFollowing(true));
+    // right[4].whenPressed(new DriveWithLineFollowing(false));
+    // left[5].whenPressed(new DriveWithLineFollowing(true));
+    // right[5].whenPressed(new DriveWithLineFollowing(false));
+    // left[2].whenReleased(new DriveWithJoysticks());
+    // right[2].whenReleased(new DriveWithJoysticks());
+    // left[3].whenReleased(new DriveWithJoysticks());
+    // right[3].whenReleased(new DriveWithJoysticks());
+    // left[4].whenReleased(new DriveWithJoysticks());
+    // right[4].whenReleased(new DriveWithJoysticks());
+    // left[5].whenReleased(new DriveWithJoysticks());
+    // right[5].whenReleased(new DriveWithJoysticks());
 
     // Copanel buttons
     coP[1].whenPressed(new ClimbSequence());
@@ -185,20 +197,4 @@ public class OI {
 		xBoxController.setRumble(RumbleType.kLeftRumble, percentRumble);
 		xBoxController.setRumble(RumbleType.kRightRumble, percentRumble);
 	}
-
-  /**
-   * 
-   * @param direction true = forward; false = reverse
-   */
-  public void setDriveDirection(boolean direction) {
-    this.driveDirection = direction;
-  }
-
-  /**
-   * 
-   * @return drive direction (true = forward, false = reverse)
-   */
-  public boolean getDriveDirection() {
-    return driveDirection;
-  }
 }
