@@ -7,32 +7,28 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class WristWithXBox extends Command {
-  /** 
-   * Drive wrist manually using left joystick on the xBox controller
-  */
-  public WristWithXBox() {
+public class StopAllMotors extends Command {
+  public StopAllMotors() {
     // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
+    requires(Robot.elevator);
     requires(Robot.wrist);
+    requires(Robot.climb);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.elevator.stopElevator();
+    Robot.wrist.stopWrist();
+    Robot.climb.stopClimbMotor();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double value = -Robot.oi.xBoxController.getY(Hand.kRight);
-    Robot.wrist.setWristMotorPercentOutput(value);
-    Robot.wrist.zeroWristEncoder();
-    Robot.wrist.updateWristLog();
   }
 
   // Make this return true when this Command no longer needs to run execute()

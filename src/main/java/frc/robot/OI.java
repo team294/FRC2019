@@ -85,22 +85,22 @@ public class OI {
     }
 
     // XBox controller buttons/triggers
-    xbB[1].whenPressed(new ElevatorMoveAndScore(RobotPreferences.ElevatorPosition.hatchLow));
-    xbB[2].whenPressed(new ElevatorMoveAndScore(RobotPreferences.ElevatorPosition.hatchMid));
-    xbB[3].whenPressed(new ElevatorMoveAndScore(RobotPreferences.ElevatorPosition.hatchHigh));
-    xbB[4].whenPressed(new ElevatorWristStow());
-    xbB[5].whenPressed(new CargoStop());
-    xbB[6].whenPressed(new CargoStop());
-    // xbB[7].whenPressed(new Command());
-    // xbB[8].whenPressed(new Command());
-    xbB[9].toggleWhenPressed(new ElevatorWithXBox());
-    xbB[10].toggleWhenPressed(new WristWithXBox());
-    xbUp.whenActive(new CargoIntakeFromLoad());
-    xbRight.whenActive(new HatchSet(false));
-    xbDown.whenActive(new CargoIntakeFromGround());
-    xbLeft.whenActive(new HatchSet(true));
-    xbLT.whenActive(new CargoOuttake());
-    xbRT.whenActive(new CargoOuttake());
+    xbB[1].whenPressed(new ElevatorMoveAndScore(RobotPreferences.ElevatorPosition.hatchLow)); // A
+    xbB[2].whenPressed(new ElevatorMoveAndScore(RobotPreferences.ElevatorPosition.hatchMid)); // B
+    xbB[3].whenPressed(new ElevatorWristStow()); // X
+    xbB[4].whenPressed(new ElevatorMoveAndScore(RobotPreferences.ElevatorPosition.hatchHigh)); // Y
+    xbB[5].whenPressed(new CargoStop()); // LB
+    xbB[6].whenPressed(new CargoStop()); // RB
+    xbB[7].whenPressed(new StopAllMotors()); // Back
+    // xbB[8].whenPressed(new Command()); // Start
+    xbB[9].whenPressed(new ElevatorWithXBox()); // LStick
+    xbB[10].whenPressed(new WristWithXBox()); // RStick
+    xbUp.whenActive(new CargoIntakeFromLoad()); // DPadUp
+    xbRight.whenActive(new HatchSet(false)); // DPadRight
+    xbDown.whenActive(new CargoIntakeFromGround()); // DPadDown
+    xbLeft.whenActive(new HatchSet(true)); // DPadLeft
+    xbLT.whenActive(new CargoOuttake()); // LT
+    xbRT.whenActive(new CargoOuttake()); // RT
 
     // Joystick buttons
     left[1].whenPressed(new Shift(true));
