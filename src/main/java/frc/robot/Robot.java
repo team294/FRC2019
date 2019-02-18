@@ -25,7 +25,8 @@ import frc.robot.subsystems.*;
  * project.
  */
 public class Robot extends TimedRobot {
-  public static DriveTrain driveTrain;
+  public static final String ClimbPressure = null;
+public static DriveTrain driveTrain;
   public static Shifter shifter;
   public static Elevator elevator;
   public static Wrist wrist;
