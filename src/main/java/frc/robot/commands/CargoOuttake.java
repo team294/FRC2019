@@ -16,6 +16,9 @@ public class CargoOuttake extends Command {
   private double timeWithoutBall = 0; // the amount of time from the photo switch not sensing a ball
   private boolean startTime = false; // have we started to count the time from 
 
+  /**
+   * Run cargo outtake 5 seconds, or until we no longer see the ball plus 1 additional second.
+   */
   public CargoOuttake() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
@@ -25,15 +28,17 @@ public class CargoOuttake extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.cargo.outtakeCargo();
+    //TODO Change percent power when we get a cargo intake
+    Robot.cargo.setCargoMotorPercent(-0.3, -0.3);
+    startTime = false;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.cargo.outtakeCargo();
-    if(!Robot.cargo.getPhotoSwitch() && !startTime){
-      timeWithoutBall = Timer.getFPGATimestamp();
+    Robot.cargo.setCargoMotorPercent(-0.3, -0.3);
+    if(!Robot.cargo.hasBall() && !startTime){
+      timeWithoutBall = timeSinceInitialized();
       startTime = true;
     }
   }
@@ -41,7 +46,7 @@ public class CargoOuttake extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    if (timeSinceInitialized() >= 5 || Timer.getFPGATimestamp() - timeWithoutBall > 1) {
+    if (timeSinceInitialized() >= 5 || (startTime && timeSinceInitialized() - timeWithoutBall > 1)) {
       Robot.cargo.stopCargoIntake();
       return true;
     } else {
