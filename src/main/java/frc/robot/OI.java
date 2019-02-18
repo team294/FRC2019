@@ -85,17 +85,26 @@ public class OI {
         right[i].whenPressed(new DriveAssist());
         left[i].whenReleased(new DriveWithJoysticks());
         right[i].whenReleased(new DriveWithJoysticks());
+        // TODO: Make right side button 2 a drive straight command
       } else if (i == 3) {
         left[i].whenPressed(new DriveWithVision(false, true)); // No line followers, but gyro correction
         left[i].whenReleased(new DriveWithJoysticks());
         right[i].whenPressed(new DriveWithVision(false, false)); // No line followers, no gyro
         right[i].whenReleased(new DriveWithJoysticks());
+        // TODO: Make both sides 3 reverse drive direction
+      } else if (i == 4 || i == 5) {
+        left[i].whenPressed(new DriveWithJoysticks());
+        right[i].whenPressed(new DriveWithJoysticks());
+        // TODO: Figure out where to add hatch scoring sequence to
       } else if (i == 11 || i == 10) {
         left[i].whenPressed(new DriveWithLineFollowing(true));
         left[i].whenReleased(new DriveWithJoysticks());
         right[i].whenPressed(new DriveWithLineFollowing(false));
         right[i].whenReleased(new DriveWithJoysticks());
       }
+      // 
+
+      // Buttons 6-11 are basically inaccessible with the current joystick configuration
     }
 
     SmartDashboard.putData("LoadToRocketPT1", new DrivePathfinder("RLoadToRocketPT1-A", true, false));
