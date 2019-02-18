@@ -21,7 +21,6 @@ import frc.robot.RobotMap;
 public class LedSet extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
-
   private final Relay ledRelay;
 
   private long currentTime = System.currentTimeMillis();
@@ -262,13 +261,13 @@ public class LedSet extends Subsystem {
         } else {
           blinkOn = true;
         }
-      }
-      if(blinkOn == true){
-        setOff();
-        setRed();
-      } else {
-        setOff();
-        setBlue();
+        if(blinkOn == true){
+          setOff();
+          setRed();
+        } else {
+          setOff();
+          setBlue();
+        }
       }
     }
   }
