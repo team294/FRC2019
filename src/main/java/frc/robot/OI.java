@@ -76,8 +76,8 @@ public class OI {
       right[i] = new JoystickButton(rightJoystick, i);
 
       if (i == 1) {
-        left[i].whenPressed(new Shift(false));
-        right[i].whenPressed(new Shift(true));
+        left[i].whenPressed(new Shift(true));
+        right[i].whenPressed(new Shift(false));
       } else if (i == 2) {
         left[i].whenPressed(new DriveAssist());
         right[i].whenPressed(new DriveAssist());
@@ -87,6 +87,11 @@ public class OI {
         left[i].whenPressed(new DriveWithVision(false, true)); // No line followers, but gyro correction
         left[i].whenReleased(new DriveWithJoysticks());
         right[i].whenPressed(new DriveWithVision(false, false)); // No line followers, no gyro
+        right[i].whenReleased(new DriveWithJoysticks());
+      } else if (i == 11 || i == 10) {
+        left[i].whenPressed(new DriveWithLineFollowing(true));
+        left[i].whenReleased(new DriveWithJoysticks());
+        right[i].whenPressed(new DriveWithLineFollowing(false));
         right[i].whenReleased(new DriveWithJoysticks());
       }
     }
@@ -105,8 +110,6 @@ public class OI {
     xBoxX.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.cargoShipCargo));
     
     SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true, true));
-    SmartDashboard.putData("Turn To Target", new VisionTurnToTarget());
-    SmartDashboard.putData("Drive on line", new DriveWithLineFollowing());
 
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
@@ -115,12 +118,25 @@ public class OI {
     SmartDashboard.putData("Move Elevator to WristSafe", new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.wristSafe)); // Move to encoder's zero position
     SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero());
 
+    // Buttons for controlling the climber
+    SmartDashboard.putData("Climb Up", new ClimbArmSetPercentOutput(0.2));  // For testing
+    SmartDashboard.putData("Climb Down", new ClimbArmSetPercentOutput(-0.2));  // For testing
+    SmartDashboard.putData("Climb move to 0", new ClimbArmSetAngle(0));  // For testing
+    SmartDashboard.putData("Climb move to start", new ClimbArmSetAngle(Robot.robotPrefs.climbStartingAngle + 5));  // For testing
+    SmartDashboard.putData("Climb Vacuum On", new ClimbVacuumTurnOn(true));
+    SmartDashboard.putData("Climb Vacuum Off", new ClimbVacuumTurnOn(false));
+    SmartDashboard.putData("Climb Set Reference", new ClimbEncoderCalibrateAtLimit());
+    SmartDashboard.putData("ClimbMoveUntilVacuum", new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
+    SmartDashboard.putData("ClimbLiftRobot", new ClimbLiftRobot(Robot.robotPrefs.climbLiftAngle));
+    SmartDashboard.putData("ClimbSequnce", new ClimbSequence());
+
     // Buttons for controlling FileLogging
     SmartDashboard.putData("Log 1 InitialTesting", new FileLogSetLevel(1));
     SmartDashboard.putData("Log 2 PitTesting", new FileLogSetLevel(2));
     SmartDashboard.putData("Log 3 Competition", new FileLogSetLevel(3));
     Robot.log.setLogLevel(3);   // Also puts log level indicator on ShuffleBoard
 
+    // These aren't useful; they don't update when the robot is running
     SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
     SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
     SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));

@@ -24,24 +24,24 @@ public class ClimbLiftRobot extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.climb.setClimbPos(climbAng);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.climb.setClimbMotorPercentOutput(-0.5);
+    Robot.climb.updateClimbLog();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Robot.climb.getClimbAngle() >= climbAng;
+    return Robot.climb.getClimbAngle() >= climbAng - 8;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.climb.stopClimbMotor();
   }
 
   // Called when another command which requires one or more of the same
