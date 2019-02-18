@@ -28,8 +28,11 @@ public class LedSet extends Subsystem {
   private long initialTime = System.currentTimeMillis();
   private boolean lightRed = false;
   private int colorValue = 0;
+  private int strobeCount = 0;
   private boolean ifBlink;
+  private boolean ifStrobe = false;
   private boolean blinkOn;
+  private boolean ifPoPo = false;
   private final Solenoid PneumaticLedsBlue = new Solenoid(RobotMap.pneumaticLedsBlue);
   private final Solenoid PneumaticLedsRed = new Solenoid(RobotMap.pneumaticLedsRed);
   private final Solenoid PneumaticLedsGreen = new Solenoid(RobotMap.pneumaticLedsGreen);
@@ -42,7 +45,7 @@ public class LedSet extends Subsystem {
 
     //LED SET METHOD
 
-    public void LEDSet1(int colorValue) {
+    public void LEDSet(int colorValue) {
       this.colorValue = colorValue;
       if (colorValue<0 || colorValue>3) {
         this.colorValue = 0;
@@ -64,10 +67,20 @@ public class LedSet extends Subsystem {
       }
 
     }
-    public void LEDSet1(int colorValue, boolean ifBlink) {
+    /*
+    0 = Off
+    1 = Green
+    2 = Blue
+    3 = Red
+    4 = Purple
+    5 = Sky Blue
+    6 = Lime
+    7 = White (Don't use for more than a second) */
+
+    public void LEDSet(int colorValue, boolean ifBlink) {
       this.colorValue = colorValue;
       this.ifBlink = ifBlink;
-      if (colorValue<0 || colorValue>3) {
+      if (colorValue<0 || colorValue>7) {
         this.colorValue = 0;
       } if (colorValue==0 && ifBlink==true) {
         this.ifBlink = false;
@@ -85,16 +98,26 @@ public class LedSet extends Subsystem {
         } else if(colorValue == 3){
           setOff();
           setRed();
+        } else if(colorValue == 4){
+          setOff();
+          setPurple();
+        } else if(colorValue == 5){
+          setOff();
+          setSkyBlue();
+        } else if(colorValue == 6){
+          setOff();
+          setLime();
+        } else if(colorValue == 7){
+          setOff();
+          setWhite();
         }else{
         }
       }
-      
-    
     }
 
-
-
-
+    public void disco() {
+      ifStrobe = true;
+    }
 
     /**
      * turn on LED lights
@@ -103,6 +126,10 @@ public class LedSet extends Subsystem {
     public void setBlue(){
         PneumaticLedsBlue.set(true);
         System.out.println("Blue");
+    }
+
+    public void weeWoo() {
+      ifPoPo = true;
     }
     
     public void setGreen(){
@@ -119,6 +146,31 @@ public class LedSet extends Subsystem {
     public void setRed(){
       PneumaticLedsRed.set(true);
       System.out.println("Red");
+    }
+    // Dont use too long
+    public void setPurple(){
+      PneumaticLedsRed.set(true);
+      PneumaticLedsBlue.set(true);
+      System.out.println("Purple");
+    }
+    // Dont use too long
+    public void setLime(){
+      PneumaticLedsRed.set(true);
+      PneumaticLedsGreen.set(true);
+      System.out.println("Lime");
+    }
+    // Dont use too long
+    public void setSkyBlue(){
+      PneumaticLedsGreen.set(true);
+      PneumaticLedsBlue.set(true);
+      System.out.println("SkyBlue");
+    }
+    // <!WARNING!> <!WARNING!> <!WARNING!> <!WARNING!>
+    public void setWhite(){
+      PneumaticLedsRed.set(true);
+      PneumaticLedsBlue.set(true);
+      PneumaticLedsGreen.set(true);
+      System.out.println("White");
     }
 
   @Override
@@ -144,18 +196,79 @@ public class LedSet extends Subsystem {
           setOff();
         } else {
           if(colorValue == 1){
-            //Robot.leds.setOff();
             setGreen();
           } else if (colorValue == 2){
-            //Robot.leds.setOff();
             setBlue();
           } else if(colorValue == 3){
-            //Robot.leds.setOff();
             setRed();
+          } else if(colorValue == 4){
+            setPurple();
+          } else if(colorValue == 5){
+            setSkyBlue();
+          } else if(colorValue == 6){
+            setLime();
+          } else if(colorValue == 7){
+            setWhite();
           }else{
           }
         }
       }
-  
+      if(ifStrobe) {
+        currentTime = System.currentTimeMillis();
+        if(currentTime > initialTime + 69){
+          if(strobeCount == 0){
+            strobeCount = 1;
+          } else if (strobeCount == 1){
+            strobeCount = 2;
+          } else if (strobeCount == 2){
+            strobeCount = 3;
+          }  else if (strobeCount == 3){
+            strobeCount = 4;
+          } else if (strobeCount == 4){
+            strobeCount = 5;
+          } else if (strobeCount == 5){
+            strobeCount = 0;
+          } else {
+          }
+          currentTime = System.currentTimeMillis();
+          initialTime = System.currentTimeMillis();
+        } 
+        if(strobeCount == 0){
+          setOff();
+          setRed();
+        } else if (strobeCount == 1){
+          setOff();
+          setGreen();
+        } else if(strobeCount == 2){
+          setOff();
+          setBlue();
+        }else if(strobeCount == 3){
+          setOff();
+          setPurple();
+        }else if(strobeCount == 4){
+          setOff();
+          setLime();
+        }
+        else if(strobeCount == 5){
+          setOff();
+          setSkyBlue();
+        }
+        else{
+        }
+      }
+      if (ifPoPo) {
+        if(blinkOn == true){
+          blinkOn = false;
+        } else {
+          blinkOn = true;
+        }
+      }
+      if(blinkOn == true){
+        setOff();
+        setRed();
+      } else {
+        setOff();
+        setBlue();
+      }
     }
   }
