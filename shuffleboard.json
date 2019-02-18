@@ -374,6 +374,36 @@
                 }
               ]
             }
+          },
+          "9,1": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "List Layout",
+              "Layout/Label position": "LEFT",
+              "_children": [
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Cargo Has Ball",
+                  "_title": "Cargo Has Ball",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Cargo Intake",
+                  "_title": "Cargo Intake"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Cargo Outtake",
+                  "_title": "Cargo Outtake"
+                }
+              ]
+            }
           }
         }
       }
