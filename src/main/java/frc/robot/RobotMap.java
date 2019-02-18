@@ -42,21 +42,10 @@ public class RobotMap {
   public static final int lineFollowerLeft = 2;
   public static final int lineFollowerCenter = 1;
   public static final int lineFollowerRight = 0;
-  public static final int vacuumSwitch = 3;
-  public static int photoSwitchCargo = 4;
-   
-  // TODO Update with 2019 base
-  // Robot Pathfinder data
-  public static final double encoderTicksPerRevolution = 4096.0;
-  public static final double wheelbase_in = 25.0;       // wheelbase, in inches
-  // public static final double wheel_diameter_in = 6.0;   // wheel diamater, in inches  -- DO NOT USE -- USE VALUE IN PREFERENCES INSTEAD
-  // public static final double wheel_distance_in_per_tick = wheel_diameter_in*Math.PI/encoderTicksPerRevolution;  // wheel distance traveled per encoder tick, in inches
-  public static final double max_velocity_ips = 200.0;   // max robot velocity, in inches per second
-  public static final double max_acceleration_ipsps = 130.0;  // max robot acceleration, in inches per second per second
-  public static final double max_jerk_ipspsps = 2400.0;  // max robot jerk, in inches per second per second per second
-  //public static final int vacuumSwitch = 3;
+  public static final int vacuumSwitch = 3;  // Gnd (black) = "C" common, White (sense) = "NC" normally closed
   public static final int elevatorLowerLimit = 4;
-  
+  public static final int photoSwitchCargo = 5;
+
   // PDP Addresses
   public static final int leftMotor1PDP = 0; 
   public static final int leftMotor2PDP = 1; 
