@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.commands.*;
 import frc.robot.triggers.*;
 import frc.robot.utilities.RobotPreferences;
-import frc.robot.utilities.RobotPreferences.WristAngle;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -139,8 +138,6 @@ public class OI {
     coP[4].whenPressed(new ClimbArmSetPercentOutput(-0.3));  // TODO determine manual control percent
     // coP[5].whenPressed(new Command());  // TODO add turning on vacuum
     // coP[6].whenPressed(new Command());  // TODO add turning off vacuum
-
-    trigWristElevEncoder.whenActive(new WristEncoderFail());
 
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
