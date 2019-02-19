@@ -28,9 +28,9 @@ public class ClimbArmSetPercentOutput extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    // if(!Robot.climb.getClimbMode()) {
+    if(!Robot.climb.getClimbMode()) {
     Robot.climb.setClimbMotorPercentOutput(percentOutput);
-    // }
+    }
   }
 
   // Called repeatedly when this Command is scheduled to run
