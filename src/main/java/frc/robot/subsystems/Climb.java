@@ -117,9 +117,18 @@ public class Climb extends Subsystem {
    */
   public void setClimbPos(double angle) {
     if (Robot.robotPrefs.climbCalibrated) {
-      angle = (getClimbAngle() <= Robot.robotPrefs.climbWristMovingSafe && Robot.wrist.getWristAngle() >= Robot.robotPrefs.wristClimbSafe && angle >= Robot.robotPrefs.climbWristMovingSafe) ? Robot.robotPrefs.climbWristMovingSafe : angle;
-      angle = (getClimbAngle() <= Robot.robotPrefs.climbWristStowedSafe && Robot.wrist.getWristAngle() >= Robot.robotPrefs.wristStowed - 5 && angle >= Robot.robotPrefs.climbWristStowedSafe) ? Robot.robotPrefs.climbWristMovingSafe : angle;
-      climbMotor2.set(ControlMode.Position, climbAngleToEncTicks(angle) + Robot.robotPrefs.climbCalZero);
+      if ((getClimbAngle() < Robot.robotPrefs.climbWristMovingSafe && angle < Robot.robotPrefs.climbWristMovingSafe) ||
+      (Robot.wrist.getWristAngle() < Robot.robotPrefs.wristKeepOut) || (Robot.wrist.getWristUpperLimit() && 
+      (getClimbAngle() > Robot.robotPrefs.climbWristMovingSafe && getClimbAngle() < Robot.robotPrefs.climbWristStowedSafe) && angle < Robot.robotPrefs.climbWristMovingSafe)) {
+        climbMotor2.set(ControlMode.Position, climbAngleToEncTicks(angle) + Robot.robotPrefs.climbCalZero);
+        Robot.log.writeLog("Climb", "Set angle", "Angle," + angle + ",Interlock,OK");
+      }
+      else if ((Robot.wrist.getWristAngle() > Robot.robotPrefs.wristKeepOut) && (getClimbAngle() < Robot.robotPrefs.climbWristMovingSafe) && (angle > Robot.robotPrefs.climbWristMovingSafe)) {
+        climbMotor2.set(ControlMode.Position, climbAngleToEncTicks(Robot.robotPrefs.climbWristMovingSafe) + Robot.robotPrefs.climbCalZero);
+        Robot.log.writeLog("Climb", "Set angle", "Angle," + Robot.robotPrefs.climbWristMovingSafe + ",Interlock,Diverted");
+      } else {
+        Robot.log.writeLog("Climb", "Set angle", "Angle," + Robot.robotPrefs.climbWristMovingSafe + ",Interlock,Forbidden");
+      }
     }
   }
 
@@ -173,11 +182,11 @@ public class Climb extends Subsystem {
 	public void adjustClimbCalZero() {
     Robot.log.writeLogEcho("Climb", "Adjust climb pre", "climb angle," + getClimbAngle() + 
       "raw ticks" + getClimbEncTicksRaw() + ",climbCalZero," + Robot.robotPrefs.climbCalZero);
-		if(getClimbAngle() < Robot.robotPrefs.climbMinAngle) {
+		if(getClimbAngle() < Robot.robotPrefs.climbMinAngle - 10.0) {
       Robot.log.writeLogEcho("Climb", "Adjust climb", "Below min angle");
 			Robot.robotPrefs.climbCalZero -= Robot.robotPrefs.encoderTicksPerRevolution;
 		}
-		else if(getClimbAngle() > Robot.robotPrefs.climbLimitAngle) {
+		else if(getClimbAngle() > Robot.robotPrefs.climbLimitAngle + 10.0) {
       Robot.log.writeLogEcho("Climb", "Adjust climb", "Above max angle");
 			Robot.robotPrefs.climbCalZero += Robot.robotPrefs.encoderTicksPerRevolution;
 		}
@@ -270,12 +279,14 @@ public class Climb extends Subsystem {
     if (!Robot.robotPrefs.climbCalibrated ) {  // || Robot.beforeFirstEnable
       if (isClimbAtLimitSwitch()) {
         calibrateClimbEnc(Robot.robotPrefs.climbLimitAngle, false);
+        updateClimbLog();
       }
     }
     
     // Un-calibrates the climb if the angle is outside of bounds... can we figure out a way to not put this in periodic()?
-    if (getClimbAngle() > Robot.robotPrefs.climbLimitAngle || getClimbAngle() < Robot.robotPrefs.climbMinAngle) {
+    if (getClimbAngle() > Robot.robotPrefs.climbLimitAngle + 5.0 || getClimbAngle() < Robot.robotPrefs.climbMinAngle - 5.0) {
       Robot.robotPrefs.setClimbUncalibrated();
+      updateClimbLog();
     }
   }
   

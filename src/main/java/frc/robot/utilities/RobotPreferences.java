@@ -33,11 +33,13 @@ public class RobotPreferences {
 	* Measurements
 	*/
 	// Wrist Angles (in degrees)
+	public final double wristMax = 110.0;	
 	public final double wristStowed = 107.36;
+	public final double wristKeepOut = 60.0; // Max angle to avoid interference with elevator or climber
 	public final double wristUp = 15.0;
 	public final double wristStraight = 0.0;
 	public final double wristDown = -45.0;
-	public final double wristClimbSafe = 100.0; //TODO check when wrist and climb are testable
+	public final double wristMin = -50.0;
 	public enum WristAngle {stowed, up, straight, down}
 
 	// TODO Update with 2019 base
@@ -126,7 +128,7 @@ public class RobotPreferences {
 	public void setClimbCalibration(double climbCalZero, boolean writeCalToPreferences) {
 		this.climbCalZero = climbCalZero;
 		climbCalibrated = true;
-		Robot.climb.stopClimbMotor();
+		Robot.climb.stopClimbMotor();  // Stop motor, so it doesn't jump to new value
 		Robot.log.writeLog("Preferences", "Calibrate climber", "zero value," + climbCalZero);
 		if (writeCalToPreferences) {
 			prefs.putDouble("climbCalZero", climbCalZero);
@@ -139,6 +141,7 @@ public class RobotPreferences {
 	public void setClimbUncalibrated() {
 		Robot.climb.stopClimbMotor();
 		climbCalibrated = false;
+		Robot.log.writeLog("Preferences", "Uncalibrate climber", "");
 	}
 
 	/* Sets up Preferences if they haven't been set as when changing RoboRios or first start-up.
@@ -191,28 +194,27 @@ public class RobotPreferences {
 
 	/**
 	 * Sets wrist angle calibration factor and enables angle control modes for wrist
-	 * Only setting wrist calibration if wrist is at either limit switch, otherwise does nothing
 	 * 
 	 * @param wristCalZero  Calibration factor for wrist
 	 * @param writeCalToPreferences  true = store calibration in Robot Preferences, false = don't change Robot Preferences
 	 */
 	public void setWristCalibration(double wristCalZero, boolean writeCalToPreferences) {
 		this.wristCalZero = wristCalZero;
-		if (Robot.wrist.getWristUpperLimit()) {
-			wristCalZero = Robot.wrist.getWristEncoderTicksRaw() - Robot.wrist.degreesToEncoderTicks(wristStowed);
-		} else if (Robot.wrist.getWristLowerLimit()) {
-			wristCalZero = Robot.wrist.getWristEncoderTicksRaw() - Robot.wrist.degreesToEncoderTicks(wristDown);
-		} else {
-			return;
-		}
 		wristCalibrated = true;
-		SmartDashboard.putBoolean("Wrist Calibrated", wristCalibrated);
+		Robot.wrist.stopWrist();	// Stop motor, so it doesn't jump to new value
+		Robot.log.writeLog("Preferences", "Calibrate wrist", "zero value," + wristCalZero);
 		if (writeCalToPreferences) {
-			prefs.putDouble("calibrationZeroDegrees", wristCalZero);
+			prefs.putDouble("wristCalZero", wristCalZero);
 		}
-		if (!prefs.containsKey("calibrationZeroDegrees")) {
-			prefs.putDouble("calibrationZeroDegrees", -9999.0);	
-		}
+	}
+
+	/**
+	 * Stops wrist motor and sets wristCalibrated to false
+	 */
+	public void setWristUncalibrated() {
+		Robot.wrist.stopWrist();;
+		wristCalibrated = false;
+		Robot.log.writeLog("Preferences", "Uncalibrate wrist", "");
 	}
 
 	// Much of this is not going to be useful in competition. The drivers are not going to look at the laptop screen to see if a subsystem has thrown an error.

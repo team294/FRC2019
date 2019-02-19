@@ -63,8 +63,6 @@ public class OI {
   private Button xBoxX = new JoystickButton(xBoxController, 3);
   private Button xBoxY = new JoystickButton(xBoxController, 4);
 
-  private Trigger trigWristElevEncoder = new WristEncoderCheck();
-
   public OI() {
     Button[] left = new Button[12];
     Button[] right = new Button[12];
@@ -129,6 +127,10 @@ public class OI {
     SmartDashboard.putData("ClimbMoveUntilVacuum", new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
     SmartDashboard.putData("ClimbLiftRobot", new ClimbLiftRobot(Robot.robotPrefs.climbLiftAngle));
     SmartDashboard.putData("ClimbSequnce", new ClimbSequence());
+
+    // Buttons for the Cargo rollers
+    SmartDashboard.putData("Cargo Intake", new CargoIntake());
+    SmartDashboard.putData("Cargo Outtake", new CargoOuttake());
 
     // Buttons for controlling FileLogging
     SmartDashboard.putData("Log 1 InitialTesting", new FileLogSetLevel(1));

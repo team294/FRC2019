@@ -14,6 +14,7 @@ import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.ElevatorWithXBox;
 import frc.robot.utilities.FileLog;
+import frc.robot.utilities.RobotPreferences;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -40,7 +41,7 @@ public class Elevator extends Subsystem {
 	private double currEnc = 0.0; // current recorded encoder value
 	private double encSnapShot = 0.0; // snapshot of encoder value used to make sure encoder is working
 	private boolean elevEncOK = true; // true is encoder working, false is encoder broken
-	private boolean elevatorMode; // true is automated, false is manual mode
+	private boolean elevatorMode; // true is automated (encoder is working and calibrated), false is manual mode
 
 	private double rampRate = .005;
 	private double kP = 0.5;
@@ -98,7 +99,9 @@ public class Elevator extends Subsystem {
 	 * @param inches target height in inches off the floor
 	 */
 	public void setElevatorPos(double inches) {
-		if (elevEncOK && elevatorMode) {
+		if (elevEncOK && elevatorMode &&
+			  Robot.wrist.getWristAngle() < Robot.robotPrefs.wristKeepOut &&
+			  Robot.wrist.getCurrentWristTarget() < Robot.robotPrefs.wristKeepOut) {
 			elevatorMotor1.set(ControlMode.Position, inchesToEncoderTicks(inches - Robot.robotPrefs.elevatorBottomToFloor));
 			Robot.log.writeLog("Elevator", "Position set", "Target," + inches);
 		}
@@ -106,7 +109,7 @@ public class Elevator extends Subsystem {
 
 	/**
 	 * Returns the height that elevator is trying to move to in inches from the floor.
-	 * Returns -1 if the elevator is in manual mode.
+	 * Returns -1 if the elevator is in manual mode (not calibrated).
 	 * <p><b>NOTE:</b> This is the target height, not the current height.
 	 * 
 	 * @return desired inches of elevator height
@@ -120,10 +123,15 @@ public class Elevator extends Subsystem {
 	}
 
 	/**
-	 * @return Current elevator position, in inches from floor
+	 * @return Current elevator position, in inches from floor.  Returns -1
+	 * if the elevator is in manual mode (not calibrated).
 	 */
 	public double getElevatorPos() {
-		return encoderTicksToInches(getElevatorEncTicks()) + Robot.robotPrefs.elevatorBottomToFloor;
+		if (elevatorMode) {
+			return encoderTicksToInches(getElevatorEncTicks()) + Robot.robotPrefs.elevatorBottomToFloor;
+		} else {
+			return -1;
+		}
 	}
 
 	/**
@@ -301,13 +309,13 @@ public class Elevator extends Subsystem {
 					negMoveCount = 0;
 				}
 			}
-			if (!elevatorMode && elevEncOK) {
-				if (getElevatorLowerLimit() && getElevatorEncTicks() == 0) {
-					setDefaultCommand(null);
-					elevatorMode = true;
-					posMoveCount = 0;
-					negMoveCount = 0;
-				}
+
+			// Autocalibrate in the encoder is OK and the elevator is at the lower limit switch
+			if (!elevatorMode && elevEncOK && getElevatorLowerLimit()) {
+				setDefaultCommand(null);
+				elevatorMode = true;
+				posMoveCount = 0;
+				negMoveCount = 0;
 			}
 
 		}
