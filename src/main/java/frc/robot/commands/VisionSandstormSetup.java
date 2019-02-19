@@ -8,63 +8,45 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
-public class DriveWithLineFollowing extends Command {
-
-  boolean gyro = false;
-  double targetQuad = 0;
-
-  public DriveWithLineFollowing() {
+public class VisionSandstormSetup extends Command {
+  public VisionSandstormSetup() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.driveTrain);
-  }
-
-  /**
-   * Drives following line sensors
-   * @param gyro Whether or not to use gyro enhancement. True means yes. Default (no parameter) is false.
-   */
-  public DriveWithLineFollowing(boolean gyro) {
-    requires(Robot.driveTrain);
-    this.gyro = gyro;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.driveTrain.setDriveMode(false);
-    if (gyro) targetQuad = Robot.driveTrain.checkScoringQuadrant(); // Probably should compare this to the quadrant from the vision command too
-    Robot.log.writeLogEcho("DriveTrain", "Line Tracking Init", "Gyro," + gyro + ",Quadrant," + targetQuad);
-    
-    // Robot.vision.setSnapshot(1); // Start taking snapshots so we can analyze our approach... might move this to start of vision driving?
+    Robot.vision.setCamMode(1); // Set the camera to "driving mode"
+    // Robot.vision.setPipe(2);
+    Robot.vision.setStreamMode(1); // Puts the line-following downward camera in the corner of the main driving frame
+    Robot.vision.turnOffCamLeds(); // Turns off the camera LEDs
+    Robot.vision.setSnapshot(0); // Turn off snapshot-taking
+
+    Robot.log.writeLog("Vision", "Sandstorm Config Initiated", "");
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.driveTrain.quadrantLineFollowing(targetQuad);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Robot.driveTrain.areEncodersStopped(5.0); // Check if the encoders have changed
+    return true;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.driveTrain.stop();
-    Robot.log.writeLogEcho("DriveTrain", "Line Tracking Ended", "");
-    Robot.vision.setSnapshot(0); // Stop taking snapshots
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    end();
   }
 }

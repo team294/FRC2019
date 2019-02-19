@@ -23,8 +23,7 @@ public class DriveWithVision extends Command {
   public DriveWithVision() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.driveTrain);
-    // TODO: Add pipeline switch to make sure on vision pipeline
+    this(false, false);
   }
 
   /**
@@ -37,6 +36,11 @@ public class DriveWithVision extends Command {
     requires(Robot.driveTrain);
     this.endOnLine = endOnLine;
     this.gyro = gyro;
+
+    // TODO: Add pipeline switch to make sure on vision pipeline
+    // Robot.vision.setPipe(0);
+    Robot.vision.setCamMode(0); // Test between pipelines and "driver" mode to see which works better
+    Robot.vision.turnOnCamLeds(); // Make sure the LEDs are on before driving
   }
 
   // Called just before this Command runs the first time

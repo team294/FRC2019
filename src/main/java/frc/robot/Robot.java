@@ -106,7 +106,7 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     log.writeLogEcho("Robot", "Disabled", "");
     climb.enableCompressor(true);
-    vision.setCameraMode(1);
+    vision.setLedMode(1);
     
     driveTrain.zeroGyroRotation(); 
     driveTrain.zeroLeftEncoder();
@@ -160,7 +160,7 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     climb.enableCompressor(true);
-    vision.setCameraMode(3);
+    vision.setLedMode(3);
     log.writeLogEcho("Robot", "Teleop mode init", "");
     beforeFirstEnable = false; // set variable that robot has been enabled
     
@@ -187,5 +187,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    vision.setLedMode(3); // LEDs on during test for vision pipeline tuning
   }
 }
