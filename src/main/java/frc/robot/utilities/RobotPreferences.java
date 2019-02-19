@@ -72,9 +72,7 @@ public class RobotPreferences {
 
 	//Climb Target Angles (in degrees)
 	//TODO Test and adjust angles when climb is built
-	public final double climbLimitAngle = 160.0;
-	public final double climbWristStowedSafe = 145.0;
-	public final double climbWristMovingSafe = 130.0;
+	public final double climbStartingAngle = 120.0;
 	public final double climbLiftAngle = 125.0;
 	public final double climbVacuumAngle = -5.0;
 	public final double climbMinAngle = -20.0;

@@ -132,8 +132,8 @@ public class OI {
     // right[5].whenReleased(new DriveWithJoysticks());
 
     // Copanel buttons
-    coP[1].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe));
-    coP[2].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe));
+    coP[1].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStartingAngle));
+    coP[2].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStartingAngle));
     coP[3].whenPressed(new ClimbArmSetPercentOutput(0.3));  // TODO determine manual control percent
     coP[4].whenPressed(new ClimbArmSetPercentOutput(-0.3));  // TODO determine manual control percent
     // coP[5].whenPressed(new Command());  // TODO add turning on vacuum
@@ -151,7 +151,7 @@ public class OI {
     SmartDashboard.putData("Climb Up", new ClimbArmSetPercentOutput(0.2));  // For testing
     SmartDashboard.putData("Climb Down", new ClimbArmSetPercentOutput(-0.2));  // For testing
     SmartDashboard.putData("Climb move to 0", new ClimbArmSetAngle(0));  // For testing
-    SmartDashboard.putData("Climb move to start", new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe + 5));  // For testing
+    SmartDashboard.putData("Climb move to start", new ClimbArmSetAngle(Robot.robotPrefs.climbStartingAngle + 5));  // For testing
     SmartDashboard.putData("Climb Vacuum On", new ClimbVacuumTurnOn(true));
     SmartDashboard.putData("Climb Vacuum Off", new ClimbVacuumTurnOn(false));
     SmartDashboard.putData("Climb Set Reference", new ClimbEncoderCalibrateAtLimit());
