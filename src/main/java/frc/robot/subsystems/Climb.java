@@ -171,11 +171,11 @@ public class Climb extends Subsystem {
 	public void adjustClimbCalZero() {
     Robot.log.writeLogEcho("Climb", "Adjust climb pre", "climb angle," + getClimbAngle() + 
       "raw ticks" + getClimbEncTicksRaw() + ",climbCalZero," + Robot.robotPrefs.climbCalZero);
-		if(getClimbAngle() < Robot.robotPrefs.climbMinAngle) {
+		if(getClimbAngle() < Robot.robotPrefs.climbMinAngle - 10.0) {
       Robot.log.writeLogEcho("Climb", "Adjust climb", "Below min angle");
 			Robot.robotPrefs.climbCalZero -= Robot.robotPrefs.encoderTicksPerRevolution;
 		}
-		else if(getClimbAngle() > Robot.robotPrefs.climbStartingAngle) {
+		else if(getClimbAngle() > Robot.robotPrefs.climbStartingAngle + 10.0) {
       Robot.log.writeLogEcho("Climb", "Adjust climb", "Above max angle");
 			Robot.robotPrefs.climbCalZero += Robot.robotPrefs.encoderTicksPerRevolution;
 		}
@@ -268,12 +268,14 @@ public class Climb extends Subsystem {
     if (!Robot.robotPrefs.climbCalibrated ) {  // || Robot.beforeFirstEnable
       if (isClimbAtLimitSwitch()) {
         calibrateClimbEnc(Robot.robotPrefs.climbStartingAngle, false);
+        updateClimbLog();
       }
     }
     
     // Un-calibrates the climb if the angle is outside of bounds... can we figure out a way to not put this in periodic()?
-    if (getClimbAngle() > Robot.robotPrefs.climbStartingAngle || getClimbAngle() < Robot.robotPrefs.climbMinAngle) {
+    if (getClimbAngle() > Robot.robotPrefs.climbStartingAngle + 5.0 || getClimbAngle() < Robot.robotPrefs.climbMinAngle - 5.0) {
       Robot.robotPrefs.setClimbUncalibrated();
+      updateClimbLog();
     }
   }
   

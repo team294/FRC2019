@@ -9,10 +9,12 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.*;
 import frc.robot.utilities.FileLog;
+import frc.robot.utilities.RobotPreferences;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -30,8 +32,6 @@ public class Wrist extends Subsystem {
 	private int negMoveCount = 0; // increments every cycle the wrist moves down
 	private double currEnc = 0.0; // current recorded encoder value
 	private double encSnapShot = 0.0; // snapshot of encoder value used to make sure encoder is working
-  private boolean encOK = true; // true if encoder works, false if encoder broke
-  private boolean wristMode = true; // true if automated, false if manual mode
   private double encoderDegreesPerTicks = 360.0 / Robot.robotPrefs.encoderTicksPerRevolution;
   private double encoderTicksPerDegrees = Robot.robotPrefs.encoderTicksPerRevolution / 360.0;
 
@@ -41,9 +41,9 @@ public class Wrist extends Subsystem {
 	private double kD = 0;
   private double kFF = 0;
   private int kIz = 0;
-  private double kMaxOutput = 1.0; // up max output
-  private double kMinOutput = -1.0; // down max output
-  private double rampRate = 0.005;
+  private double kMaxOutput = 0.3; // up max output TODO increase after initial testing
+  private double kMinOutput = -0.3; // down max output  TODO increase after initial testing
+  private double rampRate = 0.5;
 
   public Wrist() {
     wristMotor.set(ControlMode.PercentOutput, 0);
@@ -63,36 +63,22 @@ public class Wrist extends Subsystem {
     wristMotor.configPeakOutputReverse(kMinOutput);
     
     wristLimits = wristMotor.getSensorCollection();
-    zeroWristEncoder();
+
+    adjustWristCalZero();
   }
 
   /**
-   * 
-   * @param percentOutput between -1.0 and 1.0
+   * Sets percent power of wrist motor
+   * @param percentPower between -1.0 (down full speed) and 1.0 (up full speed)
    */
   public void setWristMotorPercentOutput(double percentOutput) {
+    percentOutput = (percentOutput>kMaxOutput ? kMaxOutput : percentOutput);
+    percentOutput = (percentOutput<kMinOutput ? kMinOutput : percentOutput);  
+
     if (Robot.log.getLogLevel() == 1) {
       Robot.log.writeLog("Wrist" , "Percent Output", "Percent Output," + percentOutput);
     }
     wristMotor.set(ControlMode.PercentOutput, percentOutput);
-  }
-
-  /**
-   * Only works when encoder is working, wristMode is true (in automatic mode)
-   * If setting to greater than 60 degrees, elevator position must be zero
-   * and target must be less than 1 inch above starting position
-   * @param degrees target degrees
-   */
-  public void setWristAngle(double degrees) {
-    if (encOK && wristMode && Robot.robotPrefs.wristCalibrated) {
-      // TODO determine max degrees and elevator height tolerance
-      if (degrees < 60 || (Robot.elevator.getElevatorLowerLimit() && Robot.elevator.getCurrentElevatorTarget() < (Robot.robotPrefs.elevatorBottomToFloor+1))) {
-        wristMotor.set(ControlMode.Position, degreesToEncoderTicks(degrees) + Robot.robotPrefs.wristCalZero);
-        if(Robot.log.getLogLevel() <= 2) {
-          Robot.log.writeLog("Wrist", "Degrees set", "Target," + degrees);
-        }
-      }
-    }
   }
 
   /**
@@ -103,25 +89,60 @@ public class Wrist extends Subsystem {
   }
 
   /**
-   * Only zeros wrist encoder when it is at zero position (upper limit)
+   * Only works when encoder is working and calibrated
+   * If setting to greater than wristKeepOut, elevator position must be zero
+   * and target must be less than 1 inch above starting position
+   * @param angle target angle, in degrees (0 = horizontal in front of robot, + = up, - = down)
    */
-  public void zeroWristEncoder() {
-    if (getWristUpperLimit()) {
-      wristMotor.setSelectedSensorPosition(0, 0, 0);
-      if (Robot.log.getLogLevel() <= 2){
-        Robot.log.writeLog("Wrist", "Zero Encoder", "");
+  public void setWristAngle(double angle) {
+    if (Robot.robotPrefs.wristCalibrated) {
+      // TODO determine max degrees and elevator height tolerance
+      if ( (angle < RobotPreferences.wristKeepOut && getWristAngle() < RobotPreferences.wristKeepOut) || 
+          (Robot.elevator.getElevatorLowerLimit() && 
+           Robot.elevator.getCurrentElevatorTarget() < (Robot.robotPrefs.elevatorBottomToFloor+1))) {
+        wristMotor.set(ControlMode.Position, degreesToEncoderTicks(angle) + Robot.robotPrefs.wristCalZero);
+        Robot.log.writeLog("Wrist", "Set angle", "Angle," + angle + ",Interlock,OK");
+      } else {
+        Robot.log.writeLog("Wrist", "Set angle", "Angle," + angle + ",Interlock,Forbidden");
       }
     }
   }
+
+  /**
+   * Calibrates the wrist encoder, assuming we know the wrist's current angle
+   * @param angle current angle that the wrist is physically at, in degrees (0 = horizontal in front of robot, + = up, - = down)
+   * @param saveToPrefs true = save the calibration to RobotPreferences
+   */
+  public void calibrateWristEnc(double angle, boolean saveToPrefs) {
+    Robot.robotPrefs.setWristCalibration(getWristEncoderTicksRaw() - degreesToEncoderTicks(angle), saveToPrefs);
+  }  
+  
+	/**
+	 * If the angle is reading >/< max/min angle, add/subtract 360 degrees to the wristCalZero accordingly
+	 * Note: when the motor is not inverted, upon booting up, an absolute encoder reads a value between 0 and 4096
+	 * 		 when the motor is inverted, upon booting up, an absolute encoder reads a value between 0 and -4096
+	 * Note: absolute encoder values don't wrap during operation
+	 */
+	public void adjustWristCalZero() {
+    Robot.log.writeLogEcho("Wrist", "Adjust wrist pre", "wrist angle," + getWristAngle() + 
+      "raw ticks" + getWristEncoderTicksRaw() + ",wristCalZero," + Robot.robotPrefs.wristCalZero);
+		if(getWristAngle() < RobotPreferences.wristMin - 10.0) {
+      Robot.log.writeLogEcho("Wrist", "Adjust wrist", "Below min angle");
+			Robot.robotPrefs.wristCalZero -= Robot.robotPrefs.encoderTicksPerRevolution;
+		}
+		else if(getWristAngle() > RobotPreferences.wristMax + 10.0) {
+      Robot.log.writeLogEcho("Wrist", "Adjust wrist", "Above max angle");
+			Robot.robotPrefs.wristCalZero += Robot.robotPrefs.encoderTicksPerRevolution;
+		}
+    Robot.log.writeLogEcho("Wrist", "Adjust wrist post", "wrist angle," + getWristAngle() + 
+      "raw ticks" + getWristEncoderTicksRaw() + ",wristCalZero," + Robot.robotPrefs.wristCalZero);
+	}
 
   /**
    * Reads whether wrist is at lower limit
    * @return true if wrist is at lower limit, false if not
    */
   public boolean getWristLowerLimit() {
-    if(Robot.log.getLogLevel() == 1){
-      Robot.log.writeLog("Wrist", "Lower Wrist Encoder", "Lower Wrist Encoder," + wristLimits.isRevLimitSwitchClosed());
-    }
     return wristLimits.isRevLimitSwitchClosed();
   }
 
@@ -130,15 +151,12 @@ public class Wrist extends Subsystem {
    * @return true if wrist is at upper limit, false if not
    */
   public boolean getWristUpperLimit() {
-    if(Robot.log.getLogLevel() == 1){
-      Robot.log.writeLog("Wrist", "Upper Wrist Encoder", "Upper Wrist Encoder," + wristLimits.isFwdLimitSwitchClosed());
-    }
     return wristLimits.isFwdLimitSwitchClosed();
   }
 
   /**
    * 
-   * @return raw encoder ticks (based on encoder zero being at zero position)
+   * @return raw encoder ticks (based on encoder zero being at horizontal position)
    */
   public double getWristEncoderTicks() {
     if(Robot.log.getLogLevel() == 1){
@@ -175,10 +193,10 @@ public class Wrist extends Subsystem {
   }
 
   /**
-   * 
+   * For use in the wrist subsystem only.  Use getWristAngle() when calling from outside this class.
    * @return current encoder ticks (based on zero) converted to degrees
    */
-  public double getWristEncoderDegrees() {
+  private double getWristEncoderDegrees() {
     if(Robot.log.getLogLevel() == 1){
       Robot.log.writeLog("Wrist", "Wrist Encoder Degrees", "Wrist Encoder Degrees," + encoderTicksToDegrees(getWristEncoderTicks()));
     }
@@ -194,39 +212,47 @@ public class Wrist extends Subsystem {
   }
 
   /**
-	 * Returns the angle that wrist is currently positioned at in degrees
-	 * 
+	 * Returns the angle that wrist is currently positioned at in degrees.
+	 * If the wrist is not calibrated, then returns wristMax.
 	 * @return current degree of wrist angle
 	 */
   public double getWristAngle() {
-    double wristAngle = getWristEncoderDegrees();
-    wristAngle = wristAngle % 360; // If encoder wraps around 360 degrees
-    wristAngle = (wristAngle > 180) ? wristAngle - 360 : wristAngle; // Change range to -180 to +180
-    if (Robot.log.getLogLevel() == 1){
-      Robot.log.writeLog("Wrist", "Get Wrist Angle", "Wrist Angle," + wristAngle);
+    if (Robot.robotPrefs.wristCalibrated) {
+      double wristAngle = getWristEncoderDegrees();
+      wristAngle = wristAngle % 360; // If encoder wraps around 360 degrees
+      wristAngle = (wristAngle > 180) ? wristAngle - 360 : wristAngle; // Change range to -180 to +180
+      if (Robot.log.getLogLevel() == 1){
+        Robot.log.writeLog("Wrist", "Get Wrist Angle", "Wrist Angle," + wristAngle);
+      }
+      return wristAngle;
+    } else {
+      return RobotPreferences.wristMax;
     }
-		return wristAngle;
   }
 
   /**
-	 * Returns the angle that wrist is trying to move to in degrees
-	 * 
+	 * Returns the angle that wrist is trying to move to in degrees.
+	 * If the wrist is not calibrated, then returns wristMax.
 	 * @return desired degree of wrist angle
 	 */
   public double getCurrentWristTarget() {
-    double currentTarget = wristMotor.getClosedLoopTarget(0) - Robot.robotPrefs.wristCalZero;
-    if(Robot.log.getLogLevel() == 1){
-      Robot.log.writeLog("Wrist", "Wrist Target", "Wrist Target," + encoderTicksToDegrees(currentTarget));
+    if (Robot.robotPrefs.wristCalibrated) {
+      double currentTarget = encoderTicksToDegrees(wristMotor.getClosedLoopTarget(0) - Robot.robotPrefs.wristCalZero);
+      if(Robot.log.getLogLevel() == 1){
+        Robot.log.writeLog("Wrist", "Wrist Target", "Wrist Target," + currentTarget);
+      }
+      return currentTarget;
+    } else {
+      return RobotPreferences.wristMax;
     }
-		return encoderTicksToDegrees(currentTarget);
   }
 
   /**
-	 * returns whether encoder is working or not
-	 * @return true if encoder works, false if encoder broke
+	 * returns whether encoder is calibrated or not
+	 * @return true if encoder is calibrated and working, false if encoder broke
 	 */
-	public boolean getEncOK() {
-		return encOK;
+	public boolean isEncoderCalibrated() {
+		return Robot.robotPrefs.wristCalibrated;
   }
 
   /**
@@ -234,9 +260,11 @@ public class Wrist extends Subsystem {
    */
   public void updateWristLog() {
     Robot.log.writeLog("Wrist", "Update Variables",
-        "Wrist Enc Ticks," + getWristEncoderTicks() + ",Wrist Enc Degrees," + getWristEncoderDegrees()
-        + ",Upper Limit," + getWristUpperLimit() + ",Lower Limit," + getWristLowerLimit()
-        + ",Enc OK," + encOK + ",Wrist Mode," + wristMode);
+        "Volts," + wristMotor.getMotorOutputVoltage() + ",Amps," + Robot.pdp.getCurrent(RobotMap.wristMotorPDP) +
+        ",WristCalZero," + Robot.robotPrefs.wristCalZero + 
+        "Enc Raw," + getWristEncoderTicksRaw() + ",Wrist Angle," + getWristAngle() +
+        ",Upper Limit," + getWristUpperLimit() + ",Lower Limit," + getWristLowerLimit()
+        );
   }
 
   @Override
@@ -250,13 +278,31 @@ public class Wrist extends Subsystem {
   @Override
   public void periodic() {
 
-    if (getWristLowerLimit()){
-      if (Robot.log.getLogLevel() <= 2) {
-        Robot.log.writeLog("Wrist", "Encoder Calibrated Low", "old value," + Robot.robotPrefs.wristCalZero + ",new value," + getWristEncoderTicksRaw());
+    if (Robot.log.getLogRotation() == FileLog.WRIST_CYCLE) {
+      SmartDashboard.putBoolean("Wrist calibrated", Robot.robotPrefs.wristCalibrated);
+      SmartDashboard.putNumber("Wrist Angle", getWristAngle());
+      SmartDashboard.putNumber("Wrist enc raw", getWristEncoderTicksRaw());
+			SmartDashboard.putBoolean("Wrist Lower Limit", getWristLowerLimit());
+			SmartDashboard.putBoolean("Wrist Upper Limit", getWristUpperLimit());
+    }
+    
+    // Checks if the wrist is not calibrated and automatically calibrates it once the limit switch is pressed
+    // If the wrist isn't calibrated at the start of the match, does that mean we can't control the wrist at all?
+    if (!Robot.robotPrefs.wristCalibrated) {
+      if (getWristUpperLimit()) {
+        calibrateWristEnc(RobotPreferences.wristMax, false);
+        updateWristLog();
       }
-      Robot.robotPrefs.setWristCalibration(getWristEncoderTicksRaw(), true);
-    } else if (getWristUpperLimit()){
-      // TODO Add code to calibrate for wrist upper limit switch?
+      if (getWristLowerLimit()) {
+        calibrateWristEnc(RobotPreferences.wristMin, false);
+        updateWristLog();
+      }
+    }
+    
+    // Un-calibrates the wrist if the angle is outside of bounds... can we figure out a way to not put this in periodic()?
+    if (getWristAngle() > RobotPreferences.wristMax + 5.0 || getWristAngle() < RobotPreferences.wristMin - 5.0) {
+      Robot.robotPrefs.setWristUncalibrated();
+      updateWristLog();
     }
 
     if (DriverStation.getInstance().isEnabled()) {
@@ -282,10 +328,10 @@ public class Wrist extends Subsystem {
         negMoveCount = 0;
         posMoveCount++;
         if (posMoveCount > 3) {
-          encOK = (currEnc - encSnapShot) > 100;
-          if (!encOK) {
+          if ((currEnc - encSnapShot) < 100) {
             setDefaultCommand(new WristWithXBox());
-            wristMode = false;
+            Robot.robotPrefs.setWristUncalibrated();
+            updateWristLog();
           }
           posMoveCount = 0;
         }
@@ -297,19 +343,14 @@ public class Wrist extends Subsystem {
         posMoveCount = 0;
         negMoveCount++;
         if (negMoveCount > 3) {
-          encOK = (currEnc - encSnapShot) < -100;
-          if (!encOK) {
-            setDefaultCommand(new WristWithXBox()); // If something is broken, it's just as easy for the codriver to press the joystick button in before moving it. There's no time savings by having this in periodic.
-            wristMode = false;
+          if ((currEnc - encSnapShot) > -100) {
+            // If something is broken, it's just as easy for the codriver to press the 
+            // joystick button in before moving it. There's no time savings by having
+            // this in periodic.
+            setDefaultCommand(new WristWithXBox()); 
+            Robot.robotPrefs.setWristUncalibrated();
+            updateWristLog();
           }
-          negMoveCount = 0;
-        }
-      }
-      if (!wristMode && encOK) {
-        if (getWristLowerLimit() && getWristEncoderTicks() == 0) {
-          setDefaultCommand(null);
-          wristMode = true;
-          posMoveCount = 0;
           negMoveCount = 0;
         }
       }
