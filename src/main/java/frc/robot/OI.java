@@ -132,12 +132,13 @@ public class OI {
     // right[5].whenReleased(new DriveWithJoysticks());
 
     // Copanel buttons
-    coP[1].whenPressed(new ClimbSequence());
+    coP[1].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe));
     coP[2].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe));
     coP[3].whenPressed(new ClimbArmSetPercentOutput(0.3));  // TODO determine manual control percent
     coP[4].whenPressed(new ClimbArmSetPercentOutput(-0.3));  // TODO determine manual control percent
     // coP[5].whenPressed(new Command());  // TODO add turning on vacuum
     // coP[6].whenPressed(new Command());  // TODO add turning off vacuum
+    coP[8].whenPressed(new ClimbSequence());
 
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
