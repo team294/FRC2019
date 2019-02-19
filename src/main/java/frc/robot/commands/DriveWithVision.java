@@ -37,9 +37,7 @@ public class DriveWithVision extends Command {
     this.endOnLine = endOnLine;
     this.gyro = gyro;
 
-    // TODO: Add pipeline switch to make sure on vision pipeline
-    // Robot.vision.setPipe(0);
-    Robot.vision.setCamMode(0); // Test between pipelines and "driver" mode to see which works better
+    Robot.vision.setPipe(0); // On vision pipeline
     Robot.vision.turnOnCamLeds(); // Make sure the LEDs are on before driving
   }
 

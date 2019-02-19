@@ -19,8 +19,7 @@ public class VisionSandstormSetup extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.vision.setCamMode(1); // Set the camera to "driving mode"
-    // Robot.vision.setPipe(2);
+    Robot.vision.setPipe(2); // Determined that pipeline for driving is better than "driver mode"
     Robot.vision.setStreamMode(1); // Puts the line-following downward camera in the corner of the main driving frame
     Robot.vision.turnOffCamLeds(); // Turns off the camera LEDs
     Robot.vision.setSnapshot(0); // Turn off snapshot-taking
