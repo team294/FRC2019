@@ -41,6 +41,13 @@ public class Climb extends Subsystem {
   private final DigitalInput vacuumSwitch = new DigitalInput(RobotMap.vacuumSwitch);
   private final SensorCollection climbLimit;
 
+  // private int posMoveCount = 0; // increments every cycle the elevator moves up
+	// private int negMoveCount = 0; // increments every cycle the elevator moves down
+	// private double currEnc = 0.0; // current recorded encoder value
+	// private double encSnapShot = 0.0; // snapshot of encoder value used to make sure encoder is working
+	// private boolean climbEncOK = true; // true is encoder working, false is encoder broken
+  // private boolean climbMode; // true is automated (encoder is working and calibrated), false is manual mode
+
   private double rampRate = 0.5;
   private double kP = 2;
   private double kI = 0;
@@ -116,7 +123,7 @@ public class Climb extends Subsystem {
    * @param angle target angle, in degrees (0 = horizontal behind robot, + = up, - = down)
    */
   public void setClimbPos(double angle) {
-    if (Robot.robotPrefs.climbCalibrated) {
+    if (Robot.robotPrefs.climbCalibrated) { // && climbMode) {
       climbMotor2.set(ControlMode.Position, climbAngleToEncTicks(angle) + Robot.robotPrefs.climbCalZero);
     }
   }
@@ -231,6 +238,13 @@ public class Climb extends Subsystem {
     return climbLimit.isFwdLimitSwitchClosed();
   }
 
+  // /**
+  //  * @return true is automatic mode, false is manual
+  //  */
+  // public boolean getClimbMode() {
+  //   return climbMode;
+  // }
+
   public void updateClimbLog() {
     Robot.log.writeLog("Climb", "Update Variables", 
     "Volts1," + climbMotor2.getMotorOutputVoltage() + ",Volts2," + climbMotor1.getMotorOutputVoltage() + 
@@ -277,6 +291,45 @@ public class Climb extends Subsystem {
       Robot.robotPrefs.setClimbUncalibrated();
       updateClimbLog();
     }
+
+    /*
+    if (climbMotor1.getMotorOutputVoltage() > 5) {
+      if (posMoveCount == 0) {
+        encSnapShot = getClimbEncTicksRaw();
+      }
+      negMoveCount = 0;
+      posMoveCount++;
+      if (posMoveCount > 3) {
+        climbEncOK = (currEnc - encSnapShot) > 100;
+        if (!climbEncOK) {
+          Robot.robotPrefs.recordStickyFaults("Climb Enc");
+          climbMode = false;
+        }
+        posMoveCount = 0;
+      }
+    } else if (climbMotor1.getMotorOutputVoltage() < -5) {
+      if (negMoveCount == 0) {
+        encSnapShot = getClimbEncTicksRaw();
+      }
+      posMoveCount = 0;
+      negMoveCount++;
+      if (negMoveCount > 3) {
+        climbEncOK = (currEnc - encSnapShot) < -100;
+        if (!climbEncOK) {
+          Robot.robotPrefs.recordStickyFaults("Climb Enc");
+          climbMode = false;
+        }
+        negMoveCount = 0;
+      }
+    }
+
+    // Autocalibrate if the encoder is OK and the elevator is at the lower limit switch
+    if (!climbMode && climbEncOK && isClimbAtLimitSwitch()) {
+      elevatorMode = true;
+      posMoveCount = 0;
+      negMoveCount = 0;
+    } */
+
   }
   
 }
