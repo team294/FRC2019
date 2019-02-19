@@ -63,8 +63,6 @@ public class OI {
   private Button xBoxX = new JoystickButton(xBoxController, 3);
   private Button xBoxY = new JoystickButton(xBoxController, 4);
 
-  private Trigger trigWristElevEncoder = new WristEncoderCheck();
-
   public OI() {
     Button[] left = new Button[12];
     Button[] right = new Button[12];
