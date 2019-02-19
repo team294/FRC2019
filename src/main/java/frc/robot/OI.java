@@ -105,10 +105,10 @@ public class OI {
     // Joystick buttons
     left[1].whenPressed(new Shift(true));
     right[1].whenPressed(new Shift(false));
-    // left[2].whenPressed(new Command());
-    right[2].whenPressed(new DriveAssist());
+    left[2].whenPressed(new DriveAssist());
+    // right[2].whenPressed(new Command());
     right[2].whenReleased(new DriveWithJoysticks());
-    left[3].whenPressed(new WristMoveToAngle(WristAngle.straight));
+    // left[3].whenPressed(new Command());
     right[3].whenPressed(new DriveStraight(0.6, 2)); // TODO adjust with desired speed/time
     left[4].whenPressed(new HatchSet(true));
     right[4].whenPressed(new DriveSetDirection(false));
