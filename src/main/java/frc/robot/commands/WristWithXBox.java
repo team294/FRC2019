@@ -31,7 +31,6 @@ public class WristWithXBox extends Command {
   protected void execute() {
     double value = -Robot.oi.xBoxController.getY(Hand.kRight);
     Robot.wrist.setWristMotorPercentOutput(value);
-    Robot.wrist.zeroWristEncoder();
     Robot.wrist.updateWristLog();
   }
 

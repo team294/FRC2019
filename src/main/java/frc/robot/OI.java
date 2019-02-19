@@ -57,8 +57,6 @@ public class OI {
   public Joystick coPanel = new Joystick(2);
   public Joystick xBoxController = new Joystick(3);
 
-  private Trigger trigWristElevEncoder = new WristEncoderCheck();
-
   public OI() {
     Button[] left = new Button[12];
     Button[] right = new Button[12];

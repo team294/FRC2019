@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 public class WristRaiseUntilStowed extends Command {
+  private boolean doNothing = false;
+
   /**
    * Raises wrist slowly until the upper limit switch is triggered.
    * Stops wrist when the upper limit switch is triggered (stowed position).
@@ -24,20 +26,25 @@ public class WristRaiseUntilStowed extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.wrist.setWristMotorPercentOutput(0.1);
+    doNothing = Robot.elevator.getElevatorPos() <= Robot.robotPrefs.elevatorWristSafe;
+    if (!doNothing) {
+      Robot.wrist.setWristMotorPercentOutput(0.1);
+    }
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.wrist.setWristMotorPercentOutput(0.1);
+    if (!doNothing) {
+      Robot.wrist.setWristMotorPercentOutput(0.1);
+    }
     Robot.wrist.updateWristLog();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return (Robot.wrist.getWristUpperLimit());
+    return (Robot.wrist.getWristUpperLimit() || doNothing);
   }
 
   // Called once after isFinished returns true
