@@ -44,7 +44,7 @@ public class ElevatorMoveToLevel extends Command {
   @Override
   protected void initialize() {
     if(!targetInches) {
-      if(false) { //TODO correct if statement when intake subsystem is coded -- Do this side if we have a ball
+      if(Robot.cargo.hasBall()) { 
         switch (pos) {
           case bottom:
             target = Robot.robotPrefs.elevatorBottomToFloor;
@@ -96,6 +96,7 @@ public class ElevatorMoveToLevel extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    Robot.elevator.updateElevatorLog();
   }
 
   // Make this return true when this Command no longer needs to run execute()

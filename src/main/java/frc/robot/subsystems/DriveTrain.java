@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveWithJoysticks;
+import frc.robot.utilities.FileLog;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.I2C;
 
@@ -47,8 +48,6 @@ public class DriveTrain extends Subsystem {
   // Gyro variables
   private AHRS ahrs;
   private double yawZero = 0;
-  
-  private int periodicCount = 0;
   
   private double leftMotorFaultCount; // increments every cycle the left side detects an issue
   private double rightMotorFaultCount; // increments every cycle the right side detects an issue
@@ -72,8 +71,7 @@ public class DriveTrain extends Subsystem {
       leftMotor3.set(ControlMode.Follower, RobotMap.leftMotor2);
       rightMotor1.set(ControlMode.Follower, RobotMap.rightMotor2);
       rightMotor3.set(ControlMode.Follower, RobotMap.rightMotor2);
-    }
-    else {
+    } else {
       leftMotor1 = new WPI_VictorSPX(RobotMap.leftMotor1);
       leftMotor3 = new WPI_VictorSPX(RobotMap.leftMotor3);
       rightMotor1 = new WPI_VictorSPX(RobotMap.rightMotor1);
@@ -84,6 +82,7 @@ public class DriveTrain extends Subsystem {
       rightMotor1.follow(rightMotor2);
       rightMotor3.follow(rightMotor2);
     }
+
     leftMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		rightMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		zeroLeftEncoder();
@@ -127,7 +126,7 @@ public class DriveTrain extends Subsystem {
 		// zeroGyroRotation();
 	}
 
-  public void tankDrive (double powerLeft, double powerRight) {
+  public void tankDrive(double powerLeft, double powerRight) {
     robotDrive.tankDrive(powerLeft, powerRight);
   }
 
@@ -179,6 +178,8 @@ public class DriveTrain extends Subsystem {
 		//TODO check if direction forward/backward is correct
 		rightMotor2.set(ControlMode.PercentOutput, powerPct);
   }
+
+  // Why does this exist? We have stop() for the same purpose. We don't need stopAllMotors()
 
   /**
 	 * Stops all motors.
@@ -242,12 +243,10 @@ public class DriveTrain extends Subsystem {
     return (inches / Robot.robotPrefs.wheelCircumference) * Robot.robotPrefs.encoderTicksPerRevolution;
   }
   public double getLeftEncoderInches() {
-    SmartDashboard.putNumber("Left Inches", encoderTicksToInches(getLeftEncoderTicks()));
     return encoderTicksToInches(getLeftEncoderTicks());
   }
 
   public double getRightEncoderInches() {
-    SmartDashboard.putNumber("Right Inches", encoderTicksToInches(getRightEncoderTicks()));
     return encoderTicksToInches(getRightEncoderTicks());
   }
   
@@ -311,7 +310,6 @@ public class DriveTrain extends Subsystem {
 		angle = angle % 360;
 		angle = (angle <= -180) ? (angle + 360) : angle;
     angle = (angle > 180) ? (angle - 360) : angle;
-    SmartDashboard.putNumber("Gyro Angle", angle);
 		return angle;
   }
 
@@ -320,22 +318,20 @@ public class DriveTrain extends Subsystem {
    * @param setCoast true if want to put driveTrain in coast mode false to put in brake mode.
    */
   public void setDriveMode(boolean setCoast){
-   if(setCoast){
+   if (setCoast) {
     leftMotor1.setNeutralMode(NeutralMode.Coast);
     leftMotor2.setNeutralMode(NeutralMode.Coast);
     leftMotor3.setNeutralMode(NeutralMode.Coast);
     rightMotor1.setNeutralMode(NeutralMode.Coast);
     rightMotor2.setNeutralMode(NeutralMode.Coast);
     rightMotor3.setNeutralMode(NeutralMode.Coast);
-
-   }else{
+   } else {
     leftMotor1.setNeutralMode(NeutralMode.Brake);
     leftMotor2.setNeutralMode(NeutralMode.Brake);
     leftMotor3.setNeutralMode(NeutralMode.Brake);
     rightMotor1.setNeutralMode(NeutralMode.Brake);
     rightMotor2.setNeutralMode(NeutralMode.Brake);
     rightMotor3.setNeutralMode(NeutralMode.Brake);
-
    }
    
   }
@@ -405,18 +401,17 @@ public class DriveTrain extends Subsystem {
    * @return a quadrant (corresponding to the unit circle) with axes in between quadrants numbered as x.5 values.
    */
   public double checkScoringQuadrant() {
-    // TODO: Add some console prints or SD to check
     // assuming the same quadrants as a unit circle, with 0 being straight up (+y axis) and -180 or 180 being straight down (-y axis)
     double quadrant = 0.0;
     double gyroAngle = getGyroRotation();
 
     if (Math.abs(gyroAngle) <= 5) { // Should mean straight up, +y axis, cardianl durection North
       quadrant = 1.5; // in between quadrants 1 and 2
-    } else if (Math.abs(gyroAngle) - 180 <= 5) { // Within 5 degrees of -y axis
+    } else if (Math.abs(gyroAngle) >= 175) { // Within 5 degrees of -y axis
       quadrant = 3.5; // in between quadrants 3 and 4
-    } else if (Math.abs(gyroAngle - 90) <= 5) { // Within 5 degrees of +x axis
+    } else if (gyroAngle >= 85 && gyroAngle <= 95) { // Within 5 degrees of +x axis
       quadrant = 0.5; // in between quadrants 4 and 1
-    } else if (Math.abs(gyroAngle + 90) <= 5) { // Wihin 5 degrees of -x axis
+    } else if (gyroAngle <= -85 && gyroAngle >= -95) { // Wihin 5 degrees of -x axis
       quadrant = 2.5; // in between quadrants 2 and 3
     } else if (gyroAngle > 90) {
       quadrant = 4;
@@ -428,7 +423,7 @@ public class DriveTrain extends Subsystem {
       quadrant = 2; // only negative angles left are Q2
     }
     
-    return quadrant; // Something must be wrong here, this result should never happen
+    return quadrant;
   }
 
   /**
@@ -467,22 +462,25 @@ public class DriveTrain extends Subsystem {
    */
   public void driveToCrosshair(double quadrant) {
 
-    double xOffsetAdjustmentFactor = 1.7; // Should be tested to be perfect; 2 seems to go out of frame too quickly. Must be greater than 1.
+    double xOffsetAdjustmentFactor = 1.5; // Should be tested to be perfect; 2 seems to go out of frame too quickly. Must be greater than 1.
+    //double xOffsetAdjustmentFactor = 2.0 + Robot.oi.leftJoystick.getY(); // xAdjustment based on distance
 
-    //double minDistanceToTarget = 13; // Not used right now because changing distance forumla to use height
-    double distance = Robot.vision.distanceFromTarget();
+
+    //double minDistanceToTarget = 13;
+    double distance = Robot.vision.distanceFromTarget(); // Distance formula should work now; need to modulate speed based on dist
     System.out.println("Measured Distance: " + distance);
     double area = Robot.vision.areaFromCamera;
     double xVal = Robot.vision.horizOffset; // Alpha offset
     double finalAngle;
 
     if (quadrant != 0) {
-      System.out.println("Measured Angle: " + xVal);
+      SmartDashboard.putNumber("Measured Angle", xVal);
       double alphaT = xVal + getGyroRotation() - getTargetAngle(quadrant); // true angle for measuring x displacement
-      System.out.println("Adjusted (true) angle: " + alphaT);
+      SmartDashboard.putNumber("Adjusted angle to target ", alphaT);
       double alphaA = Math.toDegrees(Math.atan(xOffsetAdjustmentFactor * Math.tan(Math.toRadians(alphaT)))); // Adjusted angle for x displacement
-      System.out.println("False displacement angle:" + alphaA);
+      SmartDashboard.putNumber("False displacement angle", alphaA);
       finalAngle = alphaA + getTargetAngle(quadrant) - getGyroRotation();
+      SmartDashboard.putNumber("Final Angle", finalAngle);
     } else {
       finalAngle = xVal;
     }
@@ -490,7 +488,11 @@ public class DriveTrain extends Subsystem {
     double gainConstant = 1.0/30.0;
 
     //double lJoystickAdjust = Math.abs(Robot.oi.leftJoystick.getY());
-    double lJoystickAdjust = 0.7 * Math.sqrt(Math.abs(Robot.oi.leftJoystick.getY()));
+    double lJoystickRaw = Math.abs(Robot.oi.leftJoystick.getY());
+    //double lJoystickAdjust = 0.7 * Math.sqrt(lJoystickRaw);
+    //double lJoystickAdjust = 0.55 / (1 + Math.exp(-10 * (lJoystickRaw - 0.35)));
+    double lJoystickAdjust = 0.50 / (1 + Math.exp(-8 * (lJoystickRaw - 0.4))); // Slightly longer acceleration curve than previous sigmoid
+    SmartDashboard.putNumber("Vision Joystick Value", lJoystickAdjust);
     double lPercentOutput = lJoystickAdjust + (gainConstant * finalAngle); //xVal
     double rPercentOutput = lJoystickAdjust - (gainConstant * finalAngle); //xVal
 
@@ -499,10 +501,10 @@ public class DriveTrain extends Subsystem {
     if (rEncStopped && rPercentOutput != 0) lPercentOutput = 1.0; 
     if (lPercentOutput == 1.0 || rPercentOutput == 1.0) System.out.println("STOP DETECTED, INITIATING EVASIVE MANEUVERS"); // TODO: test this because it doesn't look like it ever works
 
-    if (/* distance > minDistanceToTarget && */ area != 0) tankDrive(lPercentOutput, rPercentOutput); // Just ignore the distance check for now...
+    if (area != 0) tankDrive(lPercentOutput, rPercentOutput); // area goes to zero before the front hits the wall
     else tankDrive(0, 0);
 
-    Robot.log.writeLogEcho("DriveTrain", "Vision Tracking", "Crosshair Horiz Offset," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget()
+    Robot.log.writeLogEcho("DriveTrain", "Vision Tracking", "Crosshair Horiz Offset," + xVal + ",Inches from Target," + distance
      + ",Target Area," + area + ",Joystick Ouput," + lJoystickAdjust + ",Left Percent," + lPercentOutput + ",Right Percent," + rPercentOutput);
   }
 
@@ -528,8 +530,9 @@ public class DriveTrain extends Subsystem {
   }
 
   public void driveOnLine() {
-    // TODO: Integrate quadrants and gyro to correct based on which side of the line we're on
-    // TODO: Explain to Rob why that is needed
+    
+    SmartDashboard.putString("Line Following Routine", "center");
+
     double lPercentPower = 0;
     double rPercentPower = 0;
     double baseSpeed = 0.7; // Lowered from 1 for new line sensors further out, untested
@@ -560,8 +563,8 @@ public class DriveTrain extends Subsystem {
       rPercentPower = .8*baseSpeed;
     } else {
       // Drive forwards in hopes of recovering the line?
-      lPercentPower = 0.3;
-      rPercentPower = 0.3;
+      lPercentPower = 0.3*baseSpeed;
+      rPercentPower = 0.3*baseSpeed;
     }
 
     Robot.log.writeLogEcho("DriveTrain", "Line Tracking", "Line Number," + lineNum + ",Left Percent," + lPercentPower + ",Right Percent," + rPercentPower);
@@ -576,53 +579,79 @@ public class DriveTrain extends Subsystem {
   }
 
   public void quadrantLineFollowing(double quadrant) {
+    if (quadrant == 0.0) {
+      driveOnLine();
+      return;
+    }
+
+    //quadrant = 1.5; // TEMPORARY FOR TESTING LEFT/RIGHT
+
     // add a special case for straight down (quadrant 3.5) because of roll over on 180
-    double angleTolerance = 3.0; // degrees
-    boolean left = Math.abs(getGyroRotation()) > Math.abs(getTargetAngle(quadrant) + angleTolerance);
-    boolean right = Math.abs(getGyroRotation()) < Math.abs(getTargetAngle(quadrant) - angleTolerance);
+    double angleTolerance = 1.5; // degrees
+    boolean left = getGyroRotation() > getTargetAngle(quadrant) + angleTolerance; // approaching from left, facing too far right
+    boolean right = getGyroRotation() < getTargetAngle(quadrant) - angleTolerance; // approaching from right
     if (!left && !right) {
       driveOnLine(); // if we're close to center just do the simple line following
       return;
     }
 
-    double baseSpeed = 0.7; // Lowered from 1 for new line sensors further out, untested
+    double baseSpeed = 0.8; // Lowered from 1 for new line sensors further out, untested
     int lineNum = Robot.lineFollowing.getLineNumber();
     double lPercentPower = 0.0, rPercentPower = 0.0;
 
+    SmartDashboard.putString("Line Following Routine", (left) ? "left" : "right");
+
     if (left) {
       if (lineNum == 0) {
-        // Straight
-        //lPercentPower = .55*baseSpeed;
-        //rPercentPower = .55*baseSpeed;
         lPercentPower = 0.65*baseSpeed;
         rPercentPower = 0.65*baseSpeed;
       } else if (lineNum == 1) {
-        // Turn left slight?
-        lPercentPower = .6*baseSpeed;
-        rPercentPower = 0*baseSpeed;
+        lPercentPower = 0.4*baseSpeed;
+        rPercentPower = 0.6*baseSpeed;
       } else if (lineNum == -1) {
-        // Turn right slight?
-        lPercentPower = 0*baseSpeed;
-        rPercentPower = .6*baseSpeed;
+        lPercentPower = 0.6*baseSpeed;
+        rPercentPower = 0.65*baseSpeed;
       } else if (lineNum == -2) {
-        // Turn left
-        lPercentPower = .8*baseSpeed;
-        rPercentPower = -.8*baseSpeed;
+        lPercentPower = 0.6*baseSpeed; // originally less
+        rPercentPower = 0.65*baseSpeed;
       } else if (lineNum == 2) {
-        // Turn right
-        lPercentPower = -.8*baseSpeed;
-        rPercentPower = .8*baseSpeed;
+        lPercentPower = -0.4*baseSpeed;
+        rPercentPower = 0.8*baseSpeed;
       } else {
-        // Drive forwards in hopes of recovering the line?
-        lPercentPower = 0.3;
-        rPercentPower = 0.3;
+        lPercentPower = -0.3*baseSpeed;
+        rPercentPower = 0.5*baseSpeed;
+      }
+    } else { // right
+      if (lineNum == 0) {
+        lPercentPower = 0.65*baseSpeed;
+        rPercentPower = 0.65*baseSpeed;
+      } else if (lineNum == 1) {
+        lPercentPower = 0.65*baseSpeed;
+        rPercentPower = 0.6*baseSpeed;
+      } else if (lineNum == -1) {
+        lPercentPower = 0.6*baseSpeed;
+        rPercentPower = 0.4*baseSpeed;
+      } else if (lineNum == -2) {
+        lPercentPower = 0.8*baseSpeed;
+        rPercentPower = -0.4*baseSpeed;
+      } else if (lineNum == 2) {
+        lPercentPower = 0.65*baseSpeed;
+        rPercentPower = 0.6*baseSpeed; // originally less
+      } else {
+        lPercentPower = 0.5*baseSpeed;
+        rPercentPower = -0.3*baseSpeed;
       }
     }
-    
-  }
-  
-  public void quadrantLineFollowing() {
-    quadrantLineFollowing(checkScoringQuadrant());
+
+    Robot.log.writeLogEcho("DriveTrain", "Line Tracking", "Quadrant," + quadrant + ",Left," + left + ",Right," + right + ",Line Number," + lineNum + ",Left Percent," + lPercentPower + ",Right Percent," + rPercentPower);
+
+    /* Untested auto-turn stuff */
+    if (lEncStopped && lPercentPower != 0) rPercentPower = 1.0; // The goal here is to slam the right side so that we still line up to the wall
+    if (rEncStopped && rPercentPower != 0) lPercentPower = 1.0;
+    if (lPercentPower == 1 || rPercentPower == 1) System.out.println("STOP DETECTED, INITIATING EVASIVE MANEUVERS"); 
+
+    this.robotDrive.tankDrive(lPercentPower, rPercentPower);
+    updateEncoderList();
   }
 
   /**
@@ -696,16 +725,18 @@ public class DriveTrain extends Subsystem {
   @Override
   public void periodic() {
 
-    SmartDashboard.putNumber("RightEnc", getRightEncoderTicks());
-    SmartDashboard.putNumber("LeftEnc", getLeftEncoderTicks());
+    if (Robot.log.getLogRotation() == FileLog.DRIVE_CYCLE) {
+      SmartDashboard.putNumber("Drive Left Inches", getLeftEncoderInches());
+      SmartDashboard.putNumber("Drive Right Inches", getRightEncoderInches());
+      SmartDashboard.putNumber("Gyro Angle", getGyroRotation());
 
-    if (DriverStation.getInstance().isEnabled()) {
-      if ((++periodicCount) >= 10) {
+      if (DriverStation.getInstance().isEnabled()) {
         updateDriveLog();
+        Robot.lineFollowing.logLineFollowers();
+
+        // TODO move verifyMotors to a pit command, instead of a live command during a match
         verifyMotors(RobotMap.leftMotor1PDP, RobotMap.leftMotor2PDP, RobotMap.leftMotor3PDP, true);
         verifyMotors(RobotMap.rightMotor1PDP, RobotMap.rightMotor2PDP, RobotMap.rightMotor3PDP, false);
-        Robot.lineFollowing.logLineFollowers(); // This is the best place for this I guess -- only updates about every 0.5 second
-        periodicCount=0;  
       }
     }
   }

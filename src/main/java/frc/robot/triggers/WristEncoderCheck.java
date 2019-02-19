@@ -16,7 +16,7 @@ import frc.robot.Robot;
 public class WristEncoderCheck extends Trigger {
   @Override
   public boolean get() {
-    if(!Robot.wrist.getEncOK()) {
+    if(!Robot.wrist.isEncoderCalibrated()) {
       return true;
     } else {
       return false;

@@ -26,16 +26,20 @@ public class RobotPreferences {
 	public double wristCalZero;   		// Wrist encoder position at O degrees, in encoder ticks (i.e. the calibration factor)
 	public boolean wristCalibrated = false;     // Default to wrist being uncalibrated.  Calibrate from robot preferences or "Calibrate Wrist Zero" button on dashboard
 	public double climbCalZero; // Climb encoder position at 0 degrees in encoder ticks
-	public boolean climbCalibrated = false; // Default to arm being uncalibrated
-	 
+	public boolean climbCalibrated = false; // Default to climb being uncalibrated
+	public double vacuumCurrentThreshold; // assume left climb vacuum is achieved if this threshold is passed TODO needs to be tested
+
 	/*
 	* Measurements
 	*/
 	// Wrist Angles (in degrees)
-	public static final double WristStowed = 107.36;
-	public static final double WristUp = 15.0;
-	public static final double WristStraight = 0.0;
-	public static final double WristDown = -45.0;
+	public static final double wristMax = 110.0;
+	public static final double wristStowed = 107.36;
+	public static final double wristKeepOut = 60.0;  // Max angle to avoid interference with elevator or climber
+	public static final double wristUp = 15.0;
+	public static final double wristStraight = 0.0;
+	public static final double wristDown = -45.0;
+	public static final double wristMin = -50.0;
 	public enum WristAngle {stowed, up, straight, down}
 
 	// TODO Update with 2019 base
@@ -51,6 +55,10 @@ public class RobotPreferences {
 	// Hatch piston positions
 	public enum HatchPistonPositions { grab, release, moving, unknown }
 
+	/*
+	Measurement variables
+	*/
+
 	// Field level heights (for elevator targeting), in inches
 	public final double hatchLow = 19.0;
   	public final double hatchMid = 47.0;
@@ -61,10 +69,11 @@ public class RobotPreferences {
 	public enum ElevatorPosition {bottom, wristSafe, hatchLow, hatchMid, hatchHigh, cargoShipCargo}
 
 	//Climb Target Angles (in degrees)
-	public final double climbStartingAngle = -50.0; //TODO Test when climb is built
-	public final double vacuumTargetAngle = 180.0; //TODO Test when climb is built
-	public final double robotLiftAngle = 0.0; //TODO Test when climb is built
-
+	//TODO Test and adjust angles when climb is built
+	public final double climbStartingAngle = 120.0;
+	public final double climbLiftAngle = 125.0;
+	public final double climbVacuumAngle = -5.0;
+	public final double climbMinAngle = -20.0;
 
 	/**
 	 * Creates a RobotPreferences object and reads the robot preferences.
@@ -103,24 +112,34 @@ public class RobotPreferences {
 			recordStickyFaults("Preferences-climbCalZero");
 			climbCalZero = 0;
 		}	
+		vacuumCurrentThreshold = prefs.getDouble("vacuumCurrentThreshold", 3.0);
 	}
 
 	/**
-	 * Sets arm angle calibration factor and enables angle control modes for climber.
+	 * Sets climb angle calibration factor and enables angle control modes for climb.
 	 * 
 	 * @param climbCalZero
-	 *            Calibration factor for climber
+	 *            Calibration factor for climb
 	 * @param writeCalToPreferences
-	 *            true = store calibration in Robot Preferences, false = don't
-	 *            change Robot Preferences
+	 *            true = store calibration in RobotPrefs, false = don't change RobotPrefs
 	 */
 	public void setClimbCalibration(double climbCalZero, boolean writeCalToPreferences) {
 		this.climbCalZero = climbCalZero;
 		climbCalibrated = true;
+		Robot.climb.stopClimbMotor();  // Stop motor, so it doesn't jump to new value
 		Robot.log.writeLog("Preferences", "Calibrate climber", "zero value," + climbCalZero);
 		if (writeCalToPreferences) {
 			prefs.putDouble("climbCalZero", climbCalZero);
 		}
+	}
+
+	/**
+	 * Stops climb motor and sets climbCalibrated to false
+	 */
+	public void setClimbUncalibrated() {
+		Robot.climb.stopClimbMotor();
+		climbCalibrated = false;
+		Robot.log.writeLog("Preferences", "Uncalibrate climber", "");
 	}
 
 	/* Sets up Preferences if they haven't been set as when changing RoboRios or first start-up.
@@ -166,33 +185,38 @@ public class RobotPreferences {
 		if (!prefs.containsKey("climbCalZero")) {
 			prefs.putDouble("climbCalZero", -9999);
 		}
+		if (!prefs.containsKey("vacuumCurrentThreshold")) {
+			prefs.putDouble("vacuumCurrentThreshold", 3.0);
+		}
 	}
 
 	/**
 	 * Sets wrist angle calibration factor and enables angle control modes for wrist
-	 * Only setting wrist calibration if wrist is at either limit switch, otherwise does nothing
 	 * 
 	 * @param wristCalZero  Calibration factor for wrist
 	 * @param writeCalToPreferences  true = store calibration in Robot Preferences, false = don't change Robot Preferences
 	 */
 	public void setWristCalibration(double wristCalZero, boolean writeCalToPreferences) {
 		this.wristCalZero = wristCalZero;
-		if (Robot.wrist.getWristUpperLimit()) {
-			wristCalZero = Robot.wrist.getWristEncoderTicksRaw() - Robot.wrist.degreesToEncoderTicks(WristStowed);
-		} else if (Robot.wrist.getWristLowerLimit()) {
-			wristCalZero = Robot.wrist.getWristEncoderTicksRaw() - Robot.wrist.degreesToEncoderTicks(WristDown);
-		} else {
-			return;
-		}
 		wristCalibrated = true;
-		SmartDashboard.putBoolean("Wrist Calibrated", wristCalibrated);
+		Robot.wrist.stopWrist();	// Stop motor, so it doesn't jump to new value
+		Robot.log.writeLog("Preferences", "Calibrate wrist", "zero value," + wristCalZero);
 		if (writeCalToPreferences) {
-			prefs.putDouble("calibrationZeroDegrees", wristCalZero);
-		}
-		if (!prefs.containsKey("calibrationZeroDegrees")) {
-			prefs.putDouble("calibrationZeroDegrees", -9999.0);	
+			prefs.putDouble("wristCalZero", wristCalZero);
 		}
 	}
+
+	/**
+	 * Stops wrist motor and sets wristCalibrated to false
+	 */
+	public void setWristUncalibrated() {
+		Robot.wrist.stopWrist();;
+		wristCalibrated = false;
+		Robot.log.writeLog("Preferences", "Uncalibrate wrist", "");
+	}
+
+	// Much of this is not going to be useful in competition. The drivers are not going to look at the laptop screen to see if a subsystem has thrown an error.
+	// TODO: delete the method(s) below by competition time
 
 	/**
 	 * Records in robotPreferences, fileLog, and Shuffleboard that a problem was found in a subsystem
@@ -200,15 +224,15 @@ public class RobotPreferences {
 	 * @param subsystem String name of subsystem in which a problem exists
 	 */
 	public void recordStickyFaults(String subsystem) {
-		if(problemSubsystem.indexOf(subsystem) == -1) {
-			if(problemSubsystem.length() != 0) {
+		if (problemSubsystem.indexOf(subsystem) == -1) {
+			if (problemSubsystem.length() != 0) {
 				problemSubsystem = problemSubsystem + ", ";
 			}
 			problemSubsystem = problemSubsystem + subsystem;
 			putString("problemSubsystem", problemSubsystem);
 			Robot.log.writeLogEcho(subsystem, "Sticky Fault Logged", "");
 		}
-		if(!problemExists) {
+		if (!problemExists) {
 			problemExists = true;
 			putBoolean("problemExists", problemExists);
 		}
