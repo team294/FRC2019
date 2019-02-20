@@ -14,6 +14,10 @@ public class ClimbArmSetAngle extends Command {
   
   private double angle;
 
+  /**
+   * Sets angle of climb motors.
+   * @param angle target angle, in degrees (0 = horizontal behind robot, + = up, - = down)
+   */
   public ClimbArmSetAngle(double angle) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
@@ -30,6 +34,7 @@ public class ClimbArmSetAngle extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    Robot.climb.updateClimbLog();
   }
 
   // Make this return true when this Command no longer needs to run execute()

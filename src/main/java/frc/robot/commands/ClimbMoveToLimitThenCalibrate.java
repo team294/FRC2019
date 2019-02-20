@@ -9,44 +9,49 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.utilities.RobotPreferences;
 
-public class ClimbLiftRobot extends Command {
-
-  double climbAng;
-
-  public ClimbLiftRobot(double climbAng) {
+public class ClimbMoveToLimitThenCalibrate extends Command {
+  /**
+   * Drives climb motor up slowly, calibrates encoder when climb reaches the limit switch
+   */
+  public ClimbMoveToLimitThenCalibrate() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.climb);
-    this.climbAng = climbAng;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.climb.setClimbPos(climbAng);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.climb.updateClimbLog();
+    Robot.climb.setClimbMotorPercentOutput(0.1);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Robot.climb.getClimbAngle() >= climbAng - 8;
+    // Stop if climber is at the limit switch, or if we are about to hit the wrist
+    return Robot.climb.isClimbAtLimitSwitch() || Robot.wrist.getWristAngle() > Robot.robotPrefs.wristKeepOut;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.climb.stopClimbMotor();
+    if (Robot.climb.isClimbAtLimitSwitch()) {
+      Robot.climb.calibrateClimbEnc(Robot.robotPrefs.climbLimitAngle, false);
+    }
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.climb.stopClimbMotor();
   }
 }

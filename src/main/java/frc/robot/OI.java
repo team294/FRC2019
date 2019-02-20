@@ -10,12 +10,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
 
 import frc.robot.commands.*;
-import frc.robot.triggers.*;
 import frc.robot.utilities.RobotPreferences;
 
 /**
@@ -24,33 +22,7 @@ import frc.robot.utilities.RobotPreferences;
  */
 
 public class OI {
-  //// CREATING BUTTONS
-  // One type of button is a joystick button which is any button on a
-  //// joystick.
-  // You create one by telling it which joystick it's on and which button
-  // number it is.
-  // Joystick stick = new Joystick(port);
-  // Button button = new JoystickButton(stick, buttonNumber);
-
-  // There are a few additional built in buttons you can use. Additionally,
-  // by subclassing Button you can create custom triggers and bind those to
-  // commands the same as any other Button.
-
-  //// TRIGGERING COMMANDS WITH BUTTONS
-  // Once you have a button, it's trivial to bind it to a button in one of
-  // three ways:
-
-  // Start the command when the button is pressed and let it run the command
-  // until it is finished as determined by it's isFinished method.
-  // button.whenPressed(new ExampleCommand());
-
-  // Run the command while the button is being held down and interrupt it once
-  // the button is released.
   // button.whileHeld(new ExampleCommand());
-
-  // Start the command when the button is released and let it run the command
-  // until it is finished as determined by it's isFinished method.
-  // button.whenReleased(new ExampleCommand());
 
   public Joystick leftJoystick = new Joystick(0);
   public Joystick rightJoystick = new Joystick(1);
@@ -102,10 +74,10 @@ public class OI {
     // The conditional logic needs to go in the command itself. No logic can be done in OI since OI is constructed at the start and not run repeatedly
     // SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true));
 
-    xBoxA.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchLow));
-    xBoxB.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchMid));
-    xBoxY.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchHigh));
-    xBoxX.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.cargoShipCargo));
+    xBoxA.whenPressed(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchLow));
+    xBoxB.whenPressed(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchMid));
+    xBoxY.whenPressed(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchHigh));
+    xBoxX.whenPressed(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.cargoShipCargo));
     
     SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true, true));
 
@@ -119,13 +91,13 @@ public class OI {
     // Buttons for controlling the climber
     SmartDashboard.putData("Climb Up", new ClimbArmSetPercentOutput(0.2));  // For testing
     SmartDashboard.putData("Climb Down", new ClimbArmSetPercentOutput(-0.2));  // For testing
-    SmartDashboard.putData("Climb move to 0", new ClimbArmSetAngle(0));  // For testing
-    SmartDashboard.putData("Climb move to start", new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe + 5));  // For testing
+    SmartDashboard.putData("Climb move to start", new ClimbArmStow());  // For testing
+    SmartDashboard.putData("Climb move to vacuum", new ClimbArmSetAngle(Robot.robotPrefs.climbVacuumAngle));  // For testing
+    SmartDashboard.putData("Climb lift robot", new ClimbArmSetAngle(Robot.robotPrefs.climbLiftAngle));  // For testing
     SmartDashboard.putData("Climb Vacuum On", new ClimbVacuumTurnOn(true));
     SmartDashboard.putData("Climb Vacuum Off", new ClimbVacuumTurnOn(false));
-    SmartDashboard.putData("Climb Set Reference", new ClimbEncoderCalibrateAtLimit());
+    SmartDashboard.putData("Climb Set Reference", new ClimbMoveToLimitThenCalibrate());
     SmartDashboard.putData("ClimbMoveUntilVacuum", new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
-    SmartDashboard.putData("ClimbLiftRobot", new ClimbLiftRobot(Robot.robotPrefs.climbLiftAngle));
     SmartDashboard.putData("ClimbSequnce", new ClimbSequence());
 
     // Buttons for the Cargo rollers

@@ -14,7 +14,8 @@ public class ClimbVacuumTurnOn extends Command {
   private boolean turnOn;
 
   /**
-   * Turns the vacuum motor on/off.  Disables the compressor when the vacuum motor is on
+   * Turns the vacuum motor on/off.  Disables the compressor when the vacuum motor 
+   * is on, or enables the compressor when the vacuum is off.
    * @param turnOn true = on, false = off
    */
   public ClimbVacuumTurnOn(boolean turnOn) {
