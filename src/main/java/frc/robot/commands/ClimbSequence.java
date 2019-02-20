@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import frc.robot.Robot;
+import frc.robot.utilities.RobotPreferences.ElevatorPosition;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 
@@ -24,7 +25,14 @@ public class ClimbSequence extends CommandGroup {
       }
     });
 
-    // TODO If the elevator is raised, then lower it (safely)
+    // If the elevator is raised, then lower it (safely)
+    addSequential(new ConditionalCommand(new ElevatorMoveSafe(ElevatorPosition.wristSafe)){
+      @Override
+      protected boolean condition() {
+        return Robot.elevator.getElevatorPos() > Robot.robotPrefs.elevatorWristSafe;
+      }
+    });
+
     // TODO If the wrist is not stowed, then stow it (safely)
 
     addSequential(new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
