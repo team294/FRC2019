@@ -97,6 +97,9 @@ public class Wrist extends Subsystem {
   public void setWristAngle(double angle) {
     if (Robot.robotPrefs.wristCalibrated) {
       // TODO determine max degrees and elevator height tolerance
+      // Don't move wrist in KeepOut if elevator is too high.
+      // Don't move wrist below straigh if elevator is too low.
+      // Don't move wrist in or out of KeepOut if climber > climbWristMovingSafe.
       if ((angle < Robot.robotPrefs.wristKeepOut && getWristAngle() < Robot.robotPrefs.wristKeepOut) || 
           (Robot.elevator.getElevatorLowerLimit() && Robot.elevator.getCurrentElevatorTarget() < (Robot.robotPrefs.elevatorBottomToFloor+1) &&
           (Robot.climb.getClimbAngle() < Robot.robotPrefs.climbWristMovingSafe))) {

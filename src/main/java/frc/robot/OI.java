@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
 
 import frc.robot.commands.*;
-import frc.robot.utilities.RobotPreferences;
+import frc.robot.utilities.RobotPreferences.ElevatorPosition;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -73,19 +73,20 @@ public class OI {
     // The conditional logic needs to go in the command itself. No logic can be done in OI since OI is constructed at the start and not run repeatedly
     // SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true));
 
-    xBoxA.whenPressed(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchLow));
-    xBoxB.whenPressed(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchMid));
-    xBoxY.whenPressed(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchHigh));
-    xBoxX.whenPressed(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.cargoShipCargo));
+    xBoxA.whenPressed(new ElevatorMoveSafe(ElevatorPosition.hatchLow));
+    xBoxB.whenPressed(new ElevatorMoveSafe(ElevatorPosition.hatchMid));
+    xBoxY.whenPressed(new ElevatorMoveSafe(ElevatorPosition.hatchHigh));
+    xBoxX.whenPressed(new ElevatorMoveSafe(ElevatorPosition.cargoShipCargo));
     
     SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true, true));
 
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
     SmartDashboard.putData("Elevator Down", new ElevatorLower()); // For testing limit switch and encoder
-    SmartDashboard.putData("Move Elevator to Bottom", new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.bottom)); // Move to encoder's zero position
-    SmartDashboard.putData("Move Elevator to WristSafe", new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.wristSafe)); // Move to encoder's zero position
-    SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero());
+    SmartDashboard.putData("Move Elevator to Bottom", new ElevatorMoveToLevel(ElevatorPosition.bottom)); // Move to encoder's zero position
+    SmartDashboard.putData("Move Elevator to WristSafe", new ElevatorMoveToLevel(ElevatorPosition.wristSafe)); // Move to level that wrist can be lowered safely
+    SmartDashboard.putData("Move Elevator to High", new ElevatorMoveToLevel(ElevatorPosition.hatchHigh)); // Move to high position (test wrist interlock)
+    SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorMoveToBottomThenZeroEncoder());
 
     // Buttons for controlling the climber
     SmartDashboard.putData("Climb Up", new ClimbArmSetPercentOutput(0.2));  // For testing

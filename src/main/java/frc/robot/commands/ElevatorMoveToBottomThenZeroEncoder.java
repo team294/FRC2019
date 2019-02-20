@@ -10,12 +10,12 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ElevatorEncoderZero extends Command {
+public class ElevatorMoveToBottomThenZeroEncoder extends Command {
   /**
    * Drives the elevator down slowly until it reaches
-   * the lower limit switch, zeros the encoder
+   * the lower limit switch, then zeros the encoder
    */
-  public ElevatorEncoderZero() {
+  public ElevatorMoveToBottomThenZeroEncoder() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.elevator);
@@ -35,7 +35,8 @@ public class ElevatorEncoderZero extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Robot.elevator.getElevatorLowerLimit();
+    // Stop if climber is at the limit switch, or if we are about to hit the wrist
+    return Robot.elevator.getElevatorLowerLimit() || Robot.wrist.getWristAngle() > Robot.robotPrefs.wristKeepOut;
   }
 
   // Called once after isFinished returns true
@@ -49,5 +50,6 @@ public class ElevatorEncoderZero extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.elevator.stopElevator();
   }
 }
