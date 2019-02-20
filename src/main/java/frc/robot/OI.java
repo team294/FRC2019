@@ -22,7 +22,6 @@ import frc.robot.utilities.RobotPreferences;
  */
 
 public class OI {
-  // button.whileHeld(new ExampleCommand());
 
   public Joystick leftJoystick = new Joystick(0);
   public Joystick rightJoystick = new Joystick(1);
