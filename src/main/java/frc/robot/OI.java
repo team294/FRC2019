@@ -165,13 +165,13 @@ public class OI {
     SmartDashboard.putData("Cargo Outtake", new CargoOuttake());
 
     // Buttons for the wrist
-    SmartDashboard.putData("Wrist Stow", new WristMoveToAngle(WristAngle.stowed));
-    SmartDashboard.putData("Wrist Up", new WristMoveToAngle(WristAngle.up));
-    SmartDashboard.putData("Wrist Straight", new WristMoveToAngle(WristAngle.straight));
-    SmartDashboard.putData("Wrist Down", new WristMoveToAngle(WristAngle.down));
-    SmartDashboard.putData("Wrist Off", new WristOff());
-    SmartDashboard.putData("Wrist Move Up", new WristPercentOutput(0.1));
-    SmartDashboard.putData("Wrist Move Down", new WristPercentOutput(-0.1));
+    // SmartDashboard.putData("Wrist Stow", new WristMoveToAngle(WristAngle.stowed));
+    // SmartDashboard.putData("Wrist Up", new WristMoveToAngle(WristAngle.up));
+    // SmartDashboard.putData("Wrist Straight", new WristMoveToAngle(WristAngle.straight));
+    // SmartDashboard.putData("Wrist Down", new WristMoveToAngle(WristAngle.down));
+    // SmartDashboard.putData("Wrist Off", new WristOff());
+    // SmartDashboard.putData("Wrist Move Up", new WristPercentOutput(0.1));
+    // SmartDashboard.putData("Wrist Move Down", new WristPercentOutput(-0.1));
 
     // Buttons for controlling FileLogging
     SmartDashboard.putData("Log 1 InitialTesting", new FileLogSetLevel(1));
