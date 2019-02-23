@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.XboxController;
 
 import frc.robot.commands.*;
 import frc.robot.utilities.RobotPreferences.ElevatorPosition;
+import frc.robot.utilities.RobotPreferences.WristAngle;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -108,6 +109,10 @@ public class OI {
     SmartDashboard.putData("Wrist recalibrate", new WristEncoderFail());
     SmartDashboard.putData("Wrist Up", new WristSetPercentOutput(0.2));  // For testing
     SmartDashboard.putData("Wrist Down", new WristSetPercentOutput(-0.2));  // For testing
+    SmartDashboard.putData("Wrist pos stow", new WristMoveToAngle(WristAngle.stowed));
+    SmartDashboard.putData("Wrist pos down", new WristMoveToAngle(WristAngle.down));
+    SmartDashboard.putData("Wrist pos straight", new WristMoveToAngle(WristAngle.straight));
+    SmartDashboard.putData("Wrist pos up", new WristMoveToAngle(WristAngle.up));
 
     // Buttons for controlling FileLogging
     SmartDashboard.putData("Log 1 InitialTesting", new FileLogSetLevel(1));
