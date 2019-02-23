@@ -104,6 +104,11 @@ public class OI {
     SmartDashboard.putData("Cargo Intake", new CargoIntake());
     SmartDashboard.putData("Cargo Outtake", new CargoOuttake());
 
+    // Buttons for controlling the wrist
+    SmartDashboard.putData("Wrist recalibrate", new WristEncoderFail());
+    SmartDashboard.putData("Wrist Up", new WristSetPercentOutput(0.2));  // For testing
+    SmartDashboard.putData("Wrist Down", new WristSetPercentOutput(-0.2));  // For testing
+
     // Buttons for controlling FileLogging
     SmartDashboard.putData("Log 1 InitialTesting", new FileLogSetLevel(1));
     SmartDashboard.putData("Log 2 PitTesting", new FileLogSetLevel(2));
