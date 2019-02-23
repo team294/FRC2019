@@ -17,11 +17,11 @@ public class DriveStraight extends Command {
   private double percentPower;
   private boolean sucess;
 
-  public DriveStraight() {
-    requires(Robot.driveTrain);
-    this.percentPower = Robot.oi.rightJoystick.getY();
-    sucess = true;
-  }
+  // public DriveStraight() {
+  //   requires(Robot.driveTrain);
+  //   this.percentPower = Robot.oi.rightJoystick.getY();
+  //   this.sucess = true;
+  // }
   
 /**
  * 

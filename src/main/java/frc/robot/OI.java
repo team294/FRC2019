@@ -35,7 +35,7 @@ public class OI {
     Button[] left = new Button[12];
     Button[] right = new Button[12];
     Button[] coP = new Button[15];
-    Button[] xbB = new Button[10];
+    Button[] xbB = new Button[11];
     Trigger xbUp = new POVTrigger(xBoxController, 0);
     Trigger xbRight = new POVTrigger(xBoxController, 90);
     Trigger xbDown = new POVTrigger(xBoxController, 180);
@@ -81,7 +81,7 @@ public class OI {
     // right[2].whenPressed(new Command());
     right[2].whenReleased(new DriveWithJoysticks());
     // left[3].whenPressed(new Command());
-    right[3].whileHeld(new DriveStraight());
+    right[3].whileHeld(new DriveStraight(Robot.oi.rightJoystick.getY(), 0));
     left[4].whenPressed(new HatchScoreAndIntake());
     right[4].whenPressed(new DriveSetDirection(false));
     left[5].whenPressed(new HatchScoreAndIntake());
