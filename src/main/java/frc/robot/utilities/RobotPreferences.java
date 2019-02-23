@@ -38,7 +38,7 @@ public class RobotPreferences {
 	public final double wristKeepOut = 28.0; // Max angle to avoid interference with elevator or climber
 	public final double wristUp = 15.0;
 	public final double wristStraight = 0.0;
-	public final double wristDown = -59.0;		// In this position, elevator must be able to go to groundCargo
+	public final double wristDown = -15.0;		// TODO Should be -59.0? // In this position, elevator must be able to go to groundCargo
 	public final double wristMin = -68;
 	public enum WristAngle {stowed, up, straight, down}
 
@@ -73,13 +73,13 @@ public class RobotPreferences {
 
 	//Climb Target Angles (in degrees)
 	//TODO Test and adjust angles when climb is built
-	public final double climbLimitAngle = 160.0;		// Max angle for climber (limit switch)
-	public final double climbWristStowedSafe = 145.0;	// Max angle for climber when wrist is stowed (but wrist can't move if climber is here)
-	public final double climbWristMovingSafe = 130.0;	// Max angle for climber if wrist is moving
-	public final double climbLiftAngle = 125.0;			// Angle where robot scores climb points
+	public final double climbLimitAngle = 120.0;		// Max angle for climber (limit switch)
+	public final double climbWristStowedSafe = 110.0;	// Max angle for climber when wrist is stowed (but wrist can't move if climber is here)
+	public final double climbWristMovingSafe = 90.0;	// Max angle for climber if wrist is moving
+	public final double climbLiftAngle = 120.0;			// Angle where robot scores climb points
 	public final double climbStart = 110.0;				// Climber starting angle (must be safe for wrist to move, must be in frame perimeter)
 	public final double climbVacuumAngle = -5.0;		// Climber angle to attach vacuum to platform
-	public final double climbMinAngle = -20.0;			// Min angle for climber
+	public final double climbMinAngle = -10.0;			// Min angle for climber
 
 	/**
 	 * Creates a RobotPreferences object and reads the robot preferences.
