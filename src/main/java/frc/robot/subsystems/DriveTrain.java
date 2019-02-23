@@ -58,6 +58,12 @@ public class DriveTrain extends Subsystem {
   private LinkedList<Double> rEncoderStack = new LinkedList<Double>();
   private boolean lEncStopped = false, rEncStopped = false;
 
+  private static final int QUADRANT_SEGMENTS = 8; // Could combined several quadrants to get 5 instead
+  private static final int DISTANCE_SEGMENTS = 9; // Look at min/max values and reasonable steps... about every 4 in? Is this data useful?
+  private static final int BINS = 55; // True angle (alpha T) values
+  private static double[][][] visionCountStatistics = new double[QUADRANT_SEGMENTS][DISTANCE_SEGMENTS][BINS]; // Targetting statistics for vision success rate
+  private int quadrant = 0, distance = 0, bin = 0;
+
   public DriveTrain() {
 
     // Reads the robot prefs to check if using Victors or Talons for alternate motor controllers
@@ -510,6 +516,19 @@ public class DriveTrain extends Subsystem {
      + ",Target Area," + area + ",Joystick Ouput," + lJoystickAdjust + ",Left Percent," + lPercentOutput + ",Right Percent," + rPercentOutput);
   }
 
+  public void setSegmentationFactors() {
+    quadrant = (int) (2 * checkScoringQuadrant() - 1);
+    distance = (int) (Robot.vision.distanceFromTarget() / 4);
+    bin = (int) (Robot.vision.horizOffset + getGyroRotation() - getTargetAngle(quadrant)); // Don't know max setting for this...
+  }
+
+  public void logScore() {
+    for (int i = 0; i < BINS; i++) {
+      visionCountStatistics[quadrant][distance][i] += 1.0/ (Math.pow(bin - i, 2) + 1);
+    }
+    quadrant = distance = bin = 0;
+  }
+
    /**
    * Turns in place to target
    */
@@ -586,9 +605,7 @@ public class DriveTrain extends Subsystem {
       return;
     }
 
-    //quadrant = 1.5; // TEMPORARY FOR TESTING LEFT/RIGHT
-
-    // add a special case for straight down (quadrant 3.5) because of roll over on 180
+    // TODO: add a special case for straight down (quadrant 3.5) because of roll over on 180
     double angleTolerance = 1.5; // degrees
     boolean left = getGyroRotation() > getTargetAngle(quadrant) + angleTolerance; // approaching from left, facing too far right
     boolean right = getGyroRotation() < getTargetAngle(quadrant) - angleTolerance; // approaching from right

@@ -85,7 +85,7 @@ public class OI {
         right[i].whenPressed(new DriveAssist());
         left[i].whenReleased(new DriveWithJoysticks());
         right[i].whenReleased(new DriveWithJoysticks());
-        // TODO: Make right side button 2 a drive straight command
+        // TODO: Make right side button 2 a drive straight command 
       } else if (i == 3) {
         left[i].whenPressed(new DriveWithVision(false, true)); // No line followers, but gyro correction
         left[i].whenReleased(new DriveWithJoysticks());
@@ -112,8 +112,6 @@ public class OI {
     SmartDashboard.putData("LoadToRocket", new PathfinderLoadToRocket());
     // SmartDashboard.putData("Turn Gyro 90", new TurnGyro(90));
     // SmartDashboard.putData("LoadToRocket", new PathfinderLoadToRocket());
-    // The conditional logic needs to go in the command itself. No logic can be done in OI since OI is constructed at the start and not run repeatedly
-    // SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true));
 
     // We already have a button array for the xBox, like with the coPanel and joysticks. Use those instead of creating individual buttons.
     xBoxA.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchLow));
@@ -121,8 +119,6 @@ public class OI {
     xBoxY.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchHigh));
     xBoxX.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.cargoShipCargo));
     
-    //SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true, true));
-
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
     SmartDashboard.putData("Elevator Down", new ElevatorLower()); // For testing limit switch and encoder

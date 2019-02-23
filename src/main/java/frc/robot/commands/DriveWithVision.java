@@ -51,6 +51,7 @@ public class DriveWithVision extends Command {
     if (gyro) targetQuad = Robot.driveTrain.checkScoringQuadrant();
     System.out.println("Target Quadrant:" + targetQuad);
     Robot.log.writeLogEcho("DriveTrain", "Vision Tracking Init", "Gyro," + gyro + ",Quadrant,"+targetQuad);
+    //Robot.driveTrain.setSegmentationFactors();
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -63,8 +64,7 @@ public class DriveWithVision extends Command {
   @Override
   protected boolean isFinished() {
     Robot.driveTrain.areEncodersStopped(5.0);
-    return endOnLine && Robot.lineFollowing.isLinePresent() && Robot.vision.distanceFromTarget() < 40; // Stops when a line is detected by the line followers within a reasonable expected distance
-    // TODO:: with an accurate distance measurement, we can stop automatically when close enough
+    return endOnLine && Robot.lineFollowing.isLinePresent() /*&& Robot.vision.distanceFromTarget() < 40*/; // Stops when a line is detected by the line followers within a reasonable expected distance
   }
 
   // Called once after isFinished returns true
@@ -72,6 +72,7 @@ public class DriveWithVision extends Command {
   protected void end() {
     Robot.driveTrain.stop();
     Robot.log.writeLogEcho("DriveTrain", "Vision Tracking Ended", "");
+    // Check if accurate (i.e. not interrupted) and if lined up, Robot.driveTrain.logScore();
   }
 
   // Called when another command which requires one or more of the same
