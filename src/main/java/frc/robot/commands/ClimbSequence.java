@@ -25,11 +25,11 @@ public class ClimbSequence extends CommandGroup {
       }
     });
 
-    // If the elevator is raised, then lower it (safely)
-    addSequential(new ConditionalCommand(new ElevatorMoveSafe(ElevatorPosition.wristSafe)){
+    // If the wrist is not stowed, move elevator to stow position (safely)
+    addSequential(new ConditionalCommand(new ElevatorMoveSafe(ElevatorPosition.wristStow)){
       @Override
       protected boolean condition() {
-        return Robot.elevator.getElevatorPos() > Robot.robotPrefs.elevatorWristSafe;
+        return Robot.wrist.getWristAngle() < Robot.robotPrefs.wristStowed - 5.0;
       }
     });
 

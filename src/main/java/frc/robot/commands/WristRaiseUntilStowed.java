@@ -26,7 +26,7 @@ public class WristRaiseUntilStowed extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    doNothing = Robot.elevator.getElevatorPos() <= Robot.robotPrefs.elevatorWristSafe;
+    doNothing = Robot.elevator.getElevatorPos() > Robot.robotPrefs.elevatorWristSafeStow;
     if (!doNothing) {
       Robot.wrist.setWristMotorPercentOutput(0.1);
     }

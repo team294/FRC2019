@@ -101,9 +101,11 @@ public class Elevator extends Subsystem {
 		if (elevEncOK && elevatorMode &&										// Elevator must be calibrated
 			  Robot.wrist.getWristAngle() < Robot.robotPrefs.wristKeepOut &&  	// Wrist must not be stowed
 			  Robot.wrist.getCurrentWristTarget() < Robot.robotPrefs.wristKeepOut && // Wrist must not be moving to stow
-			  ( inches >= Robot.robotPrefs.elevatorWristSafe || 				// Either elevator is not going too low
-			    Robot.wrist.getWristAngle() >= Robot.robotPrefs.wristStraight - 5.0 &&	// or wrist must be at least horizontal
-			    Robot.wrist.getCurrentWristTarget() >= Robot.robotPrefs.wristStraight - 5.0)
+			  ( Robot.wrist.getWristAngle() >= Robot.robotPrefs.wristStraight - 5.0 &&	// wrist must be at least horizontal
+				Robot.wrist.getCurrentWristTarget() >= Robot.robotPrefs.wristStraight - 5.0 ||
+				inches >= Robot.robotPrefs.groundCargo &&						// Elevator is not going below groundCargo position
+				Robot.wrist.getWristAngle() >= Robot.robotPrefs.wristDown - 3.0 &&	     // wrist must be at least wristDown
+				Robot.wrist.getCurrentWristTarget() >= Robot.robotPrefs.wristDown - 3.0 )
 		 ) {
 			elevatorMotor1.set(ControlMode.Position, inchesToEncoderTicks(inches - Robot.robotPrefs.elevatorBottomToFloor));
 			Robot.log.writeLog("Elevator", "Position set", "Target," + inches + ",Allowed,Yes");

@@ -8,7 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import frc.robot.utilities.RobotPreferences;
+import frc.robot.utilities.RobotPreferences.ElevatorPosition;
 
 public class WristEncoderFail extends CommandGroup {
   /**
@@ -18,7 +18,7 @@ public class WristEncoderFail extends CommandGroup {
    */
   public WristEncoderFail() {
     addParallel(new WristOff());
-    addSequential(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.wristSafe));
+    addSequential(new ElevatorMoveToLevel(ElevatorPosition.wristStow));
     addSequential(new WristRaiseUntilStowed());
   }
 }

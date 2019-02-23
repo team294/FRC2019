@@ -96,24 +96,43 @@ public class Wrist extends Subsystem {
    */
   public void setWristAngle(double angle) {
     if (Robot.robotPrefs.wristCalibrated) {
-      // TODO determine max degrees and elevator height tolerance
-      // Don't move wrist in KeepOut if elevator is too high.
-      // Don't move wrist below straigh if elevator is too low.  
-      // TODO (need to separate ElevatorSafeHigh and ElevatorSafeLow?  Need to add intake position for elevator and for wrist.)
-      // Don't move wrist in or out of KeepOut if climber > climbWristMovingSafe.
-      if ((angle < Robot.robotPrefs.wristKeepOut && getWristAngle() < Robot.robotPrefs.wristKeepOut) || 
-          (Robot.elevator.getElevatorLowerLimit() && Robot.elevator.getCurrentElevatorTarget() < (Robot.robotPrefs.elevatorBottomToFloor+1) &&
-          (Robot.climb.getClimbAngle() < Robot.robotPrefs.climbWristMovingSafe))) {
-        wristMotor.set(ControlMode.Position, degreesToEncoderTicks(angle) + Robot.robotPrefs.wristCalZero);
-        Robot.log.writeLog("Wrist", "Set angle", "Angle," + angle + ",Interlock,OK");
+      // if ((angle < Robot.robotPrefs.wristKeepOut && getWristAngle() < Robot.robotPrefs.wristKeepOut) || 
+      //     (Robot.elevator.getElevatorLowerLimit() && Robot.elevator.getCurrentElevatorTarget() < (Robot.robotPrefs.elevatorBottomToFloor+1) &&
+      //     (Robot.climb.getClimbAngle() < Robot.robotPrefs.climbWristMovingSafe))) {
+      //   wristMotor.set(ControlMode.Position, degreesToEncoderTicks(angle) + Robot.robotPrefs.wristCalZero);
+      //   Robot.log.writeLog("Wrist", "Set angle", "Angle," + angle + ",Interlock,OK");
+      // }
+      // else if ((Robot.climb.getClimbAngle() > Robot.robotPrefs.climbWristMovingSafe && Robot.climb.getClimbAngle() < Robot.robotPrefs.climbWristStowedSafe) &&
+      // ((getWristAngle() > Robot.robotPrefs.wristKeepOut && angle < Robot.robotPrefs.wristKeepOut) || (getWristAngle() < Robot.robotPrefs.wristKeepOut && angle > Robot.robotPrefs.wristKeepOut))) {
+      //   wristMotor.set(ControlMode.Position, degreesToEncoderTicks(Robot.robotPrefs.wristKeepOut) + Robot.robotPrefs.wristCalZero);
+      //   Robot.log.writeLog("Wrist", "Set angle", "Angle," + Robot.robotPrefs.wristKeepOut + ",Interlock,Diverted");
+      // } else {
+      //   Robot.log.writeLog("Wrist", "Set angle", "Angle," + angle + ",Interlock,Forbidden");
+      // }
+
+      // Don't move wrist in or out of KeepOut if climber > climbWristMovingSafe or elevator > elevatorWristSafeStow.
+      if ( (Robot.climb.getClimbAngle() > Robot.robotPrefs.climbWristMovingSafe ||              // Climber is not safe
+            Robot.elevator.getElevatorPos() > Robot.robotPrefs.elevatorWristSafeStow ||         // Elevator is not safe
+            Robot.elevator.getCurrentElevatorTarget() > Robot.robotPrefs.elevatorWristSafeStow) // Elevator is moving to not safe
+            && (angle > Robot.robotPrefs.wristKeepOut || getWristAngle() > Robot.robotPrefs.wristKeepOut)) {  // We are moving in or out of KeepOut region
+        Robot.log.writeLog("Wrist", "Set angle", "Angle," + angle + ",Set angle,N/A,Interlock,Forbidden");
+        return;
       }
-      else if ((Robot.climb.getClimbAngle() > Robot.robotPrefs.climbWristMovingSafe && Robot.climb.getClimbAngle() < Robot.robotPrefs.climbWristStowedSafe) &&
-      ((getWristAngle() > Robot.robotPrefs.wristKeepOut && angle < Robot.robotPrefs.wristKeepOut) || (getWristAngle() < Robot.robotPrefs.wristKeepOut && angle > Robot.robotPrefs.wristKeepOut))) {
-        wristMotor.set(ControlMode.Position, degreesToEncoderTicks(Robot.robotPrefs.wristKeepOut) + Robot.robotPrefs.wristCalZero);
-        Robot.log.writeLog("Wrist", "Set angle", "Angle," + Robot.robotPrefs.wristKeepOut + ",Interlock,Diverted");
+
+      double safeAngle = angle;
+
+      // Apply interlocks if elevator is low
+      if (Robot.elevator.getElevatorPos() < Robot.robotPrefs.groundCargo - 3.0 || Robot.elevator.getCurrentElevatorTarget() < Robot.robotPrefs.groundCargo -3.0) {
+        // Elevator is very low or is going very low
+        // Wrist can not be below horizontal
+        safeAngle = (safeAngle < Robot.robotPrefs.wristStraight) ? Robot.robotPrefs.wristStraight : safeAngle;
       } else {
-        Robot.log.writeLog("Wrist", "Set angle", "Angle," + angle + ",Interlock,Forbidden");
+        // Wrist is safe to move as far down as wristDown
+        safeAngle = (safeAngle < Robot.robotPrefs.wristDown) ? Robot.robotPrefs.wristDown : safeAngle;
       }
+
+      wristMotor.set(ControlMode.Position, degreesToEncoderTicks(safeAngle) + Robot.robotPrefs.wristCalZero);
+      Robot.log.writeLog("Wrist", "Set angle", "Desired angle," + angle + ",Set angle," + safeAngle + ",Interlock,Allowed");  
     }
   }
 

@@ -24,8 +24,10 @@ public class ElevatorMoveSafe extends CommandGroup {
    */
   public ElevatorMoveSafe(double inches) {
     deployWristIfStowed();
-    if (inches < Robot.robotPrefs.elevatorWristSafe) {
+    if (inches < Robot.robotPrefs.groundCargo) {
       raiseWristIfBelowHorizontal();
+    } else {
+      raiseWristIfBelowDown();
     }
     addSequential(new ElevatorMoveToLevel(inches));
   }
@@ -38,8 +40,10 @@ public class ElevatorMoveSafe extends CommandGroup {
    */
   public ElevatorMoveSafe(RobotPreferences.ElevatorPosition pos) {
     deployWristIfStowed();
-    if (pos == ElevatorPosition.bottom || pos == ElevatorPosition.hatchLow) {
+    if (pos == ElevatorPosition.bottom || pos == ElevatorPosition.hatchLow || pos == ElevatorPosition.wristStow) {
       raiseWristIfBelowHorizontal();
+    } else if (pos == ElevatorPosition.groundCargo) {
+      raiseWristIfBelowDown();
     }
     addSequential(new ElevatorMoveToLevel(pos));
   }
@@ -63,12 +67,22 @@ public class ElevatorMoveSafe extends CommandGroup {
     });
   }
 
-  private void raiseWristIfBelowHorizontal () {
+  private void raiseWristIfBelowHorizontal() {
     // Raise wrist if below horizontal
     addSequential(new ConditionalCommand(new WristMoveToAngle(WristAngle.straight)){
       @Override
       protected boolean condition() {
         return Robot.wrist.getWristAngle() < Robot.robotPrefs.wristStraight - 5.0;
+      }
+    });
+  }
+
+  private void raiseWristIfBelowDown() {
+    // Raise wrist if below loadCargo
+    addSequential(new ConditionalCommand(new WristMoveToAngle(WristAngle.down)){
+      @Override
+      protected boolean condition() {
+        return Robot.wrist.getWristAngle() < Robot.robotPrefs.wristDown - 5.0;
       }
     });
   }
