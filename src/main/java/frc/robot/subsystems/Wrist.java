@@ -14,7 +14,6 @@ import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.*;
 import frc.robot.utilities.FileLog;
-import frc.robot.utilities.RobotPreferences;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -36,18 +35,20 @@ public class Wrist extends Subsystem {
   private double encoderTicksPerDegrees = Robot.robotPrefs.encoderTicksPerRevolution / 360.0;
 
   // TODO test PID terms with actual wrist
-  private double kP = 0;
+  private double kP = 3.0;
 	private double kI = 0;
 	private double kD = 0;
   private double kFF = 0;
   private int kIz = 0;
-  private double kMaxOutput = 0.3; // up max output TODO increase after initial testing
-  private double kMinOutput = -0.3; // down max output  TODO increase after initial testing
-  private double rampRate = 0.5;
+  private double kMaxOutput = 1.0; // up max output TODO increase after initial testing
+  private double kMinOutput = -1.0; // down max output  TODO increase after initial testing
+  private double rampRate = 0.3;
 
   public Wrist() {
     wristMotor.set(ControlMode.PercentOutput, 0);
+    wristMotor.setInverted(true);
     wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
+    wristMotor.setSensorPhase(true);         // Flip sign of sensor reading
     wristMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
     wristMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
     wristMotor.setNeutralMode(NeutralMode.Brake);
@@ -122,7 +123,7 @@ public class Wrist extends Subsystem {
       double safeAngle = angle;
 
       // Apply interlocks if elevator is low
-      if (Robot.elevator.getElevatorPos() < Robot.robotPrefs.groundCargo - 3.0 || Robot.elevator.getCurrentElevatorTarget() < Robot.robotPrefs.groundCargo -3.0) {
+      if (Robot.elevator.getElevatorPos() < Robot.robotPrefs.groundCargo - 2.0 || Robot.elevator.getCurrentElevatorTarget() < Robot.robotPrefs.groundCargo -2.0) {
         // Elevator is very low or is going very low
         // Wrist can not be below horizontal
         safeAngle = (safeAngle < Robot.robotPrefs.wristStraight) ? Robot.robotPrefs.wristStraight : safeAngle;
@@ -143,6 +144,7 @@ public class Wrist extends Subsystem {
    */
   public void calibrateWristEnc(double angle, boolean saveToPrefs) {
     Robot.robotPrefs.setWristCalibration(getWristEncoderTicksRaw() - degreesToEncoderTicks(angle), saveToPrefs);
+    setDefaultCommand(null);
   }  
   
 	/**
@@ -154,7 +156,7 @@ public class Wrist extends Subsystem {
 	public void adjustWristCalZero() {
     Robot.log.writeLogEcho("Wrist", "Adjust wrist pre", "wrist angle," + getWristAngle() + 
       "raw ticks" + getWristEncoderTicksRaw() + ",wristCalZero," + Robot.robotPrefs.wristCalZero);
-		if(getWristAngle() < Robot.robotPrefs.wristMin - 10.0) {
+		if(getWristAngle() < Robot.robotPrefs.wristMin - 15.0) {
       Robot.log.writeLogEcho("Wrist", "Adjust wrist", "Below min angle");
 			Robot.robotPrefs.wristCalZero -= Robot.robotPrefs.encoderTicksPerRevolution;
 		}
@@ -290,7 +292,7 @@ public class Wrist extends Subsystem {
     Robot.log.writeLog("Wrist", "Update Variables",
         "Volts," + wristMotor.getMotorOutputVoltage() + ",Amps," + Robot.pdp.getCurrent(RobotMap.wristMotorPDP) +
         ",WristCalZero," + Robot.robotPrefs.wristCalZero + 
-        "Enc Raw," + getWristEncoderTicksRaw() + ",Wrist Angle," + getWristAngle() +
+        ",Enc Raw," + getWristEncoderTicksRaw() + ",Wrist Angle," + getWristAngle() + ",Wrist Target," + getCurrentWristTarget() +
         ",Upper Limit," + getWristUpperLimit() + ",Lower Limit," + getWristLowerLimit()
         );
   }
@@ -342,12 +344,12 @@ public class Wrist extends Subsystem {
       /* All of the code below should be gotten rid of for the same reason as the elevator stuff. It doesn't speed anything up in competition - 
       the codriver still has to recognize that the encoders are broken and the wrist is stalled. This is just more code to run in periodic() */
       
-      // TODO: Delete everything below this
+      // TODO: Work on the safety code below.  It tends to trigger if the wrist bounces.
 
 
       // Following code checks whether the encoder is incrementing in the same direction as the 
       // motor is moving and changes control modes based on state of encoder
-      
+      /*
 			currEnc = getWristEncoderTicks();
       if (wristMotor.getMotorOutputVoltage() > 5) {
         if (posMoveCount == 0) {
@@ -356,7 +358,7 @@ public class Wrist extends Subsystem {
         negMoveCount = 0;
         posMoveCount++;
         if (posMoveCount > 3) {
-          if ((currEnc - encSnapShot) < 100) {
+          if ((currEnc - encSnapShot) < 5) {
             setDefaultCommand(new WristWithXBox());
             Robot.robotPrefs.setWristUncalibrated();
             updateWristLog();
@@ -371,7 +373,7 @@ public class Wrist extends Subsystem {
         posMoveCount = 0;
         negMoveCount++;
         if (negMoveCount > 3) {
-          if ((currEnc - encSnapShot) > -100) {
+          if ((currEnc - encSnapShot) > -5) {
             // If something is broken, it's just as easy for the codriver to press the 
             // joystick button in before moving it. There's no time savings by having
             // this in periodic.
@@ -382,6 +384,7 @@ public class Wrist extends Subsystem {
           negMoveCount = 0;
         }
       }
+      */
     }
   }
  

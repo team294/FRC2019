@@ -468,6 +468,67 @@
                 }
               ]
             }
+          },
+          "9,3": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Disc",
+              "Layout/Label position": "LEFT",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Disc Position",
+                  "_title": "SmartDashboard/Disc Position"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Disc Grab",
+                  "_title": "SmartDashboard/Disc Grab"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Disc Release",
+                  "_title": "SmartDashboard/Disc Release"
+                }
+              ]
+            }
+          },
+          "5,4": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Wrist commands",
+              "Layout/Label position": "LEFT",
+              "_children": [
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Wrist pos stow",
+                  "_title": "Wrist pos stow"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Wrist pos up",
+                  "_title": "Wrist pos up"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Wrist pos straight",
+                  "_title": "Wrist pos straight"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Wrist pos down",
+                  "_title": "Wrist pos down"
+                }
+              ]
+            }
           }
         }
       }

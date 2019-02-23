@@ -33,13 +33,13 @@ public class RobotPreferences {
 	* Measurements
 	*/
 	// Wrist Angles (in degrees)
-	public final double wristMax = 110.0;	
-	public final double wristStowed = 107.36;
-	public final double wristKeepOut = 60.0; // Max angle to avoid interference with elevator or climber
+	public final double wristMax = 114.0;	
+	public final double wristStowed = 110;
+	public final double wristKeepOut = 28.0; // Max angle to avoid interference with elevator or climber
 	public final double wristUp = 15.0;
 	public final double wristStraight = 0.0;
-	public final double wristDown = -45.0;		// In this position, elevator must be able to go to groundCargo
-	public final double wristMin = -50.0;
+	public final double wristDown = -59.0;		// In this position, elevator must be able to go to groundCargo
+	public final double wristMin = -68;
 	public enum WristAngle {stowed, up, straight, down}
 
 	// TODO Update with 2019 base
@@ -60,7 +60,7 @@ public class RobotPreferences {
 	*/
 
 	// Field level heights (for elevator targeting), in inches
-	public final double elevatorWristStow = 19.0;
+	public final double elevatorWristStow = 15.0;
 	public final double hatchLow = 19.0;
   	public final double hatchMid = 47.0;
   	public final double hatchHigh = 75.0;
@@ -97,11 +97,11 @@ public class RobotPreferences {
 		problemExists = prefs.getBoolean("problemExists", false);
 		inBCRLab = prefs.getBoolean("inBCRLab", false);
 		prototypeRobot = prefs.getBoolean("prototypeRobot", false); // true if testing code on a prototype, default to false (competition bot w/ Victors)
-		driveDirection = prefs.getBoolean("driveDirection", true);
+		driveDirection = prefs.getBoolean("driveDirection", false);
 		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;	
 		elevatorGearCircumference = prefs.getDouble("elevatorGearDiameter", 1.7) * Math.PI; // TODO Change value when actual elevator is built, Conversion factor for makeshift elevator 18/32.3568952084);
 		elevatorBottomToFloor = prefs.getDouble("elevatorBottomToFloor", 15.0); //TODO Change value when actual elevator is built
-		elevatorWristSafeStow = prefs.getDouble("elevatorWristSafeStow", 20.0); //TODO Change value when actual elevator is built (max elevator position from floor where wrist can be stowed)
+		elevatorWristSafeStow = prefs.getDouble("elevatorWristSafeStow", 17.0); //TODO Change value when actual elevator is built (max elevator position from floor where wrist can be stowed)
 		cameraDistanceFromFrontOfBumper = prefs.getDouble("cameraDistanceFromFrontOfBumper", 12);
 		wristGearRatio = prefs.getDouble("wristGearRatio", 1.0);
 		wristCalZero = prefs.getDouble("wristCalZero", -9999);
@@ -165,7 +165,7 @@ public class RobotPreferences {
 			prefs.putBoolean("prototypeRobot", false);
 		}
 		if (!prefs.containsKey("driveDirection")){
-			prefs.putBoolean("driveDirection", true);
+			prefs.putBoolean("driveDirection", false);
 		}
 		if (!prefs.containsKey("wheelDiameter")){
 			prefs.putDouble("wheelDiameter", 6);
@@ -177,7 +177,7 @@ public class RobotPreferences {
 			prefs.putDouble("elevatorBottomToFloor", 15.0);
 		}
 		if (!prefs.containsKey("elevatorWristSafeStow")) {
-			prefs.putDouble("elevatorWristSafeStow", 20.0);
+			prefs.putDouble("elevatorWristSafeStow", 17.0);
 		}
 		if (!prefs.containsKey("cameraDistanceFromFrontOfBumper")){
 			prefs.putDouble("cameraDistanceFromFrontOfBumper", 12);
