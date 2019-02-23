@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.commands.*;
 import frc.robot.triggers.*;
 import frc.robot.utilities.RobotPreferences;
+import frc.robot.utilities.RobotPreferences.WristAngle;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -82,20 +83,20 @@ public class OI {
     }
 
     // XBox controller buttons/triggers
-    xbB[1].whenPressed(new ElevatorMoveAndScore(RobotPreferences.ElevatorPosition.hatchLow)); // A
-    xbB[2].whenPressed(new ElevatorMoveAndScore(RobotPreferences.ElevatorPosition.hatchMid)); // B
+    xbB[1].whenPressed(new ElevatorMoveAndPrepare(RobotPreferences.ElevatorPosition.hatchLow)); // A
+    xbB[2].whenPressed(new ElevatorMoveAndPrepare(RobotPreferences.ElevatorPosition.hatchMid)); // B
     xbB[3].whenPressed(new ElevatorWristStow()); // X
-    xbB[4].whenPressed(new ElevatorMoveAndScore(RobotPreferences.ElevatorPosition.hatchHigh)); // Y
+    xbB[4].whenPressed(new ElevatorMoveAndPrepare(RobotPreferences.ElevatorPosition.hatchHigh)); // Y
     xbB[5].whenPressed(new CargoStop()); // LB
-    xbB[6].whenPressed(new CargoStop()); // RB
+    xbB[6].whenPressed(new ElevatorMoveAndPrepare(RobotPreferences.ElevatorPosition.cargoShipCargo)); // RB
     xbB[7].whenPressed(new StopAllMotors()); // Back
     // xbB[8].whenPressed(new Command()); // Start
     xbB[9].whenPressed(new ElevatorWithXBox()); // LStick
     xbB[10].whenPressed(new WristWithXBox()); // RStick
     xbUp.whenActive(new CargoIntakeFromLoad()); // DPadUp
-    // xbRight.whenActive(new Command()); // DPadRight
+    xbRight.whenActive(new HatchSet(true)); // DPadRight
     xbDown.whenActive(new CargoIntakeFromGround()); // DPadDown
-    // xbLeft.whenActive(new Command()); // DPadLeft
+    xbLeft.whenActive(new HatchSet(false)); // DPadLeft
     xbLT.whenActive(new CargoOuttake()); // LT
     xbRT.whenActive(new CargoOuttake()); // RT
 
@@ -106,10 +107,10 @@ public class OI {
     // right[2].whenPressed(new Command());
     right[2].whenReleased(new DriveWithJoysticks());
     // left[3].whenPressed(new Command());
-    right[3].whenPressed(new DriveStraight(0.6, 2)); // TODO adjust with desired speed/time
-    left[4].whenPressed(new HatchSet(true));
+    right[3].whileHeld(new DriveStraight());
+    left[4].whenPressed(new HatchScoreAndIntake());
     right[4].whenPressed(new DriveSetDirection(false));
-    left[5].whenPressed(new HatchSet(false));
+    left[5].whenPressed(new HatchScoreAndIntake());
     right[5].whenPressed(new DriveSetDirection(true));
 
     // left[1].whenPressed(new Shift(true));
@@ -162,6 +163,15 @@ public class OI {
     // Buttons for the Cargo rollers
     SmartDashboard.putData("Cargo Intake", new CargoIntake());
     SmartDashboard.putData("Cargo Outtake", new CargoOuttake());
+
+    // Buttons for the wrist
+    SmartDashboard.putData("Wrist Stow", new WristMoveToAngle(WristAngle.stowed));
+    SmartDashboard.putData("Wrist Up", new WristMoveToAngle(WristAngle.up));
+    SmartDashboard.putData("Wrist Straight", new WristMoveToAngle(WristAngle.straight));
+    SmartDashboard.putData("Wrist Down", new WristMoveToAngle(WristAngle.down));
+    SmartDashboard.putData("Wrist Off", new WristOff());
+    SmartDashboard.putData("Wrist Move Up", new WristPercentOutput(0.1));
+    SmartDashboard.putData("Wrist Move Down", new WristPercentOutput(-0.1));
 
     // Buttons for controlling FileLogging
     SmartDashboard.putData("Log 1 InitialTesting", new FileLogSetLevel(1));

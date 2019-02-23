@@ -14,11 +14,12 @@ import frc.robot.utilities.RobotPreferences;
 import frc.robot.utilities.RobotPreferences.ElevatorPosition;
 import frc.robot.utilities.RobotPreferences.WristAngle;
 
-public class ElevatorMoveAndScore extends CommandGroup {
+public class ElevatorMoveAndPrepare extends CommandGroup {
   /**
    * Add your docs here.
    */
-  public ElevatorMoveAndScore(RobotPreferences.ElevatorPosition position) {
+  public ElevatorMoveAndPrepare(RobotPreferences.ElevatorPosition position) {
+    addSequential(new DriveStraight(-0.5, 0.1));
     addSequential(new WristMoveToAngle(WristAngle.straight));
     addSequential(new ElevatorMoveToLevel(position));
     addSequential(new ConditionalCommand(new WristMoveToAngle(WristAngle.up)) {
@@ -31,6 +32,6 @@ public class ElevatorMoveAndScore extends CommandGroup {
         }
       }
     });
-    addSequential(new CargoOuttakeOrHatchManipulate());
+    // addSequential(new CargoOuttakeOrHatchManipulate());
   }
 }
