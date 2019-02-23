@@ -121,7 +121,7 @@ public class OI {
     xBoxY.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchHigh));
     xBoxX.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.cargoShipCargo));
     
-    SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true, true));
+    //SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true, true));
 
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
