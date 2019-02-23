@@ -81,7 +81,7 @@ public class OI {
     // right[2].whenPressed(new Command());
     right[2].whenReleased(new DriveWithJoysticks());
     // left[3].whenPressed(new Command());
-    right[3].whileHeld(new DriveStraight(Robot.oi.rightJoystick.getY(), 0));
+    // right[3].whileHeld(new DriveStraight(Robot.oi.rightJoystick.getY(), 0)); // TODO fix drivestraight
     left[4].whenPressed(new HatchScoreAndIntake());
     right[4].whenPressed(new DriveSetDirection(false));
     left[5].whenPressed(new HatchScoreAndIntake());

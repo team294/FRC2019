@@ -17,7 +17,7 @@ public class Hatch extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  private final Solenoid hatchPiston = new Solenoid(RobotMap.pneumaticHatchOut);
+  private final Solenoid hatchPiston = new Solenoid(RobotMap.pneumaticHatch);
   //private HatchPistonPositions hatchPosition = HatchPistonPositions.unknown;
   private boolean hatchPosition = true;
 
