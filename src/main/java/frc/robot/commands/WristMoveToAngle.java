@@ -42,21 +42,21 @@ public class WristMoveToAngle extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    if(targetAngle) {
+    if (targetAngle) {
       Robot.wrist.setWristAngle(target);
     } else {
       switch (angle) {
         case stowed:
-          Robot.wrist.setWristAngle(RobotPreferences.WristStowed);
+          Robot.wrist.setWristAngle(RobotPreferences.wristStowed);
           break;
         case up:
-          Robot.wrist.setWristAngle(RobotPreferences.WristUp);
+          Robot.wrist.setWristAngle(RobotPreferences.wristUp);
           break;
         case straight:
-          Robot.wrist.setWristAngle(RobotPreferences.WristStraight);
+          Robot.wrist.setWristAngle(RobotPreferences.wristStraight);
           break;
         case down:
-          Robot.wrist.setWristAngle(RobotPreferences.WristDown);
+          Robot.wrist.setWristAngle(RobotPreferences.wristDown);
           break;
       }
     }
@@ -65,12 +65,13 @@ public class WristMoveToAngle extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    Robot.wrist.updateWristLog();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return !Robot.wrist.getEncOK() || Math.abs(Robot.wrist.getWristAngle() - Robot.wrist.getCurrentWristTarget()) < 5.0; // tolerance of 5 degrees
+    return !Robot.wrist.isEncoderCalibrated() || Math.abs(Robot.wrist.getWristAngle() - Robot.wrist.getCurrentWristTarget()) < 5.0; // tolerance of 5 degrees
   }
 
   // Called once after isFinished returns true

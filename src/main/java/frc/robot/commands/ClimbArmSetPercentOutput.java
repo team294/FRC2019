@@ -10,26 +10,31 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ElevatorLower extends Command {
+public class ClimbArmSetPercentOutput extends Command {
+  private double percentOutput;
+
   /**
-   * Slowly moves elevator DOWN
+   * Sets percent power of climb motors.  ***NOTE*** this command does not stop.
+   * If the command is interrupted, then the motors stop.
+   * @param percentPower between -1.0 and 1.0
    */
-  public ElevatorLower() {
+  public ClimbArmSetPercentOutput(double percentOutput) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.elevator);
+    requires(Robot.climb);
+    this.percentOutput = percentOutput;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.climb.setClimbMotorPercentOutput(percentOutput);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.elevator.setElevatorMotorPercentOutput(-0.2);
-    Robot.elevator.updateElevatorLog();
+    Robot.climb.setClimbMotorPercentOutput(percentOutput);
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -41,11 +46,13 @@ public class ElevatorLower extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.climb.stopClimbMotor();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.climb.stopClimbMotor();
   }
 }

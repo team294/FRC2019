@@ -22,13 +22,13 @@ public class RobotMap {
   public static final int elevatorMotor1 = 30;   // Talon
   public static final int elevatorMotor2 = 31;   // Talon
 
-  public static final int cargoMotor1 = 40;
-  public static final int cargoMotor2 = 41;
+  public static final int cargoMotor1 = 40;  // Top cargo motor
+  public static final int cargoMotor2 = 41;  // Bottom cargo motor
 
   public static final int climbMotor1 = 50;     // Talon
   public static final int climbMotor2 = 51;     // Talon
   public static final int climbVacuum1 = 52;
-  public static final int climbVacuum2 = 53;
+  //public static final int climbVacuum2 = 53;
 
   public static final int wristMotor = 60;      // Talon
 
@@ -42,9 +42,9 @@ public class RobotMap {
   public static final int lineFollowerLeft = 2;
   public static final int lineFollowerCenter = 1;
   public static final int lineFollowerRight = 0;
-  public static final int vacuumSwitch = 3;
-  public static final int elevatorLowerLimit = 4;
-  
+  public static final int vacuumSwitch = 3;  // Gnd (black) = "C" common, White (sense) = "NC" normally closed
+  public static final int photoSwitchCargo = 4;
+
   // PDP Addresses
   public static final int leftMotor1PDP = 0; 
   public static final int leftMotor2PDP = 1; 
@@ -55,7 +55,7 @@ public class RobotMap {
   public static final int climbMotor1PDP = 3; 
   public static final int climbMotor2PDP = 12;  
   public static final int climbVacuum1PDP = 10; 
-  public static final int climbVacuum2PDP = 9; 
+  //public static final int climbVacuum2PDP = 9; 
   public static final int elevatorMotor1PDP = 11; 
   public static final int elevatorMotor2PDP = 4; 
   public static final int cargoMotor1PDP = 6;  

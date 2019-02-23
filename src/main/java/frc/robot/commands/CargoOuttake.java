@@ -7,14 +7,17 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 public class CargoOuttake extends Command {
 
-  private double timeOuttook = 0;
+  private double timeWithoutBall = 0; // the amount of time from the photo switch not sensing a ball
+  private boolean startTime = false; // have we started to count the time from 
 
+  /**
+   * Run cargo outtake 5 seconds, or until we no longer see the ball plus 1 additional second.
+   */
   public CargoOuttake() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
@@ -24,21 +27,26 @@ public class CargoOuttake extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.cargo.outtakeCargo();
-    timeOuttook = Timer.getFPGATimestamp();
+    //TODO Change percent power when we get a cargo intake
+    Robot.cargo.setCargoMotorPercent(-0.3, -0.3);
+    startTime = false;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.cargo.outtakeCargo();
+    Robot.cargo.setCargoMotorPercent(-0.3, -0.3);
+    if(!Robot.cargo.hasBall() && !startTime){
+      timeWithoutBall = timeSinceInitialized();
+      startTime = true;
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    //TODO change is finished when we find out type of sensor
-    if (Timer.getFPGATimestamp() >= timeOuttook + 1) {
+    if (timeSinceInitialized() >= 5 || (startTime && timeSinceInitialized() - timeWithoutBall > 1)) {
+      Robot.cargo.stopCargoIntake();
       return true;
     } else {
       return false;

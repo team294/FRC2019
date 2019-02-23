@@ -196,15 +196,213 @@
               "_title": "Problem Subsystem"
             }
           },
-          "3,1": {
+          "7,1": {
             "size": [
-              1,
-              1
+              2,
+              4
             ],
             "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Zero Elev Enc (w/ Limit)",
-              "_title": "SmartDashboard/Zero Elev Enc (w/ Limit)"
+              "_type": "List Layout",
+              "_title": "Climber",
+              "Layout/Label position": "LEFT",
+              "_children": [
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Climb calibrated",
+                  "_title": "Climb calibrated",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Climb angle",
+                  "_title": "Climb angle"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Climb enc raw",
+                  "_title": "Climb enc raw"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Climb limit switch",
+                  "_title": "Climb Up Limit",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Climb vacuum",
+                  "_title": "Vacuum",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Climb Up",
+                  "_title": "Climb Up"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Climb Down",
+                  "_title": "Climb Down"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Climb Vacuum On",
+                  "_title": "Vacuum On"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Climb Vacuum Off",
+                  "_title": "Vacuum Off"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Climb Set Reference",
+                  "_title": "Climb Set Reference"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Climb move to start",
+                  "_title": "Climb move to start"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Climb move to 0",
+                  "_title": "Climb move to 0"
+                }
+              ]
+            }
+          },
+          "5,1": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Elevator",
+              "Layout/Label position": "LEFT",
+              "_children": [
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Elev Mode",
+                  "_title": "Elev Mode",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Elev encOK",
+                  "_title": "Elev Encoder OK",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Elev Pos",
+                  "_title": "Elev Position"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Elev Upper Limit",
+                  "_title": "Elev Upper Limit",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Elev Lower Limit",
+                  "_title": "Elev Lower Limit",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Zero Elev Enc (w/ Limit)",
+                  "_title": "Zero Elev Enc (w/ Limit)"
+                }
+              ]
+            }
+          },
+          "3,1": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "DriveTrain",
+              "Layout/Label position": "LEFT",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Gyro Angle",
+                  "_title": "Gyro Angle"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Drive Left Inches",
+                  "_title": "Drive Left Inches"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Drive Right Inches",
+                  "_title": "Drive Right Inches"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/LineFollower Left",
+                  "_title": "LineFollower Left",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/LineFollower Middle",
+                  "_title": "LineFollower Mid",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/LineFollower Right",
+                  "_title": "LineFollower Right",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                }
+              ]
+            }
+          },
+          "9,1": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "List Layout",
+              "Layout/Label position": "LEFT",
+              "_children": [
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Cargo Has Ball",
+                  "_title": "Cargo Has Ball",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Cargo Intake",
+                  "_title": "Cargo Intake"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Cargo Outtake",
+                  "_title": "Cargo Outtake"
+                }
+              ]
             }
           }
         }

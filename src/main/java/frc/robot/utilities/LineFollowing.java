@@ -25,9 +25,9 @@ public class LineFollowing {
     }    
     
     public void displayLineSensors(){
-        SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
-        SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
-        SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));
+        SmartDashboard.putBoolean("LineFollower Left", Robot.lineFollowing.isLinePresent(1));
+        SmartDashboard.putBoolean("LineFollower Middle", Robot.lineFollowing.isLinePresent(2));
+        SmartDashboard.putBoolean("LineFollower Right", Robot.lineFollowing.isLinePresent(3));
     }
 
     /**
