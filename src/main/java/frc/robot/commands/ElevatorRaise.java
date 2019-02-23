@@ -12,7 +12,8 @@ import frc.robot.Robot;
 
 public class ElevatorRaise extends Command {
   /**
-   * Slowly moves elevator UP
+   * Slowly moves elevator UP.
+   * ***NOTE*** this command does not stop.  If the command is interrupted, then the motors stop.
    */
   public ElevatorRaise() {
     // Use requires() here to declare subsystem dependencies
@@ -47,5 +48,6 @@ public class ElevatorRaise extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.elevator.stopElevator();
   }
 }

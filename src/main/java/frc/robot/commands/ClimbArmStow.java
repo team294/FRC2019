@@ -8,17 +8,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import frc.robot.utilities.RobotPreferences.ElevatorPosition;
+import frc.robot.Robot;
 
-public class WristEncoderFail extends CommandGroup {
+public class ClimbArmStow extends CommandGroup {
   /**
-   * if wrist encoder fails, stop applying power to wrist until
-   * elevator hits its bottom limit switch (automatic), and then apply power until
-   * wrist hits its top limit switch
+   * Moves climber to Stowed location (safe to move wrist) and turns on the compressor.
    */
-  public WristEncoderFail() {
-    addParallel(new WristOff());
-    addSequential(new ElevatorMoveToLevel(ElevatorPosition.wristStow));
-    addSequential(new WristRaiseUntilStowed());
+  public ClimbArmStow() {
+    addParallel(new ClimbVacuumTurnOn(false));
+    addSequential(new ClimbArmSetAngle(Robot.robotPrefs.climbStart));
   }
 }

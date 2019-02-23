@@ -14,7 +14,6 @@ import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.ElevatorWithXBox;
 import frc.robot.utilities.FileLog;
-import frc.robot.utilities.RobotPreferences;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -99,11 +98,19 @@ public class Elevator extends Subsystem {
 	 * @param inches target height in inches off the floor
 	 */
 	public void setElevatorPos(double inches) {
-		if (elevEncOK && elevatorMode &&
-			  Robot.wrist.getWristAngle() < RobotPreferences.wristKeepOut &&
-			  Robot.wrist.getCurrentWristTarget() < RobotPreferences.wristKeepOut) {
+		if (elevEncOK && elevatorMode &&										// Elevator must be calibrated
+			  Robot.wrist.getWristAngle() < Robot.robotPrefs.wristKeepOut &&  	// Wrist must not be stowed
+			  Robot.wrist.getCurrentWristTarget() < Robot.robotPrefs.wristKeepOut && // Wrist must not be moving to stow
+			  ( Robot.wrist.getWristAngle() >= Robot.robotPrefs.wristStraight - 5.0 &&	// wrist must be at least horizontal
+				Robot.wrist.getCurrentWristTarget() >= Robot.robotPrefs.wristStraight - 5.0 ||
+				inches >= Robot.robotPrefs.groundCargo &&						// Elevator is not going below groundCargo position
+				Robot.wrist.getWristAngle() >= Robot.robotPrefs.wristDown - 3.0 &&	     // wrist must be at least wristDown
+				Robot.wrist.getCurrentWristTarget() >= Robot.robotPrefs.wristDown - 3.0 )
+		 ) {
 			elevatorMotor1.set(ControlMode.Position, inchesToEncoderTicks(inches - Robot.robotPrefs.elevatorBottomToFloor));
-			Robot.log.writeLog("Elevator", "Position set", "Target," + inches);
+			Robot.log.writeLog("Elevator", "Position set", "Target," + inches + ",Allowed,Yes");
+		} else {
+			Robot.log.writeLog("Elevator", "Position set", "Target," + inches + ",Allowed,No");
 		}
 	}
 

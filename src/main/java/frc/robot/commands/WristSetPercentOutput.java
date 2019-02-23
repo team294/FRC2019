@@ -10,45 +10,49 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ClimbEncoderCalibrateAtLimit extends Command {
+public class WristSetPercentOutput extends Command {
+  private double percentOutput;
+
   /**
-   * Drives climb motor up slowly, calibrates encoder when climb reaches the limit switch
+   * Sets percent power of wrist motors.  ***NOTE*** this command does not stop.
+   * If the command is interrupted, then the motors stop.
+   * @param percentPower between -1.0 and 1.0
    */
-  public ClimbEncoderCalibrateAtLimit() {
+  public WristSetPercentOutput(double percentOutput) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.climb);
+    requires(Robot.wrist);
+    this.percentOutput = percentOutput;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.wrist.setWristMotorPercentOutput(percentOutput);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.climb.setClimbMotorPercentOutput(0.1);
+    Robot.wrist.setWristMotorPercentOutput(percentOutput);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Robot.climb.isClimbAtLimitSwitch();
+    return false;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.climb.stopClimbMotor();
-    Robot.climb.calibrateClimbEnc(Robot.robotPrefs.climbStartingAngle, false);
-    // TODO Something to set climb reference angle
+    Robot.wrist.stopWrist();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.climb.stopClimbMotor();
+    Robot.wrist.stopWrist();
   }
 }

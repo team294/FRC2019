@@ -20,7 +20,7 @@ public class RobotPreferences {
 	public double wheelCircumference;	// Wheel circumference, in inches
 	public double elevatorGearCircumference; //circumference of the gear driving the elevator in inches
 	public double elevatorBottomToFloor; //distance of elevator 0 value from the ground
-	public double elevatorWristSafe; 	 //lowest elevator position (from ground) where wrist can't hit the floor at its lower limit switch.  Wrist can be stowed in this position.
+	public double elevatorWristSafeStow; 	 // highest elevator position (from ground) where wrist can be stowed
 	public double cameraDistanceFromFrontOfBumper;  // (default = 12 inches)
 	public double wristGearRatio; 		// wrist gear ratio, gear with encoder / gear driving wrist
 	public double wristCalZero;   		// Wrist encoder position at O degrees, in encoder ticks (i.e. the calibration factor)
@@ -33,13 +33,13 @@ public class RobotPreferences {
 	* Measurements
 	*/
 	// Wrist Angles (in degrees)
-	public static final double wristMax = 110.0;
-	public static final double wristStowed = 107.36;
-	public static final double wristKeepOut = 60.0;  // Max angle to avoid interference with elevator or climber
-	public static final double wristUp = 15.0;
-	public static final double wristStraight = 0.0;
-	public static final double wristDown = -45.0;
-	public static final double wristMin = -50.0;
+	public final double wristMax = 114.0;	
+	public final double wristStowed = 110;
+	public final double wristKeepOut = 28.0; // Max angle to avoid interference with elevator or climber
+	public final double wristUp = 15.0;
+	public final double wristStraight = 0.0;
+	public final double wristDown = -59.0;		// In this position, elevator must be able to go to groundCargo
+	public final double wristMin = -68;
 	public enum WristAngle {stowed, up, straight, down}
 
 	// TODO Update with 2019 base
@@ -60,20 +60,26 @@ public class RobotPreferences {
 	*/
 
 	// Field level heights (for elevator targeting), in inches
+	public final double elevatorWristStow = 15.0;
 	public final double hatchLow = 19.0;
   	public final double hatchMid = 47.0;
   	public final double hatchHigh = 75.0;
   	public final double cargoShipCargo = 34.75;
-  	public final double rocketBallOffset = 8.5;
+	public final double rocketBallOffset = 8.5;
+	public final double loadCargo = 44.125;
+	public final double groundCargo = 20.0;  		// At this level, wrist must be able to go to wristDown
 
-	public enum ElevatorPosition {bottom, wristSafe, hatchLow, hatchMid, hatchHigh, cargoShipCargo}
+	public enum ElevatorPosition {bottom, wristStow, hatchLow, hatchMid, hatchHigh, cargoShipCargo, loadCargo, groundCargo}
 
 	//Climb Target Angles (in degrees)
 	//TODO Test and adjust angles when climb is built
-	public final double climbStartingAngle = 120.0;
-	public final double climbLiftAngle = 125.0;
-	public final double climbVacuumAngle = -5.0;
-	public final double climbMinAngle = -20.0;
+	public final double climbLimitAngle = 160.0;		// Max angle for climber (limit switch)
+	public final double climbWristStowedSafe = 145.0;	// Max angle for climber when wrist is stowed (but wrist can't move if climber is here)
+	public final double climbWristMovingSafe = 130.0;	// Max angle for climber if wrist is moving
+	public final double climbLiftAngle = 125.0;			// Angle where robot scores climb points
+	public final double climbStart = 110.0;				// Climber starting angle (must be safe for wrist to move, must be in frame perimeter)
+	public final double climbVacuumAngle = -5.0;		// Climber angle to attach vacuum to platform
+	public final double climbMinAngle = -20.0;			// Min angle for climber
 
 	/**
 	 * Creates a RobotPreferences object and reads the robot preferences.
@@ -91,11 +97,11 @@ public class RobotPreferences {
 		problemExists = prefs.getBoolean("problemExists", false);
 		inBCRLab = prefs.getBoolean("inBCRLab", false);
 		prototypeRobot = prefs.getBoolean("prototypeRobot", false); // true if testing code on a prototype, default to false (competition bot w/ Victors)
-		driveDirection = prefs.getBoolean("driveDirection", true);
+		driveDirection = prefs.getBoolean("driveDirection", false);
 		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;	
 		elevatorGearCircumference = prefs.getDouble("elevatorGearDiameter", 1.7) * Math.PI; // TODO Change value when actual elevator is built, Conversion factor for makeshift elevator 18/32.3568952084);
 		elevatorBottomToFloor = prefs.getDouble("elevatorBottomToFloor", 15.0); //TODO Change value when actual elevator is built
-		elevatorWristSafe = prefs.getDouble("elevatorWristSafe", 20.0); //TODO Change value when actual elevator is built (elevator position from floor where wrist can't hit the floor at its lower limit switch.  Wrist can be stowed in this position.)
+		elevatorWristSafeStow = prefs.getDouble("elevatorWristSafeStow", 17.0); //TODO Change value when actual elevator is built (max elevator position from floor where wrist can be stowed)
 		cameraDistanceFromFrontOfBumper = prefs.getDouble("cameraDistanceFromFrontOfBumper", 12);
 		wristGearRatio = prefs.getDouble("wristGearRatio", 1.0);
 		wristCalZero = prefs.getDouble("wristCalZero", -9999);
@@ -159,7 +165,7 @@ public class RobotPreferences {
 			prefs.putBoolean("prototypeRobot", false);
 		}
 		if (!prefs.containsKey("driveDirection")){
-			prefs.putBoolean("driveDirection", true);
+			prefs.putBoolean("driveDirection", false);
 		}
 		if (!prefs.containsKey("wheelDiameter")){
 			prefs.putDouble("wheelDiameter", 6);
@@ -170,8 +176,8 @@ public class RobotPreferences {
 		if (!prefs.containsKey("elevatorBottomToFloor")) {
 			prefs.putDouble("elevatorBottomToFloor", 15.0);
 		}
-		if (!prefs.containsKey("elevatorWristSafe")) {
-			prefs.putDouble("elevatorWristSafe", 20.0);
+		if (!prefs.containsKey("elevatorWristSafeStow")) {
+			prefs.putDouble("elevatorWristSafeStow", 17.0);
 		}
 		if (!prefs.containsKey("cameraDistanceFromFrontOfBumper")){
 			prefs.putDouble("cameraDistanceFromFrontOfBumper", 12);
