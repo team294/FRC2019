@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.commands.*;
 import frc.robot.triggers.*;
 import frc.robot.utilities.RobotPreferences;
+import frc.robot.utilities.RobotPreferences.ElevatorPosition;
 import frc.robot.utilities.RobotPreferences.WristAngle;
 
 /**
@@ -24,33 +25,6 @@ import frc.robot.utilities.RobotPreferences.WristAngle;
  */
 
 public class OI {
-  //// CREATING BUTTONS
-  // One type of button is a joystick button which is any button on a
-  //// joystick.
-  // You create one by telling it which joystick it's on and which button
-  // number it is.
-  // Joystick stick = new Joystick(port);
-  // Button button = new JoystickButton(stick, buttonNumber);
-
-  // There are a few additional built in buttons you can use. Additionally,
-  // by subclassing Button you can create custom triggers and bind those to
-  // commands the same as any other Button.
-
-  //// TRIGGERING COMMANDS WITH BUTTONS
-  // Once you have a button, it's trivial to bind it to a button in one of
-  // three ways:
-
-  // Start the command when the button is pressed and let it run the command
-  // until it is finished as determined by it's isFinished method.
-  // button.whenPressed(new ExampleCommand());
-
-  // Run the command while the button is being held down and interrupt it once
-  // the button is released.
-  // button.whileHeld(new ExampleCommand());
-
-  // Start the command when the button is released and let it run the command
-  // until it is finished as determined by it's isFinished method.
-  // button.whenReleased(new ExampleCommand());
 
   public Joystick leftJoystick = new Joystick(0);
   public Joystick rightJoystick = new Joystick(1);
@@ -133,8 +107,8 @@ public class OI {
     // right[5].whenReleased(new DriveWithJoysticks());
 
     // Copanel buttons
-    coP[1].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStartingAngle));
-    coP[2].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStartingAngle));
+    coP[1].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStart));
+    coP[2].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStart));
     coP[3].whenPressed(new ClimbArmSetPercentOutput(0.3));  // TODO determine manual control percent
     coP[4].whenPressed(new ClimbArmSetPercentOutput(-0.3));  // TODO determine manual control percent
     // coP[5].whenPressed(new Command());  // TODO add turning on vacuum
@@ -144,34 +118,35 @@ public class OI {
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
     SmartDashboard.putData("Elevator Down", new ElevatorLower()); // For testing limit switch and encoder
-    SmartDashboard.putData("Move Elevator to Bottom", new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.bottom)); // Move to encoder's zero position
-    SmartDashboard.putData("Move Elevator to WristSafe", new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.wristSafe)); // Move to encoder's zero position
-    SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero());
+    SmartDashboard.putData("Move Elevator to Bottom", new ElevatorMoveToLevel(ElevatorPosition.bottom)); // Move to encoder's zero position
+    SmartDashboard.putData("Move Elevator to WristStow", new ElevatorMoveToLevel(ElevatorPosition.wristStow)); // Move to level that wrist can be stowed safely
+    SmartDashboard.putData("Move Elevator to High", new ElevatorMoveToLevel(ElevatorPosition.hatchHigh)); // Move to high position (test wrist interlock)
+    SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorMoveToBottomThenZeroEncoder());
 
     // Buttons for controlling the climber
     SmartDashboard.putData("Climb Up", new ClimbArmSetPercentOutput(0.2));  // For testing
     SmartDashboard.putData("Climb Down", new ClimbArmSetPercentOutput(-0.2));  // For testing
-    SmartDashboard.putData("Climb move to 0", new ClimbArmSetAngle(0));  // For testing
-    SmartDashboard.putData("Climb move to start", new ClimbArmSetAngle(Robot.robotPrefs.climbStartingAngle + 5));  // For testing
+    SmartDashboard.putData("Climb move to start", new ClimbArmStow());  // For testing
+    SmartDashboard.putData("Climb move to vacuum", new ClimbArmSetAngle(Robot.robotPrefs.climbVacuumAngle));  // For testing
+    SmartDashboard.putData("Climb lift robot", new ClimbArmSetAngle(Robot.robotPrefs.climbLiftAngle));  // For testing
     SmartDashboard.putData("Climb Vacuum On", new ClimbVacuumTurnOn(true));
     SmartDashboard.putData("Climb Vacuum Off", new ClimbVacuumTurnOn(false));
-    SmartDashboard.putData("Climb Set Reference", new ClimbEncoderCalibrateAtLimit());
+    SmartDashboard.putData("Climb Set Reference", new ClimbMoveToLimitThenCalibrate());
     SmartDashboard.putData("ClimbMoveUntilVacuum", new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
-    SmartDashboard.putData("ClimbLiftRobot", new ClimbLiftRobot(Robot.robotPrefs.climbLiftAngle));
     SmartDashboard.putData("ClimbSequnce", new ClimbSequence());
 
     // Buttons for the Cargo rollers
     SmartDashboard.putData("Cargo Intake", new CargoIntake());
     SmartDashboard.putData("Cargo Outtake", new CargoOuttake());
 
-    // Buttons for the wrist
-    // SmartDashboard.putData("Wrist Stow", new WristMoveToAngle(WristAngle.stowed));
-    // SmartDashboard.putData("Wrist Up", new WristMoveToAngle(WristAngle.up));
-    // SmartDashboard.putData("Wrist Straight", new WristMoveToAngle(WristAngle.straight));
-    // SmartDashboard.putData("Wrist Down", new WristMoveToAngle(WristAngle.down));
-    // SmartDashboard.putData("Wrist Off", new WristOff());
-    // SmartDashboard.putData("Wrist Move Up", new WristPercentOutput(0.1));
-    // SmartDashboard.putData("Wrist Move Down", new WristPercentOutput(-0.1));
+    // Buttons for controlling the wrist
+    SmartDashboard.putData("Wrist recalibrate", new WristEncoderFail());
+    SmartDashboard.putData("Wrist Up", new WristSetPercentOutput(0.2));  // For testing
+    SmartDashboard.putData("Wrist Down", new WristSetPercentOutput(-0.2));  // For testing
+    SmartDashboard.putData("Wrist pos stow", new WristMoveToAngle(WristAngle.stowed));
+    SmartDashboard.putData("Wrist pos down", new WristMoveToAngle(WristAngle.down));
+    SmartDashboard.putData("Wrist pos straight", new WristMoveToAngle(WristAngle.straight));
+    SmartDashboard.putData("Wrist pos up", new WristMoveToAngle(WristAngle.up));
 
     // Buttons for controlling FileLogging
     SmartDashboard.putData("Log 1 InitialTesting", new FileLogSetLevel(1));

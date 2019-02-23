@@ -49,8 +49,8 @@ public class ElevatorMoveToLevel extends Command {
           case bottom:
             target = Robot.robotPrefs.elevatorBottomToFloor;
             break;
-          case wristSafe:
-            target = Robot.robotPrefs.elevatorWristSafe;
+          case wristStow:
+            target = Robot.robotPrefs.elevatorWristStow;
             break;
           case hatchLow:
             target = Robot.robotPrefs.hatchLow + Robot.robotPrefs.rocketBallOffset;
@@ -76,8 +76,8 @@ public class ElevatorMoveToLevel extends Command {
           case bottom:
             target = Robot.robotPrefs.elevatorBottomToFloor;
             break;
-          case wristSafe:
-            target = Robot.robotPrefs.elevatorWristSafe;
+          case wristStow:
+            target = Robot.robotPrefs.elevatorWristStow;
             break;
           case hatchLow:
             target = Robot.robotPrefs.hatchLow;

@@ -116,9 +116,37 @@ public class Climb extends Subsystem {
    * @param angle target angle, in degrees (0 = horizontal behind robot, + = up, - = down)
    */
   public void setClimbPos(double angle) {
+    /* Can this version of the code get into a double-interlock scenario (wrist blocks climber and climber blocks wrist)?
     if (Robot.robotPrefs.climbCalibrated) {
-      climbMotor2.set(ControlMode.Position, climbAngleToEncTicks(angle) + Robot.robotPrefs.climbCalZero);
+      if ((getClimbAngle() < Robot.robotPrefs.climbWristMovingSafe && angle < Robot.robotPrefs.climbWristMovingSafe) ||
+      (Robot.wrist.getWristAngle() < Robot.robotPrefs.wristKeepOut) || (Robot.wrist.getWristUpperLimit() && 
+      (getClimbAngle() > Robot.robotPrefs.climbWristMovingSafe && getClimbAngle() < Robot.robotPrefs.climbWristStowedSafe) && angle < Robot.robotPrefs.climbWristMovingSafe)) {
+        climbMotor2.set(ControlMode.Position, climbAngleToEncTicks(angle) + Robot.robotPrefs.climbCalZero);
+        Robot.log.writeLog("Climb", "Set angle", "Angle," + angle + ",Interlock,OK");
+      }
+      else if ((Robot.wrist.getWristAngle() > Robot.robotPrefs.wristKeepOut) && (getClimbAngle() < Robot.robotPrefs.climbWristMovingSafe) && (angle > Robot.robotPrefs.climbWristMovingSafe)) {
+        climbMotor2.set(ControlMode.Position, climbAngleToEncTicks(Robot.robotPrefs.climbWristMovingSafe) + Robot.robotPrefs.climbCalZero);
+        Robot.log.writeLog("Climb", "Set angle", "Angle," + Robot.robotPrefs.climbWristMovingSafe + ",Interlock,Diverted");
+      } else {
+        Robot.log.writeLog("Climb", "Set angle", "Angle," + Robot.robotPrefs.climbWristMovingSafe + ",Interlock,Forbidden");
+      }
     }
+    */
+    double safeAngle = angle;
+
+    // Apply interlocks
+    if (Robot.wrist.getWristUpperLimit() && Robot.wrist.getCurrentWristTarget() >= Robot.robotPrefs.wristStowed - 3) {
+      // Wrist is stowed and is not being moved to another position.
+      // Climber can move as far as climbWristStowedSafe
+      safeAngle = (safeAngle > Robot.robotPrefs.climbWristStowedSafe) ? Robot.robotPrefs.climbWristStowedSafe : safeAngle;
+    } else if (Robot.wrist.getWristAngle() > Robot.robotPrefs.wristKeepOut || Robot.wrist.getCurrentWristTarget() > Robot.robotPrefs.wristKeepOut) {
+      // Wrist is in the keepout region or is moving to the keepout region.
+      // Climber can move as far as climbWristMovingSafe
+      safeAngle = (safeAngle > Robot.robotPrefs.climbWristMovingSafe) ? Robot.robotPrefs.climbWristMovingSafe : safeAngle;
+    }
+
+    climbMotor2.set(ControlMode.Position, climbAngleToEncTicks(safeAngle) + Robot.robotPrefs.climbCalZero);
+    Robot.log.writeLog("Climb", "Set angle", "Desired angle," + angle + ",Set angle," + safeAngle);
   }
 
   /**
@@ -164,21 +192,23 @@ public class Climb extends Subsystem {
   
 	/**
 	 * If the angle is reading >/< max/min angle, add/subtract 360 degrees to the climbCalZero accordingly
-	 * Note: when the motor is not inverted, upon booting up, an absolute encoder reads a value between 0 and 4096
-	 * 		 when the motor is inverted, upon booting up, an absolute encoder reads a value between 0 and -4096
-	 * Note: absolute encoder values don't wrap during operation
+	 * <p> Note: when the motor is not inverted, upon booting up, an absolute encoder reads a value between 0 and 4096.
+	 * 		 When the motor is inverted, upon booting up, an absolute encoder reads a value between 0 and -4096
+	 * <p> Note: absolute encoder values don't wrap during operation
 	 */
 	public void adjustClimbCalZero() {
     Robot.log.writeLogEcho("Climb", "Adjust climb pre", "climb angle," + getClimbAngle() + 
       "raw ticks" + getClimbEncTicksRaw() + ",climbCalZero," + Robot.robotPrefs.climbCalZero);
+
 		if(getClimbAngle() < Robot.robotPrefs.climbMinAngle - 10.0) {
       Robot.log.writeLogEcho("Climb", "Adjust climb", "Below min angle");
 			Robot.robotPrefs.climbCalZero -= Robot.robotPrefs.encoderTicksPerRevolution;
 		}
-		else if(getClimbAngle() > Robot.robotPrefs.climbStartingAngle + 10.0) {
+		else if(getClimbAngle() > Robot.robotPrefs.climbLimitAngle + 10.0) {
       Robot.log.writeLogEcho("Climb", "Adjust climb", "Above max angle");
 			Robot.robotPrefs.climbCalZero += Robot.robotPrefs.encoderTicksPerRevolution;
-		}
+    }
+    
     Robot.log.writeLogEcho("Climb", "Adjust climb post", "climb angle," + getClimbAngle() + 
       "raw ticks" + getClimbEncTicksRaw() + ",climbCalZero," + Robot.robotPrefs.climbCalZero);
 	}
@@ -264,16 +294,17 @@ public class Climb extends Subsystem {
     }
     
     // Checks if the climb is not calibrated and automatically calibrates it once the reverse limit switch is pressed
-    // If the climb isn't calibrated at the start of the match, does that mean we can't control the climber at all?
+    // If the climb isn't calibrated at the start of the match, then we can calibrate using manual climb control
+    // or using the ClimbMoveToLimitThenCalibrate command.
     if (!Robot.robotPrefs.climbCalibrated ) {  // || Robot.beforeFirstEnable
       if (isClimbAtLimitSwitch()) {
-        calibrateClimbEnc(Robot.robotPrefs.climbStartingAngle, false);
+        calibrateClimbEnc(Robot.robotPrefs.climbLimitAngle, false);
         updateClimbLog();
       }
     }
     
-    // Un-calibrates the climb if the angle is outside of bounds... can we figure out a way to not put this in periodic()?
-    if (getClimbAngle() > Robot.robotPrefs.climbStartingAngle + 5.0 || getClimbAngle() < Robot.robotPrefs.climbMinAngle - 5.0) {
+    // Un-calibrates the climb if the angle is outside of bounds.
+    if (getClimbAngle() > Robot.robotPrefs.climbLimitAngle + 5.0 || getClimbAngle() < Robot.robotPrefs.climbMinAngle - 5.0) {
       Robot.robotPrefs.setClimbUncalibrated();
       updateClimbLog();
     }

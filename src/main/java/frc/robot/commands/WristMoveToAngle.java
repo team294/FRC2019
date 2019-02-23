@@ -9,13 +9,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.utilities.RobotPreferences;
+import frc.robot.utilities.RobotPreferences.WristAngle;;
 
 public class WristMoveToAngle extends Command {
 
   private double target;
   private boolean targetAngle; // true if target is angle, false if target is position
-  private RobotPreferences.WristAngle angle;
+  private WristAngle pos;
 
   /**
    * Moves wrist to target angle
@@ -30,12 +30,12 @@ public class WristMoveToAngle extends Command {
   }
 
   /**
-   * Moves wrist to target angle
-   * @param angle target angle based on the angle called from RobotPrefs
+   * Moves wrist to target position
+   * @param pos target position based on WristAngle from RobotPrefs
    */
-  public WristMoveToAngle(RobotPreferences.WristAngle angle) {
+  public WristMoveToAngle(WristAngle pos) {
     requires(Robot.wrist);
-    this.angle = angle;
+    this.pos = pos;
     targetAngle = false;
   }
 
@@ -45,18 +45,18 @@ public class WristMoveToAngle extends Command {
     if (targetAngle) {
       Robot.wrist.setWristAngle(target);
     } else {
-      switch (angle) {
+      switch (pos) {
         case stowed:
-          Robot.wrist.setWristAngle(RobotPreferences.wristStowed);
+          Robot.wrist.setWristAngle(Robot.robotPrefs.wristStowed);
           break;
         case up:
-          Robot.wrist.setWristAngle(RobotPreferences.wristUp);
+          Robot.wrist.setWristAngle(Robot.robotPrefs.wristUp);
           break;
         case straight:
-          Robot.wrist.setWristAngle(RobotPreferences.wristStraight);
+          Robot.wrist.setWristAngle(Robot.robotPrefs.wristStraight);
           break;
         case down:
-          Robot.wrist.setWristAngle(RobotPreferences.wristDown);
+          Robot.wrist.setWristAngle(Robot.robotPrefs.wristDown);
           break;
       }
     }

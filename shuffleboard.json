@@ -196,10 +196,10 @@
               "_title": "Problem Subsystem"
             }
           },
-          "7,1": {
+          "11,1": {
             "size": [
               2,
-              4
+              5
             ],
             "content": {
               "_type": "List Layout",
@@ -269,8 +269,13 @@
                 },
                 {
                   "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Climb move to 0",
-                  "_title": "Climb move to 0"
+                  "_source0": "network_table:///SmartDashboard/Climb move to vacuum",
+                  "_title": "Climb move to vacuum"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Climb lift robot",
+                  "_title": "Climb lift robot"
                 }
               ]
             }
@@ -382,7 +387,7 @@
             ],
             "content": {
               "_type": "List Layout",
-              "_title": "List Layout",
+              "_title": "Cargo",
               "Layout/Label position": "LEFT",
               "_children": [
                 {
@@ -401,6 +406,126 @@
                   "_type": "Command",
                   "_source0": "network_table:///SmartDashboard/Cargo Outtake",
                   "_title": "Cargo Outtake"
+                }
+              ]
+            }
+          },
+          "7,1": {
+            "size": [
+              2,
+              4
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Wrist",
+              "Layout/Label position": "LEFT",
+              "_children": [
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Wrist calibrated",
+                  "_title": "Wrist calibrated",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Wrist Angle",
+                  "_title": "Wrist Angle"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Wrist enc raw",
+                  "_title": "Wrist enc raw"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Wrist Upper Limit",
+                  "_title": "Wrist Upper Limit",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Wrist Lower Limit",
+                  "_title": "Wrist Lower Limit",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Wrist Up",
+                  "_title": "Wrist Up"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Wrist Down",
+                  "_title": "Wrist Down"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Wrist recalibrate",
+                  "_title": "Wrist recalibrate"
+                }
+              ]
+            }
+          },
+          "9,3": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Disc",
+              "Layout/Label position": "LEFT",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Disc Position",
+                  "_title": "SmartDashboard/Disc Position"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Disc Grab",
+                  "_title": "SmartDashboard/Disc Grab"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Disc Release",
+                  "_title": "SmartDashboard/Disc Release"
+                }
+              ]
+            }
+          },
+          "5,4": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Wrist commands",
+              "Layout/Label position": "LEFT",
+              "_children": [
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Wrist pos stow",
+                  "_title": "Wrist pos stow"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Wrist pos up",
+                  "_title": "Wrist pos up"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Wrist pos straight",
+                  "_title": "Wrist pos straight"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Wrist pos down",
+                  "_title": "Wrist pos down"
                 }
               ]
             }
