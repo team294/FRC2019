@@ -63,7 +63,7 @@ public class RobotPreferences {
 	public final double elevatorWristStow = 15.0;
 	public final double hatchLow = 19.0;
   	public final double hatchMid = 47.0;
-  	public final double hatchHigh = 75.0;
+  	public final double hatchHigh = 72.5;
   	public final double cargoShipCargo = 34.75;
 	public final double rocketBallOffset = 8.5;
 	public final double loadCargo = 44.125;

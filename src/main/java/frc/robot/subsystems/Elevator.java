@@ -42,14 +42,14 @@ public class Elevator extends Subsystem {
 	private boolean elevEncOK = true; // true is encoder working, false is encoder broken
 	private boolean elevatorMode; // true is automated (encoder is working and calibrated), false is manual mode
 
-	private double rampRate = .005;
+	private double rampRate = 0.5;
 	private double kP = 0.5;
 	private double kI = 0;
 	private double kD = 0;
 	private double kFF = 0;
 	private int kIz = 0;
-	private double kMaxOutput = 1.0; // up max output
-	private double kMinOutput = -1.0; // down max output
+	private double kMaxOutput = 0.8; // up max output
+	private double kMinOutput = -0.3; // down max output
 
 	public Elevator() {
 		elevatorMotor1 = new WPI_TalonSRX(RobotMap.elevatorMotor1);
@@ -282,8 +282,8 @@ public class Elevator extends Subsystem {
 
 			/* All of the code below should be gotten rid of. It doesn't speed anything up in competition - the codriver still has to recognize that the encoders are broken
 			and the elevator is stalled. This is just more code to run in periodic() */
-			// TODO: Delete everything below this
-
+			// TODO: The code below is causing false triggers that causes the elevator to be uncalibrated.
+			/*
 			currEnc = getElevatorEncTicks();
 			if (elevatorMotor1.getMotorOutputVoltage() > 5) {
 				if (posMoveCount == 0) {
@@ -318,6 +318,7 @@ public class Elevator extends Subsystem {
 					negMoveCount = 0;
 				}
 			}
+			*/
 
 			// Autocalibrate in the encoder is OK and the elevator is at the lower limit switch
 			if (!elevatorMode && elevEncOK && getElevatorLowerLimit()) {
