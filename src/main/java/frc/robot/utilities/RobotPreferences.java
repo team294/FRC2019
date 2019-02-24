@@ -99,7 +99,7 @@ public class RobotPreferences {
 		prototypeRobot = prefs.getBoolean("prototypeRobot", false); // true if testing code on a prototype, default to false (competition bot w/ Victors)
 		driveDirection = prefs.getBoolean("driveDirection", false);
 		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;	
-		elevatorGearCircumference = prefs.getDouble("elevatorGearDiameter", 1.7) * Math.PI; // TODO Change value when actual elevator is built, Conversion factor for makeshift elevator 18/32.3568952084);
+		elevatorGearCircumference = prefs.getDouble("elevatorGearDiameter", 1.43) * Math.PI; // TODO Change value when actual elevator is built, Conversion factor for makeshift elevator 18/32.3568952084);
 		elevatorBottomToFloor = prefs.getDouble("elevatorBottomToFloor", 16.0); //TODO Change value when actual elevator is built
 		elevatorWristSafeStow = prefs.getDouble("elevatorWristSafeStow", 18.0); //TODO Change value when actual elevator is built (max elevator position from floor where wrist can be stowed)
 		cameraDistanceFromFrontOfBumper = prefs.getDouble("cameraDistanceFromFrontOfBumper", 12);
@@ -171,7 +171,7 @@ public class RobotPreferences {
 			prefs.putDouble("wheelDiameter", 6);
 		}
 		if (!prefs.containsKey("elevatorGearDiameter")) {
-			prefs.putDouble("elevatorGearDiameter", 1.7);
+			prefs.putDouble("elevatorGearDiameter", 1.43);
 		}
 		if (!prefs.containsKey("elevatorBottomToFloor")) {
 			prefs.putDouble("elevatorBottomToFloor", 16.0);
