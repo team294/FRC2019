@@ -31,6 +31,8 @@ public class OI {
   public Joystick coPanel = new Joystick(2);
   public Joystick xBoxController = new Joystick(3);
 
+  // TODO: Add some way to change the limelight pipeline for sandstorm
+
   public OI() {
     Button[] left = new Button[12];
     Button[] right = new Button[12];
@@ -170,6 +172,12 @@ public class OI {
     SmartDashboard.putData("Disc Grab", new HatchSet(true));
     SmartDashboard.putData("Disc Release", new HatchSet(false));
     SmartDashboard.putString("Disc Position", "Null");
+/*
+    SmartDashboard.putData("LEDSet Purple", new LEDSet(0));
+    SmartDashboard.putData("LEDSet Red", new LEDSet(1));
+    SmartDashboard.putData("LEDSet Blue", new LEDSet(2));
+    SmartDashboard.putData("LEDSet Off", new LEDSet(3));
+*/
   }
 
   /**

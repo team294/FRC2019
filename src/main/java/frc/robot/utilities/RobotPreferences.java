@@ -110,14 +110,14 @@ public class RobotPreferences {
 			DriverStation.reportError("Error: Preferences missing from RoboRio for Wrist calibration.", false);
 			recordStickyFaults("Preferences-wristCalZero");
 			wristCalZero = 0;
-		}	
+		}
 		climbCalZero = prefs.getDouble("climbCalZero", -9999);
 		climbCalibrated = (climbCalZero != -9999);
 		if(!climbCalibrated) {
 			DriverStation.reportError("Error: Preferences missing from RoboRio for Climb calibration.", false);
 			recordStickyFaults("Preferences-climbCalZero");
 			climbCalZero = 0;
-		}	
+		}
 		vacuumCurrentThreshold = prefs.getDouble("vacuumCurrentThreshold", 3.0);
 	}
 
