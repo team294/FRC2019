@@ -66,6 +66,8 @@ public class OI {
 
   private Trigger trigWristElevEncoder = new WristEncoderCheck();
 
+  // TODO: Add some way to change the limelight pipeline for sandstorm
+
   public OI() {
     Button[] left = new Button[12];
     Button[] right = new Button[12];
@@ -77,35 +79,33 @@ public class OI {
       right[i] = new JoystickButton(rightJoystick, i);
 
       if (i == 1) {
-        left[i].whenPressed(new Shift(false));
-        right[i].whenPressed(new Shift(true));
+        left[i].whenPressed(new Shift(true));
+        right[i].whenPressed(new Shift(false));
       } else if (i == 2) {
         left[i].whenPressed(new DriveAssist());
         right[i].whenPressed(new DriveAssist());
         left[i].whenReleased(new DriveWithJoysticks());
         right[i].whenReleased(new DriveWithJoysticks());
-      } /*else if (i == 3) {
-        left[i].whenPressed(new LEDSet(0));
+        // TODO: Make right side button 2 a drive straight command
+      } else if (i == 3) {
+        left[i].whenPressed(new DriveWithVision(false, true)); // No line followers, but gyro correction
         left[i].whenReleased(new DriveWithJoysticks());
-      } else if (i == 4){
-        left[i].whenPressed(new LEDSet(1));
+        right[i].whenPressed(new DriveWithVision(false, false)); // No line followers, no gyro
+        right[i].whenReleased(new DriveWithJoysticks());
+        // TODO: Make both sides 3 reverse drive direction
+      } else if (i == 4 || i == 5) {
         left[i].whenPressed(new DriveWithJoysticks());
-      } else if (i == 5){
-        left[i].whenPressed(new LEDSet(2));
-        left[i].whenPressed(new DriveWithJoysticks());
-      } else if (i == 6){
-        left[i].whenPressed(new LEDSet(3));
-        left[i].whenPressed(new DriveWithJoysticks());
-      } else if (i == 11){
-        left[i].whenPressed(new LEDSet(1,true));
-        left[i].whenPressed(new DriveWithJoysticks());
-      } else if (i == 10){
-        left[i].whenPressed(new LEDSet(2,true));
-        left[i].whenPressed(new DriveWithJoysticks());
-      } else if (i == 9){
-        left[i].whenPressed(new LEDSet(3,true));
-        left[i].whenPressed(new DriveWithJoysticks());
-      }*/
+        right[i].whenPressed(new DriveWithJoysticks());
+        // TODO: Figure out where to add hatch scoring sequence to
+      } else if (i == 11 || i == 10) {
+        left[i].whenPressed(new DriveWithLineFollowing(true));
+        left[i].whenReleased(new DriveWithJoysticks());
+        right[i].whenPressed(new DriveWithLineFollowing(false));
+        right[i].whenReleased(new DriveWithJoysticks());
+      }
+      // 
+
+      // Buttons 6-11 are basically inaccessible with the current joystick configuration
     }
 
     SmartDashboard.putData("LoadToRocketPT1", new DrivePathfinder("RLoadToRocketPT1-A", true, false));
@@ -116,14 +116,13 @@ public class OI {
     // The conditional logic needs to go in the command itself. No logic can be done in OI since OI is constructed at the start and not run repeatedly
     // SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true));
 
+    // We already have a button array for the xBox, like with the coPanel and joysticks. Use those instead of creating individual buttons.
     xBoxA.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchLow));
     xBoxB.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchMid));
     xBoxY.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchHigh));
     xBoxX.whenActive(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.cargoShipCargo));
     
-    SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true, true));
-    SmartDashboard.putData("Turn To Target", new VisionTurnToTarget());
-    SmartDashboard.putData("Drive on line", new DriveWithLineFollowing());
+    //SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true, true));
 
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
@@ -132,12 +131,25 @@ public class OI {
     SmartDashboard.putData("Move Elevator to WristSafe", new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.wristSafe)); // Move to encoder's zero position
     SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorEncoderZero());
 
+    // Buttons for controlling the climber
+    SmartDashboard.putData("Climb Up", new ClimbArmSetPercentOutput(0.2));  // For testing
+    SmartDashboard.putData("Climb Down", new ClimbArmSetPercentOutput(-0.2));  // For testing
+    SmartDashboard.putData("Climb move to 0", new ClimbArmSetAngle(0));  // For testing
+    SmartDashboard.putData("Climb move to start", new ClimbArmSetAngle(Robot.robotPrefs.climbStartingAngle + 5));  // For testing
+    SmartDashboard.putData("Climb Vacuum On", new ClimbVacuumTurnOn(true));
+    SmartDashboard.putData("Climb Vacuum Off", new ClimbVacuumTurnOn(false));
+    SmartDashboard.putData("Climb Set Reference", new ClimbEncoderCalibrateAtLimit());
+    SmartDashboard.putData("ClimbMoveUntilVacuum", new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
+    SmartDashboard.putData("ClimbLiftRobot", new ClimbLiftRobot(Robot.robotPrefs.climbLiftAngle));
+    SmartDashboard.putData("ClimbSequnce", new ClimbSequence());
+
     // Buttons for controlling FileLogging
     SmartDashboard.putData("Log 1 InitialTesting", new FileLogSetLevel(1));
     SmartDashboard.putData("Log 2 PitTesting", new FileLogSetLevel(2));
     SmartDashboard.putData("Log 3 Competition", new FileLogSetLevel(3));
     Robot.log.setLogLevel(3);   // Also puts log level indicator on ShuffleBoard
 
+    // These aren't useful; they don't update when the robot is running
     SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
     SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
     SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));

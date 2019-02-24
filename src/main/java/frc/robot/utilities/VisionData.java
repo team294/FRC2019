@@ -12,8 +12,7 @@ public class VisionData {
     public double vertOffset;       // Vertical angle error
     
     public double areaFromCamera,ledMode;
-    private NetworkTableEntry ledM, pipeline;  // led mode 
-    
+    private NetworkTableEntry ledM, pipeline, camMode, stream, snapshot;
     public NetworkTableEntry xValue,yValue,aValue;
     /**
      * Creates a VisionData object and connects to Limelight Camera
@@ -23,7 +22,10 @@ public class VisionData {
         inst.startClientTeam(294);
 
         ledM = limelight.getEntry("ledMode");
+        camMode = limelight.getEntry("camMode");
         pipeline = limelight.getEntry("pipeline");
+        stream = limelight.getEntry("stream");
+        snapshot = limelight.getEntry("snapshot");
     
         xValue = limelight.getEntry("tx");
         yValue = limelight.getEntry("ty");
@@ -34,7 +36,6 @@ public class VisionData {
     }
 
     public void readCameraData() {       
-        setCameraMode(3);       // turn on camera LEDs
         horizOffset = xValue.getDouble(0);
         vertOffset = yValue.getDouble(0);
         areaFromCamera = aValue.getDouble(0); 
@@ -67,6 +68,25 @@ public class VisionData {
         pipeline.setDouble(pipeNum);
     }
 
+    /**
+     * Sets the streaming mode of the cameras
+     * @param mode 0 = side-by-side
+     * 1 = driver camera lower right corner of vision
+     * 2 = vision camera lower right corner of driver camera
+     */
+    public void setStreamMode(double mode) {
+        stream.setDouble(mode);
+    }
+
+    /**
+     * Enables or disables snapshotting during the match
+     * @param mode 0 = no snapshots
+     * 1 = two snapshots per second
+     */
+    public void setSnapshot(double mode) {
+        snapshot.setDouble(mode);
+    }
+
       /**
      * 
      * @param modeNumber select a number from 0 to 3.
@@ -76,11 +96,17 @@ public class VisionData {
      * 3 = on.
      * If a number other than 0 to 3 is selected, turn the LEDs off.
      */
-    public void setCameraMode(int modeNumber){
-        if(modeNumber > 3 || modeNumber < 0){
-            modeNumber = 1;
-        }
+    public void setLedMode(int modeNumber) {
+        if (modeNumber > 3 || modeNumber < 0) modeNumber = 1;
         ledM.setDouble(modeNumber);
+    }
+
+    /**
+     * Sets the mode of the camera for use as driver cam or vision processing
+     * @param mode 0 = vision; 1 = driver camera
+     */
+    public void setCamMode(int mode) {
+        camMode.setDouble(mode);
     }
     
     /**
@@ -88,19 +114,8 @@ public class VisionData {
     * @return the distance from the target in inches
     * 
     */
-    public double distanceFromTarget (){
-        double myDistance = 0.0;
-        double cameraOffset = 12.0;
-    
-        // reference distance = 23.75 inches
-        // reference area =  3.5 (the units that are used in limelight)
-        //myDistance = 23.75 * Math.sqrt(areaFromCamera/3.5);
-        myDistance = 23.75 * Math.sqrt(3.5/areaFromCamera) - cameraOffset;
-
-        //myDistance = (targetHeight - camMountHeight) / Math.tan(camMountAngle + vertOffset);
-
-        return myDistance;
+    public double distanceFromTarget () {
+        double distance = 3.7 * vertOffset + 65.9; // TODO: Based on crosshair at default for camera mount +angle on 2018 practice; will need to be updated for real robot
+        return distance;
     }
-
-    // TODO: Redo entire distance formula to be based on height (horiz offset) which also means standardizing crosshair y value
 }

@@ -9,10 +9,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utilities.*;
@@ -55,7 +53,7 @@ public class Robot extends TimedRobot {
     // Create file log first, so any other class constructors can log data
     log = new FileLog("1");
 
-    // Read robot preference next, so any other class constructros can use preferences 
+    // Read robot preference next, so any other class constructors can use preferences 
     robotPrefs = new RobotPreferences();
     robotPrefs.doExist();   // Sets up Robot Preferences if they do not exist : ie you just replaced RoboRio
     
@@ -94,9 +92,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    Robot.lineFollowing.displayLineSensors();
-    Robot.driveTrain.getGyroRotation();
-    // Robot.log.writeLog("Robot", "periodic", "current time," + System.currentTimeMillis());
+    log.advanceLogRotation(); // This moves the log up by one every period tick, which other subsystems' periodic functions reference
+
+    if (Robot.log.getLogRotation() == FileLog.DRIVE_CYCLE) {
+      lineFollowing.displayLineSensors();
+    }
   }
 
   /**
@@ -108,17 +108,16 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     log.writeLogEcho("Robot", "Disabled", "");
     climb.enableCompressor(true);
+    vision.setLedMode(1);
+    
+    driveTrain.zeroGyroRotation(); 
+    driveTrain.zeroLeftEncoder();
+    driveTrain.zeroRightEncoder();
   }
 
   @Override
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
-    //Robot.vision.turnOffCamLeds();  
-    Robot.vision.setCameraMode(1); // Turn off camera LEDs
-    Robot.driveTrain.zeroGyroRotation(); 
-    // Robot.driveTrain.getGyroRotation();
-    Robot.driveTrain.zeroLeftEncoder();
-    Robot.driveTrain.zeroRightEncoder();
   }
 
   
@@ -139,13 +138,6 @@ public class Robot extends TimedRobot {
     log.writeLogEcho("Robot", "Autonomous mode init", "");
     beforeFirstEnable = false; // set variable that robot has been enabled
     m_autonomousCommand = m_chooser.getSelected();
-
-    /*
-     * String autoSelected = SmartDashboard.getString("Auto Selector",
-     * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-     * = new MyAutoCommand(); break; case "Default Auto": default:
-     * autonomousCommand = new ExampleCommand(); break; }
-     */
 
     climb.enableCompressor(true);
 
@@ -170,10 +162,13 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     climb.enableCompressor(true);
+    vision.setLedMode(3);
     log.writeLogEcho("Robot", "Teleop mode init", "");
     beforeFirstEnable = false; // set variable that robot has been enabled
-    //if (m_autonomousCommand != null) {
-     // m_autonomousCommand.cancel();
+    
+    driveTrain.zeroGyroRotation(); 
+    driveTrain.zeroLeftEncoder();
+    driveTrain.zeroRightEncoder();
     }
 
   /**
@@ -182,11 +177,11 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
-    Robot.vision.readCameraData();
-    SmartDashboard.putBoolean("Is Line Present?", lineFollowing.isLinePresent());
-    SmartDashboard.putNumber("Target Distance", Robot.vision.distanceFromTarget());
+    vision.readCameraData(); // Don't think this is the issue of the loop time over run
+
+    //SmartDashboard.putNumber("Target Distance", Robot.vision.distanceFromTarget()); // Distance isn't used for any segmentation
     SmartDashboard.putNumber("Target Quadrant", Robot.driveTrain.checkScoringQuadrant());
-    //SmartDashboard.putBoolean("Vision Assistance Available", vision.areaFromCamera != 0);
+    //SmartDashboard.putBoolean("Vision Assistance Available", vision.areaFromCamera != 0); // This should work, need to test to see if there is a better metric to use
   }
 
   /**
@@ -194,5 +189,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    vision.setLedMode(3); // LEDs on during test for vision pipeline tuning
   }
 }

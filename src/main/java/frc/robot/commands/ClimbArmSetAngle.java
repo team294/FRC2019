@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
+/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -9,55 +9,43 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.*;
 
-/**
- * An example command. You can replace me with your own command.
- */
-public class DriveWithJoysticks extends Command {
-  public DriveWithJoysticks() {
+public class ClimbArmSetAngle extends Command {
+  
+  private double angle;
+
+  public ClimbArmSetAngle(double angle) {
     // Use requires() here to declare subsystem dependencies
-    requires(Robot.driveTrain);
+    // eg. requires(chassis);
+    requires(Robot.climb);
+    this.angle = angle;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.log.writeLogEcho("DriveTrain", "Driver Control Init", "");
+    Robot.climb.setClimbPos(angle);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double leftValue = Robot.oi.leftJoystick.getY();
-    double rightValue = Robot.oi.rightJoystick.getY();
-
-    if (Robot.oi.getDriveDirection())  {
-      Robot.driveTrain.tankDrive(-leftValue, -rightValue);
-    } else {
-      Robot.driveTrain.tankDrive(leftValue, rightValue); // These may need to be switched
-    }
-    //SmartDashboard.putBoolean("Vision Assistance Available", Robot.vision.areaFromCamera != 0); // May move to teleopPeriodic
-    // Tells us if vision is available for the rocket. Will need to be updated for when scoring balls.
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return (!Robot.robotPrefs.climbCalibrated || Math.abs(angle - Robot.climb.getClimbAngle())<5.0);
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.driveTrain.stop();
-    Robot.log.writeLogEcho("DriveTrain", "Driver Control Ended", "");
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    end();
   }
 }

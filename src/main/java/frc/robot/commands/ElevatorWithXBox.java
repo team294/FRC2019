@@ -34,6 +34,7 @@ public class ElevatorWithXBox extends Command {
       double value = -Robot.oi.xBoxController.getY(Hand.kRight);
       Robot.elevator.setElevatorMotorPercentOutput(value);
       Robot.elevator.checkAndZeroElevatorEnc();
+      Robot.elevator.updateElevatorLog();
     }
   }
 

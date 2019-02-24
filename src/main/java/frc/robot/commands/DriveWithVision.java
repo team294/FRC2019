@@ -23,7 +23,7 @@ public class DriveWithVision extends Command {
   public DriveWithVision() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.driveTrain);
+    this(false, false);
   }
 
   /**
@@ -36,11 +36,15 @@ public class DriveWithVision extends Command {
     requires(Robot.driveTrain);
     this.endOnLine = endOnLine;
     this.gyro = gyro;
+
+    Robot.vision.setPipe(0); // On vision pipeline
+    Robot.vision.turnOnCamLeds(); // Make sure the LEDs are on before driving
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.driveTrain.setDriveMode(false);
     SmartDashboard.putBoolean("Ready to Score", false);
     Robot.driveTrain.clearEncoderList(); // May not be necessary to clear
     //Robot.driveTrain.driveToCrosshair();
@@ -59,7 +63,7 @@ public class DriveWithVision extends Command {
   @Override
   protected boolean isFinished() {
     Robot.driveTrain.areEncodersStopped(5.0);
-    return endOnLine && Robot.lineFollowing.isLinePresent() && Robot.vision.distanceFromTarget() < 30; // Stops when a line is detected by the line followers within a reasonable expected distance
+    return endOnLine && Robot.lineFollowing.isLinePresent() && Robot.vision.distanceFromTarget() < 40; // Stops when a line is detected by the line followers within a reasonable expected distance
     // TODO:: with an accurate distance measurement, we can stop automatically when close enough
   }
 
