@@ -170,7 +170,6 @@ public class OI {
     SmartDashboard.putData("Disc Grab", new HatchSet(true));
     SmartDashboard.putData("Disc Release", new HatchSet(false));
     SmartDashboard.putString("Disc Position", "Null");
-    // SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true, true));
   }
 
   /**
