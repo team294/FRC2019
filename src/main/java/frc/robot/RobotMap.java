@@ -37,12 +37,15 @@ public class RobotMap {
   public static final int pnuematicShifterHigh = 0;   // Changed to single ended  Default Low
   public static final int pneumaticHatch = 1;
  
-  //RoboRIO digital I/O Addresses
+  // RoboRIO digital I/O Addresses
   public static final int lineFollowerLeft = 2;
   public static final int lineFollowerCenter = 1;
   public static final int lineFollowerRight = 0;
   public static final int vacuumSwitch = 3;  // Gnd (black) = "C" common, White (sense) = "NC" normally closed
   public static final int photoSwitchCargo = 4;
+
+  // Analog Inputs
+  public static final int analogVacuum = 0;
 
   // PDP Addresses
   public static final int leftMotor1PDP = 0; 
@@ -59,5 +62,6 @@ public class RobotMap {
   public static final int elevatorMotor2PDP = 4; 
   public static final int cargoMotor1PDP = 6;  
   public static final int cargoMotor2PDP = 7;  
-  public static final int wristMotorPDP = 5;  
+  public static final int wristMotorPDP = 5;
+
 }

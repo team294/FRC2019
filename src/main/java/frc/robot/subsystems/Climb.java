@@ -9,6 +9,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.AnalogTrigger;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -39,6 +41,8 @@ public class Climb extends Subsystem {
   private final BaseMotorController climbVacuum = new WPI_VictorSPX(RobotMap.climbVacuum1); //left Vacuum system
   //private final BaseMotorController climbVacuum2 = new WPI_VictorSPX(RobotMap.climbVacuum2); //right Vacuum system
   private final DigitalInput vacuumSwitch = new DigitalInput(RobotMap.vacuumSwitch);
+  private final AnalogInput analogVacuumSensor = new AnalogInput(RobotMap.analogVacuum);
+  private final AnalogTrigger vacuumTrigger = new AnalogTrigger(analogVacuumSensor);
   private final SensorCollection climbLimit;
 
   private double rampRate = 0.5;
@@ -79,6 +83,15 @@ public class Climb extends Subsystem {
     //climbVacuum2.setNeutralMode(NeutralMode.Brake);
 
     adjustClimbCalZero();
+
+    // Oversampling for analog sensor
+    analogVacuumSensor.setOversampleBits(4);
+    analogVacuumSensor.setAverageBits(2);
+
+    // Analog Trigger testing settings
+    vacuumTrigger.setLimitsVoltage(0.5, 4.4); // Random boundaries, no idea what real values are
+    //vacuumTrigger.setAveraged(true); // Use the averaged value instead of raw
+    vacuumTrigger.setFiltered(true); // Use a 3-point filter to reject outliers. CANNOT BE USED WITH AVERAGE VALUE
   }
 
   /**
@@ -164,14 +177,33 @@ public class Climb extends Subsystem {
     }
   }
 
-  /**
+   /**
    * Returns true if pressure is low enough to initiate climb.
    * If switch is disconnected, isVacuumPresent reads false.
    * @return true = vacuum sufficient for climb, false = not enough vacuum
    */
+  /*
   public boolean isVacuumPresent(){
     // Note:  Need to invert polarity from switch.
     return !vacuumSwitch.get();
+  } */
+
+  /**
+   * Returns true if the pressure is low enough to climb. May have bad readings if sensor is disconnected (equates to ~25.5 reading)
+   * @return true = pressure low enough, false = pressure too high
+   */
+  public boolean isVacuumPresent() {
+    return getVacuumPressure(false) >= 20.0;
+  }
+
+  /**
+   * Gets the value of the pressure gauge on the climb system according to the analog sensor
+   * @param raw true for using raw data, false for using averaged data
+   * @return pressure from 0 (atm) to 25.5 (upper limit of the sensor's sensitivity) inclusive
+   */
+  public double getVacuumPressure(boolean raw) {
+    double out = (raw) ? analogVacuumSensor.getVoltage() * -5.7 + 27 : analogVacuumSensor.getAverageVoltage() * -5.7 + 27;
+    return out;
   }
 
   /**
@@ -287,6 +319,12 @@ public class Climb extends Subsystem {
       SmartDashboard.putNumber("Climb angle", getClimbAngle());
       SmartDashboard.putNumber("Climb enc raw", getClimbEncTicksRaw());
       SmartDashboard.putBoolean("Climb vacuum", isVacuumPresent());
+
+      SmartDashboard.putNumber("Climb Analog Voltage", analogVacuumSensor.getVoltage());
+      SmartDashboard.putNumber("Climb Analog Average (Oversampled) Voltage", analogVacuumSensor.getAverageVoltage());
+      SmartDashboard.putBoolean("Vacuum Trigger In Window (0.5, 3.4)", vacuumTrigger.getInWindow());
+      //SmartDashboard.putBoolean("Vacuum Trigger Rising/Falling", vacuumTrigger.getTriggerState());
+      SmartDashboard.putNumber("Analog Vacuum Pressure", getVacuumPressure(false));
 
       if (DriverStation.getInstance().isEnabled()) {
         updateClimbLog(); 

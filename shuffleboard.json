@@ -147,6 +147,20 @@
               "_source0": "network_table:///SmartDashboard/Zero Elev Enc (w/ Limit)",
               "_title": "SmartDashboard/Zero Elev Enc (w/ Limit)"
             }
+          },
+          "9,4": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Simple Dial",
+              "_source0": "network_table:///SmartDashboard/Analog Vacuum Pressure",
+              "_title": "SmartDashboard/Analog Vacuum Pressure",
+              "Range/Min": 0.0,
+              "Range/Max": 25.0,
+              "Visuals/Show value": true
+            }
           }
         }
       }
