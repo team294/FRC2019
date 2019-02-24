@@ -29,7 +29,7 @@ public class ElevatorRaise extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.elevator.setElevatorMotorPercentOutput(0.2);
+    Robot.elevator.setElevatorMotorPercentOutput(0.4);
     Robot.elevator.updateElevatorLog();
   }
 

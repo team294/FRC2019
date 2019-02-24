@@ -37,7 +37,7 @@ public class RobotPreferences {
 	public final double wristStowed = 110;
 	public final double wristKeepOut = 28.0; // Max angle to avoid interference with elevator or climber
 	public final double wristUp = 15.0;
-	public final double wristStraight = 0.0;
+	public final double wristStraight = 5.0;
 	public final double wristDown = -15.0;		// TODO Should be -59.0? // In this position, elevator must be able to go to groundCargo
 	public final double wristMin = -68;
 	public enum WristAngle {stowed, up, straight, down}
@@ -100,8 +100,8 @@ public class RobotPreferences {
 		driveDirection = prefs.getBoolean("driveDirection", false);
 		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;	
 		elevatorGearCircumference = prefs.getDouble("elevatorGearDiameter", 1.7) * Math.PI; // TODO Change value when actual elevator is built, Conversion factor for makeshift elevator 18/32.3568952084);
-		elevatorBottomToFloor = prefs.getDouble("elevatorBottomToFloor", 15.0); //TODO Change value when actual elevator is built
-		elevatorWristSafeStow = prefs.getDouble("elevatorWristSafeStow", 17.0); //TODO Change value when actual elevator is built (max elevator position from floor where wrist can be stowed)
+		elevatorBottomToFloor = prefs.getDouble("elevatorBottomToFloor", 16.0); //TODO Change value when actual elevator is built
+		elevatorWristSafeStow = prefs.getDouble("elevatorWristSafeStow", 18.0); //TODO Change value when actual elevator is built (max elevator position from floor where wrist can be stowed)
 		cameraDistanceFromFrontOfBumper = prefs.getDouble("cameraDistanceFromFrontOfBumper", 12);
 		wristGearRatio = prefs.getDouble("wristGearRatio", 1.0);
 		wristCalZero = prefs.getDouble("wristCalZero", -9999);
@@ -174,10 +174,10 @@ public class RobotPreferences {
 			prefs.putDouble("elevatorGearDiameter", 1.7);
 		}
 		if (!prefs.containsKey("elevatorBottomToFloor")) {
-			prefs.putDouble("elevatorBottomToFloor", 15.0);
+			prefs.putDouble("elevatorBottomToFloor", 16.0);
 		}
 		if (!prefs.containsKey("elevatorWristSafeStow")) {
-			prefs.putDouble("elevatorWristSafeStow", 17.0);
+			prefs.putDouble("elevatorWristSafeStow", 18.0);
 		}
 		if (!prefs.containsKey("cameraDistanceFromFrontOfBumper")){
 			prefs.putDouble("cameraDistanceFromFrontOfBumper", 12);

@@ -64,7 +64,7 @@ public class Cargo extends Subsystem {
     if(Robot.log.getLogLevel() <= 2){
       Robot.log.writeLog("Cargo", "Photo Sensor", "Photo Sensor," + photoSwitch.get());
     }
-    return photoSwitch.get();
+    return !photoSwitch.get();
   }
 
   /**
@@ -75,7 +75,7 @@ public class Cargo extends Subsystem {
     if(Robot.log.getLogLevel() <= 2){
       Robot.log.writeLog("Cargo", "Photo Sensor", "Photo Sensor," + photoSwitch.get());
     }
-    return photoSwitch.get();
+    return !photoSwitch.get();
   }
 
   @Override

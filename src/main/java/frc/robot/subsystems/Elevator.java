@@ -56,8 +56,9 @@ public class Elevator extends Subsystem {
 		elevatorMotor2 = new WPI_TalonSRX(RobotMap.elevatorMotor2);
 		elevatorMotor2.follow(elevatorMotor1);
 		elevatorMotor1.setInverted(false);
-		elevatorMotor2.setInverted(false);
+		elevatorMotor2.setInverted(true);
 		elevatorMotor1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+		elevatorMotor1.setSensorPhase(true);         // Flip direction of sensor reading
 		elevatorMotor1.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
 		elevatorMotor1.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
 
@@ -260,6 +261,7 @@ public class Elevator extends Subsystem {
 			// SmartDashboard.putNumber("EncSnap", encSnapShot);
 			// SmartDashboard.putNumber("Enc Now", currEnc);
 			SmartDashboard.putNumber("Elev Pos", getElevatorPos());
+			SmartDashboard.putNumber("Elev Ticks", getElevatorEncTicks());
 			// SmartDashboard.putNumber("Enc Tick", getElevatorEncTicks());
 			SmartDashboard.putBoolean("Elev Lower Limit", getElevatorLowerLimit());
 			SmartDashboard.putBoolean("Elev Upper Limit", getElevatorUpperLimit());

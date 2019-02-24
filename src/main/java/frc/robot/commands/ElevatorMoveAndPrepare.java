@@ -19,7 +19,7 @@ public class ElevatorMoveAndPrepare extends CommandGroup {
    * Add your docs here.
    */
   public ElevatorMoveAndPrepare(RobotPreferences.ElevatorPosition position) {
-    addSequential(new DriveStraight(-0.5, 0.1));
+    // addSequential(new DriveStraight(-0.5, 0.1));
     addSequential(new WristMoveToAngle(WristAngle.straight));
     addSequential(new ElevatorMoveToLevel(position));
     addSequential(new ConditionalCommand(new WristMoveToAngle(WristAngle.up)) {
