@@ -27,6 +27,7 @@ public class ElevatorWristMoveAndPrepare extends CommandGroup {
           Robot.climb.getClimbAngle() > Robot.robotPrefs.climbWristMovingSafe;
       }
     });
+    
     if (position == ElevatorPosition.bottom || position == ElevatorPosition.hatchLow || position == ElevatorPosition.wristStow) {
       // Raise wrist if below horizontal
       addSequential(new ConditionalCommand(new WristMoveToAngle(WristAngle.straight)){

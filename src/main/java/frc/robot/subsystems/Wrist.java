@@ -36,7 +36,7 @@ public class Wrist extends Subsystem {
   // TODO test PID terms with actual wrist
   private double kP = 2.0;  // was 3.0, reduced due to bobbling during elevator movement
 	private double kI = 0;
-	private double kD = 0;
+	private double kD = 5.0;
   private double kFF = 0;
   private int kIz = 0;
   private double kMaxOutput = 1.0; // up max output TODO increase after initial testing

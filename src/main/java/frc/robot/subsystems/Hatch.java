@@ -22,6 +22,7 @@ public class Hatch extends Subsystem {
   private boolean hatchPosition = true;
 
   public Hatch() {
+      setHatchPiston(true);
   }
 
   /**
@@ -31,12 +32,12 @@ public class Hatch extends Subsystem {
 	 */
   public void setHatchPiston(boolean position) {
     if (position == true) {
-      hatchPiston.set(true);
+      hatchPiston.set(false);
       hatchPosition = true;
       SmartDashboard.putString("Disc Position", "Grab");
 		}
 		if (position == false) {
-      hatchPiston.set(false);
+      hatchPiston.set(true);
       hatchPosition = false;
       SmartDashboard.putString("Disc Position", "Release");
     }

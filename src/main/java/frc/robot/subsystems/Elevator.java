@@ -42,7 +42,7 @@ public class Elevator extends Subsystem {
 	private boolean elevEncOK = true; // true is encoder working, false is encoder broken
 	private boolean elevatorMode; // true is automated (encoder is working and calibrated), false is manual mode
 
-	private double rampRate = 0.5;
+	private double rampRate = 0.3;
 	private double kP = 0.5;
 	private double kI = 0;
 	private double kD = 0;
@@ -236,7 +236,7 @@ public class Elevator extends Subsystem {
 		Robot.log.writeLog("Elevator", "Update Variables",
 				"Volts1," + elevatorMotor1.getMotorOutputVoltage() + ",Volts2," + elevatorMotor2.getMotorOutputVoltage() + 
 				",Amps1," + Robot.pdp.getCurrent(RobotMap.elevatorMotor1PDP) + ",Amps2," + Robot.pdp.getCurrent(RobotMap.elevatorMotor2PDP) + 
-				",Enc Ticks," + getElevatorEncTicks() + ",Enc Inches," + getElevatorPos() + 
+				",Enc Ticks," + getElevatorEncTicks() + ",Enc Inches," + getElevatorPos() + ",Elev Target," + getCurrentElevatorTarget() +
 				",Upper Limit," + getElevatorUpperLimit() + ",Lower Limit," + getElevatorLowerLimit() + 
 				",Enc OK," + elevEncOK + ",Elev Mode," + elevatorMode);
 	}
