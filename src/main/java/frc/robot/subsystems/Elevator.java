@@ -109,9 +109,11 @@ public class Elevator extends Subsystem {
 				Robot.wrist.getCurrentWristTarget() >= Robot.robotPrefs.wristDown - 3.0 )
 		 ) {
 			elevatorMotor1.set(ControlMode.Position, inchesToEncoderTicks(inches - Robot.robotPrefs.elevatorBottomToFloor));
-			Robot.log.writeLog("Elevator", "Position set", "Target," + inches + ",Allowed,Yes");
+			Robot.log.writeLog("Elevator", "Position set", "Target," + inches + ",Allowed,Yes,Wrist Angle," +
+			   Robot.wrist.getWristAngle() + ",Wrist Target," + Robot.wrist.getCurrentWristTarget());
 		} else {
-			Robot.log.writeLog("Elevator", "Position set", "Target," + inches + ",Allowed,No");
+			Robot.log.writeLog("Elevator", "Position set", "Target," + inches + ",Allowed,No,Wrist Angle,"  +
+ 			  Robot.wrist.getWristAngle() + ",Wrist Target," + Robot.wrist.getCurrentWristTarget());
 		}
 	}
 

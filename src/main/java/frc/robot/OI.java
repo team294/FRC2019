@@ -111,8 +111,8 @@ public class OI {
     coP[2].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStart));
     coP[3].whenPressed(new ClimbArmSetPercentOutput(0.3));  // TODO determine manual control percent
     coP[4].whenPressed(new ClimbArmSetPercentOutput(-0.3));  // TODO determine manual control percent
-    // coP[5].whenPressed(new Command());  // TODO add turning on vacuum
-    // coP[6].whenPressed(new Command());  // TODO add turning off vacuum
+    coP[5].whenPressed(new ClimbVacuumTurnOn(true));
+    coP[6].whenPressed(new ClimbVacuumTurnOn(false));
     coP[8].whenPressed(new ClimbSequence());
 
     // Buttons for controlling the elevator
@@ -124,8 +124,8 @@ public class OI {
     SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorMoveToBottomThenZeroEncoder());
 
     // Buttons for controlling the climber
-    SmartDashboard.putData("Climb Up", new ClimbArmSetPercentOutput(0.2));  // For testing
-    SmartDashboard.putData("Climb Down", new ClimbArmSetPercentOutput(-0.2));  // For testing
+    SmartDashboard.putData("Climb Up", new ClimbArmSetPercentOutput(0.3));  // For testing
+    SmartDashboard.putData("Climb Down", new ClimbArmSetPercentOutput(-0.3));  // For testing
     SmartDashboard.putData("Climb move to start", new ClimbArmStow());  // For testing
     SmartDashboard.putData("Climb move to vacuum", new ClimbArmSetAngle(Robot.robotPrefs.climbVacuumAngle));  // For testing
     SmartDashboard.putData("Climb lift robot", new ClimbArmSetAngle(Robot.robotPrefs.climbLiftAngle));  // For testing

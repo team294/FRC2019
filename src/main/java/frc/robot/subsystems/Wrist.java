@@ -115,7 +115,9 @@ public class Wrist extends Subsystem {
             Robot.elevator.getElevatorPos() > Robot.robotPrefs.elevatorWristSafeStow ||         // Elevator is not safe
             Robot.elevator.getCurrentElevatorTarget() > Robot.robotPrefs.elevatorWristSafeStow) // Elevator is moving to not safe
             && (angle > Robot.robotPrefs.wristKeepOut || getWristAngle() > Robot.robotPrefs.wristKeepOut)) {  // We are moving in or out of KeepOut region
-        Robot.log.writeLog("Wrist", "Set angle", "Angle," + angle + ",Set angle,N/A,Interlock,Forbidden");
+        Robot.log.writeLog("Wrist", "Set angle", "Angle," + angle + ",Set angle,N/A,Interlock,Forbidden," +
+          ",Climb Angle," + Robot.climb.getClimbAngle() + ",Elevator Position," + Robot.elevator.getElevatorPos() + 
+          ",Elevator Target," + Robot.elevator.getCurrentElevatorTarget() + ",Wrist Angle," + getWristAngle());
         return;
       }
 
@@ -132,7 +134,8 @@ public class Wrist extends Subsystem {
       }
 
       wristMotor.set(ControlMode.Position, degreesToEncoderTicks(safeAngle) + Robot.robotPrefs.wristCalZero);
-      Robot.log.writeLog("Wrist", "Set angle", "Desired angle," + angle + ",Set angle," + safeAngle + ",Interlock,Allowed");  
+      Robot.log.writeLog("Wrist", "Set angle", "Desired angle," + angle + ",Set angle," + safeAngle + ",Interlock,Allowed,"
+       + ",Elevator Pos," + Robot.elevator.getElevatorPos() + ",Elevator Target," + Robot.elevator.getCurrentElevatorTarget());  
     }
   }
 

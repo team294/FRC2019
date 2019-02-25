@@ -146,7 +146,8 @@ public class Climb extends Subsystem {
     }
 
     climbMotor2.set(ControlMode.Position, climbAngleToEncTicks(safeAngle) + Robot.robotPrefs.climbCalZero);
-    Robot.log.writeLog("Climb", "Set angle", "Desired angle," + angle + ",Set angle," + safeAngle);
+    Robot.log.writeLog("Climb", "Set angle", "Desired angle," + angle + ",Set angle," + safeAngle + ",Wrist Upper Limit," + Robot.wrist.getWristUpperLimit()
+    + ",Wrist Angle," + Robot.wrist.getWristAngle() + ",Wrist Target," + Robot.wrist.getCurrentWristTarget());
   }
 
   /**

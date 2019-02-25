@@ -60,7 +60,7 @@ public class RobotPreferences {
 	*/
 
 	// Field level heights (for elevator targeting), in inches
-	public final double elevatorWristStow = 15.0;
+	public final double elevatorWristStow = 16.0;
 	public final double hatchLow = 19.0;
   	public final double hatchMid = 47.0;
   	public final double hatchHigh = 72.5;

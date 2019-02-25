@@ -9,7 +9,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.utilities.RobotPreferences.ElevatorPosition;
-import frc.robot.utilities.RobotPreferences.WristAngle;
 
 public class CargoIntakeFromGround extends CommandGroup {
   /**
