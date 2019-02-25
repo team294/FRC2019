@@ -57,18 +57,14 @@ public class OI {
     }
 
     // XBox controller buttons/triggers
-    // xbB[1].whenPressed(new ElevatorMoveAndPrepare(RobotPreferences.ElevatorPosition.hatchLow)); // A
-    xbB[1].whenPressed(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchLow)); // A
-    // xbB[2].whenPressed(new ElevatorMoveAndPrepare(RobotPreferences.ElevatorPosition.hatchMid)); // B
-    xbB[2].whenPressed(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchMid)); // B
+    xbB[1].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchLow)); // A
+    xbB[2].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchMid)); // B
     xbB[3].whenPressed(new ElevatorWristStow()); // X
-    // xbB[4].whenPressed(new ElevatorMoveAndPrepare(RobotPreferences.ElevatorPosition.hatchHigh)); // Y
-    xbB[4].whenPressed(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.hatchHigh)); // Y
+    xbB[4].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchHigh)); // Y
     xbB[5].whenPressed(new CargoStop()); // LB
-    // xbB[6].whenPressed(new ElevatorMoveAndPrepare(RobotPreferences.ElevatorPosition.cargoShipCargo)); // RB
-    xbB[6].whenPressed(new ElevatorMoveToLevel(RobotPreferences.ElevatorPosition.cargoShipCargo)); // RB
+    xbB[6].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.cargoShipCargo)); // RB
     xbB[7].whenPressed(new StopAllMotors()); // Back
-    // xbB[8].whenPressed(new Command()); // Start
+    xbB[8].whenPressed(new CargoIntake()); // Start
     xbB[9].whenPressed(new ElevatorWithXBox()); // LStick
     xbB[10].whenPressed(new WristWithXBox()); // RStick
     xbUp.whenActive(new CargoIntakeFromLoad()); // DPadUp

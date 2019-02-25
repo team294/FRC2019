@@ -37,7 +37,7 @@ public class RobotPreferences {
 	public final double wristStowed = 110;
 	public final double wristKeepOut = 28.0; // Max angle to avoid interference with elevator or climber
 	public final double wristUp = 15.0;
-	public final double wristStraight = 5.0;
+	public final double wristStraight = 0.0;
 	public final double wristDown = -64.0;		// TODO Should be -59.0? // In this position, elevator must be able to go to groundCargo
 	public final double wristMin = -68;
 	public enum WristAngle {stowed, up, straight, down}
