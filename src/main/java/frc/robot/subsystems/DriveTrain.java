@@ -530,6 +530,28 @@ public class DriveTrain extends Subsystem {
     //Robot.log.writeLog("DriveTrain", "Vision Turning", "Degrees from Target," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget() + ",Target Area," + Robot.vision.areaFromCamera);
   }
 
+  /**
+   * Turns in place to target
+   */
+  public void turnWithGyro(double targetAngle) {
+    double gainConstant = 0.008;
+    double xVal = targetAngle - getGyroRotation();
+    double fixSpeed = 0.45;
+    double lPercentOutput = fixSpeed + (gainConstant * xVal);
+    double rPercentOutput = fixSpeed - (gainConstant * xVal);
+    System.out.println("x-val = " + xVal + ", " + getGyroRotation());
+    System.out.println(lPercentOutput);
+    if (xVal > 0.5) {
+      this.robotDrive.tankDrive(lPercentOutput, -lPercentOutput);
+    } else if (xVal < -0.5) {
+      this.robotDrive.tankDrive(-rPercentOutput, rPercentOutput);
+    } else {
+      this.robotDrive.tankDrive(0, 0);
+    }
+    updateEncoderList();
+    //Robot.log.writeLog("DriveTrain", "Vision Turning", "Degrees from Target," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget() + ",Target Area," + Robot.vision.areaFromCamera);
+  }
+
   public void driveOnLine() {
     
     SmartDashboard.putString("Line Following Routine", "center");
