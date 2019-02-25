@@ -36,7 +36,7 @@ public class Wrist extends Subsystem {
   // TODO test PID terms with actual wrist
   private double kP = 2.0;  // was 3.0, reduced due to bobbling during elevator movement
 	private double kI = 0;
-	private double kD = 0;
+	private double kD = 5.0;
   private double kFF = 0;
   private int kIz = 0;
   private double kMaxOutput = 1.0; // up max output TODO increase after initial testing
@@ -115,7 +115,9 @@ public class Wrist extends Subsystem {
             Robot.elevator.getElevatorPos() > Robot.robotPrefs.elevatorWristSafeStow ||         // Elevator is not safe
             Robot.elevator.getCurrentElevatorTarget() > Robot.robotPrefs.elevatorWristSafeStow) // Elevator is moving to not safe
             && (angle > Robot.robotPrefs.wristKeepOut || getWristAngle() > Robot.robotPrefs.wristKeepOut)) {  // We are moving in or out of KeepOut region
-        Robot.log.writeLog("Wrist", "Set angle", "Angle," + angle + ",Set angle,N/A,Interlock,Forbidden");
+        Robot.log.writeLog("Wrist", "Set angle", "Angle," + angle + ",Set angle,N/A,Interlock,Forbidden," +
+          ",Climb Angle," + Robot.climb.getClimbAngle() + ",Elevator Position," + Robot.elevator.getElevatorPos() + 
+          ",Elevator Target," + Robot.elevator.getCurrentElevatorTarget() + ",Wrist Angle," + getWristAngle());
         return;
       }
 
@@ -132,7 +134,8 @@ public class Wrist extends Subsystem {
       }
 
       wristMotor.set(ControlMode.Position, degreesToEncoderTicks(safeAngle) + Robot.robotPrefs.wristCalZero);
-      Robot.log.writeLog("Wrist", "Set angle", "Desired angle," + angle + ",Set angle," + safeAngle + ",Interlock,Allowed");  
+      Robot.log.writeLog("Wrist", "Set angle", "Desired angle," + angle + ",Set angle," + safeAngle + ",Interlock,Allowed,"
+       + ",Elevator Pos," + Robot.elevator.getElevatorPos() + ",Elevator Target," + Robot.elevator.getCurrentElevatorTarget());  
     }
   }
 

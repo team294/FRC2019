@@ -8,16 +8,23 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import frc.robot.utilities.RobotPreferences.ElevatorPosition;
-import frc.robot.utilities.RobotPreferences.WristAngle;
+import edu.wpi.first.wpilibj.command.ConditionalCommand;
+import frc.robot.Robot;
 
 public class ElevatorWristStow extends CommandGroup {
   /**
-   * Add your docs here.
+   * Sequence to stow the wrist, regardless of starting angle.
    */
   public ElevatorWristStow() {
-    addSequential(new WristMoveToAngle(WristAngle.straight));
-    addSequential(new ElevatorMoveToLevel(ElevatorPosition.bottom));
-    addSequential(new WristMoveToAngle(WristAngle.stowed));
+    addSequential(new ConditionalCommand(new ElevatorWristStowA(), new ElevatorWristStowB()){
+      @Override
+      protected boolean condition() {
+        if (Robot.log.getLogLevel() <= 2) {
+          Robot.log.writeLog("ElevatorWristStow", "Check 1", "Wrist angle," + Robot.wrist.getWristAngle()
+            + ",Climb angle," + Robot.climb.getClimbAngle());
+        }
+        return Robot.wrist.getWristAngle() <= Robot.robotPrefs.wristKeepOut;
+      }
+    });
   }
 }

@@ -9,7 +9,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.utilities.RobotPreferences.ElevatorPosition;
-import frc.robot.utilities.RobotPreferences.WristAngle;
 
 public class CargoIntakeFromGround extends CommandGroup {
   /**
@@ -17,10 +16,8 @@ public class CargoIntakeFromGround extends CommandGroup {
    * intakes cargo, and moves elevator to low cargo position
    */
   public CargoIntakeFromGround() {
-    addSequential(new WristMoveToAngle(WristAngle.straight));
-    addSequential(new ElevatorMoveToLevel(ElevatorPosition.groundCargo));
-    addSequential(new WristMoveToAngle(WristAngle.down));
+    addSequential(new ElevatorWristMoveAndPrepare(ElevatorPosition.groundCargo));
     addSequential(new CargoIntake());
-    addSequential(new ElevatorMoveToLevel(ElevatorPosition.hatchLow));
+    addSequential(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchLow));
   }
 }

@@ -23,6 +23,7 @@ public class Hatch extends Subsystem {
   private boolean hatchPosition = true;
 
   public Hatch() {
+      setHatchPiston(true);
   }
 
   /**
@@ -32,12 +33,12 @@ public class Hatch extends Subsystem {
 	 */
   public void setHatchPiston(boolean position) {
     if (position) {
-      hatchPiston.set(true);
+      hatchPiston.set(false);
       hatchPosition = true;
       SmartDashboard.putString("Disc Position", "Grab");
       Robot.leds.setColor(LedHandler.Color.GREEN, true); // blink the LEDs when the hatch grabber in engaged
 		} else {
-      hatchPiston.set(false);
+      hatchPiston.set(true);
       hatchPosition = false;
       SmartDashboard.putString("Disc Position", "Release");
     }
