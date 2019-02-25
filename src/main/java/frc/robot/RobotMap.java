@@ -35,8 +35,7 @@ public class RobotMap {
   // Pneumatic Addresses
   //public static final int pnuematicShifterLow = 0;
   public static final int pnuematicShifterHigh = 0;   // Changed to single ended  Default Low
-  public static final int pneumaticHatchIn = 2;
-  public static final int pneumaticHatchOut = 3;
+  public static final int pneumaticHatch = 1;
  
   //RoboRIO digital I/O Addresses
   public static final int lineFollowerLeft = 2;

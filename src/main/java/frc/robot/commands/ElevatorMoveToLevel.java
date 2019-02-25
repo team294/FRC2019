@@ -91,7 +91,7 @@ public class ElevatorMoveToLevel extends Command {
           case cargoShipCargo:
             target = Robot.robotPrefs.cargoShipCargo;
             break;
-            case loadCargo:
+          case loadCargo:
             target = Robot.robotPrefs.loadCargo;
             break;
           case groundCargo:
@@ -100,10 +100,8 @@ public class ElevatorMoveToLevel extends Command {
         }
       }
     }
-
     Robot.elevator.setElevatorPos(target);
   }
-
 
   // Called repeatedly when this Command is scheduled to run
   @Override

@@ -8,6 +8,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import frc.robot.utilities.RobotPreferences.ElevatorPosition;
+import frc.robot.utilities.RobotPreferences.WristAngle;
 
 public class DriveAssist extends CommandGroup {
   /**
@@ -32,6 +34,8 @@ public class DriveAssist extends CommandGroup {
     // arm.
 
     //addSequential(new Pathfinder());
+    addSequential(new WristMoveToAngle(WristAngle.straight));
+    addSequential(new ElevatorMoveToLevel(ElevatorPosition.hatchLow));
     addSequential(new DriveWithVision(true, true));
     addSequential(new DriveWithLineFollowing(true));
 

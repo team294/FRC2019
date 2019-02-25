@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 public class WristWithXBox extends Command {
-
   /** 
    * Drive wrist manually using left joystick on the xBox controller
   */
@@ -30,7 +29,7 @@ public class WristWithXBox extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double value = -Robot.oi.xBoxController.getY(Hand.kLeft);
+    double value = -Robot.oi.xBoxController.getY(Hand.kRight);
     Robot.wrist.setWristMotorPercentOutput(value);
     Robot.wrist.updateWristLog();
   }

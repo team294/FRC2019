@@ -51,6 +51,7 @@ public class DriveTrain extends Subsystem {
   
   private double leftMotorFaultCount; // increments every cycle the left side detects an issue
   private double rightMotorFaultCount; // increments every cycle the right side detects an issue
+  boolean driveDirection = true; // true = forward, false = reverse
   
   // Encoders
   private double leftEncoderZero = 0, rightEncoderZero = 0;
@@ -652,6 +653,22 @@ public class DriveTrain extends Subsystem {
 
     this.robotDrive.tankDrive(lPercentPower, rPercentPower);
     updateEncoderList();
+  }
+
+  /**
+   * 
+   * @param direction true = forward; false = reverse
+   */
+  public void setDriveDirection(boolean direction) {
+    this.driveDirection = direction;
+  }
+
+  /**
+   * 
+   * @return drive direction (true = forward, false = reverse)
+   */
+  public boolean getDriveDirection() {
+    return driveDirection;
   }
 
   @Override

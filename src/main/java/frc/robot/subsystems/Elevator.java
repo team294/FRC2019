@@ -42,22 +42,23 @@ public class Elevator extends Subsystem {
 	private boolean elevEncOK = true; // true is encoder working, false is encoder broken
 	private boolean elevatorMode; // true is automated (encoder is working and calibrated), false is manual mode
 
-	private double rampRate = .005;
+	private double rampRate = 0.3;
 	private double kP = 0.5;
 	private double kI = 0;
 	private double kD = 0;
 	private double kFF = 0;
 	private int kIz = 0;
-	private double kMaxOutput = 1.0; // up max output
-	private double kMinOutput = -1.0; // down max output
+	private double kMaxOutput = 0.8; // up max output
+	private double kMinOutput = -0.3; // down max output
 
 	public Elevator() {
 		elevatorMotor1 = new WPI_TalonSRX(RobotMap.elevatorMotor1);
 		elevatorMotor2 = new WPI_TalonSRX(RobotMap.elevatorMotor2);
 		elevatorMotor2.follow(elevatorMotor1);
 		elevatorMotor1.setInverted(false);
-		elevatorMotor2.setInverted(false);
+		elevatorMotor2.setInverted(true);
 		elevatorMotor1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+		elevatorMotor1.setSensorPhase(true);         // Flip direction of sensor reading
 		elevatorMotor1.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
 		elevatorMotor1.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
 
@@ -108,9 +109,11 @@ public class Elevator extends Subsystem {
 				Robot.wrist.getCurrentWristTarget() >= Robot.robotPrefs.wristDown - 3.0 )
 		 ) {
 			elevatorMotor1.set(ControlMode.Position, inchesToEncoderTicks(inches - Robot.robotPrefs.elevatorBottomToFloor));
-			Robot.log.writeLog("Elevator", "Position set", "Target," + inches + ",Allowed,Yes");
+			Robot.log.writeLog("Elevator", "Position set", "Target," + inches + ",Allowed,Yes,Wrist Angle," +
+			   Robot.wrist.getWristAngle() + ",Wrist Target," + Robot.wrist.getCurrentWristTarget());
 		} else {
-			Robot.log.writeLog("Elevator", "Position set", "Target," + inches + ",Allowed,No");
+			Robot.log.writeLog("Elevator", "Position set", "Target," + inches + ",Allowed,No,Wrist Angle,"  +
+ 			  Robot.wrist.getWristAngle() + ",Wrist Target," + Robot.wrist.getCurrentWristTarget());
 		}
 	}
 
@@ -235,7 +238,7 @@ public class Elevator extends Subsystem {
 		Robot.log.writeLog("Elevator", "Update Variables",
 				"Volts1," + elevatorMotor1.getMotorOutputVoltage() + ",Volts2," + elevatorMotor2.getMotorOutputVoltage() + 
 				",Amps1," + Robot.pdp.getCurrent(RobotMap.elevatorMotor1PDP) + ",Amps2," + Robot.pdp.getCurrent(RobotMap.elevatorMotor2PDP) + 
-				",Enc Ticks," + getElevatorEncTicks() + ",Enc Inches," + getElevatorPos() + 
+				",Enc Ticks," + getElevatorEncTicks() + ",Enc Inches," + getElevatorPos() + ",Elev Target," + getCurrentElevatorTarget() +
 				",Upper Limit," + getElevatorUpperLimit() + ",Lower Limit," + getElevatorLowerLimit() + 
 				",Enc OK," + elevEncOK + ",Elev Mode," + elevatorMode);
 	}
@@ -260,6 +263,7 @@ public class Elevator extends Subsystem {
 			// SmartDashboard.putNumber("EncSnap", encSnapShot);
 			// SmartDashboard.putNumber("Enc Now", currEnc);
 			SmartDashboard.putNumber("Elev Pos", getElevatorPos());
+			SmartDashboard.putNumber("Elev Ticks", getElevatorEncTicks());
 			// SmartDashboard.putNumber("Enc Tick", getElevatorEncTicks());
 			SmartDashboard.putBoolean("Elev Lower Limit", getElevatorLowerLimit());
 			SmartDashboard.putBoolean("Elev Upper Limit", getElevatorUpperLimit());
@@ -280,8 +284,8 @@ public class Elevator extends Subsystem {
 
 			/* All of the code below should be gotten rid of. It doesn't speed anything up in competition - the codriver still has to recognize that the encoders are broken
 			and the elevator is stalled. This is just more code to run in periodic() */
-			// TODO: Delete everything below this
-
+			// TODO: The code below is causing false triggers that causes the elevator to be uncalibrated.
+			/*
 			currEnc = getElevatorEncTicks();
 			if (elevatorMotor1.getMotorOutputVoltage() > 5) {
 				if (posMoveCount == 0) {
@@ -316,6 +320,7 @@ public class Elevator extends Subsystem {
 					negMoveCount = 0;
 				}
 			}
+			*/
 
 			// Autocalibrate in the encoder is OK and the elevator is at the lower limit switch
 			if (!elevatorMode && elevEncOK && getElevatorLowerLimit()) {

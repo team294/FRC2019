@@ -10,10 +10,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.XboxController;
-
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.commands.*;
+import frc.robot.triggers.*;
+import frc.robot.utilities.RobotPreferences;
 import frc.robot.utilities.RobotPreferences.ElevatorPosition;
 import frc.robot.utilities.RobotPreferences.WristAngle;
 
@@ -27,59 +29,91 @@ public class OI {
   public Joystick leftJoystick = new Joystick(0);
   public Joystick rightJoystick = new Joystick(1);
   public Joystick coPanel = new Joystick(2);
-  public XboxController xBoxController = new XboxController(3);
-  private boolean driveDirection = true;
-
-  private Button xBoxA = new JoystickButton(xBoxController, 1);
-  private Button xBoxB = new JoystickButton(xBoxController, 2);
-  private Button xBoxX = new JoystickButton(xBoxController, 3);
-  private Button xBoxY = new JoystickButton(xBoxController, 4);
+  public Joystick xBoxController = new Joystick(3);
 
   public OI() {
     Button[] left = new Button[12];
     Button[] right = new Button[12];
     Button[] coP = new Button[15];
-    Button[] xbB = new Button[10];
+    Button[] xbB = new Button[11];
+    Trigger xbUp = new POVTrigger(xBoxController, 0);
+    Trigger xbRight = new POVTrigger(xBoxController, 90);
+    Trigger xbDown = new POVTrigger(xBoxController, 180);
+    Trigger xbLeft = new POVTrigger(xBoxController, 270);
+    Trigger xbLT = new AxisTrigger(xBoxController, 2, 0.9);
+    Trigger xbRT = new AxisTrigger(xBoxController, 3, 0.9);
     
     for (int i = 1; i < left.length; i++) {
       left[i] = new JoystickButton(leftJoystick, i);
       right[i] = new JoystickButton(rightJoystick, i);
-
-      if (i == 1) {
-        left[i].whenPressed(new Shift(true));
-        right[i].whenPressed(new Shift(false));
-      } else if (i == 2) {
-        left[i].whenPressed(new DriveAssist());
-        right[i].whenPressed(new DriveAssist());
-        left[i].whenReleased(new DriveWithJoysticks());
-        right[i].whenReleased(new DriveWithJoysticks());
-      } else if (i == 3) {
-        left[i].whenPressed(new DriveWithVision(false, true)); // No line followers, but gyro correction
-        left[i].whenReleased(new DriveWithJoysticks());
-        right[i].whenPressed(new DriveWithVision(false, false)); // No line followers, no gyro
-        right[i].whenReleased(new DriveWithJoysticks());
-      } else if (i == 11 || i == 10) {
-        left[i].whenPressed(new DriveWithLineFollowing(true));
-        left[i].whenReleased(new DriveWithJoysticks());
-        right[i].whenPressed(new DriveWithLineFollowing(false));
-        right[i].whenReleased(new DriveWithJoysticks());
-      }
     }
 
-    SmartDashboard.putData("LoadToRocketPT1", new DrivePathfinder("RLoadToRocketPT1-A", true, false));
-    SmartDashboard.putData("LoadToRocketPT2-2", new DrivePathfinder("RLoadToRocketPT2-A", false, true));
-    SmartDashboard.putData("LoadToRocket", new PathfinderLoadToRocket());
-    // SmartDashboard.putData("Turn Gyro 90", new TurnGyro(90));
-    // SmartDashboard.putData("LoadToRocket", new PathfinderLoadToRocket());
-    // The conditional logic needs to go in the command itself. No logic can be done in OI since OI is constructed at the start and not run repeatedly
-    // SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true));
+    for (int i = 1; i < xbB.length; i++) {
+      xbB[i] = new JoystickButton(xBoxController, i);
+    }
 
-    xBoxA.whenPressed(new ElevatorMoveSafe(ElevatorPosition.hatchLow));
-    xBoxB.whenPressed(new ElevatorMoveSafe(ElevatorPosition.hatchMid));
-    xBoxY.whenPressed(new ElevatorMoveSafe(ElevatorPosition.hatchHigh));
-    xBoxX.whenPressed(new ElevatorMoveSafe(ElevatorPosition.cargoShipCargo));
-    
-    SmartDashboard.putData("Pathfinder Test 1", new DrivePathfinder("Test", true, true));
+    for (int i = 0; i < coP.length; i++) {
+      coP[i] = new JoystickButton(coPanel, i);
+    }
+
+    // XBox controller buttons/triggers
+    xbB[1].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchLow)); // A
+    xbB[2].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchMid)); // B
+    xbB[3].whenPressed(new ElevatorWristStow()); // X
+    xbB[4].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchHigh)); // Y
+    xbB[5].whenPressed(new CargoStop()); // LB
+    xbB[6].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.cargoShipCargo)); // RB
+    xbB[7].whenPressed(new StopAllMotors()); // Back
+    xbB[8].whenPressed(new CargoIntake()); // Start
+    xbB[9].whenPressed(new ElevatorWithXBox()); // LStick
+    xbB[10].whenPressed(new WristWithXBox()); // RStick
+    xbUp.whenActive(new CargoIntakeFromLoad()); // DPadUp
+    xbRight.whenActive(new HatchSet(true)); // DPadRight
+    xbDown.whenActive(new CargoIntakeFromGround()); // DPadDown
+    xbLeft.whenActive(new HatchSet(false)); // DPadLeft
+    xbLT.whenActive(new CargoOuttake()); // LT
+    xbRT.whenActive(new CargoOuttake()); // RT
+
+    // Joystick buttons
+    left[1].whenPressed(new Shift(true));
+    right[1].whenPressed(new Shift(false));
+    left[2].whenPressed(new DriveAssist());
+    // right[2].whenPressed(new Command());
+    right[2].whenReleased(new DriveWithJoysticks());
+    // left[3].whenPressed(new Command());
+    // right[3].whileHeld(new DriveStraight(Robot.oi.rightJoystick.getY(), 0)); // TODO fix drivestraight
+    left[4].whenPressed(new HatchScoreAndIntake());
+    right[4].whenPressed(new DriveSetDirection(false));
+    left[5].whenPressed(new HatchScoreAndIntake());
+    right[5].whenPressed(new DriveSetDirection(true));
+
+    // left[1].whenPressed(new Shift(true));
+    // right[1].whenPressed(new Shift(false));
+    // left[2].whenPressed(new DriveAssist());
+    // right[2].whenPressed(new DriveAssist()); // Hatch grab
+    // left[3].whenPressed(new DriveWithVision(false, true)); // No line followers, but gyro correction
+    // right[3].whenPressed(new DriveWithVision(false, false)); // No line followers, no gyro
+    // left[4].whenPressed(new DriveWithLineFollowing(true));
+    // right[4].whenPressed(new DriveWithLineFollowing(false));
+    // left[5].whenPressed(new DriveWithLineFollowing(true));
+    // right[5].whenPressed(new DriveWithLineFollowing(false));
+    // left[2].whenReleased(new DriveWithJoysticks());
+    // right[2].whenReleased(new DriveWithJoysticks());
+    // left[3].whenReleased(new DriveWithJoysticks());
+    // right[3].whenReleased(new DriveWithJoysticks());
+    // left[4].whenReleased(new DriveWithJoysticks());
+    // right[4].whenReleased(new DriveWithJoysticks());
+    // left[5].whenReleased(new DriveWithJoysticks());
+    // right[5].whenReleased(new DriveWithJoysticks());
+
+    // Copanel buttons
+    coP[1].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStart));
+    coP[2].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStart));
+    coP[3].whenPressed(new ClimbArmSetPercentOutput(0.3));  // TODO determine manual control percent
+    coP[4].whenPressed(new ClimbArmSetPercentOutput(-0.3));  // TODO determine manual control percent
+    coP[5].whenPressed(new ClimbVacuumTurnOn(true));
+    coP[6].whenPressed(new ClimbVacuumTurnOn(false));
+    coP[8].whenPressed(new ClimbSequence());
 
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
@@ -90,8 +124,8 @@ public class OI {
     SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorMoveToBottomThenZeroEncoder());
 
     // Buttons for controlling the climber
-    SmartDashboard.putData("Climb Up", new ClimbArmSetPercentOutput(0.2));  // For testing
-    SmartDashboard.putData("Climb Down", new ClimbArmSetPercentOutput(-0.2));  // For testing
+    SmartDashboard.putData("Climb Up", new ClimbArmSetPercentOutput(0.3));  // For testing
+    SmartDashboard.putData("Climb Down", new ClimbArmSetPercentOutput(-0.3));  // For testing
     SmartDashboard.putData("Climb move to start", new ClimbArmStow());  // For testing
     SmartDashboard.putData("Climb move to vacuum", new ClimbArmSetAngle(Robot.robotPrefs.climbVacuumAngle));  // For testing
     SmartDashboard.putData("Climb lift robot", new ClimbArmSetAngle(Robot.robotPrefs.climbLiftAngle));  // For testing
@@ -124,7 +158,7 @@ public class OI {
     SmartDashboard.putBoolean("Left LineFollower", Robot.lineFollowing.isLinePresent(1));
     SmartDashboard.putBoolean("Middle LineFollower", Robot.lineFollowing.isLinePresent(2));
     SmartDashboard.putBoolean("Right LineFollower", Robot.lineFollowing.isLinePresent(3));
-    
+
     SmartDashboard.putData("Clear Sticky Faults", new ClearStickyFaults());
     Robot.robotPrefs.showStickyFaults();
     //SmartDashboard.putData("Turn To Line", new TurnToLine());
@@ -134,11 +168,13 @@ public class OI {
     SmartDashboard.putString("Disc Position", "Null");
   }
 
-  public void setDriveDirection(boolean direction) {
-    this.driveDirection = direction;
-  }
-
-  public boolean getDriveDirection() {
-    return driveDirection;
-  }
+  /**
+	 * Sets the Xbox controller rumble power.
+	 * 
+	 * @param percentRumble value 0 to 1
+	 */
+	public void setXBoxRumble(double percentRumble) {
+		xBoxController.setRumble(RumbleType.kLeftRumble, percentRumble);
+		xBoxController.setRumble(RumbleType.kRightRumble, percentRumble);
+	}
 }

@@ -48,8 +48,8 @@
           },
           "6,0": {
             "size": [
-              3,
-              3
+              7,
+              4
             ],
             "content": {
               "_type": "Camera Stream",
@@ -98,7 +98,7 @@
               "_title": "/SmartDashboard/Distance"
             }
           },
-          "6,3": {
+          "3,4": {
             "size": [
               1,
               1
@@ -111,7 +111,7 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "7,3": {
+          "4,4": {
             "size": [
               1,
               1
@@ -124,7 +124,7 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "8,3": {
+          "5,4": {
             "size": [
               1,
               1
@@ -283,7 +283,7 @@
           "5,1": {
             "size": [
               2,
-              2
+              3
             ],
             "content": {
               "_type": "List Layout",
@@ -310,6 +310,11 @@
                   "_title": "Elev Position"
                 },
                 {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Elev Ticks",
+                  "_title": "Elev Ticks"
+                },
+                {
                   "_type": "Boolean Box",
                   "_source0": "network_table:///SmartDashboard/Elev Upper Limit",
                   "_title": "Elev Upper Limit",
@@ -327,6 +332,16 @@
                   "_type": "Command",
                   "_source0": "network_table:///SmartDashboard/Zero Elev Enc (w/ Limit)",
                   "_title": "Zero Elev Enc (w/ Limit)"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Elevator Up",
+                  "_title": "Elevator Up"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Elevator Down",
+                  "_title": "Elevator Down"
                 }
               ]
             }
@@ -413,7 +428,7 @@
           "7,1": {
             "size": [
               2,
-              4
+              5
             ],
             "content": {
               "_type": "List Layout",
@@ -465,48 +480,7 @@
                   "_type": "Command",
                   "_source0": "network_table:///SmartDashboard/Wrist recalibrate",
                   "_title": "Wrist recalibrate"
-                }
-              ]
-            }
-          },
-          "9,3": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "List Layout",
-              "_title": "Disc",
-              "Layout/Label position": "LEFT",
-              "_children": [
-                {
-                  "_type": "Text View",
-                  "_source0": "network_table:///SmartDashboard/Disc Position",
-                  "_title": "SmartDashboard/Disc Position"
                 },
-                {
-                  "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Disc Grab",
-                  "_title": "SmartDashboard/Disc Grab"
-                },
-                {
-                  "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Disc Release",
-                  "_title": "SmartDashboard/Disc Release"
-                }
-              ]
-            }
-          },
-          "5,4": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "List Layout",
-              "_title": "Wrist commands",
-              "Layout/Label position": "LEFT",
-              "_children": [
                 {
                   "_type": "Command",
                   "_source0": "network_table:///SmartDashboard/Wrist pos stow",
@@ -526,6 +500,34 @@
                   "_type": "Command",
                   "_source0": "network_table:///SmartDashboard/Wrist pos down",
                   "_title": "Wrist pos down"
+                }
+              ]
+            }
+          },
+          "9,3": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Disc",
+              "Layout/Label position": "LEFT",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Disc Position",
+                  "_title": "Disc Position"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Disc Grab",
+                  "_title": "Disc Grab"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Disc Release",
+                  "_title": "Disc Release"
                 }
               ]
             }

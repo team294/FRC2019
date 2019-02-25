@@ -7,17 +7,14 @@
 
 package frc.robot.commands;
 
-import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class ClimbSequence extends CommandGroup {
+public class HatchScoreAndIntake extends CommandGroup {
   /**
-   * Climbing sequence!  Stows the wrist safely (if needed), moves arm to get 
-   * vacuum, then lifts the robot.
+   * Toggle hatch piston (release hatch) and back up
    */
-  public ClimbSequence() {
-    addSequential(new ElevatorWristStow());
-    addSequential(new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
-    addSequential(new ClimbArmSetAngle(Robot.robotPrefs.climbLiftAngle));
+  public HatchScoreAndIntake() {
+    addParallel(new HatchToggle());
+    addParallel(new DriveStraight(-0.3, 3.0));
   }
 }

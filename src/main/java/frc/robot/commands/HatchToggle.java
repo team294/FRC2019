@@ -9,22 +9,20 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.utilities.RobotPreferences.HatchPistonPositions;
 
 public class HatchToggle extends Command {
   public HatchToggle() {
     // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
     requires(Robot.hatch);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    if (Robot.hatch.getHatchPiston() == HatchPistonPositions.release || Robot.hatch.getHatchPiston() == HatchPistonPositions.unknown) {
-      Robot.hatch.setHatchPiston(HatchPistonPositions.grab);
+    if (Robot.hatch.getHatchPiston() == false) {
+      Robot.hatch.setHatchPiston(true);
     } else {
-      Robot.hatch.setHatchPiston(HatchPistonPositions.release);
+      Robot.hatch.setHatchPiston(false);
     }
   }
 

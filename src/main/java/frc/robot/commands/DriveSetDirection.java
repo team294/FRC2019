@@ -10,58 +10,40 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class CargoOuttake extends Command {
+public class DriveSetDirection extends Command {
+  boolean driveDirection;
 
-  private double timeWithoutBall = 0; // the amount of time from the photo switch not sensing a ball
-  private boolean startTime = false; // have we started to count the time from 
-
-  /**
-   * Run cargo outtake 5 seconds, or until we no longer see the ball plus 1 additional second.
-   */
-  public CargoOuttake() {
+  public DriveSetDirection(boolean direction) {
     // Use requires() here to declare subsystem dependencies
-    requires(Robot.cargo);
+    requires (Robot.driveTrain);
+    driveDirection = direction;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    //TODO Change percent power when we get a cargo intake
-    Robot.cargo.setCargoMotorPercent(-0.5, -0.5);
-    startTime = false;
+    Robot.driveTrain.setDriveDirection(driveDirection);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.cargo.setCargoMotorPercent(-0.5, -0.5);
-    if(!Robot.cargo.hasBall() && !startTime){
-      timeWithoutBall = timeSinceInitialized();
-      startTime = true;
-    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    if (timeSinceInitialized() >= 5 || (startTime && timeSinceInitialized() - timeWithoutBall > 1)) {
-      Robot.cargo.stopCargoIntake();
-      return true;
-    } else {
-      return false;
-    }
+    return false;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.cargo.stopCargoIntake();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    end();
   }
 }

@@ -7,17 +7,17 @@
 
 package frc.robot.commands;
 
-import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import frc.robot.utilities.RobotPreferences.ElevatorPosition;
 
-public class ClimbSequence extends CommandGroup {
+public class CargoIntakeFromGround extends CommandGroup {
   /**
-   * Climbing sequence!  Stows the wrist safely (if needed), moves arm to get 
-   * vacuum, then lifts the robot.
+   * Moves wrist to 0, elevator to ground intake position, wrist down,
+   * intakes cargo, and moves elevator to low cargo position
    */
-  public ClimbSequence() {
-    addSequential(new ElevatorWristStow());
-    addSequential(new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
-    addSequential(new ClimbArmSetAngle(Robot.robotPrefs.climbLiftAngle));
+  public CargoIntakeFromGround() {
+    addSequential(new ElevatorWristMoveAndPrepare(ElevatorPosition.groundCargo));
+    addSequential(new CargoIntake());
+    addSequential(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchLow));
   }
 }

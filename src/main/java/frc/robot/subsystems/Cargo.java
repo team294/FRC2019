@@ -60,6 +60,13 @@ public class Cargo extends Subsystem {
     Robot.log.writeLog("Cargo", "Stop Cargo", "");
   }
 
+  public boolean getPhotoSwitch(){
+    if(Robot.log.getLogLevel() <= 2){
+      Robot.log.writeLog("Cargo", "Photo Sensor", "Photo Sensor," + photoSwitch.get());
+    }
+    return !photoSwitch.get();
+  }
+
   /**
    * Reads the photo switch to see if we have a ball
    * @return true = has ball, false = does not have ball
@@ -68,7 +75,7 @@ public class Cargo extends Subsystem {
     if(Robot.log.getLogLevel() <= 2){
       Robot.log.writeLog("Cargo", "Photo Sensor", "Photo Sensor," + photoSwitch.get());
     }
-    return photoSwitch.get();
+    return !photoSwitch.get();
   }
 
   @Override
