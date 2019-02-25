@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.robot.RobotMap;
 import edu.wpi.first.wpilibj.Solenoid;
 
@@ -30,12 +31,12 @@ public class Hatch extends Subsystem {
 	 * @param position true is grab hatch; false is release hatch
 	 */
   public void setHatchPiston(boolean position) {
-    if (position == true) {
+    if (position) {
       hatchPiston.set(true);
       hatchPosition = true;
       SmartDashboard.putString("Disc Position", "Grab");
-		}
-		if (position == false) {
+      Robot.leds.setColor(LedHandler.Color.GREEN, true); // blink the LEDs when the hatch grabber in engaged
+		} else {
       hatchPiston.set(false);
       hatchPosition = false;
       SmartDashboard.putString("Disc Position", "Release");

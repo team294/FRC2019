@@ -324,12 +324,15 @@ public class Climb extends Subsystem {
       SmartDashboard.putNumber("Climb Analog Average (Oversampled) Voltage", analogVacuumSensor.getAverageVoltage());
       SmartDashboard.putBoolean("Vacuum Trigger In Window (0.5, 3.4)", vacuumTrigger.getInWindow());
       //SmartDashboard.putBoolean("Vacuum Trigger Rising/Falling", vacuumTrigger.getTriggerState());
-      SmartDashboard.putNumber("Analog Vacuum Pressure", getVacuumPressure(false));
 
       if (DriverStation.getInstance().isEnabled()) {
         updateClimbLog(); 
       }
     }
+
+    SmartDashboard.putNumber("Analog Vacuum Pressure", getVacuumPressure(false));
+    if (isVacuumPresent()) Robot.leds.setColor(LedHandler.Color.BLUE, false); // solid when vacuum drawn
+    else if (getVacuumPressure(false) > 3.0) Robot.leds.setColor(LedHandler.Color.BLUE, true); // blinking while vacuum is being drawn
     
     // Checks if the climb is not calibrated and automatically calibrates it once the reverse limit switch is pressed
     // If the climb isn't calibrated at the start of the match, then we can calibrate using manual climb control

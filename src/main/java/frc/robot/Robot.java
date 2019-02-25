@@ -38,7 +38,7 @@ public class Robot extends TimedRobot {
   public static FileLog log;
   public static RobotPreferences robotPrefs;
   public static PowerDistributionPanel pdp;
-  public static LedSet leds;
+  public static LedHandler leds;
 
   public static boolean beforeFirstEnable = true; // true before the first time the robot is enabled after loading code
   Command m_autonomousCommand;
@@ -69,7 +69,7 @@ public class Robot extends TimedRobot {
     vision = new VisionData();
     lineFollowing = new LineFollowing();
     climb = new Climb();
-    leds = new LedSet();
+    leds = new LedHandler();
     pdp = new PowerDistributionPanel();
     // pdp.clearStickyFaults();
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
