@@ -60,9 +60,11 @@ public class Climb extends Subsystem {
     climbMotor1.follow(climbMotor2);
     climbMotor2.set(ControlMode.PercentOutput, 0);
     climbMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
-    climbMotor2.setSensorPhase(true);
+    climbMotor2.setSensorPhase(false);
     climbMotor2.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
     climbLimit = climbMotor2.getSensorCollection();
+    climbMotor1.setInverted(true);
+    climbMotor2.setInverted(true);
 
     climbMotor2.config_kP(0, kP);
     climbMotor2.config_kI(0, kI);

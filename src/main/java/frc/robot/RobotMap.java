@@ -49,7 +49,7 @@ public class RobotMap {
   public static final int photoSwitchCargo = 4;
 
   // Analog Inputs
-  public static final int analogVacuum = 0;
+  public static final int analogVacuum = 2;
 
   // Relay Addresses
   public static final int ledRelay =0;

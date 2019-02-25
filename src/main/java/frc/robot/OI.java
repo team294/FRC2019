@@ -135,7 +135,7 @@ public class OI {
     SmartDashboard.putData("Climb Vacuum Off", new ClimbVacuumTurnOn(false));
     SmartDashboard.putData("Climb Set Reference", new ClimbMoveToLimitThenCalibrate());
     SmartDashboard.putData("ClimbMoveUntilVacuum", new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
-    SmartDashboard.putData("ClimbSequnce", new ClimbSequence());
+    SmartDashboard.putData("ClimbSequence", new ClimbSequence());
 
     // Buttons for the Cargo rollers
     SmartDashboard.putData("Cargo Intake", new CargoIntake());

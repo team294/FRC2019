@@ -73,10 +73,10 @@ public class RobotPreferences {
 
 	//Climb Target Angles (in degrees)
 	//TODO Test and adjust angles when climb is built
-	public final double climbLimitAngle = 120.0;		// Max angle for climber (limit switch)
+	public final double climbLimitAngle = 138.0;		// Max angle for climber (limit switch), was 120
 	public final double climbWristStowedSafe = 122.0;	// Max angle for climber when wrist is stowed (but wrist can't move if climber is here)
 	public final double climbWristMovingSafe = 122.0;	// Max angle for climber if wrist is moving
-	public final double climbLiftAngle = 120.0;			// Angle where robot scores climb points
+	public final double climbLiftAngle = 107.0;			// Angle where robot scores climb points, was 120
 	public final double climbStart = 110.0;				// Climber starting angle (must be safe for wrist to move, must be in frame perimeter)
 	public final double climbVacuumAngle = -5.0;		// Climber angle to attach vacuum to platform
 	public final double climbMinAngle = -10.0;			// Min angle for climber
