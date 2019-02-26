@@ -31,6 +31,8 @@ public class OI {
   public Joystick coPanel = new Joystick(2);
   public Joystick xBoxController = new Joystick(3);
 
+  // TODO: Add some way to change the limelight pipeline for sandstorm
+
   public OI() {
     Button[] left = new Button[12];
     Button[] right = new Button[12];
@@ -133,7 +135,7 @@ public class OI {
     SmartDashboard.putData("Climb Vacuum Off", new ClimbVacuumTurnOn(false));
     SmartDashboard.putData("Climb Set Reference", new ClimbMoveToLimitThenCalibrate());
     SmartDashboard.putData("ClimbMoveUntilVacuum", new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
-    SmartDashboard.putData("ClimbSequnce", new ClimbSequence());
+    SmartDashboard.putData("ClimbSequence", new ClimbSequence());
 
     // Buttons for the Cargo rollers
     SmartDashboard.putData("Cargo Intake", new CargoIntake());
@@ -166,6 +168,12 @@ public class OI {
     SmartDashboard.putData("Disc Grab", new HatchSet(true));
     SmartDashboard.putData("Disc Release", new HatchSet(false));
     SmartDashboard.putString("Disc Position", "Null");
+/*
+    SmartDashboard.putData("LEDSet Purple", new LEDSet(0));
+    SmartDashboard.putData("LEDSet Red", new LEDSet(1));
+    SmartDashboard.putData("LEDSet Blue", new LEDSet(2));
+    SmartDashboard.putData("LEDSet Off", new LEDSet(3));
+*/
   }
 
   /**

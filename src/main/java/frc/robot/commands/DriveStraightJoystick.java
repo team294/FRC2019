@@ -10,14 +10,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ClimbMoveToLimitThenCalibrate extends Command {
-  /**
-   * Drives climb motor up slowly, calibrates encoder when climb reaches the limit switch
-   */
-  public ClimbMoveToLimitThenCalibrate() {
+public class DriveStraightJoystick extends Command {
+  public DriveStraightJoystick() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.climb);
+    requires(Robot.driveTrain);
   }
 
   // Called just before this Command runs the first time
@@ -28,31 +25,30 @@ public class ClimbMoveToLimitThenCalibrate extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.climb.setClimbMotorPercentOutput(0.1);
+    //double leftValue = Robot.oi.leftJoystick.getY();
+    double rightValue = Robot.oi.rightJoystick.getY();
+
+    if (Robot.driveTrain.getDriveDirection())  {
+      Robot.driveTrain.tankDrive(-rightValue, -rightValue);
+    } else {
+      Robot.driveTrain.tankDrive(rightValue, rightValue);
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    // Stop if climber is at the limit switch, or if we are about to hit the wrist
-    return Robot.climb.isClimbAtLimitSwitch() || Robot.wrist.getWristAngle() > Robot.robotPrefs.wristKeepOut;
+    return false;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.climb.stopClimb();
-    if (Robot.climb.isClimbAtLimitSwitch()) {
-      Robot.log.writeLogEcho("ClimbMoveToLimitThenCalibrate", "Calibrate at limit switch", "Raw encoder,"
-        + Robot.climb.getClimbEncTicksRaw() + ",Limit angle," + Robot.robotPrefs.climbLimitAngle);
-      Robot.climb.calibrateClimbEnc(Robot.robotPrefs.climbLimitAngle, false);
-    }
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.climb.stopClimb();
   }
 }

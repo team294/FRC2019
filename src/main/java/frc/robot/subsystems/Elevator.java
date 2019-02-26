@@ -14,6 +14,7 @@ import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.ElevatorWithXBox;
 import frc.robot.utilities.FileLog;
+import frc.robot.utilities.Wait;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -49,7 +50,7 @@ public class Elevator extends Subsystem {
 	private double kFF = 0;
 	private int kIz = 0;
 	private double kMaxOutput = 0.8; // up max output
-	private double kMinOutput = -0.3; // down max output
+	private double kMinOutput = -0.4; // down max output
 
 	public Elevator() {
 		elevatorMotor1 = new WPI_TalonSRX(RobotMap.elevatorMotor1);
@@ -78,6 +79,13 @@ public class Elevator extends Subsystem {
 		elevatorMotor2.clearStickyFaults();
 		elevatorMotor1.setNeutralMode(NeutralMode.Brake);
 		elevatorMotor2.setNeutralMode(NeutralMode.Brake);
+
+		// Wait 0.25 seconds before checking the encoder ticks.  The reason is that zeroing the encoder (above)
+		// can be delayed up to 50ms for a round trip
+		// from the Rio to the Talon and back to the Rio.  So, reading position could give the wrong value if
+		// we don't wait (random weird behavior).
+		// DO NOT GET RID OF THIS WITHOUT TALKING TO DON OR ROB.
+		Wait.waitTime(250);
 
 		if(getElevatorLowerLimit() && getElevatorEncTicks() == 0) {
 			elevatorMode = true;
@@ -119,28 +127,32 @@ public class Elevator extends Subsystem {
 
 	/**
 	 * Returns the height that elevator is trying to move to in inches from the floor.
-	 * Returns -1 if the elevator is in manual mode (not calibrated).
+	 * Returns hatchHigh if the elevator is in manual mode (not calibrated), in order to engage interlocks.
 	 * <p><b>NOTE:</b> This is the target height, not the current height.
-	 * 
+	 * If the elevator is in manual control mode, returns the actual elevator position.
 	 * @return desired inches of elevator height
 	 */
 	public double getCurrentElevatorTarget() {
 		if (elevatorMode) {
-			return encoderTicksToInches(elevatorMotor1.getClosedLoopTarget(0)) + Robot.robotPrefs.elevatorBottomToFloor;
+			if (elevatorMotor1.getControlMode() == ControlMode.Position) {
+				return encoderTicksToInches(elevatorMotor1.getClosedLoopTarget(0)) + Robot.robotPrefs.elevatorBottomToFloor;
+			} else {
+				return getElevatorPos();
+			}
 		} else {
-			return -1;
+			return Robot.robotPrefs.hatchHigh;
 		}
 	}
 
 	/**
-	 * @return Current elevator position, in inches from floor.  Returns -1
-	 * if the elevator is in manual mode (not calibrated).
+	 * @return Current elevator position, in inches from floor.  Returns hatchHigh
+	 * if the elevator is in manual mode (not calibrated), in order to engage interlocks.
 	 */
 	public double getElevatorPos() {
 		if (elevatorMode) {
 			return encoderTicksToInches(getElevatorEncTicks()) + Robot.robotPrefs.elevatorBottomToFloor;
 		} else {
-			return -1;
+			return Robot.robotPrefs.hatchHigh;
 		}
 	}
 
@@ -263,6 +275,7 @@ public class Elevator extends Subsystem {
 			// SmartDashboard.putNumber("EncSnap", encSnapShot);
 			// SmartDashboard.putNumber("Enc Now", currEnc);
 			SmartDashboard.putNumber("Elev Pos", getElevatorPos());
+			SmartDashboard.putNumber("Elev Target", getCurrentElevatorTarget());
 			SmartDashboard.putNumber("Elev Ticks", getElevatorEncTicks());
 			// SmartDashboard.putNumber("Enc Tick", getElevatorEncTicks());
 			SmartDashboard.putBoolean("Elev Lower Limit", getElevatorLowerLimit());

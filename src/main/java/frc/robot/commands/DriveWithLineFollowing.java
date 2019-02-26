@@ -36,8 +36,8 @@ public class DriveWithLineFollowing extends Command {
     Robot.driveTrain.setDriveMode(false);
     if (gyro) targetQuad = Robot.driveTrain.checkScoringQuadrant(); // Probably should compare this to the quadrant from the vision command too
     Robot.log.writeLogEcho("DriveTrain", "Line Tracking Init", "Gyro," + gyro + ",Quadrant," + targetQuad);
-    //Robot.driveTrain.clearEncoderList();
-    //Robot.driveTrain.driveOnLine();
+    
+    // Robot.vision.setSnapshot(1); // Start taking snapshots so we can analyze our approach... might move this to start of vision driving?
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -57,7 +57,7 @@ public class DriveWithLineFollowing extends Command {
   protected void end() {
     Robot.driveTrain.stop();
     Robot.log.writeLogEcho("DriveTrain", "Line Tracking Ended", "");
-    //Robot.driveTrain.setDriveMode(true); // Might depend on pathfinder or driver preference
+    Robot.vision.setSnapshot(0); // Stop taking snapshots
   }
 
   // Called when another command which requires one or more of the same

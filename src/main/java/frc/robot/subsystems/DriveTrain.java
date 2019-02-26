@@ -481,6 +481,8 @@ public class DriveTrain extends Subsystem {
       double alphaA = Math.toDegrees(Math.atan(xOffsetAdjustmentFactor * Math.tan(Math.toRadians(alphaT)))); // Adjusted angle for x displacement
       SmartDashboard.putNumber("False displacement angle", alphaA);
       finalAngle = alphaA + getTargetAngle(quadrant) - getGyroRotation();
+      if (finalAngle > 180) finalAngle -= 360; // Should fix problems in quadrant 3.5 regarding angle overflow
+      if (finalAngle < -180) finalAngle += 360; // Relative angle
       SmartDashboard.putNumber("Final Angle", finalAngle);
     } else {
       finalAngle = xVal;
