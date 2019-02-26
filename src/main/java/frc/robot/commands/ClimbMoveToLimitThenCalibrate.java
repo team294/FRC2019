@@ -43,6 +43,8 @@ public class ClimbMoveToLimitThenCalibrate extends Command {
   protected void end() {
     Robot.climb.stopClimbMotor();
     if (Robot.climb.isClimbAtLimitSwitch()) {
+      Robot.log.writeLogEcho("ClimbMoveToLimitThenCalibrate", "Calibrate at limit switch", "Raw encoder,"
+        + Robot.climb.getClimbEncTicksRaw() + ",Limit angle," + Robot.robotPrefs.climbLimitAngle);
       Robot.climb.calibrateClimbEnc(Robot.robotPrefs.climbLimitAngle, false);
     }
   }

@@ -28,6 +28,7 @@ import com.ctre.phoenix.motorcontrol.SensorCollection;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.utilities.FileLog;
+import frc.robot.utilities.Wait;
 
 /**
  * Add your docs here.
@@ -46,7 +47,7 @@ public class Climb extends Subsystem {
   private final SensorCollection climbLimit;
 
   private double rampRate = 0.5;
-  private double kP = 2;
+  private double kP = 3;      // Was 2, but did not climb to full height.  Increasing...
   private double kI = 0;
   private double kD = 0;
   private double kFF = 0;
@@ -84,6 +85,12 @@ public class Climb extends Subsystem {
     climbVacuum.setNeutralMode(NeutralMode.Brake);
     //climbVacuum2.setNeutralMode(NeutralMode.Brake);
 
+    // Wait 0.25 seconds before adjusting the climber calibration.  The reason is that .setInverted (above)
+    // changes the sign of read encoder value, but that change can be delayed up to 50ms for a round trip
+    // from the Rio to the Talon and back to the Rio.  So, reading angles could give the wrong value if
+    // we don't wait (random weird behavior).
+    // DO NOT GET RID OF THIS WITHOUT TALKING TO DON OR ROB.
+    Wait.waitTime(250);
     adjustClimbCalZero();
 
     // Oversampling for analog sensor
@@ -233,7 +240,7 @@ public class Climb extends Subsystem {
 	 */
 	public void adjustClimbCalZero() {
     Robot.log.writeLogEcho("Climb", "Adjust climb pre", "climb angle," + getClimbAngle() + 
-      "raw ticks" + getClimbEncTicksRaw() + ",climbCalZero," + Robot.robotPrefs.climbCalZero);
+      ",raw ticks," + getClimbEncTicksRaw() + ",climbCalZero," + Robot.robotPrefs.climbCalZero);
 
 		if(getClimbAngle() < Robot.robotPrefs.climbMinAngle - 10.0) {
       Robot.log.writeLogEcho("Climb", "Adjust climb", "Below min angle");
@@ -245,7 +252,7 @@ public class Climb extends Subsystem {
     }
     
     Robot.log.writeLogEcho("Climb", "Adjust climb post", "climb angle," + getClimbAngle() + 
-      "raw ticks" + getClimbEncTicksRaw() + ",climbCalZero," + Robot.robotPrefs.climbCalZero);
+      ",raw ticks," + getClimbEncTicksRaw() + ",climbCalZero," + Robot.robotPrefs.climbCalZero);
 	}
 
   /**
@@ -322,6 +329,7 @@ public class Climb extends Subsystem {
       SmartDashboard.putNumber("Climb angle", getClimbAngle());
       SmartDashboard.putNumber("Climb enc raw", getClimbEncTicksRaw());
       SmartDashboard.putBoolean("Climb vacuum", isVacuumPresent());
+      SmartDashboard.putNumber("Climb target enc", climbMotor2.getClosedLoopTarget(0));
 
       SmartDashboard.putNumber("Climb Analog Voltage", analogVacuumSensor.getVoltage());
       SmartDashboard.putNumber("Climb Analog Average (Oversampled) Voltage", analogVacuumSensor.getAverageVoltage());
@@ -335,7 +343,7 @@ public class Climb extends Subsystem {
 
     SmartDashboard.putNumber("Analog Vacuum Pressure", getVacuumPressure(false));
     if (isVacuumPresent()) Robot.leds.setColor(LedHandler.Color.BLUE, false); // solid when vacuum drawn
-    else if (getVacuumPressure(false) > 3.0) Robot.leds.setColor(LedHandler.Color.BLUE, true); // blinking while vacuum is being drawn
+    else if (getVacuumPressure(false) > 5.0) Robot.leds.setColor(LedHandler.Color.BLUE, true); // blinking when vacuum is starting to rise
     
     // Checks if the climb is not calibrated and automatically calibrates it once the reverse limit switch is pressed
     // If the climb isn't calibrated at the start of the match, then we can calibrate using manual climb control

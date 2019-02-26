@@ -112,6 +112,7 @@ public class Robot extends TimedRobot {
     driveTrain.zeroGyroRotation(); 
     driveTrain.zeroLeftEncoder();
     driveTrain.zeroRightEncoder();
+    leds.setColor(LedHandler.Color.OFF, false);
   }
 
   @Override

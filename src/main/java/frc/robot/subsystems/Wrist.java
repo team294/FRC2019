@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.utilities.FileLog;
+import frc.robot.utilities.Wait;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -64,6 +65,12 @@ public class Wrist extends Subsystem {
     
     wristLimits = wristMotor.getSensorCollection();
 
+    // Wait 0.25 seconds before adjusting the climber calibration.  The reason is that .setInverted (above)
+    // changes the sign of read encoder value, but that change can be delayed up to 50ms for a round trip
+    // from the Rio to the Talon and back to the Rio.  So, reading angles could give the wrong value if
+    // we don't wait (random weird behavior).
+    // DO NOT GET RID OF THIS WITHOUT TALKING TO DON OR ROB.
+    Wait.waitTime(250);
     adjustWristCalZero();
   }
 
@@ -157,7 +164,7 @@ public class Wrist extends Subsystem {
 	 */
 	public void adjustWristCalZero() {
     Robot.log.writeLogEcho("Wrist", "Adjust wrist pre", "wrist angle," + getWristAngle() + 
-      "raw ticks" + getWristEncoderTicksRaw() + ",wristCalZero," + Robot.robotPrefs.wristCalZero);
+      ",raw ticks," + getWristEncoderTicksRaw() + ",wristCalZero," + Robot.robotPrefs.wristCalZero);
 		if(getWristAngle() < Robot.robotPrefs.wristMin - 15.0) {
       Robot.log.writeLogEcho("Wrist", "Adjust wrist", "Below min angle");
 			Robot.robotPrefs.wristCalZero -= Robot.robotPrefs.encoderTicksPerRevolution;
@@ -167,7 +174,7 @@ public class Wrist extends Subsystem {
 			Robot.robotPrefs.wristCalZero += Robot.robotPrefs.encoderTicksPerRevolution;
 		}
     Robot.log.writeLogEcho("Wrist", "Adjust wrist post", "wrist angle," + getWristAngle() + 
-      "raw ticks" + getWristEncoderTicksRaw() + ",wristCalZero," + Robot.robotPrefs.wristCalZero);
+      ",raw ticks," + getWristEncoderTicksRaw() + ",wristCalZero," + Robot.robotPrefs.wristCalZero);
 	}
 
   /**
