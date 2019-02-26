@@ -108,6 +108,11 @@ public class Robot extends TimedRobot {
     log.writeLogEcho("Robot", "Disabled", "");
     climb.enableCompressor(true);
     vision.setLedMode(1);
+
+    wrist.stopWrist();
+    elevator.stopElevator();
+    climb.stopClimb();
+    climb.enableVacuum(false);
     
     driveTrain.zeroGyroRotation(); 
     driveTrain.zeroLeftEncoder();

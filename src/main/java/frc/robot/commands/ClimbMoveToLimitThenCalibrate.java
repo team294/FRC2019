@@ -41,7 +41,7 @@ public class ClimbMoveToLimitThenCalibrate extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.climb.stopClimbMotor();
+    Robot.climb.stopClimb();
     if (Robot.climb.isClimbAtLimitSwitch()) {
       Robot.log.writeLogEcho("ClimbMoveToLimitThenCalibrate", "Calibrate at limit switch", "Raw encoder,"
         + Robot.climb.getClimbEncTicksRaw() + ",Limit angle," + Robot.robotPrefs.climbLimitAngle);
@@ -53,6 +53,6 @@ public class ClimbMoveToLimitThenCalibrate extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.climb.stopClimbMotor();
+    Robot.climb.stopClimb();
   }
 }

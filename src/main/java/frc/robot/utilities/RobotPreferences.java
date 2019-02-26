@@ -27,7 +27,6 @@ public class RobotPreferences {
 	public boolean wristCalibrated = false;     // Default to wrist being uncalibrated.  Calibrate from robot preferences or "Calibrate Wrist Zero" button on dashboard
 	public double climbCalZero; // Climb encoder position at 0 degrees in encoder ticks
 	public boolean climbCalibrated = false; // Default to climb being uncalibrated
-	public double vacuumCurrentThreshold; // assume left climb vacuum is achieved if this threshold is passed TODO needs to be tested
 
 	/*
 	* Measurements
@@ -118,7 +117,6 @@ public class RobotPreferences {
 			recordStickyFaults("Preferences-climbCalZero");
 			climbCalZero = 0;
 		}
-		vacuumCurrentThreshold = prefs.getDouble("vacuumCurrentThreshold", 3.0);
 	}
 
 	/**
@@ -132,7 +130,7 @@ public class RobotPreferences {
 	public void setClimbCalibration(double climbCalZero, boolean writeCalToPreferences) {
 		this.climbCalZero = climbCalZero;
 		climbCalibrated = true;
-		Robot.climb.stopClimbMotor();  // Stop motor, so it doesn't jump to new value
+		Robot.climb.stopClimb();  // Stop motor, so it doesn't jump to new value
 		Robot.log.writeLog("Preferences", "Calibrate climber", "zero value," + climbCalZero + ",write to prefs," + writeCalToPreferences);
 		if (writeCalToPreferences) {
 			prefs.putDouble("climbCalZero", climbCalZero);
@@ -143,7 +141,7 @@ public class RobotPreferences {
 	 * Stops climb motor and sets climbCalibrated to false
 	 */
 	public void setClimbUncalibrated() {
-		Robot.climb.stopClimbMotor();
+		Robot.climb.stopClimb();
 		climbCalibrated = false;
 		Robot.log.writeLog("Preferences", "Uncalibrate climber", "");
 	}
@@ -190,9 +188,6 @@ public class RobotPreferences {
 		}
 		if (!prefs.containsKey("climbCalZero")) {
 			prefs.putDouble("climbCalZero", -9999);
-		}
-		if (!prefs.containsKey("vacuumCurrentThreshold")) {
-			prefs.putDouble("vacuumCurrentThreshold", 3.0);
 		}
 	}
 

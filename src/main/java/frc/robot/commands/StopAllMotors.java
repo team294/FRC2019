@@ -23,7 +23,7 @@ public class StopAllMotors extends Command {
   protected void initialize() {
     Robot.elevator.stopElevator();
     Robot.wrist.stopWrist();
-    Robot.climb.stopClimbMotor();
+    Robot.climb.stopClimb();
   }
 
   // Called repeatedly when this Command is scheduled to run

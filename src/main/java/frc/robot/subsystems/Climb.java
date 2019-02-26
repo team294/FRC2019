@@ -129,7 +129,7 @@ public class Climb extends Subsystem {
   /**
    * Stops the climb motors
    */
-  public void stopClimbMotor() {
+  public void stopClimb() {
     setClimbMotorPercentOutput(0.0);
   }
 
@@ -289,12 +289,56 @@ public class Climb extends Subsystem {
   }
 
   /**
-   * @return angle in degrees
-   */
+	 * Returns the angle that climber is currently positioned at in degrees.
+	 * If the climber is not calibrated, then returns climbLimitAngle in keepout region to engage all interlocks,
+   * since we really don't know where the climber is at.
+	 * @return current degree of climber angle
+	 */
   public double getClimbAngle() {
-    return climbEncTicksToAngle(getClimbEncTicks());
+    if (Robot.robotPrefs.climbCalibrated) {
+      double angle = climbEncTicksToAngle(getClimbEncTicks());
+
+      if (Robot.log.getLogLevel() == 1){
+        Robot.log.writeLog("Climb", "Get climb Angle", "angle," + angle);
+      }
+      return angle;
+    } else {
+      // Climber is not calibrated.  Assume we are at max angle in keepout region to engage all interlocks,
+      // since we really don't know where the climber is at.
+      return Robot.robotPrefs.climbLimitAngle;
+    }
   }
 
+
+  /**
+	 * Returns the angle that climber is trying to move to in degrees.
+	 * If the climber is not calibrated, then returns climbLimitAngle in keepout region to engage all interlocks,
+   * since we really don't know where the climber is at.  If the climber is in manual control mode, then
+   * returns the actual climber position.
+	 * @return desired degree of climber angle
+	 */
+  public double getCurrentClimbTarget() {
+    double currentTarget;
+
+    if (Robot.robotPrefs.climbCalibrated) {
+      if (climbMotor2.getControlMode() == ControlMode.Position) {
+        currentTarget = climbEncTicksToAngle(climbMotor2.getClosedLoopTarget(0) - Robot.robotPrefs.climbCalZero);
+      } else {
+        // If we are not in position control mode, then we aren't moving towards a target (and the target
+        // angle may be undefined).  So, get the actual climb angle instead.
+        currentTarget = getClimbAngle();
+      }
+
+      if(Robot.log.getLogLevel() == 1){
+        Robot.log.writeLog("Climb", "Climb Target", "Climb Target," + currentTarget);
+      }
+      return currentTarget;
+    } else {
+      // Climber is not calibrated.  Assume we are at max angle in keepout region to engage all interlocks,
+      // since we really don't know where the climber is at.
+      return Robot.robotPrefs.climbLimitAngle;
+    }
+  }
 
   /**
    * @return true = climb is at its calibration angle
@@ -309,7 +353,8 @@ public class Climb extends Subsystem {
     ",VacVolts," + climbVacuum.getMotorOutputVoltage() + //",VacVolts2," + climbVacuum2.getMotorOutputVoltage() +
     ",Amps1," + Robot.pdp.getCurrent(RobotMap.climbMotor2PDP) + ",Amps2," + Robot.pdp.getCurrent(RobotMap.climbMotor1PDP) + 
     ",VacAmps," + Robot.pdp.getCurrent(RobotMap.climbVacuum1PDP) + //",VacAmps2," + Robot.pdp.getCurrent(RobotMap.climbVacuum2PDP) +
-    ",EncCalZero," + Robot.robotPrefs.climbCalZero + ",Enc Raw," + getClimbEncTicksRaw() + ",Enc Ang," + getClimbAngle() + 
+    ",EncCalZero," + Robot.robotPrefs.climbCalZero + ",Enc Raw," + getClimbEncTicksRaw() + 
+    ",Enc Ang," + getClimbAngle() + ",Enc target," + getCurrentClimbTarget() +
     ",Climb limit," + isClimbAtLimitSwitch() + ",Vacuum Achieved," + isVacuumPresent()
     );
   }
@@ -329,7 +374,7 @@ public class Climb extends Subsystem {
       SmartDashboard.putNumber("Climb angle", getClimbAngle());
       SmartDashboard.putNumber("Climb enc raw", getClimbEncTicksRaw());
       SmartDashboard.putBoolean("Climb vacuum", isVacuumPresent());
-      SmartDashboard.putNumber("Climb target enc", climbMotor2.getClosedLoopTarget(0));
+      SmartDashboard.putNumber("Climb target", getCurrentClimbTarget());
 
       SmartDashboard.putNumber("Climb Analog Voltage", analogVacuumSensor.getVoltage());
       SmartDashboard.putNumber("Climb Analog Average (Oversampled) Voltage", analogVacuumSensor.getAverageVoltage());

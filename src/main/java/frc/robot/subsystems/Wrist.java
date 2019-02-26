@@ -65,7 +65,7 @@ public class Wrist extends Subsystem {
     
     wristLimits = wristMotor.getSensorCollection();
 
-    // Wait 0.25 seconds before adjusting the climber calibration.  The reason is that .setInverted (above)
+    // Wait 0.25 seconds before adjusting the wrist calibration.  The reason is that .setInverted (above)
     // changes the sign of read encoder value, but that change can be delayed up to 50ms for a round trip
     // from the Rio to the Talon and back to the Rio.  So, reading angles could give the wrong value if
     // we don't wait (random weird behavior).
@@ -252,7 +252,8 @@ public class Wrist extends Subsystem {
 
   /**
 	 * Returns the angle that wrist is currently positioned at in degrees.
-	 * If the wrist is not calibrated, then returns wristMax.
+	 * If the wrist is not calibrated, then returns wristMax in keepout region to engage all interlocks,
+   * since we really don't know where the wrist is at.
 	 * @return current degree of wrist angle
 	 */
   public double getWristAngle() {
@@ -265,23 +266,41 @@ public class Wrist extends Subsystem {
       }
       return wristAngle;
     } else {
+      // Wrist is not calibrated.  Assume we are at max angle in keepout region to engage all interlocks,
+      // since we really don't know where the wrist is at.
       return Robot.robotPrefs.wristMax;
     }
   }
 
   /**
 	 * Returns the angle that wrist is trying to move to in degrees.
-	 * If the wrist is not calibrated, then returns wristMax.
+	 * If the wrist is not calibrated, then returns wristMax in keepout region to engage all interlocks,
+   * since we really don't know where the wrist is at.  If the wrist is in manual control mode, then
+   * returns the actual wrist position.
 	 * @return desired degree of wrist angle
 	 */
   public double getCurrentWristTarget() {
+    double currentTarget;
+
     if (Robot.robotPrefs.wristCalibrated) {
-      double currentTarget = encoderTicksToDegrees(wristMotor.getClosedLoopTarget(0) - Robot.robotPrefs.wristCalZero);
+      if (wristMotor.getControlMode() == ControlMode.Position) {
+        currentTarget = encoderTicksToDegrees(wristMotor.getClosedLoopTarget(0) - Robot.robotPrefs.wristCalZero);
+      } else {
+        // If we are not in position control mode, then we aren't moving towards a target (and the target
+        // angle may be undefined).  So, get the actual wrist angle instead.
+        currentTarget = getWristAngle();
+      }
+
+      currentTarget = currentTarget % 360; // If encoder wraps around 360 degrees
+      currentTarget = (currentTarget > 180) ? currentTarget - 360 : currentTarget; // Change range to -180 to +180
+
       if(Robot.log.getLogLevel() == 1){
         Robot.log.writeLog("Wrist", "Wrist Target", "Wrist Target," + currentTarget);
       }
       return currentTarget;
     } else {
+      // Wrist is not calibrated.  Assume we are at max angle in keepout region to engage all interlocks,
+      // since we really don't know where the wrist is at.
       return Robot.robotPrefs.wristMax;
     }
   }
@@ -322,7 +341,8 @@ public class Wrist extends Subsystem {
       SmartDashboard.putNumber("Wrist Angle", getWristAngle());
       SmartDashboard.putNumber("Wrist enc raw", getWristEncoderTicksRaw());
 			SmartDashboard.putBoolean("Wrist Lower Limit", getWristLowerLimit());
-			SmartDashboard.putBoolean("Wrist Upper Limit", getWristUpperLimit());
+      SmartDashboard.putBoolean("Wrist Upper Limit", getWristUpperLimit());
+      SmartDashboard.putNumber("Wrist target", getCurrentWristTarget());
     }
     
     // Checks if the wrist is not calibrated and automatically calibrates it once the limit switch is pressed
