@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.commands.*;
 import frc.robot.triggers.*;
-import frc.robot.utilities.RobotPreferences;
 import frc.robot.utilities.RobotPreferences.ElevatorPosition;
 import frc.robot.utilities.RobotPreferences.WristAngle;
 
@@ -30,8 +29,6 @@ public class OI {
   public Joystick rightJoystick = new Joystick(1);
   public Joystick coPanel = new Joystick(2);
   public Joystick xBoxController = new Joystick(3);
-
-  // TODO: Add some way to change the limelight pipeline for sandstorm
 
   public OI() {
     Button[] left = new Button[12];
@@ -77,45 +74,30 @@ public class OI {
     xbRT.whenActive(new CargoOuttake()); // RT
 
     // Joystick buttons
-    left[1].whenPressed(new Shift(true));
-    right[1].whenPressed(new Shift(false));
-    left[2].whenPressed(new DriveAssist());
-    // right[2].whenPressed(new Command());
-    right[2].whenReleased(new DriveWithJoysticks());
-    // left[3].whenPressed(new Command());
-    // right[3].whileHeld(new DriveStraight(Robot.oi.rightJoystick.getY(), 0)); // TODO fix drivestraight
-    left[4].whenPressed(new HatchScoreAndIntake());
-    right[4].whenPressed(new DriveSetDirection(false));
-    left[5].whenPressed(new HatchScoreAndIntake());
-    right[5].whenPressed(new DriveSetDirection(true));
-
-    // left[1].whenPressed(new Shift(true));
-    // right[1].whenPressed(new Shift(false));
-    // left[2].whenPressed(new DriveAssist());
-    // right[2].whenPressed(new DriveAssist()); // Hatch grab
-    // left[3].whenPressed(new DriveWithVision(false, true)); // No line followers, but gyro correction
-    // right[3].whenPressed(new DriveWithVision(false, false)); // No line followers, no gyro
-    // left[4].whenPressed(new DriveWithLineFollowing(true));
-    // right[4].whenPressed(new DriveWithLineFollowing(false));
-    // left[5].whenPressed(new DriveWithLineFollowing(true));
-    // right[5].whenPressed(new DriveWithLineFollowing(false));
-    // left[2].whenReleased(new DriveWithJoysticks());
-    // right[2].whenReleased(new DriveWithJoysticks());
-    // left[3].whenReleased(new DriveWithJoysticks());
-    // right[3].whenReleased(new DriveWithJoysticks());
-    // left[4].whenReleased(new DriveWithJoysticks());
-    // right[4].whenReleased(new DriveWithJoysticks());
-    // left[5].whenReleased(new DriveWithJoysticks());
-    // right[5].whenReleased(new DriveWithJoysticks());
+    left[1].whenPressed(new Shift(true)); // high gear
+    right[1].whenPressed(new Shift(false)); // low gear
+    left[2].whenPressed(new DriveAssist()); // drive with vision assist
+    right[2].whileHeld(new DriveStraightJoystick()); // drive straight with right joystick
+    right[2].whenReleased(new DriveWithJoysticks()); // drive with joysticks
+    left[3].whenPressed(new HatchScoreAndIntake()); // toggle hatch, back up
+    // right[3].whenPressed(new Command());
+    left[4].whenPressed(new VisionChangePipeline(0)); // set pipeline for vision
+    right[4].whenPressed(new DriveSetDirection(false)); // set direction reverse
+    left[5].whenPressed(new VisionChangePipeline(2)); // set pipeline for drive feed
+    right[5].whenPressed(new DriveSetDirection(true)); // set direction forward
 
     // Copanel buttons
     coP[1].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStart));
     coP[2].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStart));
-    coP[3].whenPressed(new ClimbArmSetPercentOutput(0.3));  // TODO determine manual control percent
-    coP[4].whenPressed(new ClimbArmSetPercentOutput(-0.3));  // TODO determine manual control percent
+    coP[3].whenPressed(new ClimbArmSetPercentOutput(0.3));
+    coP[4].whenPressed(new ClimbArmSetPercentOutput(-0.3));
     coP[5].whenPressed(new ClimbVacuumTurnOn(true));
     coP[6].whenPressed(new ClimbVacuumTurnOn(false));
     coP[8].whenPressed(new ClimbSequence());
+    coP[9].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchHigh));
+    coP[10].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchMid));
+    coP[11].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.cargoShipCargo));
+    coP[12].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchLow));
 
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
@@ -163,7 +145,7 @@ public class OI {
 
     SmartDashboard.putData("Clear Sticky Faults", new ClearStickyFaults());
     Robot.robotPrefs.showStickyFaults();
-    //SmartDashboard.putData("Turn To Line", new TurnToLine());
+    // SmartDashboard.putData("Turn To Line", new TurnToLine());
     SmartDashboard.putData("Disc Toggle", new HatchToggle());
     SmartDashboard.putData("Disc Grab", new HatchSet(true));
     SmartDashboard.putData("Disc Release", new HatchSet(false));

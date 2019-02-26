@@ -15,6 +15,6 @@ public class HatchScoreAndIntake extends CommandGroup {
    */
   public HatchScoreAndIntake() {
     addParallel(new HatchToggle());
-    addParallel(new DriveStraight(-0.3, 3.0));
+    addParallel(new DriveStraightOutputTime(-0.3, 2.0));
   }
 }
