@@ -148,6 +148,37 @@
               "_title": "SmartDashboard/Zero Elev Enc (w/ Limit)"
             }
           },
+          "6,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/TurnGyro",
+              "_title": "SmartDashboard/TurnGyro"
+            }
+          },
+          "7,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/targetAngle",
+              "_title": "SmartDashboard/targetAngle"
+            }
+          },
+          "8,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Gyro Angle",
+              "_title": "SmartDashboard/Gyro Angle"
           "9,4": {
             "size": [
               2,
