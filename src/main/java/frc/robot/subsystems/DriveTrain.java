@@ -539,8 +539,8 @@ public class DriveTrain extends Subsystem {
     double fixSpeed = 0.45;
     double lPercentOutput = fixSpeed + (gainConstant * xVal);
     double rPercentOutput = fixSpeed - (gainConstant * xVal);
-    System.out.println("x-val = " + xVal + ", " + getGyroRotation());
-    System.out.println(lPercentOutput);
+   // System.out.println("x-val = " + xVal + ", " + getGyroRotation());
+   // System.out.println(lPercentOutput);
     if (xVal > 0.5) {
       this.robotDrive.tankDrive(lPercentOutput, -lPercentOutput);
     } else if (xVal < -0.5) {
