@@ -10,7 +10,6 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import frc.robot.Robot;
-import frc.robot.utilities.RobotPreferences.ElevatorPosition;
 import frc.robot.utilities.RobotPreferences.WristAngle;
 
 public class ElevatorWristStowB extends CommandGroup {
@@ -20,7 +19,7 @@ public class ElevatorWristStowB extends CommandGroup {
    */
   public ElevatorWristStowB() {
     // Start moving climber if we need to deploy the wrist and the climber is in the way
-    addSequential(new ConditionalCommand(new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe)){
+    addSequential(new ConditionalCommand(new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe -5.0)){
       @Override
       protected boolean condition() {
         if (Robot.log.getLogLevel() <= 2) {

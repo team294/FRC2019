@@ -20,7 +20,7 @@ public class ElevatorWristStowA extends CommandGroup {
    */
   public ElevatorWristStowA() {
     // Start moving climber if we need to deploy the wrist and the climber is in the way
-    addParallel(new ConditionalCommand(new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe)){
+    addParallel(new ConditionalCommand(new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe - 5.0)){
       @Override
       protected boolean condition() {
         if (Robot.log.getLogLevel() <= 2) {
@@ -31,11 +31,11 @@ public class ElevatorWristStowA extends CommandGroup {
       }
     });
 
-    addParallel(new WristMoveToAngle(Robot.robotPrefs.wristKeepOut));
+    addParallel(new WristMoveToAngle(Robot.robotPrefs.wristKeepOut - 5.0));
     addSequential(new ElevatorMoveToLevel(ElevatorPosition.bottom));
 
     // Finish moving climber if we need to deploy the wrist and the climber is in the way
-    addSequential(new ConditionalCommand(new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe)){
+    addSequential(new ConditionalCommand(new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe - 5.0)){
       @Override
       protected boolean condition() {
         if (Robot.log.getLogLevel() <= 2) {

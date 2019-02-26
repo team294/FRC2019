@@ -9,6 +9,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.AnalogTrigger;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -26,6 +28,7 @@ import com.ctre.phoenix.motorcontrol.SensorCollection;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.utilities.FileLog;
+import frc.robot.utilities.Wait;
 
 /**
  * Add your docs here.
@@ -39,10 +42,12 @@ public class Climb extends Subsystem {
   private final BaseMotorController climbVacuum = new WPI_VictorSPX(RobotMap.climbVacuum1); //left Vacuum system
   //private final BaseMotorController climbVacuum2 = new WPI_VictorSPX(RobotMap.climbVacuum2); //right Vacuum system
   private final DigitalInput vacuumSwitch = new DigitalInput(RobotMap.vacuumSwitch);
+  private final AnalogInput analogVacuumSensor = new AnalogInput(RobotMap.analogVacuum);
+  private final AnalogTrigger vacuumTrigger = new AnalogTrigger(analogVacuumSensor);
   private final SensorCollection climbLimit;
 
   private double rampRate = 0.5;
-  private double kP = 2;
+  private double kP = 3;      // Was 2, but did not climb to full height.  Increasing...
   private double kI = 0;
   private double kD = 0;
   private double kFF = 0;
@@ -56,9 +61,11 @@ public class Climb extends Subsystem {
     climbMotor1.follow(climbMotor2);
     climbMotor2.set(ControlMode.PercentOutput, 0);
     climbMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
-    climbMotor2.setSensorPhase(true);
+    climbMotor2.setSensorPhase(false);
     climbMotor2.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
     climbLimit = climbMotor2.getSensorCollection();
+    climbMotor1.setInverted(true);
+    climbMotor2.setInverted(true);
 
     climbMotor2.config_kP(0, kP);
     climbMotor2.config_kI(0, kI);
@@ -78,7 +85,22 @@ public class Climb extends Subsystem {
     climbVacuum.setNeutralMode(NeutralMode.Brake);
     //climbVacuum2.setNeutralMode(NeutralMode.Brake);
 
+    // Wait 0.25 seconds before adjusting the climber calibration.  The reason is that .setInverted (above)
+    // changes the sign of read encoder value, but that change can be delayed up to 50ms for a round trip
+    // from the Rio to the Talon and back to the Rio.  So, reading angles could give the wrong value if
+    // we don't wait (random weird behavior).
+    // DO NOT GET RID OF THIS WITHOUT TALKING TO DON OR ROB.
+    Wait.waitTime(250);
     adjustClimbCalZero();
+
+    // Oversampling for analog sensor
+    analogVacuumSensor.setOversampleBits(4);
+    analogVacuumSensor.setAverageBits(2);
+
+    // Analog Trigger testing settings
+    vacuumTrigger.setLimitsVoltage(0.5, 4.4); // Random boundaries, no idea what real values are
+    //vacuumTrigger.setAveraged(true); // Use the averaged value instead of raw
+    vacuumTrigger.setFiltered(true); // Use a 3-point filter to reject outliers. CANNOT BE USED WITH AVERAGE VALUE
   }
 
   /**
@@ -107,7 +129,7 @@ public class Climb extends Subsystem {
   /**
    * Stops the climb motors
    */
-  public void stopClimbMotor() {
+  public void stopClimb() {
     setClimbMotorPercentOutput(0.0);
   }
 
@@ -116,22 +138,6 @@ public class Climb extends Subsystem {
    * @param angle target angle, in degrees (0 = horizontal behind robot, + = up, - = down)
    */
   public void setClimbPos(double angle) {
-    /* Can this version of the code get into a double-interlock scenario (wrist blocks climber and climber blocks wrist)?
-    if (Robot.robotPrefs.climbCalibrated) {
-      if ((getClimbAngle() < Robot.robotPrefs.climbWristMovingSafe && angle < Robot.robotPrefs.climbWristMovingSafe) ||
-      (Robot.wrist.getWristAngle() < Robot.robotPrefs.wristKeepOut) || (Robot.wrist.getWristUpperLimit() && 
-      (getClimbAngle() > Robot.robotPrefs.climbWristMovingSafe && getClimbAngle() < Robot.robotPrefs.climbWristStowedSafe) && angle < Robot.robotPrefs.climbWristMovingSafe)) {
-        climbMotor2.set(ControlMode.Position, climbAngleToEncTicks(angle) + Robot.robotPrefs.climbCalZero);
-        Robot.log.writeLog("Climb", "Set angle", "Angle," + angle + ",Interlock,OK");
-      }
-      else if ((Robot.wrist.getWristAngle() > Robot.robotPrefs.wristKeepOut) && (getClimbAngle() < Robot.robotPrefs.climbWristMovingSafe) && (angle > Robot.robotPrefs.climbWristMovingSafe)) {
-        climbMotor2.set(ControlMode.Position, climbAngleToEncTicks(Robot.robotPrefs.climbWristMovingSafe) + Robot.robotPrefs.climbCalZero);
-        Robot.log.writeLog("Climb", "Set angle", "Angle," + Robot.robotPrefs.climbWristMovingSafe + ",Interlock,Diverted");
-      } else {
-        Robot.log.writeLog("Climb", "Set angle", "Angle," + Robot.robotPrefs.climbWristMovingSafe + ",Interlock,Forbidden");
-      }
-    }
-    */
     double safeAngle = angle;
 
     // Apply interlocks
@@ -146,7 +152,8 @@ public class Climb extends Subsystem {
     }
 
     climbMotor2.set(ControlMode.Position, climbAngleToEncTicks(safeAngle) + Robot.robotPrefs.climbCalZero);
-    Robot.log.writeLog("Climb", "Set angle", "Desired angle," + angle + ",Set angle," + safeAngle);
+    Robot.log.writeLog("Climb", "Set angle", "Desired angle," + angle + ",Set angle," + safeAngle + ",Wrist Upper Limit," + Robot.wrist.getWristUpperLimit()
+    + ",Wrist Angle," + Robot.wrist.getWristAngle() + ",Wrist Target," + Robot.wrist.getCurrentWristTarget());
   }
 
   /**
@@ -164,14 +171,33 @@ public class Climb extends Subsystem {
     }
   }
 
-  /**
+   /**
    * Returns true if pressure is low enough to initiate climb.
    * If switch is disconnected, isVacuumPresent reads false.
    * @return true = vacuum sufficient for climb, false = not enough vacuum
    */
+  /*
   public boolean isVacuumPresent(){
     // Note:  Need to invert polarity from switch.
     return !vacuumSwitch.get();
+  } */
+
+  /**
+   * Returns true if the pressure is low enough to climb. May have bad readings if sensor is disconnected (equates to ~25.5 reading)
+   * @return true = pressure low enough, false = pressure too high
+   */
+  public boolean isVacuumPresent() {
+    return getVacuumPressure(false) >= 20.0;
+  }
+
+  /**
+   * Gets the value of the pressure gauge on the climb system according to the analog sensor
+   * @param raw true for using raw data, false for using averaged data
+   * @return pressure from 0 (atm) to 25.5 (upper limit of the sensor's sensitivity) inclusive
+   */
+  public double getVacuumPressure(boolean raw) {
+    double out = (raw) ? analogVacuumSensor.getVoltage() * -5.7 + 27 : analogVacuumSensor.getAverageVoltage() * -5.7 + 27;
+    return out;
   }
 
   /**
@@ -198,7 +224,7 @@ public class Climb extends Subsystem {
 	 */
 	public void adjustClimbCalZero() {
     Robot.log.writeLogEcho("Climb", "Adjust climb pre", "climb angle," + getClimbAngle() + 
-      "raw ticks" + getClimbEncTicksRaw() + ",climbCalZero," + Robot.robotPrefs.climbCalZero);
+      ",raw ticks," + getClimbEncTicksRaw() + ",climbCalZero," + Robot.robotPrefs.climbCalZero);
 
 		if(getClimbAngle() < Robot.robotPrefs.climbMinAngle - 10.0) {
       Robot.log.writeLogEcho("Climb", "Adjust climb", "Below min angle");
@@ -210,7 +236,7 @@ public class Climb extends Subsystem {
     }
     
     Robot.log.writeLogEcho("Climb", "Adjust climb post", "climb angle," + getClimbAngle() + 
-      "raw ticks" + getClimbEncTicksRaw() + ",climbCalZero," + Robot.robotPrefs.climbCalZero);
+      ",raw ticks," + getClimbEncTicksRaw() + ",climbCalZero," + Robot.robotPrefs.climbCalZero);
 	}
 
   /**
@@ -247,12 +273,56 @@ public class Climb extends Subsystem {
   }
 
   /**
-   * @return angle in degrees
-   */
+	 * Returns the angle that climber is currently positioned at in degrees.
+	 * If the climber is not calibrated, then returns climbLimitAngle in keepout region to engage all interlocks,
+   * since we really don't know where the climber is at.
+	 * @return current degree of climber angle
+	 */
   public double getClimbAngle() {
-    return climbEncTicksToAngle(getClimbEncTicks());
+    if (Robot.robotPrefs.climbCalibrated) {
+      double angle = climbEncTicksToAngle(getClimbEncTicks());
+
+      if (Robot.log.getLogLevel() == 1){
+        Robot.log.writeLog("Climb", "Get climb Angle", "angle," + angle);
+      }
+      return angle;
+    } else {
+      // Climber is not calibrated.  Assume we are at max angle in keepout region to engage all interlocks,
+      // since we really don't know where the climber is at.
+      return Robot.robotPrefs.climbLimitAngle;
+    }
   }
 
+
+  /**
+	 * Returns the angle that climber is trying to move to in degrees.
+	 * If the climber is not calibrated, then returns climbLimitAngle in keepout region to engage all interlocks,
+   * since we really don't know where the climber is at.  If the climber is in manual control mode, then
+   * returns the actual climber position.
+	 * @return desired degree of climber angle
+	 */
+  public double getCurrentClimbTarget() {
+    double currentTarget;
+
+    if (Robot.robotPrefs.climbCalibrated) {
+      if (climbMotor2.getControlMode() == ControlMode.Position) {
+        currentTarget = climbEncTicksToAngle(climbMotor2.getClosedLoopTarget(0) - Robot.robotPrefs.climbCalZero);
+      } else {
+        // If we are not in position control mode, then we aren't moving towards a target (and the target
+        // angle may be undefined).  So, get the actual climb angle instead.
+        currentTarget = getClimbAngle();
+      }
+
+      if(Robot.log.getLogLevel() == 1){
+        Robot.log.writeLog("Climb", "Climb Target", "Climb Target," + currentTarget);
+      }
+      return currentTarget;
+    } else {
+      // Climber is not calibrated.  Assume we are at max angle in keepout region to engage all interlocks,
+      // since we really don't know where the climber is at.
+      return Robot.robotPrefs.climbLimitAngle;
+    }
+  }
 
   /**
    * @return true = climb is at its calibration angle
@@ -267,7 +337,8 @@ public class Climb extends Subsystem {
     ",VacVolts," + climbVacuum.getMotorOutputVoltage() + //",VacVolts2," + climbVacuum2.getMotorOutputVoltage() +
     ",Amps1," + Robot.pdp.getCurrent(RobotMap.climbMotor2PDP) + ",Amps2," + Robot.pdp.getCurrent(RobotMap.climbMotor1PDP) + 
     ",VacAmps," + Robot.pdp.getCurrent(RobotMap.climbVacuum1PDP) + //",VacAmps2," + Robot.pdp.getCurrent(RobotMap.climbVacuum2PDP) +
-    ",EncCalZero," + Robot.robotPrefs.climbCalZero + ",Enc Raw," + getClimbEncTicksRaw() + ",Enc Ang," + getClimbAngle() + 
+    ",EncCalZero," + Robot.robotPrefs.climbCalZero + ",Enc Raw," + getClimbEncTicksRaw() + 
+    ",Enc Ang," + getClimbAngle() + ",Enc target," + getCurrentClimbTarget() +
     ",Climb limit," + isClimbAtLimitSwitch() + ",Vacuum Achieved," + isVacuumPresent()
     );
   }
@@ -287,11 +358,21 @@ public class Climb extends Subsystem {
       SmartDashboard.putNumber("Climb angle", getClimbAngle());
       SmartDashboard.putNumber("Climb enc raw", getClimbEncTicksRaw());
       SmartDashboard.putBoolean("Climb vacuum", isVacuumPresent());
+      SmartDashboard.putNumber("Climb target", getCurrentClimbTarget());
+
+      SmartDashboard.putNumber("Climb Analog Voltage", analogVacuumSensor.getVoltage());
+      SmartDashboard.putNumber("Climb Analog Average (Oversampled) Voltage", analogVacuumSensor.getAverageVoltage());
+      SmartDashboard.putBoolean("Vacuum Trigger In Window (0.5, 3.4)", vacuumTrigger.getInWindow());
+      //SmartDashboard.putBoolean("Vacuum Trigger Rising/Falling", vacuumTrigger.getTriggerState());
 
       if (DriverStation.getInstance().isEnabled()) {
         updateClimbLog(); 
       }
     }
+
+    SmartDashboard.putNumber("Analog Vacuum Pressure", getVacuumPressure(false));
+    if (isVacuumPresent()) Robot.leds.setColor(LedHandler.Color.BLUE, false); // solid when vacuum drawn
+    else if (getVacuumPressure(false) > 5.0) Robot.leds.setColor(LedHandler.Color.BLUE, true); // blinking when vacuum is starting to rise
     
     // Checks if the climb is not calibrated and automatically calibrates it once the reverse limit switch is pressed
     // If the climb isn't calibrated at the start of the match, then we can calibrate using manual climb control

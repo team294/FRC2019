@@ -27,7 +27,6 @@ public class RobotPreferences {
 	public boolean wristCalibrated = false;     // Default to wrist being uncalibrated.  Calibrate from robot preferences or "Calibrate Wrist Zero" button on dashboard
 	public double climbCalZero; // Climb encoder position at 0 degrees in encoder ticks
 	public boolean climbCalibrated = false; // Default to climb being uncalibrated
-	public double vacuumCurrentThreshold; // assume left climb vacuum is achieved if this threshold is passed TODO needs to be tested
 
 	/*
 	* Measurements
@@ -37,7 +36,7 @@ public class RobotPreferences {
 	public final double wristStowed = 110;
 	public final double wristKeepOut = 28.0; // Max angle to avoid interference with elevator or climber
 	public final double wristUp = 15.0;
-	public final double wristStraight = 0.0;
+	public final double wristStraight = 3.0;
 	public final double wristDown = -64.0;		// TODO Should be -59.0? // In this position, elevator must be able to go to groundCargo
 	public final double wristMin = -68;
 	public enum WristAngle {stowed, up, straight, down}
@@ -60,12 +59,12 @@ public class RobotPreferences {
 	*/
 
 	// Field level heights (for elevator targeting), in inches
-	public final double elevatorWristStow = 15.0;
+	public final double elevatorWristStow = 16.0;
 	public final double hatchLow = 19.0;
   	public final double hatchMid = 47.0;
   	public final double hatchHigh = 72.5;
   	public final double cargoShipCargo = 34.75;
-	public final double rocketBallOffset = 8.5;
+	public final double rocketBallOffset = 2;  // Was 8.5", but did not account that ball intake is higher than the disc grabber
 	public final double loadCargo = 44.125;
 	public final double groundCargo = 20.0;  		// At this level, wrist must be able to go to wristDown
 
@@ -73,10 +72,10 @@ public class RobotPreferences {
 
 	//Climb Target Angles (in degrees)
 	//TODO Test and adjust angles when climb is built
-	public final double climbLimitAngle = 120.0;		// Max angle for climber (limit switch)
-	public final double climbWristStowedSafe = 122.0;	// Max angle for climber when wrist is stowed (but wrist can't move if climber is here)
+	public final double climbLimitAngle = 137.7;		// Max angle for climber (limit switch), was 120
+	public final double climbWristStowedSafe = 137.0;	// Max angle for climber when wrist is stowed (but wrist can't move if climber is here)
 	public final double climbWristMovingSafe = 122.0;	// Max angle for climber if wrist is moving
-	public final double climbLiftAngle = 120.0;			// Angle where robot scores climb points
+	public final double climbLiftAngle = 128.0;			// Angle where robot scores climb points, was 120
 	public final double climbStart = 110.0;				// Climber starting angle (must be safe for wrist to move, must be in frame perimeter)
 	public final double climbVacuumAngle = -5.0;		// Climber angle to attach vacuum to platform
 	public final double climbMinAngle = -10.0;			// Min angle for climber
@@ -110,15 +109,14 @@ public class RobotPreferences {
 			DriverStation.reportError("Error: Preferences missing from RoboRio for Wrist calibration.", false);
 			recordStickyFaults("Preferences-wristCalZero");
 			wristCalZero = 0;
-		}	
+		}
 		climbCalZero = prefs.getDouble("climbCalZero", -9999);
 		climbCalibrated = (climbCalZero != -9999);
 		if(!climbCalibrated) {
 			DriverStation.reportError("Error: Preferences missing from RoboRio for Climb calibration.", false);
 			recordStickyFaults("Preferences-climbCalZero");
 			climbCalZero = 0;
-		}	
-		vacuumCurrentThreshold = prefs.getDouble("vacuumCurrentThreshold", 3.0);
+		}
 	}
 
 	/**
@@ -132,8 +130,8 @@ public class RobotPreferences {
 	public void setClimbCalibration(double climbCalZero, boolean writeCalToPreferences) {
 		this.climbCalZero = climbCalZero;
 		climbCalibrated = true;
-		Robot.climb.stopClimbMotor();  // Stop motor, so it doesn't jump to new value
-		Robot.log.writeLog("Preferences", "Calibrate climber", "zero value," + climbCalZero);
+		Robot.climb.stopClimb();  // Stop motor, so it doesn't jump to new value
+		Robot.log.writeLog("Preferences", "Calibrate climber", "zero value," + climbCalZero + ",write to prefs," + writeCalToPreferences);
 		if (writeCalToPreferences) {
 			prefs.putDouble("climbCalZero", climbCalZero);
 		}
@@ -143,7 +141,7 @@ public class RobotPreferences {
 	 * Stops climb motor and sets climbCalibrated to false
 	 */
 	public void setClimbUncalibrated() {
-		Robot.climb.stopClimbMotor();
+		Robot.climb.stopClimb();
 		climbCalibrated = false;
 		Robot.log.writeLog("Preferences", "Uncalibrate climber", "");
 	}
@@ -190,9 +188,6 @@ public class RobotPreferences {
 		}
 		if (!prefs.containsKey("climbCalZero")) {
 			prefs.putDouble("climbCalZero", -9999);
-		}
-		if (!prefs.containsKey("vacuumCurrentThreshold")) {
-			prefs.putDouble("vacuumCurrentThreshold", 3.0);
 		}
 	}
 

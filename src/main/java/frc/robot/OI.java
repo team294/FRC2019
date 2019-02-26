@@ -31,6 +31,8 @@ public class OI {
   public Joystick coPanel = new Joystick(2);
   public Joystick xBoxController = new Joystick(3);
 
+  // TODO: Add some way to change the limelight pipeline for sandstorm
+
   public OI() {
     Button[] left = new Button[12];
     Button[] right = new Button[12];
@@ -111,8 +113,8 @@ public class OI {
     coP[2].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStart));
     coP[3].whenPressed(new ClimbArmSetPercentOutput(0.3));  // TODO determine manual control percent
     coP[4].whenPressed(new ClimbArmSetPercentOutput(-0.3));  // TODO determine manual control percent
-    // coP[5].whenPressed(new Command());  // TODO add turning on vacuum
-    // coP[6].whenPressed(new Command());  // TODO add turning off vacuum
+    coP[5].whenPressed(new ClimbVacuumTurnOn(true));
+    coP[6].whenPressed(new ClimbVacuumTurnOn(false));
     coP[8].whenPressed(new ClimbSequence());
 
     // Buttons for controlling the elevator
@@ -124,8 +126,8 @@ public class OI {
     SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorMoveToBottomThenZeroEncoder());
 
     // Buttons for controlling the climber
-    SmartDashboard.putData("Climb Up", new ClimbArmSetPercentOutput(0.2));  // For testing
-    SmartDashboard.putData("Climb Down", new ClimbArmSetPercentOutput(-0.2));  // For testing
+    SmartDashboard.putData("Climb Up", new ClimbArmSetPercentOutput(0.3));  // For testing
+    SmartDashboard.putData("Climb Down", new ClimbArmSetPercentOutput(-0.3));  // For testing
     SmartDashboard.putData("Climb move to start", new ClimbArmStow());  // For testing
     SmartDashboard.putData("Climb move to vacuum", new ClimbArmSetAngle(Robot.robotPrefs.climbVacuumAngle));  // For testing
     SmartDashboard.putData("Climb lift robot", new ClimbArmSetAngle(Robot.robotPrefs.climbLiftAngle));  // For testing
@@ -133,7 +135,7 @@ public class OI {
     SmartDashboard.putData("Climb Vacuum Off", new ClimbVacuumTurnOn(false));
     SmartDashboard.putData("Climb Set Reference", new ClimbMoveToLimitThenCalibrate());
     SmartDashboard.putData("ClimbMoveUntilVacuum", new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
-    SmartDashboard.putData("ClimbSequnce", new ClimbSequence());
+    SmartDashboard.putData("ClimbSequence", new ClimbSequence());
 
     // Buttons for testing TurnGyro
     SmartDashboard.putData("Turn to 0", new TurnWithGyro(0.0));
@@ -173,6 +175,12 @@ public class OI {
     SmartDashboard.putData("Disc Grab", new HatchSet(true));
     SmartDashboard.putData("Disc Release", new HatchSet(false));
     SmartDashboard.putString("Disc Position", "Null");
+/*
+    SmartDashboard.putData("LEDSet Purple", new LEDSet(0));
+    SmartDashboard.putData("LEDSet Red", new LEDSet(1));
+    SmartDashboard.putData("LEDSet Blue", new LEDSet(2));
+    SmartDashboard.putData("LEDSet Off", new LEDSet(3));
+*/
   }
 
   /**

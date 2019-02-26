@@ -8,33 +8,15 @@
 package frc.robot.commands;
 
 import frc.robot.Robot;
-import frc.robot.utilities.RobotPreferences.ElevatorPosition;
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.ConditionalCommand;
 
 public class ClimbSequence extends CommandGroup {
   /**
-   * Add your docs here.
+   * Climbing sequence!  Stows the wrist safely (if needed), moves arm to get 
+   * vacuum, then lifts the robot.
    */
   public ClimbSequence() {
-    // If the climber is in the keepout zone, sart moving it to the safe zone so we can stow the wrist
-    addParallel(new ConditionalCommand(new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe)){
-      @Override
-      protected boolean condition() {
-        return Robot.climb.getClimbAngle() > Robot.robotPrefs.climbWristMovingSafe;
-      }
-    });
-
-    // If the wrist is not stowed, move elevator to stow position (safely)
-    addSequential(new ConditionalCommand(new ElevatorMoveSafe(ElevatorPosition.wristStow)){
-      @Override
-      protected boolean condition() {
-        return Robot.wrist.getWristAngle() < Robot.robotPrefs.wristStowed - 5.0;
-      }
-    });
-
-    // TODO If the wrist is not stowed, then stow it (safely)
-
+    addSequential(new ElevatorWristStow());
     addSequential(new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
     addSequential(new ClimbArmSetAngle(Robot.robotPrefs.climbLiftAngle));
   }

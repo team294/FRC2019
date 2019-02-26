@@ -20,7 +20,7 @@ public class ElevatorWristMoveAndPrepare extends CommandGroup {
    */
   public ElevatorWristMoveAndPrepare(RobotPreferences.ElevatorPosition position) {
     // Move climber if we need to deploy the wrist and the climber is in the way
-    addSequential(new ConditionalCommand(new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe)){
+    addSequential(new ConditionalCommand(new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe - 5.0)){
       @Override
       protected boolean condition() {
         if (Robot.log.getLogLevel() <= 2) {
@@ -33,7 +33,7 @@ public class ElevatorWristMoveAndPrepare extends CommandGroup {
     });
 
     // Move wrist if it is stowed
-    addSequential(new ConditionalCommand(new WristMoveToAngle(Robot.robotPrefs.wristKeepOut)){
+    addSequential(new ConditionalCommand(new WristMoveToAngle(Robot.robotPrefs.wristKeepOut - 5.0)){
       @Override
       protected boolean condition() {
         if (Robot.log.getLogLevel() <= 2) {

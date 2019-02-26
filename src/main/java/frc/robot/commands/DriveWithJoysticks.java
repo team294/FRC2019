@@ -31,10 +31,10 @@ public class DriveWithJoysticks extends Command {
     double leftValue = Robot.oi.leftJoystick.getY();
     double rightValue = Robot.oi.rightJoystick.getY();
 
-    if (Robot.driveTrain.getDriveDirection() == true)  {
+    if (Robot.driveTrain.getDriveDirection())  {
       Robot.driveTrain.tankDrive(-leftValue, -rightValue);
     } else {
-      Robot.driveTrain.tankDrive(leftValue, rightValue);
+      Robot.driveTrain.tankDrive(leftValue, rightValue); // These may need to be switched
     }
     //SmartDashboard.putBoolean("Vision Assistance Available", Robot.vision.areaFromCamera != 0); // May move to teleopPeriodic
     // Tells us if vision is available for the rocket. Will need to be updated for when scoring balls.

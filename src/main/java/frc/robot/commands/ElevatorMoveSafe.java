@@ -50,7 +50,7 @@ public class ElevatorMoveSafe extends CommandGroup {
 
   private void deployWristIfStowed() {
     // Move climber if we need to deploy the wrist and the climber is in the way
-    addSequential(new ConditionalCommand(new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe)){
+    addSequential(new ConditionalCommand(new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe - 5.0)){
       @Override
       protected boolean condition() {
         return Robot.wrist.getWristAngle() > Robot.robotPrefs.wristKeepOut &&
