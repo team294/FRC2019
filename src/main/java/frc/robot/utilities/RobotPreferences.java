@@ -64,7 +64,7 @@ public class RobotPreferences {
   	public final double hatchMid = 47.0;
   	public final double hatchHigh = 72.5;
   	public final double cargoShipCargo = 34.75;
-	public final double rocketBallOffset = 8.5;
+	public final double rocketBallOffset = 2;  // Was 8.5", but did not account that ball intake is higher than the disc grabber
 	public final double loadCargo = 44.125;
 	public final double groundCargo = 20.0;  		// At this level, wrist must be able to go to wristDown
 
