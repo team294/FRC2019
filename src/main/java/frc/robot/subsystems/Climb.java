@@ -138,22 +138,6 @@ public class Climb extends Subsystem {
    * @param angle target angle, in degrees (0 = horizontal behind robot, + = up, - = down)
    */
   public void setClimbPos(double angle) {
-    /* Can this version of the code get into a double-interlock scenario (wrist blocks climber and climber blocks wrist)?
-    if (Robot.robotPrefs.climbCalibrated) {
-      if ((getClimbAngle() < Robot.robotPrefs.climbWristMovingSafe && angle < Robot.robotPrefs.climbWristMovingSafe) ||
-      (Robot.wrist.getWristAngle() < Robot.robotPrefs.wristKeepOut) || (Robot.wrist.getWristUpperLimit() && 
-      (getClimbAngle() > Robot.robotPrefs.climbWristMovingSafe && getClimbAngle() < Robot.robotPrefs.climbWristStowedSafe) && angle < Robot.robotPrefs.climbWristMovingSafe)) {
-        climbMotor2.set(ControlMode.Position, climbAngleToEncTicks(angle) + Robot.robotPrefs.climbCalZero);
-        Robot.log.writeLog("Climb", "Set angle", "Angle," + angle + ",Interlock,OK");
-      }
-      else if ((Robot.wrist.getWristAngle() > Robot.robotPrefs.wristKeepOut) && (getClimbAngle() < Robot.robotPrefs.climbWristMovingSafe) && (angle > Robot.robotPrefs.climbWristMovingSafe)) {
-        climbMotor2.set(ControlMode.Position, climbAngleToEncTicks(Robot.robotPrefs.climbWristMovingSafe) + Robot.robotPrefs.climbCalZero);
-        Robot.log.writeLog("Climb", "Set angle", "Angle," + Robot.robotPrefs.climbWristMovingSafe + ",Interlock,Diverted");
-      } else {
-        Robot.log.writeLog("Climb", "Set angle", "Angle," + Robot.robotPrefs.climbWristMovingSafe + ",Interlock,Forbidden");
-      }
-    }
-    */
     double safeAngle = angle;
 
     // Apply interlocks
