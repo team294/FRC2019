@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utilities.*;
-import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
 /**
@@ -187,7 +186,6 @@ public class Robot extends TimedRobot {
     //SmartDashboard.putNumber("Target Distance", Robot.vision.distanceFromTarget()); // Distance isn't used for any segmentation
     SmartDashboard.putNumber("Target Quadrant", Robot.driveTrain.checkScoringQuadrant());
     //SmartDashboard.putBoolean("Vision Assistance Available", vision.areaFromCamera != 0); // This should work, need to test to see if there is a better metric to use
-    SmartDashboard.putData("TurnGyro", new TurnWithGyro(SmartDashboard.getNumber("targetAngle", 0.0)));
   }
 
   /**
