@@ -59,14 +59,14 @@ public class RobotPreferences {
 	*/
 
 	// Field level heights (for elevator targeting), in inches
-	public final double elevatorWristStow = 16.0;
+	public final double elevatorWristStow = 16.0;		// At the hard stop
 	public final double hatchLow = 19.0;
   	public final double hatchMid = 47.0;
   	public final double hatchHigh = 72.5;
   	public final double cargoShipCargo = 34.75;
 	public final double rocketBallOffset = 2;  // Was 8.5", but did not account that ball intake is higher than the disc grabber
 	public final double loadCargo = 44.125;
-	public final double groundCargo = 20.0;  		// At this level, wrist must be able to go to wristDown
+	public final double groundCargo = 20.0;  		// At this level, wrist must be able to go to wristDown  // TODO should this be the same as elevatorWristStow (at the hard stop)?
 
 	public enum ElevatorPosition {bottom, wristStow, hatchLow, hatchMid, hatchHigh, cargoShipCargo, loadCargo, groundCargo}
 
