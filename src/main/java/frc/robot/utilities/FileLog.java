@@ -128,6 +128,7 @@ public class FileLog {
 	public void setLogLevel(int level) {
 		logLevel = level;
 		SmartDashboard.putNumber("Log Level", level);
+		writeLogEcho("FileLog", "setLogLevel", "Level" + level);
 	}
 
 	/**

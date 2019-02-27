@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogTrigger;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -41,7 +40,7 @@ public class Climb extends Subsystem {
   private final WPI_TalonSRX climbMotor2 = new WPI_TalonSRX(RobotMap.climbMotor2);
   private final BaseMotorController climbVacuum = new WPI_VictorSPX(RobotMap.climbVacuum1); //left Vacuum system
   //private final BaseMotorController climbVacuum2 = new WPI_VictorSPX(RobotMap.climbVacuum2); //right Vacuum system
-  private final DigitalInput vacuumSwitch = new DigitalInput(RobotMap.vacuumSwitch);
+  // private final DigitalInput vacuumSwitch = new DigitalInput(RobotMap.vacuumSwitch);
   private final AnalogInput analogVacuumSensor = new AnalogInput(RobotMap.analogVacuum);
   private final AnalogTrigger vacuumTrigger = new AnalogTrigger(analogVacuumSensor);
   private final SensorCollection climbLimit;

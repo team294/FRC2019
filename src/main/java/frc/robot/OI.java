@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.commands.*;
 import frc.robot.triggers.*;
-import frc.robot.utilities.RobotPreferences;
 import frc.robot.utilities.RobotPreferences.ElevatorPosition;
 import frc.robot.utilities.RobotPreferences.WristAngle;
 
@@ -44,7 +43,7 @@ public class OI {
     Trigger xbLeft = new POVTrigger(xBoxController, 270);
     Trigger xbLT = new AxisTrigger(xBoxController, 2, 0.9);
     Trigger xbRT = new AxisTrigger(xBoxController, 3, 0.9);
-    
+
     for (int i = 1; i < left.length; i++) {
       left[i] = new JoystickButton(leftJoystick, i);
       right[i] = new JoystickButton(rightJoystick, i);
