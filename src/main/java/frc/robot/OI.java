@@ -80,12 +80,12 @@ public class OI {
     left[2].whenReleased(new DriveWithJoysticks());
     right[2].whileHeld(new DriveStraightJoystick()); // drive straight with right joystick
     right[2].whenReleased(new DriveWithJoysticks()); // drive with joysticks
-    left[3].whenPressed(new HatchScoreAndIntake()); // toggle hatch, back up
+    // left[3].whenPressed(new HatchScoreAndIntake()); // toggle hatch, back up
     // right[3].whenPressed(new Command());
     left[4].whenPressed(new VisionChangePipeline(0)); // set pipeline for vision
-    right[4].whenPressed(new DriveSetDirection(false)); // set direction reverse
+    // right[4].whenPressed(new DriveSetDirection(false)); // set direction reverse
     left[5].whenPressed(new VisionChangePipeline(2)); // set pipeline for drive feed
-    right[5].whenPressed(new DriveSetDirection(true)); // set direction forward
+    // right[5].whenPressed(new DriveSetDirection(true)); // set direction forward
 
     // Copanel buttons
     coP[1].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStart)); // top row, first button, UP
