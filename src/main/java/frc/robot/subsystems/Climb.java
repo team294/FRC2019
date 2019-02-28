@@ -362,15 +362,15 @@ public class Climb extends Subsystem {
       SmartDashboard.putBoolean("Climb vacuum", isVacuumPresent());
       SmartDashboard.putNumber("Climb target", getCurrentClimbTarget());
 
-      SmartDashboard.putNumber("Climb Analog Voltage", analogVacuumSensor.getVoltage());
-      SmartDashboard.putNumber("Climb Analog Average (Oversampled) Voltage", analogVacuumSensor.getAverageVoltage());
+      // SmartDashboard.putNumber("Climb Analog Voltage", analogVacuumSensor.getVoltage());
+      // SmartDashboard.putNumber("Climb Analog Average (Oversampled) Voltage", analogVacuumSensor.getAverageVoltage());
+      SmartDashboard.putNumber("Analog Vacuum Pressure", getVacuumPressure(false));
       SmartDashboard.putBoolean("Vacuum Trigger In Window (0.5, 3.4)", vacuumTrigger.getInWindow());
       //SmartDashboard.putBoolean("Vacuum Trigger Rising/Falling", vacuumTrigger.getTriggerState());
 
       updateClimbLog(false); 
     }
 
-    SmartDashboard.putNumber("Analog Vacuum Pressure", getVacuumPressure(false));
     if (isVacuumPresent()) Robot.leds.setColor(LedHandler.Color.BLUE, false); // solid when vacuum drawn
     else if (getVacuumPressure(false) > 5.0) Robot.leds.setColor(LedHandler.Color.BLUE, true); // blinking when vacuum is starting to rise
     
