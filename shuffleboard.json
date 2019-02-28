@@ -445,6 +445,13 @@
                   "_type": "Command",
                   "_source0": "network_table:///SmartDashboard/Cargo Outtake",
                   "_title": "Cargo Outtake"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Wrist calibrated",
+                  "_title": "Wrist calibrated",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
                 }
               ]
             }
@@ -459,13 +466,6 @@
               "_title": "Wrist",
               "Layout/Label position": "LEFT",
               "_children": [
-                {
-                  "_type": "Boolean Box",
-                  "_source0": "network_table:///SmartDashboard/Wrist calibrated",
-                  "_title": "Wrist calibrated",
-                  "Colors/Color when true": "#7CFC00FF",
-                  "Colors/Color when false": "#8B0000FF"
-                },
                 {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/Wrist Angle",
@@ -639,6 +639,18 @@
             }
           }
         }
+      }
+    },
+    {
+      "title": "Tab 4",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {}
       }
     }
   ],

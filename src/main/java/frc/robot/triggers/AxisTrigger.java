@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 
 /**
- * Add your docs here.
+ * LT and RT on xbox controller
  */
 public class AxisTrigger extends Trigger {
   Joystick joystick;

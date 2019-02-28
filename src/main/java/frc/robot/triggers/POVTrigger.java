@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 
 /**
- * Add your docs here.
+ * DPad on xbox controller
  */
 public class POVTrigger extends Trigger {
   Joystick joystick;
