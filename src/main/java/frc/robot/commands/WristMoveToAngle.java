@@ -65,7 +65,7 @@ public class WristMoveToAngle extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.wrist.updateWristLog();
+    Robot.wrist.updateWristLog(false);
   }
 
   // Make this return true when this Command no longer needs to run execute()

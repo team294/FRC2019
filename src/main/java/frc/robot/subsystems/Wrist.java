@@ -315,9 +315,10 @@ public class Wrist extends Subsystem {
 
   /**
    * Writes information about the subsystem to the filelog
+   * @param logWhenDisabled true will log when disabled, false will discard the string
    */
-  public void updateWristLog() {
-    Robot.log.writeLog("Wrist", "Update Variables",
+  public void updateWristLog(boolean logWhenDisabled) {
+    Robot.log.writeLog(logWhenDisabled, "Wrist", "Update Variables",
         "Volts," + wristMotor.getMotorOutputVoltage() + ",Amps," + Robot.pdp.getCurrent(RobotMap.wristMotorPDP) +
         ",WristCalZero," + Robot.robotPrefs.wristCalZero + 
         ",Enc Raw," + getWristEncoderTicksRaw() + ",Wrist Angle," + getWristAngle() + ",Wrist Target," + getCurrentWristTarget() +
@@ -350,25 +351,27 @@ public class Wrist extends Subsystem {
     if (!Robot.robotPrefs.wristCalibrated) {
       if (getWristUpperLimit()) {
         calibrateWristEnc(Robot.robotPrefs.wristMax, false);
-        updateWristLog();
+        updateWristLog(true);
       }
       if (getWristLowerLimit()) {
         calibrateWristEnc(Robot.robotPrefs.wristMin, false);
-        updateWristLog();
+        updateWristLog(true);
       }
     }
     
     // Un-calibrates the wrist if the angle is outside of bounds... can we figure out a way to not put this in periodic()?
     if (getWristAngle() > Robot.robotPrefs.wristMax + 5.0 || getWristAngle() < Robot.robotPrefs.wristMin - 5.0) {
       Robot.robotPrefs.setWristUncalibrated();
-      updateWristLog();
+      updateWristLog(true);
     }
 
-    if (DriverStation.getInstance().isEnabled()) {
+    if (Robot.log.getLogRotation() == FileLog.WRIST_CYCLE) {
+      updateWristLog(false);
+    }
+
+    // if (DriverStation.getInstance().isEnabled()) {
  
-      if (Robot.log.getLogRotation() == FileLog.WRIST_CYCLE) {
-        updateWristLog();
-      }
+      
 
       /* All of the code below should be gotten rid of for the same reason as the elevator stuff. It doesn't speed anything up in competition - 
       the codriver still has to recognize that the encoders are broken and the wrist is stalled. This is just more code to run in periodic() */
@@ -414,7 +417,7 @@ public class Wrist extends Subsystem {
         }
       }
       */
-    }
+    // }
   }
  
 }

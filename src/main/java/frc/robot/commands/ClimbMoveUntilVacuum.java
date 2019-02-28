@@ -45,7 +45,7 @@ public class ClimbMoveUntilVacuum extends Command {
       isAtClimbAngle = true;
     }
 
-    Robot.climb.updateClimbLog();
+    Robot.climb.updateClimbLog(false);
   }
 
   // Make this return true when this Command no longer needs to run execute()

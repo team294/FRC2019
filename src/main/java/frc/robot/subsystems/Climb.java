@@ -330,8 +330,12 @@ public class Climb extends Subsystem {
     return climbLimit.isFwdLimitSwitchClosed();
   }
 
-  public void updateClimbLog() {
-    Robot.log.writeLog("Climb", "Update Variables", 
+   /**
+   * Writes information about the subsystem to the filelog
+   * @param logWhenDisabled true will log when disabled, false will discard the string
+   */
+  public void updateClimbLog(boolean logWhenDisabled) {
+    Robot.log.writeLog(logWhenDisabled, "Climb", "Update Variables", 
     "Volts1," + climbMotor2.getMotorOutputVoltage() + ",Volts2," + climbMotor1.getMotorOutputVoltage() + 
     ",VacVolts," + climbVacuum.getMotorOutputVoltage() + //",VacVolts2," + climbVacuum2.getMotorOutputVoltage() +
     ",Amps1," + Robot.pdp.getCurrent(RobotMap.climbMotor2PDP) + ",Amps2," + Robot.pdp.getCurrent(RobotMap.climbMotor1PDP) + 
@@ -364,9 +368,7 @@ public class Climb extends Subsystem {
       SmartDashboard.putBoolean("Vacuum Trigger In Window (0.5, 3.4)", vacuumTrigger.getInWindow());
       //SmartDashboard.putBoolean("Vacuum Trigger Rising/Falling", vacuumTrigger.getTriggerState());
 
-      if (DriverStation.getInstance().isEnabled()) {
-        updateClimbLog(); 
-      }
+      updateClimbLog(false); 
     }
 
     SmartDashboard.putNumber("Analog Vacuum Pressure", getVacuumPressure(false));
@@ -379,14 +381,14 @@ public class Climb extends Subsystem {
     if (!Robot.robotPrefs.climbCalibrated ) {  // || Robot.beforeFirstEnable
       if (isClimbAtLimitSwitch()) {
         calibrateClimbEnc(Robot.robotPrefs.climbLimitAngle, false);
-        updateClimbLog();
+        updateClimbLog(true);
       }
     }
     
     // Un-calibrates the climb if the angle is outside of bounds.
     if (getClimbAngle() > Robot.robotPrefs.climbLimitAngle + 5.0 || getClimbAngle() < Robot.robotPrefs.climbMinAngle - 5.0) {
       Robot.robotPrefs.setClimbUncalibrated();
-      updateClimbLog();
+      updateClimbLog(true);
     }
   }
   

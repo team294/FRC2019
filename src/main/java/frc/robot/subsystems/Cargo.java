@@ -90,12 +90,10 @@ public class Cargo extends Subsystem {
 		if (Robot.log.getLogRotation() == FileLog.CARGO_CYCLE) {
       SmartDashboard.putBoolean("Cargo Has Ball", hasBall());
 
-      if (DriverStation.getInstance().isEnabled()) {
-        Robot.log.writeLog("Cargo", "Update Variables", "Photo Switch," + hasBall() + 
-          ",Volt1," + cargoMotor1.getMotorOutputVoltage() + ",Amp1," + Robot.pdp.getCurrent(RobotMap.cargoMotor1PDP) +
-          ",Volt2," + cargoMotor2.getMotorOutputVoltage() + ",Amp2," + Robot.pdp.getCurrent(RobotMap.cargoMotor2PDP)
-          );
-      }
+      Robot.log.writeLog(false, "Cargo", "Update Variables", "Photo Switch," + hasBall() + 
+        ",Volt1," + cargoMotor1.getMotorOutputVoltage() + ",Amp1," + Robot.pdp.getCurrent(RobotMap.cargoMotor1PDP) +
+        ",Volt2," + cargoMotor2.getMotorOutputVoltage() + ",Amp2," + Robot.pdp.getCurrent(RobotMap.cargoMotor2PDP)
+        );
     }
 
   }

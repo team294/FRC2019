@@ -40,7 +40,7 @@ public class WristRaiseUntilStowed extends Command {
     if (!doNothing) {
       Robot.wrist.setWristMotorPercentOutput(0.1);
     }
-    Robot.wrist.updateWristLog();
+    Robot.wrist.updateWristLog(false);
   }
 
   // Make this return true when this Command no longer needs to run execute()
