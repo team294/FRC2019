@@ -90,8 +90,8 @@ public class OI {
     // Copanel buttons
     coP[1].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStart)); // top row, first button, UP
     coP[2].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStart)); // top row, first button, DOWN
-    coP[3].whileHeld(new ClimbArmSetPercentOutput(1.0)); // top row, second button, UP
-    coP[4].whileHeld(new ClimbArmSetPercentOutput(-1.0)); // top row, second button, DOWN
+    coP[3].whileHeld(new ClimbArmSetPercentOutput(0.3)); // top row, second button, UP
+    coP[4].whileHeld(new ClimbArmSetPercentOutput(-0.3)); // top row, second button, DOWN
     coP[5].whenPressed(new ClimbVacuumTurnOn(true)); // top row, third button, UP
     coP[6].whenPressed(new ClimbVacuumTurnOn(false)); // top row, third button, DOWN
     coP[7].whenPressed(null); // mid row, fourth button, UP or DOWN
