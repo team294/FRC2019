@@ -33,7 +33,7 @@ public class OI {
   public OI() {
     Button[] left = new Button[12];
     Button[] right = new Button[12];
-    Button[] coP = new Button[15];
+    Button[] coP = new Button[16];
     Button[] xbB = new Button[11];
     Trigger xbUp = new POVTrigger(xBoxController, 0);
     Trigger xbRight = new POVTrigger(xBoxController, 90);
@@ -88,17 +88,22 @@ public class OI {
     right[5].whenPressed(new DriveSetDirection(true)); // set direction forward
 
     // Copanel buttons
-    coP[1].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStart));
-    coP[2].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStart));
-    coP[3].whenPressed(new ClimbArmSetPercentOutput(0.3));
-    coP[4].whenPressed(new ClimbArmSetPercentOutput(-0.3));
-    coP[5].whenPressed(new ClimbVacuumTurnOn(true));
-    coP[6].whenPressed(new ClimbVacuumTurnOn(false));
-    coP[8].whenPressed(new ClimbSequence());
-    coP[9].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchHigh));
-    coP[10].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchMid));
-    coP[11].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.cargoShipCargo));
-    coP[12].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchLow));
+    coP[1].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStart)); // top row, first button, UP
+    coP[2].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStart)); // top row, first button, DOWN
+    coP[3].whileHeld(new ClimbArmSetPercentOutput(1.0)); // top row, second button, UP
+    coP[4].whileHeld(new ClimbArmSetPercentOutput(-1.0)); // top row, second button, DOWN
+    coP[5].whenPressed(new ClimbVacuumTurnOn(true)); // top row, third button, UP
+    coP[6].whenPressed(new ClimbVacuumTurnOn(false)); // top row, third button, DOWN
+    coP[7].whenPressed(null); // mid row, fourth button, UP or DOWN
+    coP[8].whenPressed(new ClimbSequence()); // BIG RED BUTTON
+    coP[9].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchHigh)); // mid row, first button, UP
+    coP[10].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchMid)); // mid row, first button, DOWN
+    coP[11].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.cargoShipCargo)); // mid row, second button, UP
+    coP[12].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchLow)); // mid row, second button, DOWN
+    coP[13].whenPressed(null); // mid row, third button, UP
+    coP[14].whenPressed(null); // mid row, third button, DOWN
+    coP[15].whenPressed(null); // third row, first button, UP
+
 
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
