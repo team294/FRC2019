@@ -14,26 +14,29 @@ public class CargoOuttake extends Command {
 
   private double timeWithoutBall = 0; // the amount of time from the photo switch not sensing a ball
   private boolean startTime = false; // have we started to count the time from 
+  private double percentOutput;
 
   /**
    * Run cargo outtake 5 seconds, or until we no longer see the ball plus 1 additional second.
+   * @param percentOutput power to kick the ball out, 0 to -1 (should be negative!)
    */
-  public CargoOuttake() {
+  public CargoOuttake(double percentOutput) {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.cargo);
+    this.percentOutput = percentOutput;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.cargo.setCargoMotorPercent(-0.6, -0.6);
+    Robot.cargo.setCargoMotorPercent(percentOutput, percentOutput);   // was 0.6
     startTime = false;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.cargo.setCargoMotorPercent(-0.6, -0.6);
+    Robot.cargo.setCargoMotorPercent(percentOutput, percentOutput);
     if(!Robot.cargo.hasBall() && !startTime){
       timeWithoutBall = timeSinceInitialized();
       startTime = true;

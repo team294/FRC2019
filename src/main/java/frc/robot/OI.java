@@ -70,8 +70,8 @@ public class OI {
     xbRight.whenActive(new HatchSet(true)); // DPadRight
     xbDown.whenActive(new CargoIntakeFromGround()); // DPadDown
     xbLeft.whenActive(new HatchSet(false)); // DPadLeft
-    xbLT.whenActive(new CargoOuttake()); // LT
-    xbRT.whenActive(new CargoOuttake()); // RT
+    xbLT.whenActive(new CargoOuttake(-1.0)); // LT
+    xbRT.whenActive(new CargoOuttake(-0.8)); // RT
 
     // Joystick buttons
     left[1].whenPressed(new Shift(true)); // high gear
@@ -127,7 +127,7 @@ public class OI {
 
     // Buttons for the Cargo rollers
     SmartDashboard.putData("Cargo Intake", new CargoIntake());
-    SmartDashboard.putData("Cargo Outtake", new CargoOuttake());
+    SmartDashboard.putData("Cargo Outtake", new CargoOuttake(-0.8));
 
     // Buttons for controlling the wrist
     SmartDashboard.putData("Wrist recalibrate", new WristEncoderFail());
