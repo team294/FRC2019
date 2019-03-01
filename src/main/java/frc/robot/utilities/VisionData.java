@@ -44,6 +44,7 @@ public class VisionData {
         ledMode = ledM.getDouble(0);
     }
 
+    /*
    // Turn the LEDS on
     public void turnOnCamLeds() {
         ledM.setDouble(3);           
@@ -53,6 +54,7 @@ public class VisionData {
     public void turnOffCamLeds() {
         ledM.setDouble(1);  
     }
+    */
 
     /**
      * Returns the true pipeline being used
