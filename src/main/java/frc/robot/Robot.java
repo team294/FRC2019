@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utilities.*;
+import frc.robot.commands.VisionSandstormSetup;
 import frc.robot.subsystems.*;
 
 /**
@@ -141,7 +142,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     log.writeLogEcho("Robot", "Autonomous mode init", "");
     beforeFirstEnable = false; // set variable that robot has been enabled
-    m_autonomousCommand = m_chooser.getSelected();
+    m_autonomousCommand = new VisionSandstormSetup(); //m_chooser.getSelected();
 
     climb.enableCompressor(true);
 
