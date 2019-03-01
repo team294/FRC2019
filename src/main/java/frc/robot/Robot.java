@@ -52,7 +52,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     // Create file log first, so any other class constructors can log data
-    log = new FileLog("A2");
+    log = new FileLog("A3");
 
     // Read robot preference next, so any other class constructors can use preferences 
     robotPrefs = new RobotPreferences();
@@ -124,6 +124,10 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
+
+    double pipeline = SmartDashboard.getNumber("Vision pipeline", 2.0);
+    vision.setPipe(pipeline);
+
   }
 
   /**

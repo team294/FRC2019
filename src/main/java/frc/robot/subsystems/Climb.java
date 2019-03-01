@@ -372,7 +372,7 @@ public class Climb extends Subsystem {
     }
 
     if (isVacuumPresent()) Robot.leds.setColor(LedHandler.Color.BLUE, false); // solid when vacuum drawn
-    else if (getVacuumPressure(false) > 5.0) Robot.leds.setColor(LedHandler.Color.BLUE, true); // blinking when vacuum is starting to rise
+    else if (getVacuumPressure(false) > 7.0) Robot.leds.setColor(LedHandler.Color.BLUE, true); // blinking when vacuum is starting to rise
     
     // Checks if the climb is not calibrated and automatically calibrates it once the reverse limit switch is pressed
     // If the climb isn't calibrated at the start of the match, then we can calibrate using manual climb control
