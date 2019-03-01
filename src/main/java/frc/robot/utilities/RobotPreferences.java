@@ -32,8 +32,8 @@ public class RobotPreferences {
 	* Measurements
 	*/
 	// Wrist Angles (in degrees)
-	public final double wristMax = 110.0;	
-	public final double wristStowed = 108;
+	public final double wristMax = 111.0;	
+	public final double wristStowed = 110.0;
 	public final double wristKeepOut = 28.0; // Max angle to avoid interference with elevator or climber
 	public final double wristUp = 15.0;
 	public final double wristStraight = 7.0;	//  needed to bias upward to account for sag and insure that hatch cover gripper engages first
@@ -62,7 +62,7 @@ public class RobotPreferences {
 	public final double elevatorWristStow = 16.0;		// At the hard stop
 	public final double hatchLow = 19.0;
   	public final double hatchMid = 47.0;
-  	public final double hatchHigh = 72.5;
+  	public final double hatchHigh = 71.0;
   	public final double cargoShipCargo = 34.75;
 	public final double rocketBallOffset = 2;  // Was 8.5", but did not account that ball intake is higher than the disc grabber
 	public final double loadCargo = 44.125;

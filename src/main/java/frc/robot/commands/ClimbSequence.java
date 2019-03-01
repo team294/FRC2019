@@ -18,7 +18,7 @@ public class ClimbSequence extends CommandGroup {
   public ClimbSequence() {
     addParallel(new ElevatorWristStow());
     addSequential(new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
-    addSequential(new ElevatorMoveToLevel(Robot.robotPrefs.elevatorBottomToFloor));
+    // addSequential(new ElevatorMoveToLevel(Robot.robotPrefs.elevatorBottomToFloor));
     addSequential(new ClimbArmSetAngle(Robot.robotPrefs.climbLiftAngle));
   }
 }

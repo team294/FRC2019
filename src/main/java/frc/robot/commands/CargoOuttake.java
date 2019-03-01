@@ -26,14 +26,14 @@ public class CargoOuttake extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.cargo.setCargoMotorPercent(-0.5, -0.5);
+    Robot.cargo.setCargoMotorPercent(-0.6, -0.6);
     startTime = false;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.cargo.setCargoMotorPercent(-0.5, -0.5);
+    Robot.cargo.setCargoMotorPercent(-0.6, -0.6);
     if(!Robot.cargo.hasBall() && !startTime){
       timeWithoutBall = timeSinceInitialized();
       startTime = true;
