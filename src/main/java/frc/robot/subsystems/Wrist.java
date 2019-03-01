@@ -39,15 +39,15 @@ public class Wrist extends Subsystem {
 	private double kD = 5.0;
   private double kFF = 0;
   private int kIz = 0;
-  private double kMaxOutput = 1.0; // up max output TODO increase after initial testing
-  private double kMinOutput = -1.0; // down max output  TODO increase after initial testing
+  private double kMaxOutput = 1.0; // up max output
+  private double kMinOutput = -1.0; // down max output
   private double rampRate = 0.3;
 
   public Wrist() {
     wristMotor.set(ControlMode.PercentOutput, 0);
     wristMotor.setInverted(true);
     wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
-    wristMotor.setSensorPhase(true);         // Flip sign of sensor reading
+    wristMotor.setSensorPhase(false);         // Flip sign of sensor reading
     wristMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
     wristMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
     wristMotor.setNeutralMode(NeutralMode.Brake);
@@ -375,7 +375,7 @@ public class Wrist extends Subsystem {
       /* All of the code below should be gotten rid of for the same reason as the elevator stuff. It doesn't speed anything up in competition - 
       the codriver still has to recognize that the encoders are broken and the wrist is stalled. This is just more code to run in periodic() */
       
-      // TODO: Work on the safety code below.  It tends to trigger if the wrist bounces.
+      // TO DO: Work on the safety code below.  It tends to trigger if the wrist bounces.
 
 
       // Following code checks whether the encoder is incrementing in the same direction as the 

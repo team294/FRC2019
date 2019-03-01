@@ -300,7 +300,7 @@ public class Elevator extends Subsystem {
 
 			/* All of the code below should be gotten rid of. It doesn't speed anything up in competition - the codriver still has to recognize that the encoders are broken
 			and the elevator is stalled. This is just more code to run in periodic() */
-			// TODO: The code below is causing false triggers that causes the elevator to be uncalibrated.
+			// TO DO: The code below is causing false triggers that causes the elevator to be uncalibrated.
 			/*
 			currEnc = getElevatorEncTicks();
 			if (elevatorMotor1.getMotorOutputVoltage() > 5) {
