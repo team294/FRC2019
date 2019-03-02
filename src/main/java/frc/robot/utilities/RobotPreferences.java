@@ -77,6 +77,7 @@ public class RobotPreferences {
 	public final double climbWristMovingSafe = 122.0;	// Max angle for climber if wrist is moving
 	public final double climbLiftAngle = 130.0;			// Angle where robot scores climb points, was 128 in Match 1
 	public final double climbStart = 110.0;				// Climber starting angle (must be safe for wrist to move, must be in frame perimeter)
+	public final double climbPrep = 45.0;				// Prep climber for climb (part way down, to make climb faster)
 	public final double climbVacuumAngle = -5.0;		// Climber angle to attach vacuum to platform
 	public final double climbMinAngle = -10.0;			// Min angle for climber
 
