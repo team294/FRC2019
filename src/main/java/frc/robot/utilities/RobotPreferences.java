@@ -37,7 +37,7 @@ public class RobotPreferences {
 	public final double wristKeepOut = 28.0; // Max angle to avoid interference with elevator or climber
 	public final double wristUp = 15.0;
 	public final double wristStraight = 7.0;	//  needed to bias upward to account for sag and insure that hatch cover gripper engages first
-	public final double wristCargoShot = 7.0;	// Angle for wrist for cargo ship ball shot
+	public final double wristCargoShot = -30.0;	// Angle for wrist for cargo ship ball shot
 	public final double wristDown = -64.0;		// TODO Should be -59.0? // In this position, elevator must be able to go to groundCargo
 	public final double wristMin = -68;
 	public enum WristAngle {stowed, up, straight, cargoShot, down}
@@ -64,7 +64,7 @@ public class RobotPreferences {
 	public final double hatchLow = 19.0;
   	public final double hatchMid = 47.0;
   	public final double hatchHigh = 71.0;
-  	public final double cargoShipCargo = 34.75;
+  	public final double cargoShipCargo = 43.0;   // Was 34.75
 	public final double rocketBallOffset = 2;  // Was 8.5", but did not account that ball intake is higher than the disc grabber
 	public final double loadCargo = 44.125;
 	public final double groundCargo = 18.0;  		// At this level, wrist must be able to go to wristDown  // TODO should this be the same as elevatorWristStow (at the hard stop)?
