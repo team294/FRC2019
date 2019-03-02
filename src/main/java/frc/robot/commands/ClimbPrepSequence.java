@@ -16,7 +16,7 @@ public class ClimbPrepSequence extends CommandGroup {
    * vacuum, then lifts the robot.
    */
   public ClimbPrepSequence() {
-    addParallel(new ElevatorWristStow());
+    addSequential(new ElevatorWristStow());
     addSequential(new ClimbMoveUntilVacuum(Robot.robotPrefs.climbPrep));
   }
 }
