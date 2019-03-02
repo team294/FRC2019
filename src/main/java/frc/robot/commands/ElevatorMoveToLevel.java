@@ -17,6 +17,9 @@ public class ElevatorMoveToLevel extends Command {
   private boolean targetInches; // true is target in inches, false is target in position
   private RobotPreferences.ElevatorPosition pos;
 
+  private double timeAtLooseTolerance = 0; // the amount of time we are within the loose tolerance
+  private boolean startTime = false; // have we started to count the time for loose tolerance? 
+
   /**
    * Moves elevator to target height
    * @param inches target height in inches from floor
@@ -43,6 +46,8 @@ public class ElevatorMoveToLevel extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    startTime = false;        // We haven't hit the loose tolerance yet
+
     if(!targetInches) {
       if(Robot.cargo.hasBall()) { 
         switch (pos) {
@@ -107,12 +112,20 @@ public class ElevatorMoveToLevel extends Command {
   @Override
   protected void execute() {
     Robot.elevator.updateElevatorLog(false);
+
+    // Start timer for loose tolerance
+    if(!startTime && Math.abs(Robot.elevator.getElevatorPos() - target) <= 2.5) {
+      timeAtLooseTolerance = timeSinceInitialized();
+      startTime = true;
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-   return !Robot.elevator.getEncOK() || Math.abs(Robot.elevator.getElevatorPos() - target) <= 2.5;
+   return !Robot.elevator.getEncOK() ||         // End immediately if encoder can't read
+     Math.abs(Robot.elevator.getElevatorPos() - target) <= 0.5 ||
+     (startTime && timeSinceInitialized() - timeAtLooseTolerance > 0.5);
   }
 
   // Called once after isFinished returns true
