@@ -19,7 +19,7 @@ public class ElevatorWristStow extends CommandGroup {
     addSequential(new ConditionalCommand(new ElevatorWristStowA(), new ElevatorWristStowB()){
       @Override
       protected boolean condition() {
-        if (Robot.log.getLogLevel() <= 2) {
+        if (Robot.log.getLogLevel() <= 3) {
           Robot.log.writeLog("ElevatorWristStow", "Check 1", "Wrist angle," + Robot.wrist.getWristAngle()
             + ",Climb angle," + Robot.climb.getClimbAngle());
         }

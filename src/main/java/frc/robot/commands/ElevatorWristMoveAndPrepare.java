@@ -23,7 +23,7 @@ public class ElevatorWristMoveAndPrepare extends CommandGroup {
     addSequential(new ConditionalCommand(new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe - 5.0)){
       @Override
       protected boolean condition() {
-        if (Robot.log.getLogLevel() <= 2) {
+        if (Robot.log.getLogLevel() <= 3) {
           Robot.log.writeLog("ElevatorWristMove", "Check 1", "Wrist angle," + Robot.wrist.getWristAngle()
             + ",Climb angle," + Robot.climb.getClimbAngle());
         }
@@ -36,7 +36,7 @@ public class ElevatorWristMoveAndPrepare extends CommandGroup {
     addSequential(new ConditionalCommand(new WristMoveToAngle(Robot.robotPrefs.wristKeepOut - 5.0)){
       @Override
       protected boolean condition() {
-        if (Robot.log.getLogLevel() <= 2) {
+        if (Robot.log.getLogLevel() <= 3) {
           Robot.log.writeLog("ElevatorWristMove", "Check 2", "Wrist angle," + Robot.wrist.getWristAngle() );
         }
         return Robot.wrist.getWristAngle() > Robot.robotPrefs.wristKeepOut;
@@ -47,7 +47,7 @@ public class ElevatorWristMoveAndPrepare extends CommandGroup {
     addSequential(new ConditionalCommand(new WristMoveToAngle(WristAngle.down)){
       @Override
       protected boolean condition() {
-        if (Robot.log.getLogLevel() <= 2) {
+        if (Robot.log.getLogLevel() <= 3) {
           Robot.log.writeLog("ElevatorWristMove", "Check 3", "Wrist angle," + Robot.wrist.getWristAngle() );
         }
         return Robot.wrist.getWristAngle() < Robot.robotPrefs.wristDown - 5.0;
@@ -59,7 +59,7 @@ public class ElevatorWristMoveAndPrepare extends CommandGroup {
       addParallel(new ConditionalCommand(new WristMoveToAngle(WristAngle.up), new WristMoveToAngle(WristAngle.straight)){
         @Override
         protected boolean condition() {
-          if (Robot.log.getLogLevel() <= 2) {
+          if (Robot.log.getLogLevel() <= 3) {
             Robot.log.writeLog("ElevatorWristMove", "Check 4", "Has ball," + Robot.cargo.hasBall() );
           }
           return Robot.cargo.hasBall();
