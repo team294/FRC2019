@@ -65,7 +65,11 @@ public class ElevatorWristMoveAndPrepare extends CommandGroup {
           return Robot.cargo.hasBall();
         }
       });
+    } else if (position == ElevatorPosition.cargoShipCargo) {
+      // If going to cargo ship shot, then use cargo ship angle
+      addParallel(new WristMoveToAngle(WristAngle.cargoShot));
     } else {
+      // Otherwise, move wrist straight
       addParallel(new WristMoveToAngle(WristAngle.straight));
     }
 

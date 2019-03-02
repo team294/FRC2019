@@ -96,26 +96,12 @@ public class Wrist extends Subsystem {
 
   /**
    * Only works when encoder is working and calibrated
-   * If setting to greater than wristKeepOut, elevator position must be zero
-   * and target must be less than 1 inch above starting position
+   * If setting to greater than wristKeepOut, elevator position must be at the bottom
+   * and target must be at the bottom.
    * @param angle target angle, in degrees (0 = horizontal in front of robot, + = up, - = down)
    */
   public void setWristAngle(double angle) {
     if (Robot.robotPrefs.wristCalibrated) {
-      // if ((angle < Robot.robotPrefs.wristKeepOut && getWristAngle() < Robot.robotPrefs.wristKeepOut) || 
-      //     (Robot.elevator.getElevatorLowerLimit() && Robot.elevator.getCurrentElevatorTarget() < (Robot.robotPrefs.elevatorBottomToFloor+1) &&
-      //     (Robot.climb.getClimbAngle() < Robot.robotPrefs.climbWristMovingSafe))) {
-      //   wristMotor.set(ControlMode.Position, degreesToEncoderTicks(angle) + Robot.robotPrefs.wristCalZero);
-      //   Robot.log.writeLog("Wrist", "Set angle", "Angle," + angle + ",Interlock,OK");
-      // }
-      // else if ((Robot.climb.getClimbAngle() > Robot.robotPrefs.climbWristMovingSafe && Robot.climb.getClimbAngle() < Robot.robotPrefs.climbWristStowedSafe) &&
-      // ((getWristAngle() > Robot.robotPrefs.wristKeepOut && angle < Robot.robotPrefs.wristKeepOut) || (getWristAngle() < Robot.robotPrefs.wristKeepOut && angle > Robot.robotPrefs.wristKeepOut))) {
-      //   wristMotor.set(ControlMode.Position, degreesToEncoderTicks(Robot.robotPrefs.wristKeepOut) + Robot.robotPrefs.wristCalZero);
-      //   Robot.log.writeLog("Wrist", "Set angle", "Angle," + Robot.robotPrefs.wristKeepOut + ",Interlock,Diverted");
-      // } else {
-      //   Robot.log.writeLog("Wrist", "Set angle", "Angle," + angle + ",Interlock,Forbidden");
-      // }
-
       // Don't move wrist in or out of KeepOut if climber > climbWristMovingSafe or elevator > elevatorWristSafeStow.
       if ( (Robot.climb.getClimbAngle() > Robot.robotPrefs.climbWristMovingSafe ||              // Climber is not safe
             Robot.elevator.getElevatorPos() > Robot.robotPrefs.elevatorWristSafeStow ||         // Elevator is not safe

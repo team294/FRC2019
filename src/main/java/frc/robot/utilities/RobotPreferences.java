@@ -37,9 +37,10 @@ public class RobotPreferences {
 	public final double wristKeepOut = 28.0; // Max angle to avoid interference with elevator or climber
 	public final double wristUp = 15.0;
 	public final double wristStraight = 7.0;	//  needed to bias upward to account for sag and insure that hatch cover gripper engages first
+	public final double wristCargoShot = 7.0;	// Angle for wrist for cargo ship ball shot
 	public final double wristDown = -64.0;		// TODO Should be -59.0? // In this position, elevator must be able to go to groundCargo
 	public final double wristMin = -68;
-	public enum WristAngle {stowed, up, straight, down}
+	public enum WristAngle {stowed, up, straight, cargoShot, down}
 
 	// TODO Update with 2019 base
   	// Robot Pathfinder data

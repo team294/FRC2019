@@ -55,6 +55,9 @@ public class WristMoveToAngle extends Command {
         case straight:
           Robot.wrist.setWristAngle(Robot.robotPrefs.wristStraight);
           break;
+        case cargoShot:
+          Robot.wrist.setWristAngle(Robot.robotPrefs.wristCargoShot);
+          break;
         case down:
           Robot.wrist.setWristAngle(Robot.robotPrefs.wristDown);
           break;

@@ -32,7 +32,7 @@ public class ElevatorWristStowA extends CommandGroup {
     });
 
     addParallel(new WristMoveToAngle(Robot.robotPrefs.wristKeepOut - 5.0));
-    addSequential(new ElevatorMoveToLevel(ElevatorPosition.bottom));
+    addSequential(new ElevatorMoveToLevel(ElevatorPosition.wristStow));
 
     // Finish moving climber if we need to deploy the wrist and the climber is in the way
     addSequential(new ConditionalCommand(new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe - 5.0)){
