@@ -52,7 +52,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     // Create file log first, so any other class constructors can log data
-    log = new FileLog("B4a");
+    log = new FileLog("B5");
 
     // Read robot preference next, so any other class constructors can use preferences 
     robotPrefs = new RobotPreferences();

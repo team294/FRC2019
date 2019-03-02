@@ -94,15 +94,15 @@ public class OI {
     coP[4].whileHeld(new ClimbArmSetPercentOutput(-0.3)); // top row, second button, DOWN
     coP[5].whenPressed(new ClimbVacuumTurnOn(true)); // top row, third button, UP
     coP[6].whenPressed(new ClimbVacuumTurnOn(false)); // top row, third button, DOWN
-    coP[7].whenPressed(new ClimbPrepSequence()); // mid row, fourth button, UP or DOWN
+    // coP[7].whenPressed(null); // mid row, fourth button, UP or DOWN
     coP[8].whenPressed(new ClimbSequence()); // BIG RED BUTTON
     coP[9].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchHigh)); // mid row, first button, UP
     coP[10].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchMid)); // mid row, first button, DOWN
     coP[11].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.cargoShipCargo)); // mid row, second button, UP
     coP[12].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchLow)); // mid row, second button, DOWN
-    coP[13].whenPressed(null); // mid row, third button, UP
-    coP[14].whenPressed(null); // mid row, third button, DOWN
-    coP[15].whenPressed(null); // third row, first button, UP
+    coP[13].whenPressed(new ClimbPrepSequence()); // mid row, third button, UP
+    // coP[14].whenPressed(null); // mid row, third button, DOWN
+    // coP[15].whenPressed(null); // third row, first button, UP
 
 
     // Buttons for controlling the elevator
