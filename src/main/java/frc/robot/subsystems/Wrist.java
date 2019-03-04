@@ -47,6 +47,7 @@ public class Wrist extends Subsystem {
     wristMotor.set(ControlMode.PercentOutput, 0);
     wristMotor.setInverted(true);
     wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
+    // TODO The sensor phase (direction) was flipped from true (practice bot) to false (competition bot).  OK to use in lab?
     wristMotor.setSensorPhase(false);         // Flip sign of sensor reading
     wristMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
     wristMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
