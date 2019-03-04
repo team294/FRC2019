@@ -3,6 +3,7 @@ package frc.robot.utilities;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class VisionData {
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -31,6 +32,7 @@ public class VisionData {
         yValue = limelight.getEntry("ty");
         aValue = limelight.getEntry("ta");
 
+        SmartDashboard.putNumber("Vision pipeline", 2.0);
     // Aim error and angle error based on calibrated limelight cross-hair
     // aimXError = limelight.getEntry("cx0");  // aim error from CrossHair
     }
@@ -42,6 +44,7 @@ public class VisionData {
         ledMode = ledM.getDouble(0);
     }
 
+    /*
    // Turn the LEDS on
     public void turnOnCamLeds() {
         ledM.setDouble(3);           
@@ -51,6 +54,7 @@ public class VisionData {
     public void turnOffCamLeds() {
         ledM.setDouble(1);  
     }
+    */
 
     /**
      * Returns the true pipeline being used

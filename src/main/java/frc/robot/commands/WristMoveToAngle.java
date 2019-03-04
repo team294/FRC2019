@@ -55,6 +55,9 @@ public class WristMoveToAngle extends Command {
         case straight:
           Robot.wrist.setWristAngle(Robot.robotPrefs.wristStraight);
           break;
+        case cargoShot:
+          Robot.wrist.setWristAngle(Robot.robotPrefs.wristCargoShot);
+          break;
         case down:
           Robot.wrist.setWristAngle(Robot.robotPrefs.wristDown);
           break;
@@ -65,7 +68,7 @@ public class WristMoveToAngle extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.wrist.updateWristLog();
+    Robot.wrist.updateWristLog(false);
   }
 
   // Make this return true when this Command no longer needs to run execute()

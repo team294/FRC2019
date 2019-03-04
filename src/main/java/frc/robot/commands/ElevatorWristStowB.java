@@ -22,7 +22,7 @@ public class ElevatorWristStowB extends CommandGroup {
     addSequential(new ConditionalCommand(new ClimbArmSetAngle(Robot.robotPrefs.climbWristMovingSafe -5.0)){
       @Override
       protected boolean condition() {
-        if (Robot.log.getLogLevel() <= 2) {
+        if (Robot.log.getLogLevel() <= 3) {
           Robot.log.writeLog("ElevatorWristStowB", "Check 1", "Wrist angle," + Robot.wrist.getWristAngle()
             + ",Climb angle," + Robot.climb.getClimbAngle());
         }
@@ -34,7 +34,7 @@ public class ElevatorWristStowB extends CommandGroup {
     addSequential(new ConditionalCommand(new WristMoveToAngle(WristAngle.stowed)){
       @Override
       protected boolean condition() {
-        if (Robot.log.getLogLevel() <= 2) {
+        if (Robot.log.getLogLevel() <= 3) {
           Robot.log.writeLog("ElevatorWristStowB", "Check 2", "Wrist angle," + Robot.wrist.getWristAngle()
             + ",Elevator position," + Robot.elevator.getElevatorPos());
         }

@@ -70,8 +70,8 @@ public class OI {
     xbRight.whenActive(new HatchSet(true)); // DPadRight
     xbDown.whenActive(new CargoIntakeFromGround()); // DPadDown
     xbLeft.whenActive(new HatchSet(false)); // DPadLeft
-    xbLT.whenActive(new CargoOuttake()); // LT
-    xbRT.whenActive(new CargoOuttake()); // RT
+    xbLT.whenActive(new CargoOuttake(-1.0)); // LT
+    xbRT.whenActive(new CargoOuttake(-0.8)); // RT
 
     // Joystick buttons
     left[1].whenPressed(new Shift(true)); // high gear
@@ -80,12 +80,12 @@ public class OI {
     left[2].whenReleased(new DriveWithJoysticks());
     right[2].whileHeld(new DriveStraightJoystick()); // drive straight with right joystick
     right[2].whenReleased(new DriveWithJoysticks()); // drive with joysticks
-    left[3].whenPressed(new HatchScoreAndIntake()); // toggle hatch, back up
+    // left[3].whenPressed(new HatchScoreAndIntake()); // toggle hatch, back up
     // right[3].whenPressed(new Command());
     left[4].whenPressed(new VisionChangePipeline(0)); // set pipeline for vision
-    right[4].whenPressed(new DriveSetDirection(false)); // set direction reverse
+    // right[4].whenPressed(new DriveSetDirection(false)); // set direction reverse
     left[5].whenPressed(new VisionChangePipeline(2)); // set pipeline for drive feed
-    right[5].whenPressed(new DriveSetDirection(true)); // set direction forward
+    // right[5].whenPressed(new DriveSetDirection(true)); // set direction forward
 
     // Copanel buttons
     coP[1].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStart)); // top row, first button, UP
@@ -94,15 +94,15 @@ public class OI {
     coP[4].whileHeld(new ClimbArmSetPercentOutput(-0.3)); // top row, second button, DOWN
     coP[5].whenPressed(new ClimbVacuumTurnOn(true)); // top row, third button, UP
     coP[6].whenPressed(new ClimbVacuumTurnOn(false)); // top row, third button, DOWN
-    coP[7].whenPressed(null); // mid row, fourth button, UP or DOWN
+    // coP[7].whenPressed(null); // mid row, fourth button, UP or DOWN
     coP[8].whenPressed(new ClimbSequence()); // BIG RED BUTTON
     coP[9].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchHigh)); // mid row, first button, UP
     coP[10].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchMid)); // mid row, first button, DOWN
     coP[11].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.cargoShipCargo)); // mid row, second button, UP
     coP[12].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchLow)); // mid row, second button, DOWN
-    coP[13].whenPressed(null); // mid row, third button, UP
-    coP[14].whenPressed(null); // mid row, third button, DOWN
-    coP[15].whenPressed(null); // third row, first button, UP
+    coP[13].whenPressed(new ClimbPrepSequence()); // mid row, third button, UP
+    // coP[14].whenPressed(null); // mid row, third button, DOWN
+    // coP[15].whenPressed(null); // third row, first button, UP
 
 
     // Buttons for controlling the elevator
@@ -127,7 +127,7 @@ public class OI {
 
     // Buttons for the Cargo rollers
     SmartDashboard.putData("Cargo Intake", new CargoIntake());
-    SmartDashboard.putData("Cargo Outtake", new CargoOuttake());
+    SmartDashboard.putData("Cargo Outtake", new CargoOuttake(-0.8));
 
     // Buttons for controlling the wrist
     SmartDashboard.putData("Wrist recalibrate", new WristEncoderFail());

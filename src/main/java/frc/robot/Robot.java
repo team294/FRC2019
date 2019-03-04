@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utilities.*;
+import frc.robot.commands.VisionSandstormSetup;
 import frc.robot.subsystems.*;
 
 /**
@@ -51,7 +52,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     // Create file log first, so any other class constructors can log data
-    log = new FileLog("1");
+    log = new FileLog("B5");
 
     // Read robot preference next, so any other class constructors can use preferences 
     robotPrefs = new RobotPreferences();
@@ -123,6 +124,10 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
+
+    double pipeline = SmartDashboard.getNumber("Vision pipeline", 2.0);
+    vision.setPipe(pipeline);
+
   }
 
   /**
@@ -141,7 +146,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     log.writeLogEcho("Robot", "Autonomous mode init", "");
     beforeFirstEnable = false; // set variable that robot has been enabled
-    m_autonomousCommand = m_chooser.getSelected();
+    m_autonomousCommand = new VisionSandstormSetup(); //m_chooser.getSelected();
 
     climb.enableCompressor(true);
 
@@ -166,7 +171,7 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     climb.enableCompressor(true);
-    vision.setLedMode(3);
+    vision.setLedMode(1);       // TODO Turn on (set to 3) if we are using vision
     log.writeLogEcho("Robot", "Teleop mode init", "");
     beforeFirstEnable = false; // set variable that robot has been enabled
     

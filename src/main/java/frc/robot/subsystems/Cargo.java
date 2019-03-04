@@ -12,7 +12,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -90,12 +89,10 @@ public class Cargo extends Subsystem {
 		if (Robot.log.getLogRotation() == FileLog.CARGO_CYCLE) {
       SmartDashboard.putBoolean("Cargo Has Ball", hasBall());
 
-      if (DriverStation.getInstance().isEnabled()) {
-        Robot.log.writeLog("Cargo", "Update Variables", "Photo Switch," + hasBall() + 
-          ",Volt1," + cargoMotor1.getMotorOutputVoltage() + ",Amp1," + Robot.pdp.getCurrent(RobotMap.cargoMotor1PDP) +
-          ",Volt2," + cargoMotor2.getMotorOutputVoltage() + ",Amp2," + Robot.pdp.getCurrent(RobotMap.cargoMotor2PDP)
-          );
-      }
+      Robot.log.writeLog(false, "Cargo", "Update Variables", "Photo Switch," + hasBall() + 
+        ",Volt1," + cargoMotor1.getMotorOutputVoltage() + ",Amp1," + Robot.pdp.getCurrent(RobotMap.cargoMotor1PDP) +
+        ",Volt2," + cargoMotor2.getMotorOutputVoltage() + ",Amp2," + Robot.pdp.getCurrent(RobotMap.cargoMotor2PDP)
+        );
     }
 
   }

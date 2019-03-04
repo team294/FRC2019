@@ -20,7 +20,7 @@ public class DriveAssist extends CommandGroup {
     addSequential(new VisionChangePipeline(0));
     addSequential(new WristMoveToAngle(WristAngle.straight));
     addSequential(new ElevatorMoveToLevel(ElevatorPosition.hatchLow));
-    addSequential(new DriveWithVision(true, false)); //  true, true  is endOnLine, use gyro
+    addSequential(new DriveWithVision(false, false)); //  true, true  is endOnLine, use gyro
     addSequential(new DriveWithLineFollowing(true));
 
   }

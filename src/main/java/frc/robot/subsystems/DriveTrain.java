@@ -385,9 +385,13 @@ public class DriveTrain extends Subsystem {
       }
     }
   }
-  
-  public void updateDriveLog () {
-    Robot.log.writeLog("DriveTrain", "Update Variables",
+
+  /**
+    * Writes information about the subsystem to the filelog
+    * @param logWhenDisabled true will log when disabled, false will discard the string
+    */
+  public void updateDriveLog (boolean logWhenDisabled) {
+    Robot.log.writeLog(logWhenDisabled, "DriveTrain", "Update Variables",
       "Drive L1 Volts," + leftMotor1.getMotorOutputVoltage() + ",Drive L2 Volts," + leftMotor2.getMotorOutputVoltage() + ",Drive L3 Volts," + leftMotor3.getMotorOutputVoltage() +
       ",Drive L1 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor1PDP) + ",Drive L2 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor2PDP) + ",Drive L3 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor3PDP) + 
       ",Drive R1 Volts," + rightMotor1.getMotorOutputVoltage() + ",Drive R2 Volts," + rightMotor2.getMotorOutputVoltage() + ",Drive R3 Volts," + rightMotor3.getMotorOutputVoltage() + 
@@ -685,9 +689,10 @@ public class DriveTrain extends Subsystem {
       SmartDashboard.putNumber("Drive Left Inches", getLeftEncoderInches());
       SmartDashboard.putNumber("Drive Right Inches", getRightEncoderInches());
       SmartDashboard.putNumber("Gyro Angle", getGyroRotation());
+      
+      updateDriveLog(false);
 
       if (DriverStation.getInstance().isEnabled()) {
-        updateDriveLog();
         Robot.lineFollowing.logLineFollowers();
 
         // TODO move verifyMotors to a pit command, instead of a live command during a match

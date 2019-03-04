@@ -7,7 +7,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -35,20 +34,20 @@ public class Wrist extends Subsystem {
   private double encoderTicksPerDegrees = Robot.robotPrefs.encoderTicksPerRevolution / 360.0;
 
   // TODO test PID terms with actual wrist
-  private double kP = 2.0;  // was 3.0, reduced due to bobbling during elevator movement
+  private double kP = 1.0;  // was 3.0, reduced due to bobbling during elevator movement, was 2
 	private double kI = 0;
 	private double kD = 5.0;
   private double kFF = 0;
   private int kIz = 0;
-  private double kMaxOutput = 1.0; // up max output TODO increase after initial testing
-  private double kMinOutput = -1.0; // down max output  TODO increase after initial testing
+  private double kMaxOutput = 1.0; // up max output
+  private double kMinOutput = -1.0; // down max output
   private double rampRate = 0.3;
 
   public Wrist() {
     wristMotor.set(ControlMode.PercentOutput, 0);
     wristMotor.setInverted(true);
     wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
-    wristMotor.setSensorPhase(true);         // Flip sign of sensor reading
+    wristMotor.setSensorPhase(false);         // Flip sign of sensor reading
     wristMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
     wristMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
     wristMotor.setNeutralMode(NeutralMode.Brake);
@@ -97,26 +96,12 @@ public class Wrist extends Subsystem {
 
   /**
    * Only works when encoder is working and calibrated
-   * If setting to greater than wristKeepOut, elevator position must be zero
-   * and target must be less than 1 inch above starting position
+   * If setting to greater than wristKeepOut, elevator position must be at the bottom
+   * and target must be at the bottom.
    * @param angle target angle, in degrees (0 = horizontal in front of robot, + = up, - = down)
    */
   public void setWristAngle(double angle) {
     if (Robot.robotPrefs.wristCalibrated) {
-      // if ((angle < Robot.robotPrefs.wristKeepOut && getWristAngle() < Robot.robotPrefs.wristKeepOut) || 
-      //     (Robot.elevator.getElevatorLowerLimit() && Robot.elevator.getCurrentElevatorTarget() < (Robot.robotPrefs.elevatorBottomToFloor+1) &&
-      //     (Robot.climb.getClimbAngle() < Robot.robotPrefs.climbWristMovingSafe))) {
-      //   wristMotor.set(ControlMode.Position, degreesToEncoderTicks(angle) + Robot.robotPrefs.wristCalZero);
-      //   Robot.log.writeLog("Wrist", "Set angle", "Angle," + angle + ",Interlock,OK");
-      // }
-      // else if ((Robot.climb.getClimbAngle() > Robot.robotPrefs.climbWristMovingSafe && Robot.climb.getClimbAngle() < Robot.robotPrefs.climbWristStowedSafe) &&
-      // ((getWristAngle() > Robot.robotPrefs.wristKeepOut && angle < Robot.robotPrefs.wristKeepOut) || (getWristAngle() < Robot.robotPrefs.wristKeepOut && angle > Robot.robotPrefs.wristKeepOut))) {
-      //   wristMotor.set(ControlMode.Position, degreesToEncoderTicks(Robot.robotPrefs.wristKeepOut) + Robot.robotPrefs.wristCalZero);
-      //   Robot.log.writeLog("Wrist", "Set angle", "Angle," + Robot.robotPrefs.wristKeepOut + ",Interlock,Diverted");
-      // } else {
-      //   Robot.log.writeLog("Wrist", "Set angle", "Angle," + angle + ",Interlock,Forbidden");
-      // }
-
       // Don't move wrist in or out of KeepOut if climber > climbWristMovingSafe or elevator > elevatorWristSafeStow.
       if ( (Robot.climb.getClimbAngle() > Robot.robotPrefs.climbWristMovingSafe ||              // Climber is not safe
             Robot.elevator.getElevatorPos() > Robot.robotPrefs.elevatorWristSafeStow ||         // Elevator is not safe
@@ -315,9 +300,10 @@ public class Wrist extends Subsystem {
 
   /**
    * Writes information about the subsystem to the filelog
+   * @param logWhenDisabled true will log when disabled, false will discard the string
    */
-  public void updateWristLog() {
-    Robot.log.writeLog("Wrist", "Update Variables",
+  public void updateWristLog(boolean logWhenDisabled) {
+    Robot.log.writeLog(logWhenDisabled, "Wrist", "Update Variables",
         "Volts," + wristMotor.getMotorOutputVoltage() + ",Amps," + Robot.pdp.getCurrent(RobotMap.wristMotorPDP) +
         ",WristCalZero," + Robot.robotPrefs.wristCalZero + 
         ",Enc Raw," + getWristEncoderTicksRaw() + ",Wrist Angle," + getWristAngle() + ",Wrist Target," + getCurrentWristTarget() +
@@ -350,30 +336,32 @@ public class Wrist extends Subsystem {
     if (!Robot.robotPrefs.wristCalibrated) {
       if (getWristUpperLimit()) {
         calibrateWristEnc(Robot.robotPrefs.wristMax, false);
-        updateWristLog();
+        updateWristLog(true);
       }
       if (getWristLowerLimit()) {
         calibrateWristEnc(Robot.robotPrefs.wristMin, false);
-        updateWristLog();
+        updateWristLog(true);
       }
     }
     
     // Un-calibrates the wrist if the angle is outside of bounds... can we figure out a way to not put this in periodic()?
     if (getWristAngle() > Robot.robotPrefs.wristMax + 5.0 || getWristAngle() < Robot.robotPrefs.wristMin - 5.0) {
       Robot.robotPrefs.setWristUncalibrated();
-      updateWristLog();
+      updateWristLog(true);
     }
 
-    if (DriverStation.getInstance().isEnabled()) {
+    if (Robot.log.getLogRotation() == FileLog.WRIST_CYCLE) {
+      updateWristLog(false);
+    }
+
+    // if (DriverStation.getInstance().isEnabled()) {
  
-      if (Robot.log.getLogRotation() == FileLog.WRIST_CYCLE) {
-        updateWristLog();
-      }
+      
 
       /* All of the code below should be gotten rid of for the same reason as the elevator stuff. It doesn't speed anything up in competition - 
       the codriver still has to recognize that the encoders are broken and the wrist is stalled. This is just more code to run in periodic() */
       
-      // TODO: Work on the safety code below.  It tends to trigger if the wrist bounces.
+      // TO DO: Work on the safety code below.  It tends to trigger if the wrist bounces.
 
 
       // Following code checks whether the encoder is incrementing in the same direction as the 
@@ -414,7 +402,7 @@ public class Wrist extends Subsystem {
         }
       }
       */
-    }
+    // }
   }
  
 }

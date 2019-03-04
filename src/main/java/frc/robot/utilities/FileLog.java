@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class FileLog {
@@ -104,6 +105,30 @@ public class FileLog {
 			fileWriter.write(dateFormat.format(System.currentTimeMillis()) + "," + subsytemOrCommand + "," + event + "," + msg + "\n");
 			fileWriter.flush();
 		} catch (IOException exception) {
+		}
+	}
+
+	/**
+	 * Writes a message to the log file.  The message will be timestamped.  Does not echo the message to the screen.
+	 * @param logWhenDisabled true will log when disabled, false will discard the message
+	 * @param subsystemOrCommand The name of the subsytem or command generating the message
+	 * @param event A description of the event (ex. start, data, event)
+	 * @param msg The message
+	 */
+	public void writeLog(boolean logWhenDisabled, String subsytemOrCommand, String event, String msg) {
+		// If system clock has reset by more than 24 hours (like when the clock is set
+		// at the start of a match), then fix the filename
+		if (System.currentTimeMillis() - startTime > 1000*3600*24) {
+			updateFilenameDateTime();
+		}
+
+		// Write the message to the file
+		if(logWhenDisabled || DriverStation.getInstance().isEnabled()) {
+			try {
+			fileWriter.write(dateFormat.format(System.currentTimeMillis()) + "," + subsytemOrCommand + "," + event + "," + msg + "\n");
+			fileWriter.flush();
+			} catch (IOException exception) {
+			}
 		}
 	}
 	

@@ -244,10 +244,11 @@ public class Elevator extends Subsystem {
 	}
 
 	/**
-	 * writes information about the subsystem to the fileLog
-	 */
-	public void updateElevatorLog() {
-		Robot.log.writeLog("Elevator", "Update Variables",
+    * Writes information about the subsystem to the filelog
+    * @param logWhenDisabled true will log when disabled, false will discard the string
+    */
+	public void updateElevatorLog(boolean logWhenDisabled) {
+		Robot.log.writeLog(logWhenDisabled, "Elevator", "Update Variables",
 				"Volts1," + elevatorMotor1.getMotorOutputVoltage() + ",Volts2," + elevatorMotor2.getMotorOutputVoltage() + 
 				",Amps1," + Robot.pdp.getCurrent(RobotMap.elevatorMotor1PDP) + ",Amps2," + Robot.pdp.getCurrent(RobotMap.elevatorMotor2PDP) + 
 				",Enc Ticks," + getElevatorEncTicks() + ",Enc Inches," + getElevatorPos() + ",Elev Target," + getCurrentElevatorTarget() +
@@ -282,22 +283,24 @@ public class Elevator extends Subsystem {
 			SmartDashboard.putBoolean("Elev Upper Limit", getElevatorUpperLimit());
 		}		
 		
+		if (Robot.log.getLogRotation() == FileLog.ELEVATOR_CYCLE) {
+			updateElevatorLog(false);
+		}
+
 		// Following code changes the frequency of variable logging depending
 		// on the set logLevel, Motors are checked every cycle regardless
 		if (DriverStation.getInstance().isEnabled()) {
 
 			verifyMotors(); // What is the concrete use for this?  Move to a pit command, instead of live during match?
 
-			if (Robot.log.getLogRotation() == FileLog.ELEVATOR_CYCLE) {
-				updateElevatorLog();
-			}
+			
 		
 			// Following code checks whether the encoder is incrementing in the same direction as the 
 			// motor is moving and changes control modes based on state of encoder
 
 			/* All of the code below should be gotten rid of. It doesn't speed anything up in competition - the codriver still has to recognize that the encoders are broken
 			and the elevator is stalled. This is just more code to run in periodic() */
-			// TODO: The code below is causing false triggers that causes the elevator to be uncalibrated.
+			// TO DO: The code below is causing false triggers that causes the elevator to be uncalibrated.
 			/*
 			currEnc = getElevatorEncTicks();
 			if (elevatorMotor1.getMotorOutputVoltage() > 5) {

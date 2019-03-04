@@ -10,15 +10,13 @@ package frc.robot.commands;
 import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class ClimbSequence extends CommandGroup {
+public class ClimbPrepSequence extends CommandGroup {
   /**
    * Climbing sequence!  Stows the wrist safely (if needed), moves arm to get 
    * vacuum, then lifts the robot.
    */
-  public ClimbSequence() {
-    addParallel(new ElevatorWristStow());
-    addSequential(new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
-    // addSequential(new ElevatorMoveToLevel(Robot.robotPrefs.elevatorBottomToFloor));
-    addSequential(new ClimbArmSetAngle(Robot.robotPrefs.climbLiftAngle));
+  public ClimbPrepSequence() {
+    addSequential(new ElevatorWristStow());
+    addSequential(new ClimbArmSetAngle(Robot.robotPrefs.climbPrep));
   }
 }

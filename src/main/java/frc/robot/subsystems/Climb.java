@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogTrigger;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DriverStation;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -330,8 +329,12 @@ public class Climb extends Subsystem {
     return climbLimit.isFwdLimitSwitchClosed();
   }
 
-  public void updateClimbLog() {
-    Robot.log.writeLog("Climb", "Update Variables", 
+   /**
+   * Writes information about the subsystem to the filelog
+   * @param logWhenDisabled true will log when disabled, false will discard the string
+   */
+  public void updateClimbLog(boolean logWhenDisabled) {
+    Robot.log.writeLog(logWhenDisabled, "Climb", "Update Variables", 
     "Volts1," + climbMotor2.getMotorOutputVoltage() + ",Volts2," + climbMotor1.getMotorOutputVoltage() + 
     ",VacVolts," + climbVacuum.getMotorOutputVoltage() + //",VacVolts2," + climbVacuum2.getMotorOutputVoltage() +
     ",Amps1," + Robot.pdp.getCurrent(RobotMap.climbMotor2PDP) + ",Amps2," + Robot.pdp.getCurrent(RobotMap.climbMotor1PDP) + 
@@ -359,19 +362,17 @@ public class Climb extends Subsystem {
       SmartDashboard.putBoolean("Climb vacuum", isVacuumPresent());
       SmartDashboard.putNumber("Climb target", getCurrentClimbTarget());
 
-      SmartDashboard.putNumber("Climb Analog Voltage", analogVacuumSensor.getVoltage());
-      SmartDashboard.putNumber("Climb Analog Average (Oversampled) Voltage", analogVacuumSensor.getAverageVoltage());
+      // SmartDashboard.putNumber("Climb Analog Voltage", analogVacuumSensor.getVoltage());
+      // SmartDashboard.putNumber("Climb Analog Average (Oversampled) Voltage", analogVacuumSensor.getAverageVoltage());
+      SmartDashboard.putNumber("Analog Vacuum Pressure", getVacuumPressure(false));
       SmartDashboard.putBoolean("Vacuum Trigger In Window (0.5, 3.4)", vacuumTrigger.getInWindow());
       //SmartDashboard.putBoolean("Vacuum Trigger Rising/Falling", vacuumTrigger.getTriggerState());
 
-      if (DriverStation.getInstance().isEnabled()) {
-        updateClimbLog(); 
-      }
+      updateClimbLog(false); 
     }
 
-    SmartDashboard.putNumber("Analog Vacuum Pressure", getVacuumPressure(false));
     if (isVacuumPresent()) Robot.leds.setColor(LedHandler.Color.BLUE, false); // solid when vacuum drawn
-    else if (getVacuumPressure(false) > 5.0) Robot.leds.setColor(LedHandler.Color.BLUE, true); // blinking when vacuum is starting to rise
+    else if (getVacuumPressure(false) > 7.0) Robot.leds.setColor(LedHandler.Color.BLUE, true); // blinking when vacuum is starting to rise
     
     // Checks if the climb is not calibrated and automatically calibrates it once the reverse limit switch is pressed
     // If the climb isn't calibrated at the start of the match, then we can calibrate using manual climb control
@@ -379,14 +380,14 @@ public class Climb extends Subsystem {
     if (!Robot.robotPrefs.climbCalibrated ) {  // || Robot.beforeFirstEnable
       if (isClimbAtLimitSwitch()) {
         calibrateClimbEnc(Robot.robotPrefs.climbLimitAngle, false);
-        updateClimbLog();
+        updateClimbLog(true);
       }
     }
     
     // Un-calibrates the climb if the angle is outside of bounds.
     if (getClimbAngle() > Robot.robotPrefs.climbLimitAngle + 5.0 || getClimbAngle() < Robot.robotPrefs.climbMinAngle - 5.0) {
       Robot.robotPrefs.setClimbUncalibrated();
-      updateClimbLog();
+      updateClimbLog(true);
     }
   }
   
