@@ -6,8 +6,7 @@
 /*----------------------------------------------------------------------------*/
 
 
-package frc.robot.subsystems;   // had to change from just frc.robot.subsystems ?
-
+package frc.robot.subsystems;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -19,8 +18,6 @@ import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
-
-
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -52,6 +49,8 @@ public class DriveTrain extends Subsystem {
   private double leftMotorFaultCount; // increments every cycle the left side detects an issue
   private double rightMotorFaultCount; // increments every cycle the right side detects an issue
   boolean driveDirection = true; // true = forward, false = reverse
+  private double fieldX;
+	private double fieldY;
   
   // Encoders
   private double leftEncoderZero = 0, rightEncoderZero = 0;
@@ -676,6 +675,41 @@ public class DriveTrain extends Subsystem {
   public boolean getDriveDirection() {
     return driveDirection;
   }
+
+  public void setFieldPositionX(double x) {
+		this.fieldX = x;
+		SmartDashboard.putNumber("FieldX", fieldX);
+	}
+
+	public void setFieldPositionY(double y) {
+		this.fieldY = y;
+		SmartDashboard.putNumber("FieldY", fieldY);
+	}
+
+	public void addFieldPositionX(double x) {
+		setFieldPositionX(fieldX + x);
+	}
+
+	public void addFieldPositionY(double y) {
+		setFieldPositionY(fieldY + y);
+	}
+
+	public double getFieldPositionX() {
+		return this.fieldX;
+	}
+
+	public double getFieldPositionY() {
+		return this.fieldY;
+  } 
+  
+  /**
+	 * Get the average position of the two encoders, in inches
+	 * 
+	 * @return encoder position, in inches
+	 */
+	public double getAverageEncoderInches() {
+		return (getRightEncoderInches() + getLeftEncoderInches()) / 2.0;
+	}
 
   @Override
   public void initDefaultCommand() {
