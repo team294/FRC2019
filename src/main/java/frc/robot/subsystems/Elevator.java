@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.ElevatorWithXBox;
+import frc.robot.utilities.ElevatorProfileGenerator;
 import frc.robot.utilities.FileLog;
 import frc.robot.utilities.Wait;
 
@@ -34,6 +35,8 @@ public class Elevator extends Subsystem {
 	private WPI_TalonSRX elevatorMotor1;
 	private WPI_TalonSRX elevatorMotor2;
 	private SensorCollection elevatorLimits;
+
+	private ElevatorProfileGenerator elevatorProfile;
 
 	private int posMoveCount = 0; // increments every cycle the elevator moves up
 	private int negMoveCount = 0; // increments every cycle the elevator moves down
