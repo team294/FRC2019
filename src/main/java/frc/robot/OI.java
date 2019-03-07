@@ -33,7 +33,7 @@ public class OI {
   public OI() {
     Button[] left = new Button[12];
     Button[] right = new Button[12];
-    Button[] coP = new Button[16];
+    Button[] coP = new Button[20];
     Button[] xbB = new Button[11];
     Trigger xbUp = new POVTrigger(xBoxController, 0);
     Trigger xbRight = new POVTrigger(xBoxController, 90);
@@ -94,15 +94,16 @@ public class OI {
     coP[4].whileHeld(new ClimbArmSetPercentOutput(-0.3)); // top row, second button, DOWN
     coP[5].whenPressed(new ClimbVacuumTurnOn(true)); // top row, third button, UP
     coP[6].whenPressed(new ClimbVacuumTurnOn(false)); // top row, third button, DOWN
-    // coP[7].whenPressed(new Command()); // mid row, fourth button, UP or DOWN
+    coP[7].whenPressed(new ClimbPrepSequence()); // mid row, fourth button, UP or DOWN
     coP[8].whenPressed(new ClimbSequence()); // BIG RED BUTTON
     coP[9].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchHigh)); // mid row, first button, UP
     coP[10].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchMid)); // mid row, first button, DOWN
-    coP[11].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.cargoShipCargo)); // mid row, second button, UP
-    coP[12].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchLow)); // mid row, second button, DOWN
-    coP[13].whenPressed(new ClimbPrepSequence()); // mid row, third button, UP
-    // coP[14].whenPressed(new Command()); // mid row, third button, DOWN
-    // coP[15].whenPressed(new Command()); // third row, first button, UP
+    // coP[11].whenPressed(new Command()); // mid row, second button, UP // Want manual elevator up for this one
+    // coP[12].whenPressed(new Command()); // mid row, second button, DOWN // manual elevator down
+    // coP[13].whenPressed(new Command()); // mid row, third button, UP // manual wrist up
+    // coP[14].whenPressed(new Command()); // mid row, third button, DOWN // manual wrist down
+    coP[15].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.cargoShipCargo)); // third row, first button, UP
+    coP[16].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchLow)); // third row, first button, DOWN
 
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorSetPercentOutput(0.4)); // For testing limit switch and encoder
