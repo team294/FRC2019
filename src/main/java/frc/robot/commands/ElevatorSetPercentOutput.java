@@ -25,13 +25,13 @@ public class ElevatorSetPercentOutput extends Command {
   @Override
   protected void initialize() {
     Robot.elevator.setElevatorMotorPercentOutput(percentOutput);
-    Robot.elevator.updateElevatorLog(false);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
     Robot.elevator.setElevatorMotorPercentOutput(percentOutput);
+    Robot.elevator.updateElevatorLog(false);
   }
 
   // Make this return true when this Command no longer needs to run execute()
