@@ -80,12 +80,12 @@ public class OI {
     left[2].whenReleased(new DriveWithJoysticks());
     right[2].whileHeld(new DriveStraightJoystick()); // drive straight with right joystick
     right[2].whenReleased(new DriveWithJoysticks()); // drive with joysticks
-    // left[3].whenPressed(new HatchScoreAndIntake()); // toggle hatch, back up
+    // left[3].whenPressed(new Command());
     // right[3].whenPressed(new Command());
     left[4].whenPressed(new VisionChangePipeline(0)); // set pipeline for vision
-    // right[4].whenPressed(new DriveSetDirection(false)); // set direction reverse
+    // right[4].whenPressed(new Command());
     left[5].whenPressed(new VisionChangePipeline(2)); // set pipeline for drive feed
-    // right[5].whenPressed(new DriveSetDirection(true)); // set direction forward
+    // right[5].whenPressed(new Command());
 
     // Copanel buttons
     coP[1].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStart)); // top row, first button, UP
@@ -94,24 +94,22 @@ public class OI {
     coP[4].whileHeld(new ClimbArmSetPercentOutput(-0.3)); // top row, second button, DOWN
     coP[5].whenPressed(new ClimbVacuumTurnOn(true)); // top row, third button, UP
     coP[6].whenPressed(new ClimbVacuumTurnOn(false)); // top row, third button, DOWN
-    // coP[7].whenPressed(null); // mid row, fourth button, UP or DOWN
+    // coP[7].whenPressed(new Command()); // mid row, fourth button, UP or DOWN
     coP[8].whenPressed(new ClimbSequence()); // BIG RED BUTTON
     coP[9].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchHigh)); // mid row, first button, UP
     coP[10].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchMid)); // mid row, first button, DOWN
     coP[11].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.cargoShipCargo)); // mid row, second button, UP
     coP[12].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchLow)); // mid row, second button, DOWN
     coP[13].whenPressed(new ClimbPrepSequence()); // mid row, third button, UP
-    // coP[14].whenPressed(null); // mid row, third button, DOWN
-    // coP[15].whenPressed(null); // third row, first button, UP
-
+    // coP[14].whenPressed(new Command()); // mid row, third button, DOWN
+    // coP[15].whenPressed(new Command()); // third row, first button, UP
 
     // Buttons for controlling the elevator
-    SmartDashboard.putData("Elevator Up", new ElevatorRaise()); // For testing limit switch and encoder
-    SmartDashboard.putData("Elevator Down", new ElevatorLower()); // For testing limit switch and encoder
+    SmartDashboard.putData("Elevator Up", new ElevatorSetPercentOutput(0.4)); // For testing limit switch and encoder
+    SmartDashboard.putData("Elevator Down", new ElevatorSetPercentOutput(-0.2)); // For testing limit switch and encoder
     SmartDashboard.putData("Move Elevator to Bottom", new ElevatorMoveToLevel(ElevatorPosition.bottom)); // Move to encoder's zero position
     SmartDashboard.putData("Move Elevator to WristStow", new ElevatorMoveToLevel(ElevatorPosition.wristStow)); // Move to level that wrist can be stowed safely
     SmartDashboard.putData("Move Elevator to High", new ElevatorMoveToLevel(ElevatorPosition.hatchHigh)); // Move to high position (test wrist interlock)
-    SmartDashboard.putData("Zero Elev Enc (w/ Limit)", new ElevatorMoveToBottomThenZeroEncoder());
 
     // Buttons for controlling the climber
     SmartDashboard.putData("Climb Up", new ClimbArmSetPercentOutput(0.3));  // For testing
@@ -121,7 +119,6 @@ public class OI {
     SmartDashboard.putData("Climb lift robot", new ClimbArmSetAngle(Robot.robotPrefs.climbLiftAngle));  // For testing
     SmartDashboard.putData("Climb Vacuum On", new ClimbVacuumTurnOn(true));
     SmartDashboard.putData("Climb Vacuum Off", new ClimbVacuumTurnOn(false));
-    SmartDashboard.putData("Climb Set Reference", new ClimbMoveToLimitThenCalibrate());
     SmartDashboard.putData("ClimbMoveUntilVacuum", new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
     SmartDashboard.putData("ClimbSequence", new ClimbSequence());
 
@@ -151,8 +148,6 @@ public class OI {
 
     SmartDashboard.putData("Clear Sticky Faults", new ClearStickyFaults());
     Robot.robotPrefs.showStickyFaults();
-    // SmartDashboard.putData("Turn To Line", new TurnToLine());
-    SmartDashboard.putData("Disc Toggle", new HatchToggle());
     SmartDashboard.putData("Disc Grab", new HatchSet(true));
     SmartDashboard.putData("Disc Release", new HatchSet(false));
     SmartDashboard.putString("Disc Position", "Null");
