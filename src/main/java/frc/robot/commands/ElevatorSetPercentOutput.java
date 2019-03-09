@@ -24,6 +24,7 @@ public class ElevatorSetPercentOutput extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.elevator.resetPID();
     Robot.elevator.setElevatorMotorPercentOutput(percentOutput);
   }
 

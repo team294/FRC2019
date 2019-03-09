@@ -105,7 +105,7 @@ public class ElevatorMoveToLevel extends Command {
         }
       }
     }
-    Robot.elevator.setElevatorPos(target);
+    Robot.elevator.startPID(target);
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -123,9 +123,10 @@ public class ElevatorMoveToLevel extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-   return !Robot.elevator.getEncOK() ||         // End immediately if encoder can't read
-     Math.abs(Robot.elevator.getElevatorPos() - target) <= 0.5 ||
-     (startTime && timeSinceInitialized() - timeAtLooseTolerance > 0.5);
+  return true;
+  //  return !Robot.elevator.getEncOK() ||         // End immediately if encoder can't read
+  //    Math.abs(Robot.elevator.getElevatorPos() - target) <= 0.5 ||
+  //    (startTime && timeSinceInitialized() - timeAtLooseTolerance > 0.5);
   }
 
   // Called once after isFinished returns true

@@ -38,22 +38,30 @@ public class Elevator extends Subsystem {
 
 	private ElevatorProfileGenerator elevatorProfile;
 
-	private int posMoveCount = 0; // increments every cycle the elevator moves up
-	private int negMoveCount = 0; // increments every cycle the elevator moves down
+	// private int posMoveCount = 0; // increments every cycle the elevator moves up
+	// private int negMoveCount = 0; // increments every cycle the elevator moves down
+	// private double currEnc = 0.0; // current recorded encoder value
+	// private double encSnapShot = 0.0; // snapshot of encoder value used to make sure encoder is working
 	private int motorFaultCount = 0; // increments every cycle the motor detects an issue
-	private double currEnc = 0.0; // current recorded encoder value
-	private double encSnapShot = 0.0; // snapshot of encoder value used to make sure encoder is working
 	private boolean elevEncOK = true; // true is encoder working, false is encoder broken
 	private boolean elevatorMode; // true is automated (encoder is working and calibrated), false is manual mode
 
+	private long lastTime;
+	private double lastVelocity, lastMPVelocity, dt;
+	private double initPos, finalPos, lastPos;
+	private double prevError, error, intError;
+
 	private double rampRate = 0.3;
-	private double kP = 0.5;
-	private double kI = 0;
-	private double kD = 0;
+	private double kPu = 1;
+	private double kIu = 0;
+	private double kDu = 0;
+	private double kPd = 0.05;
+	private double kId = 0;
+	private double kDd = 0;
 	private double kFF = 0;
 	private int kIz = 0;
-	private double kMaxOutput = 0.8; // up max output
-	private double kMinOutput = -0.4; // down max output
+	private double kMaxOutput = 0.5; // up max output was .8
+	private double kMinOutput = -0.2; // down max output was .4
 
 	public Elevator() {
 		elevatorMotor1 = new WPI_TalonSRX(RobotMap.elevatorMotor1);
@@ -69,11 +77,8 @@ public class Elevator extends Subsystem {
 		elevatorLimits = elevatorMotor1.getSensorCollection();
 		checkAndZeroElevatorEnc();
 
-		elevatorMotor1.config_kP(0, kP);
-		elevatorMotor1.config_kI(0, kI);
-		elevatorMotor1.config_kD(0, kD);
-		elevatorMotor1.config_kF(0, kFF);
-		elevatorMotor1.config_IntegralZone(0, kIz);
+		// elevatorMotor1.config_kF(0, kFF);
+		// elevatorMotor1.config_IntegralZone(0, kIz);
 		elevatorMotor1.configClosedloopRamp(rampRate);
 		elevatorMotor1.configPeakOutputForward(kMaxOutput);
 		elevatorMotor1.configPeakOutputReverse(kMinOutput);
@@ -82,6 +87,18 @@ public class Elevator extends Subsystem {
 		elevatorMotor2.clearStickyFaults();
 		elevatorMotor1.setNeutralMode(NeutralMode.Brake);
 		elevatorMotor2.setNeutralMode(NeutralMode.Brake);
+
+		lastTime = System.currentTimeMillis();
+		if (elevatorMode) {
+			lastPos = getElevatorPos();			
+		} else {
+			lastPos = 0;
+		}
+
+		lastVelocity = 0.0;
+		lastMPVelocity = 0.0;
+		finalPos = lastPos;
+		elevatorProfile = new ElevatorProfileGenerator(finalPos, finalPos, 0, 0, 0);
 
 		// Wait 0.25 seconds before checking the encoder ticks.  The reason is that zeroing the encoder (above)
 		// can be delayed up to 50ms for a round trip
@@ -103,6 +120,59 @@ public class Elevator extends Subsystem {
 	 */
 	public void setElevatorMotorPercentOutput(double percentOutput) {
 		elevatorMotor1.set(ControlMode.PercentOutput, percentOutput);
+	}
+
+	/**
+	 * Resets the PID. Use this if the calibration changes or the elevator was running in manual mode 
+	 * to prevent the elevator from jumping when the PID re-engages.
+	 */
+	public void resetPID() {
+		lastPos = getElevatorPos();
+		lastVelocity = 0.0;
+		lastMPVelocity = 0.0;
+		startPID(lastPos);
+		elevatorProfile.newProfile(lastPos, lastPos, 0, 0, 0);
+	}
+
+	/**
+	 * Sets target angle for elevator PID.
+	 * @param pos in degrees
+	 */
+	public void startPID(double pos) {
+		// Prevent elevator from going outside of allowed range
+		// pos = (pos > Robot.robotPrefs.hatchHigh) ? Robot.robotPrefs.hatchHigh : pos;
+		// pos = (pos < Robot.robotPrefs.elevatorWristStow) ? Robot.robotPrefs.elevatorWristSafeStow : pos;
+
+		initPos = getElevatorPos();
+		intError = 0;
+		prevError = 0;
+		error = 0;
+
+		if (!DriverStation.getInstance().isEnabled() || elevatorMode) {
+			// We are disabled or under joystick control, so just track the position/height.
+			// I.e., we were called from periodic() using startPID(getElevatorPos());
+			// TODO log elevator pos
+		} else {
+			// TODO logging statement
+			// Robot.log.writeLog("Arm Start PID,cal Zero," + Robot.robotPrefs.armCalZero + ",initial raw encoder,"
+			// 		+ getArmEncRaw() + ",initialAngle," + initAngle + ",Destination Angle," + angle);
+		}
+
+		Robot.log.writeLog("Elevator", "Trapezoid", "initPos," + initPos + ",targetPos," + pos);
+
+		SmartDashboard.putNumber("ElevatorInitPos", initPos);
+		SmartDashboard.putNumber("ElevatorTarget", pos);
+		finalPos = pos;
+		if(initPos < pos) {
+			elevatorProfile.newProfile(pos, 15, 5); // was 150, 150
+			Robot.log.writeLog("Elevator", "Trapezoid", "initPos < pos");
+
+		} else {
+			elevatorProfile.newProfile(pos, 15, 5);  // was 150, 150
+			Robot.log.writeLog("Elevator", "Trapezoid", "initPos > pos");
+
+		}
+
 	}
 
 	/**
@@ -284,11 +354,40 @@ public class Elevator extends Subsystem {
 			// SmartDashboard.putNumber("Enc Tick", getElevatorEncTicks());
 			SmartDashboard.putBoolean("Elev Lower Limit", getElevatorLowerLimit());
 			SmartDashboard.putBoolean("Elev Upper Limit", getElevatorUpperLimit());
-		}		
+		}
 		
+		dt = ((double)(System.currentTimeMillis() - lastTime)) / 1000.0;  // Time since the last periodic run
+		if (elevatorMode) {
+			lastVelocity = (getElevatorPos() - lastPos)/dt;
+		} else {
+			lastVelocity = 0.0;
+		}
+
+		elevatorProfile.updateProfileCalcs();
+		lastMPVelocity = elevatorProfile.getCurrentVelocity();
+		error = elevatorProfile.getCurrentPosition() - getElevatorPos();
+		intError = intError + error * dt;
+
+		double percentPower = kFF;
+		if (finalPos - initPos > 0) {
+			percentPower += kPu * error + ((error - prevError) * kDu) + (kIu * intError);
+		} else {
+			percentPower += kPd * error + ((error - prevError) * kDd) + (kId * intError);
+		}
+		prevError = error;
+
+		SmartDashboard.putNumber("Arm PID Error", error);
+		SmartDashboard.putNumber("Arm PID percent power", percentPower);
+		SmartDashboard.putNumber("Arm Profile getCurrentPosition", elevatorProfile.getCurrentPosition());
+
+		setElevatorMotorPercentOutput(percentPower);
+
 		if (Robot.log.getLogRotation() == FileLog.ELEVATOR_CYCLE) {
 			updateElevatorLog(false);
 		}
+
+		lastTime = System.currentTimeMillis();
+		lastPos = getElevatorPos();
 
 		// Following code changes the frequency of variable logging depending
 		// on the set logLevel, Motors are checked every cycle regardless
@@ -345,8 +444,8 @@ public class Elevator extends Subsystem {
 			if (!elevatorMode && elevEncOK && getElevatorLowerLimit()) {
 				setDefaultCommand(null);
 				elevatorMode = true;
-				posMoveCount = 0;
-				negMoveCount = 0;
+				// posMoveCount = 0;
+				// negMoveCount = 0;
 			}
 
 		}

@@ -48,7 +48,7 @@ public class ElevatorProfileGenerator {
 	 * @param maxAcceleration in inches per second^2
 	 */
 	public void newProfile(double finalPosition, double maxVelocity, double maxAcceleration) {
-		newProfile( getCurrentPosition(), finalPosition, getCurrentVelocity(), maxVelocity, maxAcceleration);
+		newProfile(getCurrentPosition(), finalPosition, getCurrentVelocity(), maxVelocity, maxAcceleration);
 	}
 	
 	
@@ -79,7 +79,7 @@ public class ElevatorProfileGenerator {
 		startTime = System.currentTimeMillis();
 		currentTime = startTime;
 		
-//		Robot.log.writeLogEcho("Profile generator,init pos," + initialPosition + ",final pos," + finalPosition );
+		Robot.log.writeLog("ElevatorProfile", "New Profile", "init pos," + initialPosition + ",final pos," + finalPosition );
 	}
 
 	/**
@@ -92,20 +92,20 @@ public class ElevatorProfileGenerator {
 		dt = ((double)(tempTime - currentTime))/1000.0;
 		currentTime = tempTime;		
 		
-		double stoppingDistance = 0.5 * currentVelocity*currentVelocity / stoppingAcceleration;
-		if( (targetMPDistance - currentMPDistance < stoppingDistance) && (currentVelocity>0)) currentAcceleration = -stoppingAcceleration;
+		double stoppingDistance = 0.5 * currentVelocity * currentVelocity / stoppingAcceleration;
+		if((targetMPDistance - currentMPDistance < stoppingDistance) && (currentVelocity > 0)) currentAcceleration = -stoppingAcceleration;
 		else if(currentVelocity < maxVelocity) currentAcceleration = maxAcceleration;
 		else currentAcceleration = 0;
 		
-		currentVelocity = currentVelocity + currentAcceleration*dt;
+		currentVelocity = currentVelocity + currentAcceleration * dt;
 		
 		if(currentVelocity > maxVelocity) currentVelocity = maxVelocity;
 		currentMPDistance = currentMPDistance + currentVelocity * dt;
 		if(currentMPDistance > targetMPDistance) currentMPDistance = targetMPDistance;
 		SmartDashboard.putNumber("Profile Position", currentMPDistance);
 		SmartDashboard.putNumber("Profile Velocity", currentVelocity);
-		//Robot.log.writeLog("Profile generator,time since start," + getTimeSinceProfileStart() + ",dt," + dt +
-				//",current pos," + currentMPDistance*directionSign + ",current vel," + currentVelocity);
+		Robot.log.writeLog("ElevatorProfile", "updateCalc", "current pos," + (currentMPDistance * directionSign) + ",actualPos," + (Robot.elevator.getElevatorPos()-Robot.robotPrefs.elevatorBottomToFloor) + ",targetPos," + targetMPDistance + ",time since start," + getTimeSinceProfileStart() + ",dt," + dt +
+				 ",current vel," + (currentVelocity * directionSign) + ",current acceleration," + currentAcceleration);
 		
 	}
 
@@ -114,7 +114,7 @@ public class ElevatorProfileGenerator {
 	 * @return Current target position for the robot, in inches
 	 */
 	public double getCurrentPosition(){
-		return currentMPDistance*directionSign + initialPosition;
+		return currentMPDistance * directionSign + initialPosition;
 		
 	}
 

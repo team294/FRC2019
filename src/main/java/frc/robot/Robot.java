@@ -112,6 +112,7 @@ public class Robot extends TimedRobot {
 
     wrist.stopWrist();
     elevator.stopElevator();
+    elevator.resetPID();
     climb.stopClimb();
     climb.enableVacuum(false);
     
