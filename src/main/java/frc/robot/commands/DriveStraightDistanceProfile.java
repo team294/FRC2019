@@ -13,8 +13,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * Used for when you want to drive straight at some specified angle, uses motion
- * profiling
+ * Used for when you want to drive straight at some specified angle, uses motion profiling
  */
 public class DriveStraightDistanceProfile extends Command {
 
@@ -23,10 +22,10 @@ public class DriveStraightDistanceProfile extends Command {
 	private double intDistErr = 0;
 	private double targetDistance, currentDistance;
 	private ToleranceChecker tolCheck;
-	private boolean success;
+	private boolean success = false;
 	private double distSpeedControl;
 
-	private final double kPdist = .08, kDdist = .3, kIdist = 0.00, kFdist = 0; // TODO test all these values
+	private final double kPdist = 0.08, kDdist = 0, kIdist = 0, kFdist = 0;
 
 	private double prevDistErr;
 	private double currentAngle;
@@ -36,9 +35,9 @@ public class DriveStraightDistanceProfile extends Command {
 	private double absPrevMPVel = 0;
 	private double MPCurrentDistance;
 
-	private double kPangle = .06; // TODO test value
-	private double kIangle = .002; // TODO test value
-	private double kDangle = .1; // TODO test value
+	private double kPangle = 0.03;
+	private double kIangle = 0.001;
+	private double kDangle = 0.05;
 	private final VelocityChecker velCheck = new VelocityChecker(0.3);
 
 	private double curve;
@@ -121,7 +120,7 @@ public class DriveStraightDistanceProfile extends Command {
 		}
 		
 		Robot.log.writeLog(false, "DriveStraightdistanceProfile", "Start", "started distance inches," + 
-				targetDistance + ",angle," + angleBase + ",speed," + MPSpeed + ",accel," + MPAccel);
+				targetDistance + ",success," + success + ",angle," + angleBase + ",speed," + MPSpeed + ",accel," + MPAccel);
 
 		distErr = 0;
 		prevDistErr = 0;
@@ -195,7 +194,7 @@ public class DriveStraightDistanceProfile extends Command {
 		}
 
 		Robot.log.writeLog(false, "DriveStraightDistanceProfile", "Update", "currentDistance," + currentDistanceInches + ",MPCurrentDistance," + MPCurrentDistance 
-				+ ",distSpeedControl," + distSpeedControl + ",MPVelocity," 
+				+ ",success," + success + ",distSpeedControl," + distSpeedControl + ",MPVelocity," 
 				+ trapezoid.getCurrentVelocity() + ",tolCheckerValue," + tolCheck.success()
 				+ ",velCheckAverage," + velCheck.getAverage()
 				+ ",currentAngle," + currentAngle + ",targetAngle," + angleBase + ",curve," + curve); //DSD Profile Specific logging
@@ -220,14 +219,14 @@ public class DriveStraightDistanceProfile extends Command {
 	protected void end() {
 		// velCheck.dumpArray();
 		Robot.log.writeLog(false, "DriveStraightDistanceProfile", "End", "distError," + (targetDistance - currentDistance)
-				+ ",velCheck," + velCheck.getAverage());
+			+ ",success," + success + ",velCheck," + velCheck.getAverage());
 		Robot.driveTrain.driveAtCurve(0, 0);
 	}
 
 	// Called when another command which requires one or more of the same
 	// subsystems is scheduled to run
 	protected void interrupted() {
-		Robot.log.writeLog(false, "DriveStraightdistanceProfile", "interrupted", "");
+		Robot.log.writeLog(false, "DriveStraightdistanceProfile", "interrupted", "" + ",success," + success);
 		end();
 	}
 }

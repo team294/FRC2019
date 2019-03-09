@@ -151,6 +151,7 @@ public class OI {
     SmartDashboard.putData("Disc Grab", new HatchSet(true));
     SmartDashboard.putData("Disc Release", new HatchSet(false));
     SmartDashboard.putString("Disc Position", "Null");
+    SmartDashboard.putData("DriveStraight 100 in", new DriveStraightDistanceProfile(100, 0, 80, 65));
 /*
     SmartDashboard.putData("LEDSet Purple", new LEDSet(0));
     SmartDashboard.putData("LEDSet Red", new LEDSet(1));

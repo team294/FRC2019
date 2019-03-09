@@ -24,7 +24,6 @@ public class Cargo extends Subsystem {
   private final DigitalInput photoSwitch = new DigitalInput(RobotMap.photoSwitchCargo); // Cargo Sensor
 
   public Cargo() {
-    // TODO determine which motor to invert
     cargoMotor1.set(ControlMode.PercentOutput, 0);
     cargoMotor1.setNeutralMode(NeutralMode.Brake);
     cargoMotor1.configVoltageCompSaturation(11.0, 0);

@@ -82,30 +82,6 @@ public class DriveProfileGenerator {
 		else if(currentVelocity < maxVelocity) currentAcceleration = maxAcceleration;
 		else currentAcceleration = 0;
 		
-		/*if(currentMPDistance <= 0.5*targetMPDistance)
-		{
-			currentMPDistance = currentMPDistance + currentVelocity*dt;
-			currentVelocity = currentVelocity + maxAcceleration*dt;
-			if(currentVelocity >= maxVelocity)
-			{
-				if(stoppingDistance == 0)
-					stoppingDistance = currentMPDistance;
-				currentVelocity = maxVelocity;
-			}else
-			{
-				currentMPDistance = currentMPDistance + 0.5*maxAcceleration*dt*dt;
-			}
-		} else
-		{
-			if(targetMPDistance - currentMPDistance <= stoppingDistance || stoppingDistance == 0) {
-				currentMPDistance = currentMPDistance + currentVelocity*dt - 0.5*maxAcceleration*dt*dt;
-				currentVelocity = currentVelocity - maxAcceleration*dt;
-			}else
-			{
-				currentMPDistance = currentMPDistance + currentVelocity*dt;
-			}
-		}*/
-		
 		currentVelocity = currentVelocity + currentAcceleration*dt;
 		
 		if(currentVelocity > maxVelocity) currentVelocity = maxVelocity;
