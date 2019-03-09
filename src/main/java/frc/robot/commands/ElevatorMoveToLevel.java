@@ -111,13 +111,13 @@ public class ElevatorMoveToLevel extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.elevator.updateElevatorLog(false);
+    // Robot.elevator.updateElevatorLog(false);
 
-    // Start timer for loose tolerance
-    if(!startTime && Math.abs(Robot.elevator.getElevatorPos() - target) <= 2.5) {
-      timeAtLooseTolerance = timeSinceInitialized();
-      startTime = true;
-    }
+    // // Start timer for loose tolerance
+    // if(!startTime && Math.abs(Robot.elevator.getElevatorPos() - target) <= 2.5) {
+    //   timeAtLooseTolerance = timeSinceInitialized();
+    //   startTime = true;
+    // }
   }
 
   // Make this return true when this Command no longer needs to run execute()

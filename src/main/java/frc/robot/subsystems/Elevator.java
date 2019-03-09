@@ -52,16 +52,16 @@ public class Elevator extends Subsystem {
 	private double prevError, error, intError;
 
 	private double rampRate = 0.3;
-	private double kPu = 1;
+	private double kPu = 0.25;
 	private double kIu = 0;
 	private double kDu = 0;
 	private double kPd = 0.05;
 	private double kId = 0;
 	private double kDd = 0;
-	private double kFF = 0;
+	private double kFF = 0.1;
 	private int kIz = 0;
-	private double kMaxOutput = 0.5; // up max output was .8
-	private double kMinOutput = -0.2; // down max output was .4
+	private double kMaxOutput = 0.8;
+	private double kMinOutput = -0.4;
 
 	public Elevator() {
 		elevatorMotor1 = new WPI_TalonSRX(RobotMap.elevatorMotor1);
@@ -124,10 +124,15 @@ public class Elevator extends Subsystem {
 
 	/**
 	 * Resets the PID. Use this if the calibration changes or the elevator was running in manual mode 
-	 * to prevent the elevator from jumping when the PID re-engages.
+	 * to prevent the elevator from jumping when the PID re-engages.	 
+	 * @param gotDisabled whether robot was disabled or not
 	 */
-	public void resetPID() {
-		lastPos = getElevatorPos();
+	public void resetPID(boolean gotDisabled) {
+		if(gotDisabled) {
+			lastPos = 0;
+		} else {
+			lastPos = getElevatorPos();
+		}
 		lastVelocity = 0.0;
 		lastMPVelocity = 0.0;
 		startPID(lastPos);
@@ -136,8 +141,8 @@ public class Elevator extends Subsystem {
 
 	/**
 	 * Sets target angle for elevator PID.
-	 * @param pos in degrees
-	 */
+	 * @param pos in inches
+	*/
 	public void startPID(double pos) {
 		// Prevent elevator from going outside of allowed range
 		// pos = (pos > Robot.robotPrefs.hatchHigh) ? Robot.robotPrefs.hatchHigh : pos;
@@ -164,11 +169,11 @@ public class Elevator extends Subsystem {
 		SmartDashboard.putNumber("ElevatorTarget", pos);
 		finalPos = pos;
 		if(initPos < pos) {
-			elevatorProfile.newProfile(pos, 15, 5); // was 150, 150
+			elevatorProfile.newProfile(pos, 30, 60); // was 150, 150
 			Robot.log.writeLog("Elevator", "Trapezoid", "initPos < pos");
 
 		} else {
-			elevatorProfile.newProfile(pos, 15, 5);  // was 150, 150
+			elevatorProfile.newProfile(pos, 30, 60);  // was 150, 150
 			Robot.log.writeLog("Elevator", "Trapezoid", "initPos > pos");
 
 		}

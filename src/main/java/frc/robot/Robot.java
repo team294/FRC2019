@@ -112,7 +112,6 @@ public class Robot extends TimedRobot {
 
     wrist.stopWrist();
     elevator.stopElevator();
-    elevator.resetPID();
     climb.stopClimb();
     climb.enableVacuum(false);
     
@@ -125,6 +124,9 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
+
+    elevator.resetPID(false);
+    System.out.println(Robot.elevator.getElevatorPos());
 
     double pipeline = SmartDashboard.getNumber("Vision pipeline", 2.0);
     vision.setPipe(pipeline);
