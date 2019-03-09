@@ -31,6 +31,10 @@ import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.utilities.FileLog;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.I2C;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+
 
 /**
  * Drive Train subsystem.  
@@ -44,6 +48,8 @@ public class DriveTrain extends Subsystem {
   private final BaseMotorController rightMotor3;
 
   public final DifferentialDrive robotDrive = new DifferentialDrive(leftMotor2, rightMotor2);
+
+  private final CANSparkMax testMotor = new CANSparkMax(/**deviceID here*/, /**brushed or brushless here */);
 
   // Gyro variables
   private AHRS ahrs;
