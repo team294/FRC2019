@@ -540,9 +540,9 @@ public class DriveTrain extends Subsystem {
    * Turns in place to target
    */
   public void turnWithGyro(double targetAngle){
-    double gainConstant = 0.008;
+    double gainConstant = 0.005;
     double xVal = targetAngle - getGyroRotation();
-    double fixSpeed = 0.45;
+    double fixSpeed = 0.38;
     double lPercentOutput = fixSpeed + (gainConstant * xVal);
     double rPercentOutput = fixSpeed - (gainConstant * xVal);
     System.out.println("x-val = " + xVal + ", " + getGyroRotation());
