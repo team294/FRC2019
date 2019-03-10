@@ -107,7 +107,7 @@ public class OI {
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorSetPercentOutput(0.4)); // For testing limit switch and encoder
     SmartDashboard.putData("Elevator Down", new ElevatorSetPercentOutput(-0.2)); // For testing limit switch and encoder
-    SmartDashboard.putData("Test", new ElevatorMoveToLevel(30.0));
+    SmartDashboard.putData("Test", new ElevatorMoveToLevel(50.0));
     SmartDashboard.putData("Move Elevator to Bottom", new ElevatorMoveToLevel(ElevatorPosition.bottom)); // Move to encoder's zero position
     SmartDashboard.putData("Move Elevator to WristStow", new ElevatorMoveToLevel(ElevatorPosition.wristStow)); // Move to level that wrist can be stowed safely
     SmartDashboard.putData("Move Elevator to High", new ElevatorMoveToLevel(ElevatorPosition.hatchHigh)); // Move to high position (test wrist interlock)

@@ -169,11 +169,11 @@ public class Elevator extends Subsystem {
 		SmartDashboard.putNumber("ElevatorTarget", pos);
 		finalPos = pos;
 		if(initPos < pos) {
-			elevatorProfile.newProfile(pos, 30, 60); // was 150, 150
+			elevatorProfile.newProfile(pos, 50, 100); // was 150, 150
 			Robot.log.writeLog("Elevator", "Trapezoid", "initPos < pos");
 
 		} else {
-			elevatorProfile.newProfile(pos, 30, 60);  // was 150, 150
+			elevatorProfile.newProfile(pos, 50, 100);  // was 150, 150
 			Robot.log.writeLog("Elevator", "Trapezoid", "initPos > pos");
 
 		}
@@ -360,7 +360,11 @@ public class Elevator extends Subsystem {
 			SmartDashboard.putBoolean("Elev Lower Limit", getElevatorLowerLimit());
 			SmartDashboard.putBoolean("Elev Upper Limit", getElevatorUpperLimit());
 		}
-		
+
+		if (Robot.log.getLogRotation() == FileLog.ELEVATOR_CYCLE) {
+			updateElevatorLog(false);
+		}
+
 		dt = ((double)(System.currentTimeMillis() - lastTime)) / 1000.0;  // Time since the last periodic run
 		if (elevatorMode) {
 			lastVelocity = (getElevatorPos() - lastPos)/dt;
@@ -374,22 +378,14 @@ public class Elevator extends Subsystem {
 		intError = intError + error * dt;
 
 		double percentPower = kFF;
-		if (finalPos - initPos > 0) {
+		//if (finalPos - initPos > 0.25) {
 			percentPower += kPu * error + ((error - prevError) * kDu) + (kIu * intError);
-		} else {
-			percentPower += kPd * error + ((error - prevError) * kDd) + (kId * intError);
-		}
+		//} else if(finalPos - initPos < -0.25) {
+		//	percentPower += kPd * error + ((error - prevError) * kDd) + (kId * intError);
+		//} 
 		prevError = error;
 
-		SmartDashboard.putNumber("Arm PID Error", error);
-		SmartDashboard.putNumber("Arm PID percent power", percentPower);
-		SmartDashboard.putNumber("Arm Profile getCurrentPosition", elevatorProfile.getCurrentPosition());
-
 		setElevatorMotorPercentOutput(percentPower);
-
-		if (Robot.log.getLogRotation() == FileLog.ELEVATOR_CYCLE) {
-			updateElevatorLog(false);
-		}
 
 		lastTime = System.currentTimeMillis();
 		lastPos = getElevatorPos();
