@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
@@ -55,6 +56,10 @@ public class DriveTrain extends Subsystem {
   private CANEncoder rightDriveEnc;
 
   public final DifferentialDrive robotDrive = new DifferentialDrive(leftMotor2, rightMotor2);
+
+  private SensorCollection lShaftEncoder = new WPI_TalonSRX(10).getSensorCollection(); // THJESE ARE MAGIC NUMBERS
+  private SensorCollection rShaftEncoder = new WPI_TalonSRX(20).getSensorCollection(); // REPLACE WITH THE TALON IDs ACTUALLY PLUGGED INTO
+
 
   // Gyro variables
   private AHRS ahrs;
@@ -738,6 +743,8 @@ public class DriveTrain extends Subsystem {
     if (Robot.log.getLogRotation() == FileLog.DRIVE_CYCLE) {
       SmartDashboard.putNumber("Drive Left Inches", getLeftEncoderInches());
       SmartDashboard.putNumber("Drive Right Inches", getRightEncoderInches());
+      SmartDashboard.putNumber("Left Shaft Encoder Raw", lShaftEncoder.getQuadraturePosition());
+      SmartDashboard.putNumber("Right Shaft Encoder Raw", rShaftEncoder.getQuadraturePosition());
       SmartDashboard.putNumber("Gyro Angle", getGyroRotation());
       
       updateDriveLog(false);
