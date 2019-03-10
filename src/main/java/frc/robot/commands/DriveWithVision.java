@@ -38,7 +38,7 @@ public class DriveWithVision extends Command {
     this.gyro = gyro;
 
     Robot.vision.setPipe(0); // On vision pipeline
-    Robot.vision.setLedMode(1); // TODO Change back to 3 to turn on LEDs.  Make sure the LEDs are on before driving
+    Robot.vision.setLedMode(3);
   }
 
   // Called just before this Command runs the first time
@@ -63,8 +63,9 @@ public class DriveWithVision extends Command {
   @Override
   protected boolean isFinished() {
     Robot.driveTrain.areEncodersStopped(5.0);
-    return endOnLine && Robot.lineFollowing.isLinePresent() && Robot.vision.distanceFromTarget() < 40; // Stops when a line is detected by the line followers within a reasonable expected distance
-    // TODO:: with an accurate distance measurement, we can stop automatically when close enough
+    return Robot.vision.areaFromCamera > 4.8;
+    // return endOnLine && Robot.lineFollowing.isLinePresent() && Robot.vision.distanceFromTarget() < 40; // Stops when a line is detected by the line followers within a reasonable expected distance
+    // TODO with an accurate distance measurement, we can stop automatically when close enough
   }
 
   // Called once after isFinished returns true

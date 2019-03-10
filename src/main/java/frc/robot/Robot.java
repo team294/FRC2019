@@ -97,6 +97,12 @@ public class Robot extends TimedRobot {
     if (Robot.log.getLogRotation() == FileLog.DRIVE_CYCLE) {
       lineFollowing.displayLineSensors();
     }
+
+     if (Robot.vision.areaFromCamera > 1.0 && Robot.vision.areaFromCamera < 5.5) {
+       Robot.leds.setColor(LedHandler.Color.GREEN, true);
+     } else if (Robot.cargo.getPhotoSwitch()) {
+       Robot.leds.setColor(LedHandler.Color.RED, false);
+     }
   }
 
   /**
