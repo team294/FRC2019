@@ -40,6 +40,7 @@ public class Robot extends TimedRobot {
   public static RobotPreferences robotPrefs;
   public static PowerDistributionPanel pdp;
   public static LedHandler leds;
+  public static TestHatch testHatch;
 
   public static boolean beforeFirstEnable = true; // true before the first time the robot is enabled after loading code
   Command m_autonomousCommand;
@@ -72,6 +73,7 @@ public class Robot extends TimedRobot {
     climb = new Climb();
     leds = new LedHandler();
     pdp = new PowerDistributionPanel();
+    testHatch = new TestHatch();
     // pdp.clearStickyFaults();
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());

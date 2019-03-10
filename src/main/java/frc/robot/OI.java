@@ -67,9 +67,9 @@ public class OI {
     xbB[9].whenPressed(new ElevatorWithXBox()); // LStick
     xbB[10].whenPressed(new WristWithXBox()); // RStick
     xbUp.whenActive(new CargoIntakeFromLoad()); // DPadUp
-    xbRight.whenActive(new HatchSet(true)); // DPadRight
+    xbRight.whenActive(new TestHatchIntake(0.5)); // DPadRight
     xbDown.whenActive(new CargoIntakeFromGround()); // DPadDown
-    xbLeft.whenActive(new HatchSet(false)); // DPadLeft
+    xbLeft.whenActive(new TestHatchIntake(-0.5)); // DPadLeft
     xbLT.whenActive(new CargoOuttake(-1.0)); // LT
     xbRT.whenActive(new CargoOuttake(-0.8)); // RT
 
