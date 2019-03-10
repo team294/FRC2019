@@ -10,46 +10,55 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ElevatorSetPercentOutput extends Command {
+public class TurnWithGyro extends Command {
 
-  private double percentOutput;
+  double targetAngle;
+  boolean isRelativeGyroAngle;
+  double originalGyroAngle;
 
-  public ElevatorSetPercentOutput(double percentOutput) {
+  public TurnWithGyro(double targetAngle, boolean isRelativeAngle) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.elevator);
-    this.percentOutput = percentOutput;
+    requires(Robot.driveTrain);
+    this.targetAngle = targetAngle;
+    isRelativeGyroAngle = isRelativeAngle;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.elevator.setElevatorMotorPercentOutput(percentOutput);
+    originalGyroAngle = Robot.driveTrain.getGyroRotation();
+    if(isRelativeGyroAngle == true){
+      targetAngle = originalGyroAngle + targetAngle;
+    }
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.elevator.setElevatorMotorPercentOutput(percentOutput);
-    Robot.elevator.updateElevatorLog(false);
+    Robot.driveTrain.turnWithGyro(targetAngle);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    if(isRelativeGyroAngle == false && Math.abs(Robot.driveTrain.getGyroRotation() - targetAngle) <= 3.0){
+      return true;
+    } else if(isRelativeGyroAngle == true && (originalGyroAngle + targetAngle) - Robot.driveTrain.getGyroRotation() <= 3.0){
+      return true;
+    } else {
+      return false;
+    }
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.elevator.stopElevator();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.elevator.stopElevator();
   }
 }
