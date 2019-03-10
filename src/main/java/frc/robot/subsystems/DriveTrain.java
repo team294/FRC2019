@@ -101,12 +101,12 @@ public class DriveTrain extends Subsystem {
     zeroLeftEncoder();
 		zeroRightEncoder();
 
-    leftMotor1.setInverted(true);
-    leftMotor2.setInverted(true);
-    leftMotor3.setInverted(true);
-    rightMotor1.setInverted(true);
-    rightMotor2.setInverted(true);
-    rightMotor3.setInverted(true);
+    // leftMotor1.setInverted(true);
+    // leftMotor2.setInverted(true);
+    // leftMotor3.setInverted(true);
+    // rightMotor1.setInverted(true);
+    // rightMotor2.setInverted(true);
+    // rightMotor3.setInverted(true);
 
     leftMotor1.setIdleMode(IdleMode.kBrake);
     leftMotor2.setIdleMode(IdleMode.kBrake);
@@ -114,6 +114,11 @@ public class DriveTrain extends Subsystem {
     rightMotor1.setIdleMode(IdleMode.kBrake);
     rightMotor2.setIdleMode(IdleMode.kBrake);
     rightMotor3.setIdleMode(IdleMode.kBrake);
+
+    leftMotor1.follow(leftMotor2);
+    leftMotor3.follow(leftMotor2);
+    rightMotor1.follow(rightMotor2);
+    rightMotor3.follow(rightMotor2);
 
     leftMotor1.clearFaults();
     leftMotor2.clearFaults();
@@ -137,8 +142,8 @@ public class DriveTrain extends Subsystem {
 		}
 		ahrs.zeroYaw();
 		// zeroGyroRotation();
-	}
-
+  }
+  
   public void tankDrive(double powerLeft, double powerRight) {
     robotDrive.tankDrive(powerLeft, powerRight);
   }
@@ -258,6 +263,10 @@ public class DriveTrain extends Subsystem {
 		return -(rightDriveEnc.getPosition() - rightEncoderZero);
 	}
 
+  public double sparkRotationsToInches(double rotations) {
+    return rotations * Robot.robotPrefs.wheelCircumference;
+  }
+
   public double encoderTicksToInches(double encoderTicks) {
     return (encoderTicks / Robot.robotPrefs.encoderTicksPerRevolution) * Robot.robotPrefs.wheelCircumference ;
   }
@@ -265,11 +274,11 @@ public class DriveTrain extends Subsystem {
     return (inches / Robot.robotPrefs.wheelCircumference) * Robot.robotPrefs.encoderTicksPerRevolution;
   }
   public double getLeftEncoderInches() {
-    return encoderTicksToInches(getLeftEncoderTicks());
+    return sparkRotationsToInches(getLeftEncoderTicks()); //encoderTicksToInches(getLeftEncoderTicks());
   }
 
   public double getRightEncoderInches() {
-    return encoderTicksToInches(getRightEncoderTicks());
+    return sparkRotationsToInches(getRightEncoderTicks()); //encoderTicksToInches(getRightEncoderTicks());
   }
   
   /**
