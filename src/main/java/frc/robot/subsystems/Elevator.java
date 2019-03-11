@@ -88,18 +88,6 @@ public class Elevator extends Subsystem {
 		elevatorMotor1.setNeutralMode(NeutralMode.Brake);
 		elevatorMotor2.setNeutralMode(NeutralMode.Brake);
 
-		lastTime = System.currentTimeMillis();
-		if (elevatorMode) {
-			lastPos = getElevatorPos();			
-		} else {
-			lastPos = 0;
-		}
-
-		lastVelocity = 0.0;
-		lastMPVelocity = 0.0;
-		finalPos = lastPos;
-		elevatorProfile = new ElevatorProfileGenerator(finalPos, finalPos, 0, 0, 0);
-
 		// Wait 0.25 seconds before checking the encoder ticks.  The reason is that zeroing the encoder (above)
 		// can be delayed up to 50ms for a round trip
 		// from the Rio to the Talon and back to the Rio.  So, reading position could give the wrong value if
@@ -113,6 +101,19 @@ public class Elevator extends Subsystem {
 		else {
 			elevatorMode = false; // start the elevator in manual mode unless it is properly zeroed
 		}
+
+		lastTime = System.currentTimeMillis();
+		if (elevatorMode) {
+			lastPos = getElevatorPos();			
+		} else {
+			lastPos = 0;
+		}
+
+		lastVelocity = 0.0;
+		lastMPVelocity = 0.0;
+		finalPos = lastPos;
+		elevatorProfile = new ElevatorProfileGenerator(finalPos, finalPos, 0, 0, 0);
+		
 	}
 
 	/**
@@ -147,7 +148,7 @@ public class Elevator extends Subsystem {
 		// Prevent elevator from going outside of allowed range
 		// pos = (pos > Robot.robotPrefs.hatchHigh) ? Robot.robotPrefs.hatchHigh : pos;
 		// pos = (pos < Robot.robotPrefs.elevatorWristStow) ? Robot.robotPrefs.elevatorWristSafeStow : pos;
-
+		finalPos = pos;
 		initPos = getElevatorPos();
 		intError = 0;
 		prevError = 0;
@@ -163,17 +164,16 @@ public class Elevator extends Subsystem {
 			// 		+ getArmEncRaw() + ",initialAngle," + initAngle + ",Destination Angle," + angle);
 		}
 
-		Robot.log.writeLog("Elevator", "Trapezoid", "initPos," + initPos + ",targetPos," + pos);
+		Robot.log.writeLog("Elevator", "Trapezoid", "initPos," + initPos + ",targetPos," + finalPos);
 
 		SmartDashboard.putNumber("ElevatorInitPos", initPos);
-		SmartDashboard.putNumber("ElevatorTarget", pos);
-		finalPos = pos;
-		if(initPos < pos) {
-			elevatorProfile.newProfile(pos, 50, 100); // was 150, 150
+		SmartDashboard.putNumber("ElevatorTarget", finalPos);
+		if(initPos < finalPos) {
+			elevatorProfile.newProfile(finalPos, 50, 100); // was 150, 150
 			Robot.log.writeLog("Elevator", "Trapezoid", "initPos < pos");
 
 		} else {
-			elevatorProfile.newProfile(pos, 50, 100);  // was 150, 150
+			elevatorProfile.newProfile(finalPos, 50, 100);  // was 150, 150
 			Robot.log.writeLog("Elevator", "Trapezoid", "initPos > pos");
 
 		}
@@ -218,7 +218,7 @@ public class Elevator extends Subsystem {
 				return getElevatorPos();
 			}
 		} else {
-			return Robot.robotPrefs.hatchHigh;
+			return 0.0; //0 would mean we are at the lowerLimit, was originally hatchHigh...why?
 		}
 	}
 
@@ -230,7 +230,7 @@ public class Elevator extends Subsystem {
 		if (elevatorMode) {
 			return encoderTicksToInches(getElevatorEncTicks()) + Robot.robotPrefs.elevatorBottomToFloor;
 		} else {
-			return Robot.robotPrefs.hatchHigh;
+			return 0.0; //0 would mean we are at the lowerLimit, was originally hatchHigh...why?
 		}
 	}
 
