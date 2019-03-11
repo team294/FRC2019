@@ -61,7 +61,12 @@ public class Robot extends TimedRobot {
     beforeFirstEnable = true; // set variable that robot has not been enabled
 
     // Create all subsystems and utilities
-    driveTrain = new DriveTrain();
+    if (robotPrefs.neoDrivetrain) {
+      driveTrain = new NeoDriveTrain();
+    } else {
+      driveTrain = new CimDriveTrain();
+    }
+    
     shifter = new Shifter();
     elevator = new Elevator();
     wrist = new Wrist();
