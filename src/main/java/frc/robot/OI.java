@@ -60,16 +60,16 @@ public class OI {
     xbB[2].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchMid)); // B
     xbB[3].whenPressed(new ElevatorWristStow()); // X
     xbB[4].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchHigh)); // Y
-    xbB[5].whenPressed(new CargoStop()); // LB
-    xbB[6].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.cargoShipCargo)); // RB
+    xbB[5].whileActive(new TestHatchIntake(0.6)); // LB
+    xbB[6].whileActive(new TestHatchIntake(-0.6)); // RB
     xbB[7].whenPressed(new StopAllMotors()); // Back
     xbB[8].whenPressed(new CargoIntake()); // Start
     xbB[9].whenPressed(new ElevatorWithXBox()); // LStick
     xbB[10].whenPressed(new WristWithXBox()); // RStick
     xbUp.whenActive(new CargoIntakeFromLoad()); // DPadUp
-    xbRight.whileActive(new TestHatchIntake(0.8)); // DPadRight
+    xbRight.whenActive(new CargoStop()); // DPadRight
     xbDown.whenActive(new CargoIntakeFromGround()); // DPadDown
-    xbLeft.whileActive(new TestHatchIntake(-0.5)); // DPadLeft
+    xbLeft.whileActive(new ElevatorWristMoveAndPrepare(ElevatorPosition.cargoShipCargo)); // DPadLeft
     xbLT.whenActive(new CargoOuttake(-1.0)); // LT
     xbRT.whenActive(new CargoOuttake(-0.8)); // RT
 
