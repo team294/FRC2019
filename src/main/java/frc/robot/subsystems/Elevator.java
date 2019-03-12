@@ -15,6 +15,7 @@ import frc.robot.RobotMap;
 import frc.robot.commands.ElevatorWithXBox;
 import frc.robot.utilities.ElevatorProfileGenerator;
 import frc.robot.utilities.FileLog;
+import frc.robot.utilities.RobotPreferences;
 import frc.robot.utilities.Wait;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -145,7 +146,7 @@ public class Elevator extends Subsystem {
 	 * @param pos in inches
 	*/
 	public void startPID(double pos) {
-		// Prevent elevator from going outside of allowed range
+		// Prevent elevator from going outside of allowed range  WHY IS THIS COMMENTED OUT?
 		// pos = (pos > Robot.robotPrefs.hatchHigh) ? Robot.robotPrefs.hatchHigh : pos;
 		// pos = (pos < Robot.robotPrefs.elevatorWristStow) ? Robot.robotPrefs.elevatorWristSafeStow : pos;
 		finalPos = pos;
@@ -218,7 +219,7 @@ public class Elevator extends Subsystem {
 				return getElevatorPos();
 			}
 		} else {
-			return 0.0; //0 would mean we are at the lowerLimit, was originally hatchHigh...why?
+			return Robot.robotPrefs.hatchHigh;   //This could be a problem on next time it is enable it goes to hatchHigh
 		}
 	}
 
@@ -230,7 +231,7 @@ public class Elevator extends Subsystem {
 		if (elevatorMode) {
 			return encoderTicksToInches(getElevatorEncTicks()) + Robot.robotPrefs.elevatorBottomToFloor;
 		} else {
-			return 0.0; //0 would mean we are at the lowerLimit, was originally hatchHigh...why?
+			return Robot.robotPrefs.hatchHigh;   //This could be a problem on next time it is enable it goes to hatchHigh
 		}
 	}
 
@@ -378,11 +379,11 @@ public class Elevator extends Subsystem {
 		intError = intError + error * dt;
 
 		double percentPower = kFF;
-		//if (finalPos - initPos > 0.25) {
+		if (finalPos - initPos > 0.25) {
 			percentPower += kPu * error + ((error - prevError) * kDu) + (kIu * intError);
-		//} else if(finalPos - initPos < -0.25) {
-		//	percentPower += kPd * error + ((error - prevError) * kDd) + (kId * intError);
-		//} 
+		} else if(finalPos - initPos < -0.25) {
+			percentPower += kPd * error + ((error - prevError) * kDd) + (kId * intError);
+		} 
 		prevError = error;
 
 		setElevatorMotorPercentOutput(percentPower);
