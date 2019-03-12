@@ -71,7 +71,7 @@ public class ElevatorProfileGenerator {
 		this.currentVelocity = initialVelocity * directionSign;
 		this.maxVelocity = Math.abs(maxVelocity);
 		this.maxAcceleration = Math.abs(maxAcceleration);
-		stoppingAcceleration = .75 * maxAcceleration;
+		stoppingAcceleration = .5 * maxAcceleration;
 
 		// Save starting time
 		startTime = System.currentTimeMillis();
@@ -87,7 +87,7 @@ public class ElevatorProfileGenerator {
 	 * motion profile. Also calculates velocity in in/s
 	 */
 	public void updateProfileCalcs() {
-		//if (Math.abs((currentMPDistance * directionSign) - targetMPDistance) >= 0.25) {
+		if (Math.abs((currentMPDistance * directionSign) - targetMPDistance) >= 0.25) {
 			long tempTime = System.currentTimeMillis();
 			dt = ((double) (tempTime - currentTime)) / 1000.0;
 			currentTime = tempTime;
@@ -118,9 +118,9 @@ public class ElevatorProfileGenerator {
 							+ targetMPDistance + ",time since start," + getTimeSinceProfileStart() + ",dt," + dt
 							+ ",current vel," + (currentVelocity * directionSign) + ",current acceleration,"
 							+ currentAcceleration);
-		//} else {
+		} else {
 			currentMPDistance = targetMPDistance;
-		//}
+		}
 	}
 
 	/**

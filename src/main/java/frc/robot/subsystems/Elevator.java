@@ -53,16 +53,16 @@ public class Elevator extends Subsystem {
 	private double prevError, error, intError;
 
 	private double rampRate = 0.3;
-	private double kPu = 0.25;
+	private double kPu = 0.15;  // was 0.25, 0.05
 	private double kIu = 0;
 	private double kDu = 0;
 	private double kPd = 0.05;
 	private double kId = 0;
 	private double kDd = 0;
-	private double kFF = 0.1;
+	private double kFF = 0.05;  // was 0.1, 0.0
 	private int kIz = 0;
 	private double kMaxOutput = 0.8;
-	private double kMinOutput = -0.4;
+	private double kMinOutput = -0.6;  // -0.4
 
 	public Elevator() {
 		elevatorMotor1 = new WPI_TalonSRX(RobotMap.elevatorMotor1);
@@ -170,11 +170,11 @@ public class Elevator extends Subsystem {
 		SmartDashboard.putNumber("ElevatorInitPos", initPos);
 		SmartDashboard.putNumber("ElevatorTarget", finalPos);
 		if(initPos < finalPos) {
-			elevatorProfile.newProfile(finalPos, 50, 100); // was 150, 150
+			elevatorProfile.newProfile(finalPos, 50, 100); // was 150, 150; was 50, 100
 			Robot.log.writeLog("Elevator", "Trapezoid", "initPos < pos");
 
 		} else {
-			elevatorProfile.newProfile(finalPos, 50, 100);  // was 150, 150
+			elevatorProfile.newProfile(finalPos, 50, 100);  // was 150, 150; was 50, 100
 			Robot.log.writeLog("Elevator", "Trapezoid", "initPos > pos");
 
 		}
