@@ -105,7 +105,7 @@ public class ElevatorMoveToLevel extends Command {
         }
       }
     }
-    Robot.elevator.startPID(target);
+    Robot.elevator.setProfileTarget(target);
   }
 
   // Called repeatedly when this Command is scheduled to run

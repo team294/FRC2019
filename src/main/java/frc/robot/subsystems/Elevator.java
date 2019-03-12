@@ -48,7 +48,7 @@ public class Elevator extends Subsystem {
 	private boolean elevatorMode; // true is automated (encoder is working and calibrated), false is manual mode
 
 	private long lastTime;
-	private double lastVelocity, lastMPVelocity, dt;
+	private double dt;
 	private double initPos, finalPos, lastPos;
 	private double prevError, error, intError;
 
@@ -110,8 +110,6 @@ public class Elevator extends Subsystem {
 			lastPos = 0;
 		}
 
-		lastVelocity = 0.0;
-		lastMPVelocity = 0.0;
 		finalPos = lastPos;
 		elevatorProfile = new ElevatorProfileGenerator(finalPos, finalPos, 0, 0, 0);
 		
@@ -125,60 +123,56 @@ public class Elevator extends Subsystem {
 	}
 
 	/**
-	 * Resets the PID. Use this if the calibration changes or the elevator was running in manual mode 
+	 * Resets the elevator Profile to . Use this if the calibration changes or the elevator was running in manual mode 
 	 * to prevent the elevator from jumping when the PID re-engages.	 
 	 * @param gotDisabled whether robot was disabled or not
 	 */
-	public void resetPID(boolean gotDisabled) {
+	public void resetElevatorProfile(boolean gotDisabled) {
 		if(gotDisabled) {
 			lastPos = 0;
 		} else {
 			lastPos = getElevatorPos();
 		}
-		lastVelocity = 0.0;
-		lastMPVelocity = 0.0;
-		startPID(lastPos);
+		setProfileTarget(lastPos);
 		elevatorProfile.newProfile(lastPos, lastPos, 0, 0, 0);
 	}
 
 	/**
-	 * Sets target angle for elevator PID.
-	 * @param pos in inches
+	 * Sets target position for elevator, using motion profile movement.
+	 * @param pos in inches from the floor.
 	*/
-	public void startPID(double pos) {
-		// Prevent elevator from going outside of allowed range  WHY IS THIS COMMENTED OUT?
-		// pos = (pos > Robot.robotPrefs.hatchHigh) ? Robot.robotPrefs.hatchHigh : pos;
-		// pos = (pos < Robot.robotPrefs.elevatorWristStow) ? Robot.robotPrefs.elevatorWristSafeStow : pos;
-		finalPos = pos;
-		initPos = getElevatorPos();
-		intError = 0;
-		prevError = 0;
-		error = 0;
+	public void setProfileTarget(double pos) {
+		if (elevEncOK && elevatorMode &&										// Elevator must be calibrated
+			  Robot.wrist.getWristAngle() < Robot.robotPrefs.wristKeepOut &&  	// Wrist must not be stowed
+			  Robot.wrist.getCurrentWristTarget() < Robot.robotPrefs.wristKeepOut && // Wrist must not be moving to stow
+			  ( Robot.wrist.getWristAngle() >= Robot.robotPrefs.wristStraight - 5.0 &&	// wrist must be at least horizontal
+				Robot.wrist.getCurrentWristTarget() >= Robot.robotPrefs.wristStraight - 5.0 ||
+				pos >= Robot.robotPrefs.groundCargo &&						// Elevator is not going below groundCargo position
+				Robot.wrist.getWristAngle() >= Robot.robotPrefs.wristDown - 3.0 &&	     // wrist must be at least wristDown
+				Robot.wrist.getCurrentWristTarget() >= Robot.robotPrefs.wristDown - 3.0 )
+		 ) {
 
-		if (!DriverStation.getInstance().isEnabled() || elevatorMode) {
-			// We are disabled or under joystick control, so just track the position/height.
-			// I.e., we were called from periodic() using startPID(getElevatorPos());
-			// TODO log elevator pos
+			finalPos = pos;
+			initPos = getElevatorPos();
+			intError = 0;			// Clear integrated error
+			prevError = 0;			// Clear previous error
+	
+			// Robot.log.writeLog("Elevator", "setProfileTarget", "initPos," + initPos + ",targetPos," + finalPos);
+	
+			SmartDashboard.putNumber("ElevatorInitPos", initPos);
+			SmartDashboard.putNumber("ElevatorTarget", finalPos);
+			if(initPos < finalPos) {
+				elevatorProfile.newProfile(getElevatorPos(), finalPos, elevatorProfile.getCurrentVelocity(), 50, 100); 
+			} else {
+				elevatorProfile.newProfile(getElevatorPos(), finalPos, elevatorProfile.getCurrentVelocity(), 50, 100); 
+			}
+	
+			Robot.log.writeLog("Elevator", "setProfileTarget", "Target," + pos + ",Allowed,Yes,Wrist Angle," +
+			   Robot.wrist.getWristAngle() + ",Wrist Target," + Robot.wrist.getCurrentWristTarget());
 		} else {
-			// TODO logging statement
-			// Robot.log.writeLog("Arm Start PID,cal Zero," + Robot.robotPrefs.armCalZero + ",initial raw encoder,"
-			// 		+ getArmEncRaw() + ",initialAngle," + initAngle + ",Destination Angle," + angle);
+			Robot.log.writeLog("Elevator", "setProfileTarget", "Target," + pos + ",Allowed,No,Wrist Angle,"  +
+ 			  Robot.wrist.getWristAngle() + ",Wrist Target," + Robot.wrist.getCurrentWristTarget());
 		}
-
-		Robot.log.writeLog("Elevator", "Trapezoid", "initPos," + initPos + ",targetPos," + finalPos);
-
-		SmartDashboard.putNumber("ElevatorInitPos", initPos);
-		SmartDashboard.putNumber("ElevatorTarget", finalPos);
-		if(initPos < finalPos) {
-			elevatorProfile.newProfile(finalPos, 50, 100); // was 150, 150; was 50, 100
-			Robot.log.writeLog("Elevator", "Trapezoid", "initPos < pos");
-
-		} else {
-			elevatorProfile.newProfile(finalPos, 50, 100);  // was 150, 150; was 50, 100
-			Robot.log.writeLog("Elevator", "Trapezoid", "initPos > pos");
-
-		}
-
 	}
 
 	/**
@@ -367,21 +361,15 @@ public class Elevator extends Subsystem {
 		}
 
 		dt = ((double)(System.currentTimeMillis() - lastTime)) / 1000.0;  // Time since the last periodic run
-		if (elevatorMode) {
-			lastVelocity = (getElevatorPos() - lastPos)/dt;
-		} else {
-			lastVelocity = 0.0;
-		}
 
 		elevatorProfile.updateProfileCalcs();
-		lastMPVelocity = elevatorProfile.getCurrentVelocity();
 		error = elevatorProfile.getCurrentPosition() - getElevatorPos();
 		intError = intError + error * dt;
 
 		double percentPower = kFF;
-		if (finalPos - initPos > 0.25) {
+		if (finalPos > initPos) {
 			percentPower += kPu * error + ((error - prevError) * kDu) + (kIu * intError);
-		} else if(finalPos - initPos < -0.25) {
+		} else if(finalPos < initPos) {
 			percentPower += kPd * error + ((error - prevError) * kDd) + (kId * intError);
 		} 
 		prevError = error;
