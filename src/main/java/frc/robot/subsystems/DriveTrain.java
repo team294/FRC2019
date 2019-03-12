@@ -497,7 +497,8 @@ public class DriveTrain extends Subsystem {
     double lJoystickRaw = Math.abs(Robot.oi.leftJoystick.getY());
     //double lJoystickAdjust = 0.7 * Math.sqrt(lJoystickRaw);
     //double lJoystickAdjust = 0.55 / (1 + Math.exp(-10 * (lJoystickRaw - 0.35)));
-    double lJoystickAdjust = 0.50 / (1 + Math.exp(-8 * (lJoystickRaw - 0.4))); // Slightly longer acceleration curve than previous sigmoid
+    // double lJoystickAdjust = 0.50 / (1 + Math.exp(-8 * (lJoystickRaw - 0.4))); // Slightly longer acceleration curve than previous sigmoid
+    double lJoystickAdjust = lJoystickRaw * 0.8;
     SmartDashboard.putNumber("Vision Joystick Value", lJoystickAdjust);
     double lPercentOutput = lJoystickAdjust + (gainConstant * finalAngle); //xVal
     double rPercentOutput = lJoystickAdjust - (gainConstant * finalAngle); //xVal
