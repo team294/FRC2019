@@ -185,7 +185,7 @@ public class Climb extends Subsystem {
    * @return true = pressure low enough, false = pressure too high
    */
   public boolean isVacuumPresent() {
-    return getVacuumPressure(false) >= 20.0;
+    return getVacuumPressure(false) >= 16.0; // was 20.0
   }
 
   /**

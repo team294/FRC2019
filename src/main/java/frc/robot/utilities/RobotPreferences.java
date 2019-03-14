@@ -212,7 +212,7 @@ public class RobotPreferences {
 	 * Stops wrist motor and sets wristCalibrated to false
 	 */
 	public void setWristUncalibrated() {
-		Robot.wrist.stopWrist();;
+		Robot.wrist.stopWrist();
 		wristCalibrated = false;
 		Robot.log.writeLog("Preferences", "Uncalibrate wrist", "");
 	}
