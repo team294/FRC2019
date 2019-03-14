@@ -6,11 +6,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ElevatorProfileGenerator {
 
-	public double currentMPDistance; // Current distance travelled in positive motion profile (always positive)
-	public double targetMPDistance; // Target total distance in positive motion profile
+	public double currentMPDistance; // Distance that should have been travelled in current motion profile (always positive)
+	public double targetMPDistance; // Total distance to be travelled in current motion profile (always positive)
 
-	public double initialPosition; // Initial position in user coords
-	public double finalPosition; // Final position in user coords
+	public double initialPosition; // Initial position in inches from the floor
+	public double finalPosition; // Final position in inches from the floor
 
 	public double currentVelocity;
 	public double maxVelocity;
@@ -22,14 +22,14 @@ public class ElevatorProfileGenerator {
 	public double dt; // delta T (time)
 	public double totalTime;
 
-	private double directionSign; // +1 if finalPosition>InitialPosition, -1 if not
+	private double directionSign; // +1 if finalPosition > InitialPosition, -1 if not
 
 	private long startTime, currentTime;
 
 	/**
 	 * Creates a new profile generator, starting now
-	 * @param initialPosition in inches
-	 * @param finalPosition   in inches
+	 * @param initialPosition in inches from the floor
+	 * @param finalPosition   in inches from the floor
 	 * @param initialVelocity in inches per second
 	 * @param maxVelocity     in inches per second
 	 * @param maxAcceleration in inches per second^2
@@ -40,20 +40,10 @@ public class ElevatorProfileGenerator {
 	}
 
 	/**
-	 * Resets profile generator with new parameters, starting now. This method
-	 * continues seamlessly with the prior profile.
-	 * @param finalPosition   in inches
-	 * @param maxVelocity     in inches per second
-	 * @param maxAcceleration in inches per second^2
-	 */
-	public void newProfile(double finalPosition, double maxVelocity, double maxAcceleration) {
-		newProfile(getCurrentPosition(), finalPosition, getCurrentVelocity(), maxVelocity, maxAcceleration);
-	}
-
-	/**
-	 * Resets profile generator with new parameters, starting now
-	 * @param initialPosition in inches
-	 * @param finalPosition   in inches
+	 * Resets profile generator with new parameters, starting now. This method 
+	 * continues seamlessly with the previous profile
+	 * @param initialPosition in inches from the floor
+	 * @param finalPosition   in inches from the floor
 	 * @param initialVelocity in inches per second
 	 * @param maxVelocity     in inches per second
 	 * @param maxAcceleration in inches per second^2
@@ -77,8 +67,7 @@ public class ElevatorProfileGenerator {
 		startTime = System.currentTimeMillis();
 		currentTime = startTime;
 
-		Robot.log.writeLog("ElevatorProfile", "New Profile",
-				"init pos," + initialPosition + ",final pos," + finalPosition);
+		Robot.log.writeLog("ElevatorProfile", "New Profile", "Init pos," + initialPosition + ",Final pos," + finalPosition);
 	}
 
 	/**
@@ -87,13 +76,16 @@ public class ElevatorProfileGenerator {
 	 * motion profile. Also calculates velocity in in/s
 	 */
 	public void updateProfileCalcs() {
-		if (Math.abs((currentMPDistance * directionSign) - targetMPDistance) >= 0.25) {
+		if (Math.abs((currentMPDistance * directionSign) - targetMPDistance) >= 0.25) { 
+			// does not continue calculating after we should have reached our target (within a quarter inch)
 			long tempTime = System.currentTimeMillis();
 			dt = ((double) (tempTime - currentTime)) / 1000.0;
 			currentTime = tempTime;
 
 			double stoppingDistance = 0.5 * currentVelocity * currentVelocity / stoppingAcceleration;
-			if ((targetMPDistance - currentMPDistance < stoppingDistance) && (currentVelocity > 0)) {
+
+			// calculating target acceleration
+			if (((targetMPDistance - currentMPDistance) < stoppingDistance) && (currentVelocity > 0)) {
 				currentAcceleration = -stoppingAcceleration;
 			}
 			else if (currentVelocity < maxVelocity) {
@@ -103,22 +95,27 @@ public class ElevatorProfileGenerator {
 				currentAcceleration = 0;
 			}
 
+			// calculating target velocity
 			currentVelocity = currentVelocity + currentAcceleration * dt;
-
-			if (currentVelocity > maxVelocity)
+			if (currentVelocity > maxVelocity) {
 				currentVelocity = maxVelocity;
+			}
+
+			// calculating the distance the elevator should have travelled
 			currentMPDistance = currentMPDistance + currentVelocity * dt;
-			if (currentMPDistance > targetMPDistance)
+			if (currentMPDistance > targetMPDistance) {
 				currentMPDistance = targetMPDistance;
-			SmartDashboard.putNumber("Profile Position", currentMPDistance);
-			SmartDashboard.putNumber("Profile Velocity", currentVelocity);
+			}
+
+			// SmartDashboard.putNumber("Profile Position", currentMPDistance);
+			// SmartDashboard.putNumber("Profile Velocity", currentVelocity);
 			Robot.log.writeLog("ElevatorProfile", "updateCalc",
-					"current pos," + currentMPDistance + ",actualPos,"
-							+ (Robot.elevator.getElevatorPos() - Robot.robotPrefs.elevatorBottomToFloor) + ",targetPos,"
-							+ targetMPDistance + ",time since start," + getTimeSinceProfileStart() + ",dt," + dt
-							+ ",current vel," + (currentVelocity * directionSign) + ",current acceleration,"
+					"MP Pos," + getCurrentPosition() + ",ActualPos,"
+							+ Robot.elevator.getElevatorPos() + ",TargetPos,"
+							+ finalPosition + ",Time since start," + getTimeSinceProfileStart() + ",dt," + dt
+							+ ",MP Vel," + (currentVelocity * directionSign) + ",MP Accel,"
 							+ currentAcceleration);
-		} else {
+		} else { // do not change the theoretical distance once it has reached the target range (+/- 0.25 inches)
 			currentMPDistance = targetMPDistance;
 		}
 	}
@@ -133,15 +130,13 @@ public class ElevatorProfileGenerator {
 	}
 
 	/**
-	 * Returns the time since starting this profile generator
-	 * @return
+	 * @return time in seconds since starting the current profile
 	 */
 	public double getTimeSinceProfileStart() {
 		return ((double) (currentTime - startTime)) / 1000.0;
 	}
 
 	/**
-	 * Returns current target velocity in in/s
 	 * @return Current target velocity from profile calculation in in/s
 	 */
 	public double getCurrentVelocity() {
