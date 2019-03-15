@@ -13,16 +13,13 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
-import edu.wpi.first.wpilibj.I2C;
 
 /**
- * Drive Train subsystem.  
+ * Drive Train subsystem using CIM motors. 
  */
 public class CimDriveTrain extends DriveTrain {
 
@@ -35,12 +32,10 @@ public class CimDriveTrain extends DriveTrain {
 
   public final DifferentialDrive robotDrive = new DifferentialDrive(leftMotor2, rightMotor2);
 
-  private AHRS ahrs;
-  private double yawZero = 0;
-
   private double leftEncoderZero = 0, rightEncoderZero = 0;
 
   public CimDriveTrain() {
+    super();
 
     // Reads the robot prefs to check if using Victors or Talons for alternate motor controllers
     if (Robot.robotPrefs.prototypeRobot) { // true means Talons
@@ -96,22 +91,6 @@ public class CimDriveTrain extends DriveTrain {
     rightMotor1.setNeutralMode(NeutralMode.Brake);
     rightMotor2.setNeutralMode(NeutralMode.Brake);
     rightMotor3.setNeutralMode(NeutralMode.Brake);
-
-    // Configure navX
-		try {
-			/* Communicate w/navX MXP via the MXP SPI Bus.
-			 * Alternatively: I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB
-			 * See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for
-			 * details.
-			 */
-
-			ahrs = new AHRS(I2C.Port.kMXP);
-
-		} catch (RuntimeException ex) {
-			DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
-		}
-		ahrs.zeroYaw();
-		// zeroGyroRotation();
   }
   
   @Override
@@ -132,11 +111,6 @@ public class CimDriveTrain extends DriveTrain {
   @Override
   public void setRightMotors(double percent) {
     rightMotor2.set(ControlMode.PercentOutput, percent);
-  }
-
-  @Override
-  public double getGyroRaw() {
-    return ahrs.getAngle();
   }
   
   /**

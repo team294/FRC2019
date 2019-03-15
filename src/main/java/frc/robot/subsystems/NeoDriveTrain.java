@@ -9,13 +9,10 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
-import edu.wpi.first.wpilibj.I2C;
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
@@ -23,11 +20,9 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 /**
- * Add your docs here.
+ * Drive Train subsytem using Spark motors.
  */
 public class NeoDriveTrain extends DriveTrain {
-  // Put methods for controlling this subsystem
-  // here. Call these from Commands.
 
   private CANSparkMax leftMotor1 = new CANSparkMax(RobotMap.leftMotor1, MotorType.kBrushless);
   private CANSparkMax leftMotor2 = new CANSparkMax(RobotMap.leftMotor2, MotorType.kBrushless);
@@ -41,15 +36,13 @@ public class NeoDriveTrain extends DriveTrain {
 
   private double leftEncoderZero = 0, rightEncoderZero = 0;
 
-  private AHRS ahrs;
-  private double yawZero = 0;
-
   private SensorCollection lShaftEncoder = new WPI_TalonSRX(10).getSensorCollection(); // THESE ARE MAGIC NUMBERS
   private SensorCollection rShaftEncoder = new WPI_TalonSRX(20).getSensorCollection(); // REPLACE WITH THE TALON IDs ACTUALLY PLUGGED INTO
 
   public final DifferentialDrive robotDrive = new DifferentialDrive(leftMotor2, rightMotor2);
 
   public NeoDriveTrain() {
+    super();
 
     leftMotor1.setIdleMode(IdleMode.kBrake);
     leftMotor2.setIdleMode(IdleMode.kBrake);
@@ -78,22 +71,6 @@ public class NeoDriveTrain extends DriveTrain {
     rightMotor1.clearFaults();
     rightMotor2.clearFaults();
     rightMotor3.clearFaults();
-
-    // Configure navX
-		try {
-			/* Communicate w/navX MXP via the MXP SPI Bus.
-			 * Alternatively: I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB
-			 * See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for
-			 * details.
-			 */
-
-			ahrs = new AHRS(I2C.Port.kMXP);
-
-		} catch (RuntimeException ex) {
-			DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
-		}
-		ahrs.zeroYaw();
-		// zeroGyroRotation();
   }
 
   @Override
@@ -114,11 +91,6 @@ public class NeoDriveTrain extends DriveTrain {
   @Override
   public void setRightMotors(double percent) {
     rightMotor2.set(percent);
-  }
-
-  @Override
-  public double getGyroRaw() {
-    return ahrs.getAngle();
   }
 
   @Override

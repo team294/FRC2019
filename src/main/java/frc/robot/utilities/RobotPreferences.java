@@ -163,6 +163,9 @@ public class RobotPreferences {
 		if (!prefs.containsKey("prototypeRobot")){
 			prefs.putBoolean("prototypeRobot", false);
 		}
+		if (!prefs.containsKey("neoDrivetrain")){
+			prefs.putBoolean("neoDrivetrain", true);
+		}
 		if (!prefs.containsKey("driveDirection")){
 			prefs.putBoolean("driveDirection", false);
 		}

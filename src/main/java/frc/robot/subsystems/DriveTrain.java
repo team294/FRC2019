@@ -10,6 +10,9 @@ package frc.robot.subsystems;
 import java.util.LinkedList;
 import java.util.Iterator;
 
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.I2C;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,23 +24,39 @@ import frc.robot.utilities.FileLog;
 /**
  * This is the parent class for a drive train. All the logic for line following, vision, etc. is here.
  * Cim- and neo-specific code for encoders and motors goes in the respective drive train classes, which
- * must implement all the abstract methods below
- * Gyro methods must also go in instances because of the nature of the AHRS
+ * must implement all the abstract methods below.
  */
 public abstract class DriveTrain extends Subsystem {
-  // Put methods for controlling this subsystem
-  // here. Call these from Commands.
 
   private double leftMotorFaultCount; // increments every cycle the left side detects an issue
   private double rightMotorFaultCount; // increments every cycle the right side detects an issue
   private boolean driveDirection = true; // true = forward, false = reverse
 
+  private AHRS ahrs;
   private double yawZero = 0;
 
   // Encoders
   private LinkedList<Double> lEncoderStack = new LinkedList<Double>();
   private LinkedList<Double> rEncoderStack = new LinkedList<Double>();
   private boolean lEncStopped = false, rEncStopped = false;
+
+  public DriveTrain() {
+    // Configure navX
+		try {
+			/* Communicate w/navX MXP via the MXP SPI Bus.
+			 * Alternatively: I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB
+			 * See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for
+			 * details.
+			 */
+
+			ahrs = new AHRS(I2C.Port.kMXP);
+
+		} catch (RuntimeException ex) {
+			DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
+		}
+		ahrs.zeroYaw();
+		// zeroGyroRotation();
+  }
 
   abstract public void tankDrive(double leftPercent, double rightPercent);
 
@@ -120,7 +139,9 @@ public abstract class DriveTrain extends Subsystem {
    * Gets the raw value of the gyro
    * @return
    */
-  abstract double getGyroRaw();
+  public double getGyroRaw() {
+    return ahrs.getAngle();
+  }
 
   /**
 	 * Zeros the gyro position in software
