@@ -35,6 +35,8 @@ public abstract class DriveTrain extends Subsystem {
   private AHRS ahrs;
   private double yawZero = 0;
 
+  private double leftEncoderZero = 0, rightEncoderZero = 0;
+
   // Encoders
   private LinkedList<Double> lEncoderStack = new LinkedList<Double>();
   private LinkedList<Double> rEncoderStack = new LinkedList<Double>();
@@ -55,7 +57,7 @@ public abstract class DriveTrain extends Subsystem {
 			DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
 		}
 		ahrs.zeroYaw();
-		// zeroGyroRotation();
+    // zeroGyroRotation();
   }
 
   abstract public void tankDrive(double leftPercent, double rightPercent);
@@ -91,31 +93,45 @@ public abstract class DriveTrain extends Subsystem {
 	 */
   abstract public void setVoltageCompensation(boolean turnOn);
 
+  abstract public double getLeftEncoderRaw();
+
+  abstract public double getRightEncoderRaw();
+
   /**
 	 * Zeros the left encoder position in software
 	 */
-  abstract public void zeroLeftEncoder();
+  public void zeroLeftEncoder() {
+    leftEncoderZero = getLeftEncoderRaw();
+  }
 
   /**
 	 * Zeros the right encoder position in software
 	 */
-  abstract public void zeroRightEncoder();
+  public void zeroRightEncoder() {
+    rightEncoderZero = getRightEncoderRaw();
+  }
 
   /**
 	 * Get the position of the left encoder, in encoder ticks since last zeroLeftEncoder()
 	 * 
 	 * @return encoder position, in ticks
 	 */
-  abstract public double getLeftEncoderTicks();
+  public double getLeftEncoderTicks() {
+    return getLeftEncoderRaw() - leftEncoderZero;
+  }
 
   /**
 	 * Get the position of the right encoder, in encoder ticks since last zeroRightEncoder()
 	 * 
 	 * @return encoder position, in ticks
 	 */
-  abstract public double getRightEncoderTicks();
+  public double getRightEncoderTicks() {
+    return -(getRightEncoderRaw() - rightEncoderZero);
+  }
 
-  abstract public double encoderTicksToInches(double rotations);
+  public double encoderTicksToInches(double rotations) {
+    return rotations * Robot.robotPrefs.wheelCircumference; // This is not right
+  }
 
   public double getLeftEncoderInches() {
     return encoderTicksToInches(getLeftEncoderTicks());
@@ -555,6 +571,9 @@ public abstract class DriveTrain extends Subsystem {
       SmartDashboard.putNumber("Drive Left Inches", getLeftEncoderInches());
       SmartDashboard.putNumber("Drive Right Inches", getRightEncoderInches());
       SmartDashboard.putNumber("Gyro Angle", getGyroRotation());
+      SmartDashboard.putNumber("Drive Left Ticks", getLeftEncoderTicks());
+      SmartDashboard.putNumber("Drive Right Ticks", getRightEncoderTicks());
+
       
       updateDriveLog(false);
 

@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 
-import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -30,14 +29,9 @@ public class NeoDriveTrain extends DriveTrain {
   private CANSparkMax rightMotor1 = new CANSparkMax(RobotMap.rightMotor1, MotorType.kBrushless);
   private CANSparkMax rightMotor2 = new CANSparkMax(RobotMap.rightMotor2, MotorType.kBrushless);
   private CANSparkMax rightMotor3 = new CANSparkMax(RobotMap.rightMotor3, MotorType.kBrushless);
-  
-  private CANEncoder leftDriveEnc;
-  private CANEncoder rightDriveEnc;
 
-  private double leftEncoderZero = 0, rightEncoderZero = 0;
-
-  private SensorCollection lShaftEncoder = new WPI_TalonSRX(10).getSensorCollection(); // THESE ARE MAGIC NUMBERS
-  private SensorCollection rShaftEncoder = new WPI_TalonSRX(20).getSensorCollection(); // REPLACE WITH THE TALON IDs ACTUALLY PLUGGED INTO
+  private SensorCollection lShaftEncoder = new WPI_TalonSRX(RobotMap.elevatorMotor2).getSensorCollection();
+  private SensorCollection rShaftEncoder = new WPI_TalonSRX(RobotMap.climbMotor1).getSensorCollection();
 
   public final DifferentialDrive robotDrive = new DifferentialDrive(leftMotor2, rightMotor2);
 
@@ -51,14 +45,18 @@ public class NeoDriveTrain extends DriveTrain {
     rightMotor2.setIdleMode(IdleMode.kBrake);
     rightMotor3.setIdleMode(IdleMode.kBrake);
 
-        
-    leftDriveEnc = leftMotor2.getEncoder();
-    rightDriveEnc = rightMotor2.getEncoder();
 
-    // Need to set inverted?
+    /*
+    // TODO: Need to set inverted? Test on real robot
 
-    zeroLeftEncoder();
-    zeroRightEncoder();
+    leftMotor1.setInverted(true);
+    leftMotor2.setInverted(true);
+    leftMotor3.setInverted(true);
+    rightMotor1.setInverted(true);
+    rightMotor2.setInverted(true);
+    rightMotor3.setInverted(true);
+
+    */
     
     leftMotor1.follow(leftMotor2);
     leftMotor3.follow(leftMotor2);
@@ -93,6 +91,18 @@ public class NeoDriveTrain extends DriveTrain {
     rightMotor2.set(percent);
   }
 
+  // TODO: Check encoder directions (whether increasing while driving forward or what)
+
+  @Override
+  public double getLeftEncoderRaw() {
+    return lShaftEncoder.getQuadraturePosition();
+  }
+
+  @Override
+  public double getRightEncoderRaw() {
+    return rShaftEncoder.getQuadraturePosition();
+  }
+
   @Override
 	public void setVoltageCompensation(boolean turnOn) {
 		if (turnOn) {
@@ -110,33 +120,6 @@ public class NeoDriveTrain extends DriveTrain {
       rightMotor2.disableVoltageCompensation();
       rightMotor3.disableVoltageCompensation();
     }
-  }
-  
-  @Override
-	public void zeroLeftEncoder() {
-		leftEncoderZero = leftDriveEnc.getPosition();
-	}
-
-	@Override
-	public void zeroRightEncoder() {
-    rightEncoderZero = rightDriveEnc.getPosition();
-  }
-  
-  @Override
-	public double getLeftEncoderTicks() {
-    return leftDriveEnc.getPosition() - leftEncoderZero;
-	}
-
-	@Override
-	public double getRightEncoderTicks() {
-		return -(rightDriveEnc.getPosition() - rightEncoderZero);
-  }
-
-  // TODO: add methods for using the shaft encoders
-  
-  @Override
-  public double encoderTicksToInches(double rotations) {
-    return rotations * Robot.robotPrefs.wheelCircumference; // This is not right
   }
 
   @Override

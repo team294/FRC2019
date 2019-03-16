@@ -32,7 +32,6 @@ public class CimDriveTrain extends DriveTrain {
 
   public final DifferentialDrive robotDrive = new DifferentialDrive(leftMotor2, rightMotor2);
 
-  private double leftEncoderZero = 0, rightEncoderZero = 0;
 
   public CimDriveTrain() {
     super();
@@ -59,9 +58,6 @@ public class CimDriveTrain extends DriveTrain {
       rightMotor1.follow(rightMotor2);
       rightMotor3.follow(rightMotor2);
     }
-
-    zeroLeftEncoder();
-		zeroRightEncoder();
 
     leftMotor1.setInverted(true);
     leftMotor2.setInverted(true);
@@ -133,28 +129,13 @@ public class CimDriveTrain extends DriveTrain {
 	}
 
   @Override
-	public void zeroLeftEncoder() {
-		leftEncoderZero = leftMotor2.getSelectedSensorPosition(0);
-	}
+  public double getRightEncoderRaw() {
+    return rightMotor2.getSelectedSensorPosition(0);
+  }
 
   @Override
-	public void zeroRightEncoder() {
-    rightEncoderZero = rightMotor2.getSelectedSensorPosition(0);
-	}
-
-  @Override
-	public double getLeftEncoderTicks() {
-    return leftMotor2.getSelectedSensorPosition(0) - leftEncoderZero;
-	}
-
-	@Override
-	public double getRightEncoderTicks() {
-		return -(rightMotor2.getSelectedSensorPosition(0) - rightEncoderZero);
-	}
-
-  @Override
-  public double encoderTicksToInches(double encoderTicks) {
-    return (encoderTicks / Robot.robotPrefs.encoderTicksPerRevolution) * Robot.robotPrefs.wheelCircumference ;
+  public double getLeftEncoderRaw() {
+    return leftMotor2.getSelectedSensorPosition(0);
   }
 
   @Override
