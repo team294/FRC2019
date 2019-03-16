@@ -40,6 +40,7 @@ public class Robot extends TimedRobot {
   public static RobotPreferences robotPrefs;
   public static PowerDistributionPanel pdp;
   public static LedHandler leds;
+  public static CANDeviceFinder canDeviceFinder;
 
   public static boolean beforeFirstEnable = true; // true before the first time the robot is enabled after loading code
   Command m_autonomousCommand;
@@ -51,6 +52,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    // Enumerate the CANBus
+    canDeviceFinder = new CANDeviceFinder();
+    canDeviceFinder.enumerateCANBusToStdOut();
+
     // Create file log first, so any other class constructors can log data
     log = new FileLog("B5");
 
@@ -61,7 +66,12 @@ public class Robot extends TimedRobot {
     beforeFirstEnable = true; // set variable that robot has not been enabled
 
     // Create all subsystems and utilities
-    driveTrain = new DriveTrain();
+    if (robotPrefs.neoDrivetrain) {
+      driveTrain = new NeoDriveTrain();
+    } else {
+      driveTrain = new CimDriveTrain();
+    }
+    
     shifter = new Shifter();
     elevator = new Elevator();
     wrist = new Wrist();
