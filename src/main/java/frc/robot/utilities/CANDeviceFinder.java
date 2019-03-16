@@ -33,7 +33,11 @@ public class CANDeviceFinder {
     }
 
     public void enumerateCANBusToStdOut() {
-        
+        System.out.println("Enumerating CANBus:");
+        for (String s : deviceList) {
+            System.out.println(s);
+        }
+        System.out.println("Enumerating CANBus completed.");
     }
 
     public boolean isPDPPresent() {
