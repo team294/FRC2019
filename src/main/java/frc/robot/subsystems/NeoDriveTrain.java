@@ -64,6 +64,7 @@ public class NeoDriveTrain extends DriveTrain {
     rightMotor1.clearFaults();
     rightMotor2.clearFaults();
     rightMotor3.clearFaults();
+    
   }
 
   @Override
@@ -90,12 +91,12 @@ public class NeoDriveTrain extends DriveTrain {
 
   @Override
   public double getLeftEncoderRaw() {
-    return lShaftEncoder.getQuadraturePosition();
+    return -lShaftEncoder.getQuadraturePosition();
   }
 
   @Override
   public double getRightEncoderRaw() {
-    return rShaftEncoder.getQuadraturePosition();
+    return -rShaftEncoder.getQuadraturePosition();
   }
 
   @Override
