@@ -29,11 +29,11 @@ public class ElevatorProfileGenerator {
 
 	private double prevError, error, intError;
 
-	private double kVu = 0.015;
+	private double kVu = 0.0;  // Should be around 0.015
 	private double kPu = 0.15;  // was 0.25, 0.05
 	private double kIu = 0;
 	private double kDu = 0;
-	private double kVd = 0.012;
+	private double kVd = 0.0;   // Should be around 0.012
 	private double kPd = 0.05;
 	private double kId = 0;
 	private double kDd = 0;
