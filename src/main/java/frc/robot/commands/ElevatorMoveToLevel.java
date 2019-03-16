@@ -25,8 +25,6 @@ public class ElevatorMoveToLevel extends Command {
    * @param inches target height in inches from floor
    */
   public ElevatorMoveToLevel(double inches) {
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
     requires(Robot.elevator);
     target = inches;
     targetInches = true;
@@ -111,22 +109,21 @@ public class ElevatorMoveToLevel extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    // Robot.elevator.updateElevatorLog(false);
+    Robot.elevator.updateElevatorLog(false);
 
-    // // Start timer for loose tolerance
-    // if(!startTime && Math.abs(Robot.elevator.getElevatorPos() - target) <= 2.5) {
-    //   timeAtLooseTolerance = timeSinceInitialized();
-    //   startTime = true;
-    // }
+    // Start timer for loose tolerance
+    if(!startTime && Math.abs(Robot.elevator.getElevatorPos() - target) <= 2.5) {
+      timeAtLooseTolerance = timeSinceInitialized();
+      startTime = true;
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-  return true;
-  //  return !Robot.elevator.getEncOK() ||         // End immediately if encoder can't read
-  //    Math.abs(Robot.elevator.getElevatorPos() - target) <= 0.5 ||
-  //    (startTime && timeSinceInitialized() - timeAtLooseTolerance > 0.5);
+   return !Robot.elevator.encoderCalibrated() ||         // End immediately if encoder can't read
+     Math.abs(Robot.elevator.getElevatorPos() - target) <= 0.5 ||
+     (startTime && timeSinceInitialized() - timeAtLooseTolerance > 2.0);
   }
 
   // Called once after isFinished returns true

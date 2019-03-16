@@ -47,22 +47,14 @@ public class Elevator extends Subsystem {
 	private boolean elevCalibrated = false; // true is encoder is working and calibrated, false is not calibrated
 	private boolean elevPosControl = false; // true is in position control mode, false is manual motor control (percent output)
 
-	private long lastTime;
-	private double dt;
-	private double initPos, finalPos, lastPos;
-	private double prevError, error, intError;
-
 	private double rampRate = 0.3;
-	private double kPu = 0.15;  // was 0.25, 0.05
-	private double kIu = 0;
-	private double kDu = 0;
-	private double kPd = 0.05;
-	private double kId = 0;
-	private double kDd = 0;
-	private double kFF = 0.05;  // was 0.1, 0.0
+	private double kP = 0.5;
+	private double kI = 0;
+	private double kD = 0;
+	private double kFF = 0;
 	private int kIz = 0;
-	private double kMaxOutput = 0.8;
-	private double kMinOutput = -0.6;  // -0.4
+	private double kMaxOutput = 0.8; // up max output
+	private double kMinOutput = -0.6; // down max output, was -0.4
 
 	public Elevator() {
 		elevatorMotor1 = new WPI_TalonSRX(RobotMap.elevatorMotor1);
@@ -78,8 +70,11 @@ public class Elevator extends Subsystem {
 		elevatorLimits = elevatorMotor1.getSensorCollection();
 		checkAndZeroElevatorEnc();
 
-		// elevatorMotor1.config_kF(0, kFF);
-		// elevatorMotor1.config_IntegralZone(0, kIz);
+		elevatorMotor1.config_kP(0, kP);
+		elevatorMotor1.config_kI(0, kI);
+		elevatorMotor1.config_kD(0, kD);
+		elevatorMotor1.config_kF(0, kFF);
+		elevatorMotor1.config_IntegralZone(0, kIz);
 		elevatorMotor1.configClosedloopRamp(rampRate);
 		elevatorMotor1.configPeakOutputForward(kMaxOutput);
 		elevatorMotor1.configPeakOutputReverse(kMinOutput);
@@ -99,16 +94,8 @@ public class Elevator extends Subsystem {
 		// start the elevator in manual mode unless it is properly zeroed
 		elevCalibrated = (getElevatorLowerLimit() && getElevatorEncTicks() == 0);
 
-		// initialize info for motion profile (but do NOT move the elevator)
-		lastTime = System.currentTimeMillis();
-		if (elevCalibrated) {
-			lastPos = getElevatorPos();			
-		} else {
-			lastPos = Robot.robotPrefs.hatchHigh;
-		}
-
-		finalPos = lastPos;
-		elevatorProfile = new ElevatorProfileGenerator(finalPos, finalPos, 0, 0, 0);	
+		// create elevator motion profile object
+		elevatorProfile = new ElevatorProfileGenerator();	
 
 		// ensure the elevator starts in manual mode
 		stopElevator();
@@ -138,60 +125,14 @@ public class Elevator extends Subsystem {
 				Robot.wrist.getWristAngle() >= Robot.robotPrefs.wristDown - 3.0 &&	     // wrist must be at least wristDown
 				Robot.wrist.getCurrentWristTarget() >= Robot.robotPrefs.wristDown - 3.0 )
 		 ) {
-
 			elevPosControl = true;
-			finalPos = pos;
-			initPos = getElevatorPos();
-			intError = 0;			// Clear integrated error
-			prevError = 0;			// Clear previous error
-			lastTime = System.currentTimeMillis();
-	
-			// Robot.log.writeLog("Elevator", "setProfileTarget", "initPos," + initPos + ",targetPos," + finalPos);
-	
-			SmartDashboard.putNumber("ElevatorInitPos", initPos);
-			SmartDashboard.putNumber("ElevatorTarget", finalPos);
-			if(initPos < finalPos) {
-				elevatorProfile.newProfile(getElevatorPos(), finalPos, elevatorProfile.getCurrentVelocity(), 50, 100); 
-			} else {
-				elevatorProfile.newProfile(getElevatorPos(), finalPos, elevatorProfile.getCurrentVelocity(), 50, 100); 
-			}
-	
+			elevatorProfile.setProfileTarget(pos);
 			Robot.log.writeLog("Elevator", "setProfileTarget", "Target," + pos + ",Allowed,Yes,Wrist Angle," +
 			   Robot.wrist.getWristAngle() + ",Wrist Target," + Robot.wrist.getCurrentWristTarget());
 		} else {
 			Robot.log.writeLog("Elevator", "setProfileTarget", "Target," + pos + ",Allowed,No,Wrist Angle,"  +
  			  Robot.wrist.getWristAngle() + ",Wrist Target," + Robot.wrist.getCurrentWristTarget());
 		}
-	}
-
-	/**
-	 * Code to make the elevator follow the MotionProfile, should be called exactly once per scheduler cycle.
-	 * ONLY follow the MotionProfile if elevPosControl is true, else we should be in manual mode so do nothing.
-	 */
-	private void trackProfilePeriodic() {
-		if (elevPosControl) {
-			dt = ((double)(System.currentTimeMillis() - lastTime)) / 1000.0;  // Time since the last periodic run
-
-			elevatorProfile.updateProfileCalcs();
-			error = elevatorProfile.getCurrentPosition() - getElevatorPos();
-			intError = intError + error * dt;
-
-			double percentPower = kFF;
-			if (finalPos > initPos) {
-				percentPower += kPu * error + ((error - prevError) * kDu) + (kIu * intError);
-			} else if(finalPos < initPos) {
-				percentPower += kPd * error + ((error - prevError) * kDd) + (kId * intError);
-			} 
-			prevError = error;
-
-			// If we are using our motion profile control loop, then set the power directly using elevatorMotor1.set().
-			// Do not call setElevatorMotorPercentOutput(), since that will change the elevPosControl to false (manual control).
-			elevatorMotor1.set(ControlMode.PercentOutput, percentPower);  
-
-		}
-
-		lastPos = getElevatorPos();
-		lastTime = System.currentTimeMillis();
 	}
 
 	/**
@@ -234,7 +175,7 @@ public class Elevator extends Subsystem {
 					return encoderTicksToInches(elevatorMotor1.getClosedLoopTarget(0)) + Robot.robotPrefs.elevatorBottomToFloor;
 				} else {
 					// Motion profile control
-					return elevatorProfile.finalPosition;
+					return elevatorProfile.getFinalPosition();
 				}
 			} else {
 				// Manual control mode
@@ -259,6 +200,13 @@ public class Elevator extends Subsystem {
 	}
 
 	/**
+	 * @return Current elevator velocity in in/s, + equals up, - equals down
+	 */
+	public double getElevatorVelocity() {
+		return encoderTicksToInches(elevatorMotor1.getSelectedSensorVelocity(0) * 10.0);
+	}
+
+	/**
 	 * stops elevator motors
 	 */
 	public void stopElevator() {
@@ -275,6 +223,14 @@ public class Elevator extends Subsystem {
 			elevCalibrated = true;
 			Robot.log.writeLog("Elevator", "Calibrate and Zero Encoder", "checkAndZeroElevatorEnc");
 		}
+	}
+
+	/**
+	 * Returns if the encoder is calibrated and working
+	 * @return true = working, false = not working
+	 */
+	public boolean encoderCalibrated() {
+		return elevEncOK && elevCalibrated;
 	}
 
 	/**
@@ -345,7 +301,8 @@ public class Elevator extends Subsystem {
 		Robot.log.writeLog(logWhenDisabled, "Elevator", "Update Variables",
 				"Volts1," + elevatorMotor1.getMotorOutputVoltage() + ",Volts2," + elevatorMotor2.getMotorOutputVoltage() + 
 				",Amps1," + Robot.pdp.getCurrent(RobotMap.elevatorMotor1PDP) + ",Amps2," + Robot.pdp.getCurrent(RobotMap.elevatorMotor2PDP) + 
-				",Enc Ticks," + getElevatorEncTicks() + ",Enc Inches," + getElevatorPos() + ",Elev Target," + getCurrentElevatorTarget() +
+				",Enc Ticks," + getElevatorEncTicks() + ",Enc Inches," + getElevatorPos() + 
+				",Elev Target," + getCurrentElevatorTarget() + ",Elev Vel," + getElevatorVelocity() +
 				",Upper Limit," + getElevatorUpperLimit() + ",Lower Limit," + getElevatorLowerLimit() + 
 				",Enc OK," + elevEncOK + ",Elev Mode," + elevCalibrated);
 	}
@@ -380,7 +337,11 @@ public class Elevator extends Subsystem {
 			updateElevatorLog(false);
 		}
 
-		trackProfilePeriodic();
+		// Sets elevator motors to percent power required as determined by motion profile
+		// Only set percent power IF the motion profile is enabled
+		if (elevPosControl && elevatorMotor1.getControlMode() != ControlMode.Position) {
+			elevatorMotor1.set(ControlMode.PercentOutput, elevatorProfile.trackProfilePeriodic());  
+		}
 
 		// Following code changes the frequency of variable logging depending
 		// on the set logLevel, Motors are checked every cycle regardless
