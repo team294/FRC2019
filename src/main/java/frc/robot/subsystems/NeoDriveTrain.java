@@ -45,18 +45,13 @@ public class NeoDriveTrain extends DriveTrain {
     rightMotor2.setIdleMode(IdleMode.kBrake);
     rightMotor3.setIdleMode(IdleMode.kBrake);
 
-
-    /*
     // TODO: Need to set inverted? Test on real robot
-
     leftMotor1.setInverted(true);
     leftMotor2.setInverted(true);
     leftMotor3.setInverted(true);
     rightMotor1.setInverted(true);
     rightMotor2.setInverted(true);
     rightMotor3.setInverted(true);
-
-    */
     
     leftMotor1.follow(leftMotor2);
     leftMotor3.follow(leftMotor2);
