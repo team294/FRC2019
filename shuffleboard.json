@@ -331,6 +331,13 @@
                 },
                 {
                   "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Elev Calibrated",
+                  "_title": "Elev Calibrated",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Boolean Box",
                   "_source0": "network_table:///SmartDashboard/Elev encOK",
                   "_title": "Elev Encoder OK",
                   "Colors/Color when true": "#7CFC00FF",
