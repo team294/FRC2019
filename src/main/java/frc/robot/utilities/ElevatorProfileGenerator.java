@@ -15,11 +15,11 @@ public class ElevatorProfileGenerator {
 	private double finalPosition; // Final position in inches from the floor
 
 	private double maxVelocity = 50;
-	private double currentVelocity;
+	private double currentMPVelocity;
 
 	private double maxAcceleration = 100;
 	private double stoppingAcceleration = .5 * maxAcceleration;
-	private double currentAcceleration;
+	private double currentMPAcceleration;
 
 	private double dt; // delta T (time)
 
@@ -29,15 +29,17 @@ public class ElevatorProfileGenerator {
 
 	private double prevError, error, intError;
 
-	private double kVu = 0.0;  // Should be around 0.015
-	private double kPu = 0.15;  // was 0.25, 0.05
+	private double kFF = 0.1;  // calibrated to 0.1
+	private double kVu = 0.0139;  // Should be around 0.015, calibrated to 0.0139
+	private double kAu = 0.002;   // Should be around 0.002
+	private double kPu = 0.15;  // was 0.15
 	private double kIu = 0;
 	private double kDu = 0;
-	private double kVd = 0.0;   // Should be around 0.012
-	private double kPd = 0.05;
+	private double kVd = 0.0125;   // Should be around 0.012, calibrated to 0.0125
+	private double kAd = 0.002;   // Should be around 0.002
+	private double kPd = 0.15;	// was 0.05
 	private double kId = 0;
 	private double kDd = 0;
-	private double kFF = 0.05;  // was 0.1, 0.0
 	
 	/**
 	 * Creates a new profile generator but keeps it in disabled mode
@@ -88,7 +90,7 @@ public class ElevatorProfileGenerator {
 		} */
 
 		// Seed the profile with the current velocity, in case the elevator is already moving
-		currentVelocity = Robot.elevator.getElevatorVelocity();
+		currentMPVelocity = Robot.elevator.getElevatorVelocity() * directionSign;
 
 		Robot.log.writeLog("ElevatorProfile", "New Profile", "Init pos," + initialPosition + ",Final pos," + finalPosition);
 	}
@@ -99,36 +101,40 @@ public class ElevatorProfileGenerator {
 	 * motion profile. Also calculates velocity in in/s
 	 */
 	public void updateProfileCalcs() {
-		if (Math.abs(currentMPDistance - targetMPDistance) >= 0.25) { 
+		if (currentMPDistance < targetMPDistance) { 
 			// does not continue calculating after we should have reached our target (within a quarter inch)
 			long currentTime = System.currentTimeMillis();
 			dt = ((double) (currentTime - lastTime)) / 1000.0;
 			lastTime = currentTime;
 
-			double stoppingDistance = 0.5 * currentVelocity * currentVelocity / stoppingAcceleration;
+			double stoppingDistance = 0.5 * currentMPVelocity * currentMPVelocity / stoppingAcceleration;
 
 			// calculating target acceleration
-			if (((targetMPDistance - currentMPDistance) < stoppingDistance) && (currentVelocity > 0)) {
-				currentAcceleration = -stoppingAcceleration;
+			if (((targetMPDistance - currentMPDistance) < stoppingDistance) && (currentMPVelocity > 0)) {
+				currentMPAcceleration = -stoppingAcceleration;
 			}
-			else if (currentVelocity < maxVelocity) {
-				currentAcceleration = maxAcceleration;
+			else if (currentMPVelocity < maxVelocity) {
+				currentMPAcceleration = maxAcceleration;
 			}
 			else {
-				currentAcceleration = 0;
+				currentMPAcceleration = 0;
 			}
 
 			// calculating target velocity
-			currentVelocity = currentVelocity + currentAcceleration * dt;
-			if (currentVelocity > maxVelocity) {
-				currentVelocity = maxVelocity;
+			currentMPVelocity = currentMPVelocity + currentMPAcceleration * dt;
+			if (currentMPVelocity > maxVelocity) {
+				currentMPVelocity = maxVelocity;
 			}
 
 			// calculating the distance the elevator should have travelled
-			currentMPDistance = currentMPDistance + currentVelocity * dt;
+			currentMPDistance = currentMPDistance + currentMPVelocity * dt;
 			if (currentMPDistance > targetMPDistance) {
 				currentMPDistance = targetMPDistance;
 			}
+			// if (currentMPVelocity < 0) {
+			// 	currentMPVelocity = 0;
+			// 	currentMPAcceleration=0;
+			// }
 
 			// SmartDashboard.putNumber("Profile Position", currentMPDistance);
 			// SmartDashboard.putNumber("Profile Velocity", currentVelocity);
@@ -137,19 +143,22 @@ public class ElevatorProfileGenerator {
 							+ Robot.elevator.getElevatorPos() + ",TargetPos,"
 							+ finalPosition + ",Time since start," + getTimeSinceProfileStart() + ",dt," + dt
 							+ ",ActualVel," + Robot.elevator.getElevatorVelocity()
-							+ ",MP Vel," + (currentVelocity * directionSign) + ",MP Accel,"
-							+ (currentAcceleration * directionSign) );
+							+ ",MP Vel," + (currentMPVelocity * directionSign) + ",MP Accel,"
+							+ (currentMPAcceleration * directionSign) );
 		} else { // do not change the theoretical distance once it has reached the target range (+/- 0.25 inches)
 			currentMPDistance = targetMPDistance;
-			currentVelocity = 0;
-			currentAcceleration = 0;
+			currentMPVelocity = 0;
+			currentMPAcceleration = 0;
 
-			// Robot.log.writeLog("ElevatorProfile", "updateCalcDone",
-			// 		"MP Pos," + getCurrentPosition() + ",ActualPos,"
-			// 				+ Robot.elevator.getElevatorPos() + ",TargetPos,"
-			// 				+ finalPosition + ",Time since start," + getTimeSinceProfileStart() + ",dt," + dt
-			// 				+ ",MP Vel," + (currentVelocity * directionSign) + ",MP Accel,"
-			// 				+ currentAcceleration);
+			if (Robot.log.getLogLevel()<=1) {
+				Robot.log.writeLog("ElevatorProfile", "updateCalcDone",
+						"MP Pos," + getCurrentPosition() + ",ActualPos,"
+								+ Robot.elevator.getElevatorPos() + ",TargetPos,"
+								+ finalPosition + ",Time since start," + getTimeSinceProfileStart() + ",dt," + dt
+								+ ",ActualVel," + Robot.elevator.getElevatorVelocity()
+								+ ",MP Vel," + (currentMPVelocity * directionSign) + ",MP Accel,"
+								+ (currentMPAcceleration * directionSign) );
+			}
 		}
 	}
 
@@ -167,9 +176,9 @@ public class ElevatorProfileGenerator {
 
 			double percentPower = kFF;
 			if (directionSign == 1) {
-				percentPower += kVu * currentVelocity + kPu * error + ((error - prevError) * kDu) + (kIu * intError);
+				percentPower += kVu*currentMPVelocity*directionSign + kAu*currentMPAcceleration*directionSign + kPu * error + ((error - prevError) * kDu) + (kIu * intError);
 			} else if(directionSign == -1) {
-				percentPower += -kVd * currentVelocity + kPd * error + ((error - prevError) * kDd) + (kId * intError);
+				percentPower += kVd*currentMPVelocity*directionSign + kAd*currentMPAcceleration*directionSign + kPd * error + ((error - prevError) * kDd) + (kId * intError);
 			} 
 			prevError = error;
 
@@ -208,6 +217,6 @@ public class ElevatorProfileGenerator {
 	 * @return Current target velocity from profile calculation in in/s
 	 */
 	public double getCurrentVelocity() {
-		return currentVelocity * directionSign;
+		return currentMPVelocity * directionSign;
 	}
 }

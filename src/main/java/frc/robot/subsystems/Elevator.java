@@ -53,8 +53,8 @@ public class Elevator extends Subsystem {
 	private double kD = 0;
 	private double kFF = 0;
 	private int kIz = 0;
-	private double kMaxOutput = 0.8; // up max output
-	private double kMinOutput = -0.6; // down max output, was -0.4
+	private double kMaxOutput = 1.0; // up max output, was 0.8
+	private double kMinOutput = -1.0; // down max output, was -0.6
 
 	public Elevator() {
 		elevatorMotor1 = new WPI_TalonSRX(RobotMap.elevatorMotor1);
