@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogTrigger;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -45,6 +46,11 @@ public class Climb extends Subsystem {
   private final AnalogInput analogVacuumSensor = new AnalogInput(RobotMap.analogVacuum);
   private final AnalogTrigger vacuumTrigger = new AnalogTrigger(analogVacuumSensor);
   private final SensorCollection climbLimit;
+
+  private double curEnc = 0.0; // current encoder value
+	private double prevEnc = 0.0; // last encoder value from periodic
+	private double encCount = 0; // current place in encoder loop
+  private boolean climbEncOK = true;
 
   private double rampRate = 0.5;
   private double kP = 3;      // Was 2, but did not climb to full height.  Increasing...
@@ -369,6 +375,32 @@ public class Climb extends Subsystem {
     if (getClimbAngle() > Robot.robotPrefs.climbLimitAngle + 5.0 || getClimbAngle() < Robot.robotPrefs.climbMinAngle - 5.0) {
       Robot.robotPrefs.setClimbUncalibrated();
       updateClimbLog(true);
+    }
+
+    if (DriverStation.getInstance().isEnabled()) {
+      
+      // if wrist is getting voltage and the difference of encoder ticks is less than five then increase encCount.
+			curEnc = getClimbEncTicks();
+			if (Math.abs(climbMotor2.getMotorOutputVoltage()) > 5 && Math.abs(curEnc - prevEnc) < 5) {
+				encCount++;
+			} else {
+				encCount = 0;
+			}
+			
+			if(encCount >= 5) {
+				climbEncOK = false; // if encCount is >= 5 encoder is broken.
+				Robot.robotPrefs.wristCalibrated = false;
+				if (climbMotor2.getControlMode() == ControlMode.Position) {
+					stopClimb();
+				}
+				Robot.robotPrefs.recordStickyFaults("Elevator Enc");
+			} else if (Math.abs(curEnc - prevEnc) >= 5) {
+				climbEncOK = true; // otherwise check if encoder is working.
+			}
+
+			if (encCount==0) {
+				prevEnc = curEnc;
+			}
     }
   }
   

@@ -49,7 +49,6 @@ public class Elevator extends Subsystem {
 	private double curEnc = 0.0; // current encoder value
 	private double prevEnc = 0.0; // last encoder value from periodic
 	private double encCount = 0; // current place in encoder loop
-	private double encDiff = 0; // difference between last five encoder values
 
 	private double rampRate = 0.3;
 	private double kP = 0.5;

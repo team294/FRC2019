@@ -7,10 +7,12 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.commands.WristWithXBox;
 import frc.robot.utilities.FileLog;
 import frc.robot.utilities.Wait;
 
@@ -25,13 +27,18 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 public class Wrist extends Subsystem {
   private WPI_TalonSRX wristMotor = new WPI_TalonSRX(RobotMap.wristMotor);
   private SensorCollection wristLimits;
-
-	private int posMoveCount = 0; // increments every cycle the wrist moves up
-	private int negMoveCount = 0; // increments every cycle the wrist moves down
-	private double currEnc = 0.0; // current recorded encoder value
-	private double encSnapShot = 0.0; // snapshot of encoder value used to make sure encoder is working
+  
+  //private double currEnc = 0.0; // current recorded encoder value
+	//private int posMoveCount = 0; // increments every cycle the wrist moves up
+	//private int negMoveCount = 0; // increments every cycle the wrist moves down
+	//private double encSnapShot = 0.0; // snapshot of encoder value used to make sure encoder is working
   private double encoderDegreesPerTicks = 360.0 / Robot.robotPrefs.encoderTicksPerRevolution;
   private double encoderTicksPerDegrees = Robot.robotPrefs.encoderTicksPerRevolution / 360.0;
+  private double curEnc = 0.0; // current encoder value
+	private double prevEnc = 0.0; // last encoder value from periodic
+	private double encCount = 0; // current place in encoder loop
+
+  private boolean wristEncOK = true;
 
   // TODO test PID terms with actual wrist
   private double kP = 1.0;  // was 3.0, reduced due to bobbling during elevator movement, was 2
@@ -355,9 +362,31 @@ public class Wrist extends Subsystem {
       updateWristLog(false);
     }
 
-    // if (DriverStation.getInstance().isEnabled()) {
+    if (DriverStation.getInstance().isEnabled()) {
  
-      
+      // if wrist is getting voltage and the difference of encoder ticks is less than five then increase encCount.
+			curEnc = getWristEncoderTicks();
+			if (Math.abs(wristMotor.getMotorOutputVoltage()) > 5 && Math.abs(curEnc - prevEnc) < 5) {
+				encCount++;
+			} else {
+				encCount = 0;
+			}
+			
+			if(encCount >= 5) {
+				wristEncOK = false; // if encCount is >= 5 encoder is broken.
+				Robot.robotPrefs.wristCalibrated = false;
+				if (wristMotor.getControlMode() == ControlMode.Position) {
+					stopWrist();
+				}
+				Robot.robotPrefs.recordStickyFaults("Elevator Enc");
+				setDefaultCommand(new WristWithXBox()); 
+			} else if (Math.abs(curEnc - prevEnc) >= 5) {
+				wristEncOK = true; // otherwise check if encoder is working.
+			}
+
+			if (encCount==0) {
+				prevEnc = curEnc;
+			}
 
       /* All of the code below should be gotten rid of for the same reason as the elevator stuff. It doesn't speed anything up in competition - 
       the codriver still has to recognize that the encoders are broken and the wrist is stalled. This is just more code to run in periodic() */
@@ -403,7 +432,6 @@ public class Wrist extends Subsystem {
         }
       }
       */
-    // }
+    }
   }
- 
 }
