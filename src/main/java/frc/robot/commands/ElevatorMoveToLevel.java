@@ -135,6 +135,7 @@ public class ElevatorMoveToLevel extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.elevator.stopElevator();
+    //Robot.elevator.stopElevator();
+    // Don't put the elevator in manual mode if we interrupt a sequence that moves the elevator!
   }
 }

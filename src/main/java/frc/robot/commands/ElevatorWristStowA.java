@@ -34,7 +34,7 @@ public class ElevatorWristStowA extends CommandGroup {
       protected boolean condition() {
         Robot.log.writeLog("ElevatorWristStowA", "Check 2", "Wrist angle," + Robot.wrist.getWristAngle()
           + ",Climb angle," + Robot.climb.getClimbAngle());
-        return Robot.wrist.getWristAngle() < Robot.robotPrefs.wristStraight - 2.0;
+        return Robot.wrist.getWristAngle() < Robot.robotPrefs.wristLowerCrashWhenElevatorLow;
       }
     });
 
