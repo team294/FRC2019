@@ -46,6 +46,10 @@ public class Elevator extends Subsystem {
 	private boolean elevEncOK = true; // true is encoder working, false is encoder broken
 	private boolean elevCalibrated = false; // true is encoder is working and calibrated, false is not calibrated
 	private boolean elevPosControl = false; // true is in position control mode, false is manual motor control (percent output)
+	private double curEnc = 0.0; // current encoder value
+	private double prevEnc = 0.0; // last encoder value from periodic
+	private double encCount = 0; // current place in encoder loop
+	private double encDiff = 0; // difference between last five encoder values
 
 	private double rampRate = 0.3;
 	private double kP = 0.5;
@@ -348,18 +352,41 @@ public class Elevator extends Subsystem {
 		if (DriverStation.getInstance().isEnabled()) {
 
 			verifyMotors(); // What is the concrete use for this?  Move to a pit command, instead of live during match?
-
 			//TODO simplify the encoder check.  If output voltage is greater than 3V (5V?) and encoder does not change more than
 			// 3 ticks in 5 cycles, then set elevEncOK = false.  If the encoder is moving, then set elevEncOK = true.
 			//  Test and verify that it does not false trigger, but does trigger when the encoder is unplugged.
 			// Also verify that it correctly resets the elevEncOK to true if the encoder starts working again.
-		
+
+			// if elevator is getting voltage and the difference of encoder ticks is less than five then increase encCount.
+			curEnc = getElevatorEncTicks();
+			if (Math.abs(elevatorMotor1.getMotorOutputVoltage()) > 5 && Math.abs(curEnc - prevEnc) < 5) {
+				encCount++;
+			} else {
+				encCount = 0;
+			}
+			
+			if(encCount >= 5) {
+				elevEncOK = false; // if encCount is >= 5 encoder is broken.
+				elevCalibrated = false;
+				if (elevPosControl) {
+					stopElevator();
+				}
+				Robot.robotPrefs.recordStickyFaults("Elevator Enc");
+				setDefaultCommand(new ElevatorWithXBox()); 
+			} else if (Math.abs(curEnc - prevEnc) >= 5) {
+				elevEncOK = true; // otherwise check if encoder is working.
+			}
+
+			if (encCount==0) {
+				prevEnc = curEnc;
+			}
+
 			// Following code checks whether the encoder is incrementing in the same direction as the 
 			// motor is moving and changes control modes based on state of encoder
-
 			/* All of the code below should be gotten rid of. It doesn't speed anything up in competition - the codriver still has to recognize that the encoders are broken
 			and the elevator is stalled. This is just more code to run in periodic() */
-			// TO DO: The code below is causing false triggers that causes the elevator to be uncalibrated.
+			// TODO The code below is causing false triggers that causes the elevator to be uncalibrated.
+
 			/*
 			currEnc = getElevatorEncTicks();
 			if (elevatorMotor1.getMotorOutputVoltage() > 5) {
