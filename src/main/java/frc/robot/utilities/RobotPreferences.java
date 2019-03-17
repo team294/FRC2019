@@ -16,7 +16,7 @@ public class RobotPreferences {
 	public boolean problemExists;       // Set true if there is an issue
 	public boolean inBCRLab;			// Set true if in the BCR lab (with a big pole in the middle of the field)
 	public boolean prototypeRobot;		// Set true if using code for prototype bots, false for practice and competition bots
-	public boolean driveDirection;		// True for reversed
+	public boolean neoDrivetrain;		// Set true if using neos on the drive train (mutually exclusive with prototypeRobot)
 	public double wheelCircumference;	// Wheel circumference, in inches
 	public double elevatorGearCircumference; //circumference of the gear driving the elevator in inches
 	public double elevatorBottomToFloor; //distance of elevator 0 value from the ground
@@ -97,7 +97,7 @@ public class RobotPreferences {
 		problemExists = prefs.getBoolean("problemExists", false);
 		inBCRLab = prefs.getBoolean("inBCRLab", false);
 		prototypeRobot = prefs.getBoolean("prototypeRobot", false); // true if testing code on a prototype, default to false (competition bot w/ Victors)
-		driveDirection = prefs.getBoolean("driveDirection", false);
+		neoDrivetrain = prefs.getBoolean("neoDrivetrain", true); // Default to true (using Neos) on competition bot
 		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;	
 		elevatorGearCircumference = prefs.getDouble("elevatorGearDiameter", 1.43) * Math.PI; // TODO Recheck that value is correct (at OC Regional) Conversion factor for makeshift elevator 18/32.3568952084);
 		elevatorBottomToFloor = prefs.getDouble("elevatorBottomToFloor", 16.0); // inches from ground to elevator's lowest position
@@ -163,6 +163,9 @@ public class RobotPreferences {
 		if (!prefs.containsKey("prototypeRobot")){
 			prefs.putBoolean("prototypeRobot", false);
 		}
+		if (!prefs.containsKey("neoDrivetrain")){
+			prefs.putBoolean("neoDrivetrain", true);
+		}
 		if (!prefs.containsKey("driveDirection")){
 			prefs.putBoolean("driveDirection", false);
 		}
@@ -212,7 +215,7 @@ public class RobotPreferences {
 	 * Stops wrist motor and sets wristCalibrated to false
 	 */
 	public void setWristUncalibrated() {
-		Robot.wrist.stopWrist();;
+		Robot.wrist.stopWrist();
 		wristCalibrated = false;
 		Robot.log.writeLog("Preferences", "Uncalibrate wrist", "");
 	}

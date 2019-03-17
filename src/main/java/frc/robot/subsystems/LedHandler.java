@@ -84,7 +84,7 @@ public class LedHandler extends Subsystem {
   /**
    * Sets all the LEDs off
    */
-  private void setOff(){
+  public void setOff(){
     green.set(false);
     blue.set(false);
     red.set(false);

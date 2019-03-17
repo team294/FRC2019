@@ -123,6 +123,11 @@ public class OI {
     SmartDashboard.putData("ClimbMoveUntilVacuum", new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
     SmartDashboard.putData("ClimbSequence", new ClimbSequence());
 
+
+    // test buttons
+    SmartDashboard.putData("Turn to 90", new TurnWithGyro(90.0, false));
+    SmartDashboard.putData("Turn to -90", new TurnWithGyro(-90.0, false));
+    SmartDashboard.putData("Turn to 0", new TurnWithGyro(0.0, false));
     // Buttons for the Cargo rollers
     SmartDashboard.putData("Cargo Intake", new CargoIntake());
     SmartDashboard.putData("Cargo Outtake", new CargoOuttake(-0.8));

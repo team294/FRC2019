@@ -7,53 +7,46 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-/**
- * drives straight based on percent output and time
- */
-public class DriveStraightOutputTime extends Command {
-  private double time;
-  private double timeStart;
-  private double percentOutput;
-  private boolean sucess;
-  
-/**
- * 
- * @param percentOutput power given to motors (negative to go backwards)
- * @param time time that power is given to motors (in seconds)
- */
-  public DriveStraightOutputTime(double percentOutput, double time) {
+public class TurnWithGyro extends Command {
+
+  double targetAngle;
+  boolean isRelativeGyroAngle;
+  double originalGyroAngle;
+
+  public TurnWithGyro(double targetAngle, boolean isRelativeAngle) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.driveTrain);
-    this.percentOutput = percentOutput;
-    this.time = time;
+    this.targetAngle = targetAngle;
+    isRelativeGyroAngle = isRelativeAngle;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    timeStart = Timer.getFPGATimestamp();
-    Robot.driveTrain.setLeftMotors(percentOutput);
-    Robot.driveTrain.setRightMotors(percentOutput);
+    originalGyroAngle = Robot.driveTrain.getGyroRotation();
+    if(isRelativeGyroAngle == true){
+      targetAngle = originalGyroAngle + targetAngle;
+    }
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.driveTrain.setLeftMotors(percentOutput);
-    Robot.driveTrain.setRightMotors(percentOutput);
+    Robot.driveTrain.turnWithGyro(targetAngle);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    if(Timer.getFPGATimestamp() - timeStart >= time || sucess){
+    if(isRelativeGyroAngle == false && Math.abs(Robot.driveTrain.getGyroRotation() - targetAngle) <= 3.0){
       return true;
-    }else {
+    } else if(isRelativeGyroAngle == true && (originalGyroAngle + targetAngle) - Robot.driveTrain.getGyroRotation() <= 3.0){
+      return true;
+    } else {
       return false;
     }
   }
@@ -61,7 +54,6 @@ public class DriveStraightOutputTime extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.driveTrain.stop();
   }
 
   // Called when another command which requires one or more of the same
