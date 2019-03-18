@@ -32,6 +32,7 @@ public class ElevatorWithXBox extends Command {
   protected void execute() {
     if (Robot.wrist.getWristAngle() > -5 && Robot.wrist.getWristAngle() < 5) {
       double value = -Robot.oi.xBoxController.getY(Hand.kLeft);
+      System.out.println("Elevator Xbox " + value);
       Robot.elevator.setElevatorMotorPercentOutput(value);
       Robot.elevator.updateElevatorLog(false);
     }

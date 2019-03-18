@@ -332,6 +332,7 @@ public class Wrist extends Subsystem {
 
     if (Robot.log.getLogRotation() == FileLog.WRIST_CYCLE) {
       SmartDashboard.putBoolean("Wrist calibrated", Robot.robotPrefs.wristCalibrated);
+      SmartDashboard.putBoolean("Wrist Enc OK", wristEncOK);
       SmartDashboard.putNumber("Wrist Angle", getWristAngle());
       SmartDashboard.putNumber("Wrist enc raw", getWristEncoderTicksRaw());
 			SmartDashboard.putBoolean("Wrist Lower Limit", getWristLowerLimit());

@@ -346,6 +346,7 @@ public class Climb extends Subsystem {
   public void periodic() {
     if (Robot.log.getLogRotation() == FileLog.CLIMB_CYCLE) {
       SmartDashboard.putBoolean("Climb calibrated", Robot.robotPrefs.climbCalibrated);
+      SmartDashboard.putBoolean("Climb Enc Ok", climbEncOK);
       SmartDashboard.putBoolean("Climb limit switch", isClimbAtLimitSwitch());
       SmartDashboard.putNumber("Climb angle", getClimbAngle());
       SmartDashboard.putNumber("Climb enc raw", getClimbEncTicksRaw());

@@ -30,6 +30,7 @@ public class WristWithXBox extends Command {
   @Override
   protected void execute() {
     double value = -Robot.oi.xBoxController.getY(Hand.kRight);
+    System.out.println("Wrist Xbox " + value);
     Robot.wrist.setWristMotorPercentOutput(value);
     Robot.wrist.updateWristLog(false);
   }
