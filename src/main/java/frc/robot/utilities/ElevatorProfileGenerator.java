@@ -20,6 +20,7 @@ public class ElevatorProfileGenerator {
 	private double maxAcceleration = 100;
 	private double stoppingAcceleration = .5 * maxAcceleration;
 	private double currentMPAcceleration;
+	private boolean approachingTarget = false;		// true = decelerating towards target;  false = not close enough to start decelerating
 
 	private double dt; // delta T (time)
 
@@ -69,6 +70,7 @@ public class ElevatorProfileGenerator {
 		initialPosition = Robot.elevator.getElevatorPos();
 		intError = 0;			// Clear integrated error
 		prevError = 0;			// Clear previous error
+		approachingTarget = false;
 
 		// Save starting time
 		startTime = System.currentTimeMillis();
@@ -110,8 +112,10 @@ public class ElevatorProfileGenerator {
 			double stoppingDistance = 0.5 * currentMPVelocity * currentMPVelocity / stoppingAcceleration;
 
 			// calculating target acceleration
-			if (((targetMPDistance - currentMPDistance) < stoppingDistance) && (currentMPVelocity > 0)) {
-				currentMPAcceleration = -stoppingAcceleration;
+			if ( (currentMPVelocity > 0) &&
+			       (approachingTarget || (targetMPDistance - currentMPDistance) < stoppingDistance) ) {
+				approachingTarget = true;
+				currentMPAcceleration = -0.5 * currentMPVelocity * currentMPVelocity / (targetMPDistance - currentMPDistance);
 			}
 			else if (currentMPVelocity < maxVelocity) {
 				currentMPAcceleration = maxAcceleration;
@@ -161,6 +165,10 @@ public class ElevatorProfileGenerator {
 				percentPowerFB = kPd * error + ((error - prevError) * kDd) + (kId * intError);
 			} 
 			prevError = error;
+
+			// Cap feedback power to prevent jerking the elevator
+			percentPowerFB = (percentPowerFB>0.2) ? 0.2 : percentPowerFB;
+			percentPowerFB = (percentPowerFB<-0.2) ? -0.2 : percentPowerFB;
 
 			if (Robot.log.getLogLevel()<=1 || currentMPVelocity>0 || Math.abs(percentPowerFB)>0.1) {
 				Robot.log.writeLog("ElevatorProfile", "updateCalc",
