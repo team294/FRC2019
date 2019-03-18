@@ -337,8 +337,10 @@ public class Elevator extends Subsystem {
 			updateElevatorLog(false);
 		}
 
-		// Sets elevator motors to percent power required as determined by motion profile
-		// Only set percent power IF the motion profile is enabled
+		// Sets elevator motors to percent power required as determined by motion profile.
+		// Only set percent power IF the motion profile is enabled.
+		// Note:  If we are using our motion profile control loop, then set the power directly using elevatorMotor1.set().
+		// Do not call setElevatorMotorPercentOutput(), since that will change the elevPosControl to false (manual control).
 		if (elevPosControl && elevatorMotor1.getControlMode() != ControlMode.Position) {
 			elevatorMotor1.set(ControlMode.PercentOutput, elevatorProfile.trackProfilePeriodic());  
 		}
