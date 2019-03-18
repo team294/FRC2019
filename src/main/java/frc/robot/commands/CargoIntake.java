@@ -49,7 +49,7 @@ public class CargoIntake extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return (hasBallTime && (timeSinceInitialized() > timeWhenGrabbedBall + 1));
+    return (hasBallTime && (timeSinceInitialized() > timeWhenGrabbedBall + 0.3));
   }
 
   // Called once after isFinished returns true

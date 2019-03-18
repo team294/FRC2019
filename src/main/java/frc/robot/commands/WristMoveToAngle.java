@@ -86,6 +86,7 @@ public class WristMoveToAngle extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.wrist.stopWrist();
+    // Robot.wrist.stopWrist();
+    // Don't take the wrist out of automated mode if we interrupt a sequence!!!!
   }
 }

@@ -19,9 +19,9 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
+//import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+//import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -62,7 +62,7 @@ public class Climb extends Subsystem {
   private double kMinOutput = -1.0;
 
   public Climb() {
-    enableCompressor(true);
+    enableCompressor(true);    
 
     climbMotor1.follow(climbMotor2);
     climbMotor2.set(ControlMode.PercentOutput, 0);
@@ -88,7 +88,7 @@ public class Climb extends Subsystem {
 
     climbMotor1.setNeutralMode(NeutralMode.Brake);
     climbMotor2.setNeutralMode(NeutralMode.Brake);
-    climbVacuum.setIdleMode(IdleMode.kBrake);
+    climbVacuum.setIdleMode(IdleMode.kCoast);
 
     // Wait 0.25 seconds before adjusting the climber calibration.  The reason is that .setInverted (above)
     // changes the sign of read encoder value, but that change can be delayed up to 50ms for a round trip
@@ -103,7 +103,7 @@ public class Climb extends Subsystem {
     analogVacuumSensor.setAverageBits(2);
 
     // Analog Trigger testing settings
-    vacuumTrigger.setLimitsVoltage(0.5, 4.4); // Random boundaries, no idea what real values are
+    vacuumTrigger.setLimitsVoltage(0.1, 4.9); // Random boundaries, no idea what real values are
     //vacuumTrigger.setAveraged(true); // Use the averaged value instead of raw
     vacuumTrigger.setFiltered(true); // Use a 3-point filter to reject outliers. CANNOT BE USED WITH AVERAGE VALUE
   }
@@ -184,6 +184,7 @@ public class Climb extends Subsystem {
    */
   public double getVacuumPressure(boolean raw) {
     double out = (raw) ? analogVacuumSensor.getVoltage() * -5.7 + 27 : analogVacuumSensor.getAverageVoltage() * -5.7 + 27;
+   
     return out;
   }
 
