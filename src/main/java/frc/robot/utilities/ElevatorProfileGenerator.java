@@ -131,34 +131,11 @@ public class ElevatorProfileGenerator {
 			if (currentMPDistance > targetMPDistance) {
 				currentMPDistance = targetMPDistance;
 			}
-			// if (currentMPVelocity < 0) {
-			// 	currentMPVelocity = 0;
-			// 	currentMPAcceleration=0;
-			// }
 
-			// SmartDashboard.putNumber("Profile Position", currentMPDistance);
-			// SmartDashboard.putNumber("Profile Velocity", currentVelocity);
-			Robot.log.writeLog("ElevatorProfile", "updateCalc",
-					"MP Pos," + getCurrentPosition() + ",ActualPos,"
-							+ Robot.elevator.getElevatorPos() + ",TargetPos,"
-							+ finalPosition + ",Time since start," + getTimeSinceProfileStart() + ",dt," + dt
-							+ ",ActualVel," + Robot.elevator.getElevatorVelocity()
-							+ ",MP Vel," + (currentMPVelocity * directionSign) + ",MP Accel,"
-							+ (currentMPAcceleration * directionSign) );
-		} else { // do not change the theoretical distance once it has reached the target range (+/- 0.25 inches)
+		} else { // do not change the theoretical distance once it has reached the target
 			currentMPDistance = targetMPDistance;
 			currentMPVelocity = 0;
 			currentMPAcceleration = 0;
-
-			if (Robot.log.getLogLevel()<=1) {
-				Robot.log.writeLog("ElevatorProfile", "updateCalcDone",
-						"MP Pos," + getCurrentPosition() + ",ActualPos,"
-								+ Robot.elevator.getElevatorPos() + ",TargetPos,"
-								+ finalPosition + ",Time since start," + getTimeSinceProfileStart() + ",dt," + dt
-								+ ",ActualVel," + Robot.elevator.getElevatorVelocity()
-								+ ",MP Vel," + (currentMPVelocity * directionSign) + ",MP Accel,"
-								+ (currentMPAcceleration * directionSign) );
-			}
 		}
 	}
 
@@ -174,17 +151,29 @@ public class ElevatorProfileGenerator {
 			error = getCurrentPosition() - Robot.elevator.getElevatorPos();
 			intError = intError + error * dt;
 
-			double percentPower = kFF;
+			double percentPowerFF = 0;
+			double percentPowerFB = 0;
 			if (directionSign == 1) {
-				percentPower += kVu*currentMPVelocity*directionSign + kAu*currentMPAcceleration*directionSign + kPu * error + ((error - prevError) * kDu) + (kIu * intError);
+				percentPowerFF = kFF + kVu*currentMPVelocity*directionSign + kAu*currentMPAcceleration*directionSign;
+				percentPowerFB = kPu * error + ((error - prevError) * kDu) + (kIu * intError);
 			} else if(directionSign == -1) {
-				percentPower += kVd*currentMPVelocity*directionSign + kAd*currentMPAcceleration*directionSign + kPd * error + ((error - prevError) * kDd) + (kId * intError);
+				percentPowerFF = kFF + kVd*currentMPVelocity*directionSign + kAd*currentMPAcceleration*directionSign;
+				percentPowerFB = kPd * error + ((error - prevError) * kDd) + (kId * intError);
 			} 
 			prevError = error;
 
-			// If we are using our motion profile control loop, then set the power directly using elevatorMotor1.set().
-			// Do not call setElevatorMotorPercentOutput(), since that will change the elevPosControl to false (manual control).
-			return percentPower;
+			if (Robot.log.getLogLevel()<=1 || currentMPVelocity>0 || Math.abs(percentPowerFB)>0.1) {
+				Robot.log.writeLog("ElevatorProfile", "updateCalc",
+						"MP Pos," + getCurrentPosition() + ",ActualPos,"
+								+ Robot.elevator.getElevatorPos() + ",TargetPos,"
+								+ finalPosition + ",Time since start," + getTimeSinceProfileStart() + ",dt," + dt
+								+ ",ActualVel," + Robot.elevator.getElevatorVelocity()
+								+ ",MP Vel," + (currentMPVelocity * directionSign)
+								+ ",MP Accel," + (currentMPAcceleration * directionSign)
+								+ ",PowerFF," + percentPowerFF + ",PowerFB," + percentPowerFB );
+			}
+
+			return percentPowerFF + percentPowerFB;
 		} else {
 			return 0.0;
 		}
