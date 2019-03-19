@@ -13,6 +13,7 @@ import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.utilities.FileLog;
 import frc.robot.utilities.Wait;
+import frc.robot.utilities.WristProfileGenerator;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -25,6 +26,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 public class Wrist extends Subsystem {
   private WPI_TalonSRX wristMotor = new WPI_TalonSRX(RobotMap.wristMotor);
   private SensorCollection wristLimits;
+
+  private WristProfileGenerator wristProfile;
 
 	private int posMoveCount = 0; // increments every cycle the wrist moves up
 	private int negMoveCount = 0; // increments every cycle the wrist moves down
@@ -72,6 +75,10 @@ public class Wrist extends Subsystem {
     // DO NOT GET RID OF THIS WITHOUT TALKING TO DON OR ROB.
     Wait.waitTime(250);
     adjustWristCalZero();
+
+    // create wrist motion profile object
+    wristProfile = new WristProfileGenerator();
+    
   }
 
   /**
@@ -93,6 +100,37 @@ public class Wrist extends Subsystem {
    */
   public void stopWrist() {
     setWristMotorPercentOutput(0.0);
+  }
+
+  public void setWristProfileTarget(double angle) {
+    if (Robot.robotPrefs.wristCalibrated) {
+      // Don't move wrist in or out of KeepOut if climber > climbWristMovingSafe or elevator > elevatorWristSafeStow.
+      if ( (Robot.climb.getClimbAngle() > Robot.robotPrefs.climbWristMovingSafe ||              // Climber is not safe
+            Robot.elevator.getElevatorPos() > Robot.robotPrefs.elevatorWristSafeStow ||         // Elevator is not safe
+            Robot.elevator.getCurrentElevatorTarget() > Robot.robotPrefs.elevatorWristSafeStow) // Elevator is moving to not safe
+            && (angle > Robot.robotPrefs.wristKeepOut || getWristAngle() > Robot.robotPrefs.wristKeepOut)) {  // We are moving in or out of KeepOut region
+        Robot.log.writeLog("Wrist", "Set angle", "Angle," + angle + ",Set angle,N/A,Interlock,Forbidden," +
+          ",Climb Angle," + Robot.climb.getClimbAngle() + ",Elevator Position," + Robot.elevator.getElevatorPos() + 
+          ",Elevator Target," + Robot.elevator.getCurrentElevatorTarget() + ",Wrist Angle," + getWristAngle());
+        return;
+      }
+
+      double safeAngle = angle;
+
+      // Apply interlocks if elevator is low
+      if (Robot.elevator.getElevatorPos() < Robot.robotPrefs.groundCargo - 2.0 || Robot.elevator.getCurrentElevatorTarget() < Robot.robotPrefs.groundCargo -2.0) {
+        // Elevator is very low or is going very low
+        // Wrist can not be below horizontal
+        safeAngle = (safeAngle < Robot.robotPrefs.wristStraight) ? Robot.robotPrefs.wristStraight : safeAngle;
+      } else {
+        // Wrist is safe to move as far down as wristDown
+        safeAngle = (safeAngle < Robot.robotPrefs.wristDown) ? Robot.robotPrefs.wristDown : safeAngle;
+      }
+
+      wristProfile.setProfileTarget(safeAngle);
+      Robot.log.writeLog("Wrist", "Set angle", "Desired angle," + angle + ",Set angle," + safeAngle + ",Interlock,Allowed,"
+       + ",Elevator Pos," + Robot.elevator.getElevatorPos() + ",Elevator Target," + Robot.elevator.getCurrentElevatorTarget());  
+    }
   }
 
   /**
@@ -258,6 +296,13 @@ public class Wrist extends Subsystem {
     }
   }
 
+  	/**
+	 * @return Current wrist velocity in in/s, + equals up, - equals down
+	 */
+	public double getWristVelocity() {
+		return encoderTicksToDegrees(wristMotor.getSelectedSensorVelocity(0) * 10.0);
+  }
+  
   /**
 	 * Returns the angle that wrist is trying to move to in degrees.
 	 * If the wrist is not calibrated, then returns wristMax in keepout region to engage all interlocks,
@@ -276,6 +321,10 @@ public class Wrist extends Subsystem {
         // angle may be undefined).  So, get the actual wrist angle instead.
         currentTarget = getWristAngle();
       }
+
+      /* if(motionProfile is being used) {
+        currentTarget = wristProfile.getFinalPosition();
+      } */ //TODO uncomment after we figure out how to tell what mode we're in for wrist
 
       currentTarget = currentTarget % 360; // If encoder wraps around 360 degrees
       currentTarget = (currentTarget > 180) ? currentTarget - 360 : currentTarget; // Change range to -180 to +180
@@ -355,6 +404,14 @@ public class Wrist extends Subsystem {
       updateWristLog(false);
     }
 
+  	// Sets wrist motor to percent power required as determined by motion profile.
+		// Only set percent power IF the motion profile is enabled.
+		// Note:  If we are using our motion profile control loop, then set the power directly using wristMotor.set().
+		// Do not call setWristMotorPercentOutput(), since that will change the wristPosControl to false (manual control).
+		if (wristMotor.getControlMode() != ControlMode.Position) {
+			wristMotor.set(ControlMode.PercentOutput, wristProfile.trackProfilePeriodic());  
+    } //TODO make a way to decipher between posControl and motionProfile
+    
     // if (DriverStation.getInstance().isEnabled()) {
  
       
