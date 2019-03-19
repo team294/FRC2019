@@ -7,7 +7,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
@@ -29,10 +28,12 @@ public class WristWithXBox extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double value = -Robot.oi.xBoxController.getY(Hand.kRight);
-    System.out.println("Wrist Xbox " + value);
-    Robot.wrist.setWristMotorPercentOutput(value);
-    Robot.wrist.updateWristLog(false);
+    if (Robot.elevator.getElevatorPos() < Robot.robotPrefs.elevatorWristSafeStow) {
+      double value = -Robot.oi.xBoxController.getRawAxis(5) * 0.25;
+      Robot.wrist.setWristMotorPercentOutput(value);
+      System.out.println("Wrist Manual " + value);
+      Robot.wrist.updateWristLog(false);
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()

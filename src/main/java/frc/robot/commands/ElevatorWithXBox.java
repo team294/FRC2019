@@ -7,7 +7,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
@@ -30,10 +29,10 @@ public class ElevatorWithXBox extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    if (Robot.wrist.getWristAngle() > -5 && Robot.wrist.getWristAngle() < 5) {
-      double value = -Robot.oi.xBoxController.getY(Hand.kLeft);
-      System.out.println("Elevator Xbox " + value);
+    if (Robot.wrist.getWristAngle() > -20 && Robot.wrist.getWristAngle() < 20) {
+      double value = -Robot.oi.xBoxController.getRawAxis(1) * 0.25;
       Robot.elevator.setElevatorMotorPercentOutput(value);
+      System.out.println("Elevator Manual " + value);
       Robot.elevator.updateElevatorLog(false);
     }
   }
