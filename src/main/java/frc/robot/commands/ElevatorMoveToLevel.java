@@ -25,8 +25,6 @@ public class ElevatorMoveToLevel extends Command {
    * @param inches target height in inches from floor
    */
   public ElevatorMoveToLevel(double inches) {
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
     requires(Robot.elevator);
     target = inches;
     targetInches = true;
@@ -105,7 +103,7 @@ public class ElevatorMoveToLevel extends Command {
         }
       }
     }
-    Robot.elevator.setElevatorPos(target);
+    Robot.elevator.setProfileTarget(target);
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -123,9 +121,9 @@ public class ElevatorMoveToLevel extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-   return !Robot.elevator.getEncOK() ||         // End immediately if encoder can't read
+   return !Robot.elevator.encoderCalibrated() ||         // End immediately if encoder can't read
      Math.abs(Robot.elevator.getElevatorPos() - target) <= 0.5 ||
-     (startTime && timeSinceInitialized() - timeAtLooseTolerance > 0.5);
+     (startTime && timeSinceInitialized() - timeAtLooseTolerance > 2.0);
   }
 
   // Called once after isFinished returns true
@@ -137,6 +135,7 @@ public class ElevatorMoveToLevel extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.elevator.stopElevator();
+    //Robot.elevator.stopElevator();
+    // Don't put the elevator in manual mode if we interrupt a sequence that moves the elevator!
   }
 }

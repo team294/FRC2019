@@ -40,6 +40,7 @@ public class Robot extends TimedRobot {
   public static RobotPreferences robotPrefs;
   public static PowerDistributionPanel pdp;
   public static LedHandler leds;
+  public static CANDeviceFinder canDeviceFinder;
 
   public static boolean beforeFirstEnable = true; // true before the first time the robot is enabled after loading code
   Command m_autonomousCommand;
@@ -51,6 +52,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    // Enumerate the CANBus
+    canDeviceFinder = new CANDeviceFinder();
+    canDeviceFinder.enumerateCANBusToStdOut();
+
     // Create file log first, so any other class constructors can log data
     log = new FileLog("B5");
 
@@ -61,7 +66,12 @@ public class Robot extends TimedRobot {
     beforeFirstEnable = true; // set variable that robot has not been enabled
 
     // Create all subsystems and utilities
-    driveTrain = new DriveTrain();
+    if (robotPrefs.neoDrivetrain) {
+      driveTrain = new NeoDriveTrain();
+    } else {
+      driveTrain = new CimDriveTrain();
+    }
+    
     shifter = new Shifter();
     elevator = new Elevator();
     wrist = new Wrist();
@@ -97,6 +107,14 @@ public class Robot extends TimedRobot {
     if (Robot.log.getLogRotation() == FileLog.DRIVE_CYCLE) {
       lineFollowing.displayLineSensors();
     }
+
+    if (Robot.climb.isVacuumPresent()) Robot.leds.setColor(LedHandler.Color.BLUE, false); // solid BLUE when vacuum drawn
+    else if (Robot.climb.getVacuumPressure(false) > 7.0) Robot.leds.setColor(LedHandler.Color.BLUE, true); // blinking BLUE when vacuum is starting to rise
+    else if (Robot.vision.areaFromCamera > 1.0 && Robot.vision.areaFromCamera < 5.5) Robot.leds.setColor(LedHandler.Color.GREEN, false); // blinking GREEN when limelight target has specified area
+    else if (Robot.cargo.getPhotoSwitch()) Robot.leds.setColor(LedHandler.Color.RED, false); // solid RED when cargo is present
+    else if (Robot.hatch.getHatchPiston()) Robot.leds.setColor(LedHandler.Color.RED, true); // blinking RED when hatch piston is in extended position
+    // else Robot.leds.setOff(); // if none of the above are true, turn OFF leds
+    else Robot.leds.setColor(LedHandler.Color.OFF, false);    
   }
 
   /**

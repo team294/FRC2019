@@ -34,13 +34,13 @@ public class Wrist extends Subsystem {
   private double encoderTicksPerDegrees = Robot.robotPrefs.encoderTicksPerRevolution / 360.0;
 
   // TODO test PID terms with actual wrist
-  private double kP = 1.0;  // was 3.0, reduced due to bobbling during elevator movement, was 2
+  private double kP = 2.5;  // was 1.0 with original wrist, 2.5 is better with new wrist
 	private double kI = 0;
-	private double kD = 5.0;
+	private double kD = 0.0;  // was 5.0
   private double kFF = 0;
   private int kIz = 0;
-  private double kMaxOutput = 1.0; // up max output
-  private double kMinOutput = -1.0; // down max output
+  private double kMaxOutput = 0.6; // up max output
+  private double kMinOutput = -0.6; // down max output
   private double rampRate = 0.3;
 
   public Wrist() {
