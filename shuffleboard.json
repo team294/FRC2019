@@ -194,7 +194,7 @@
             "content": {
               "_type": "Boolean Box",
               "_source0": "network_table:///SmartDashboard/problemExists",
-              "_title": "Problem Exists",
+              "_title": "Problem Flag",
               "Colors/Color when true": "#FF0000FF",
               "Colors/Color when false": "#00FF00FF"
             }
