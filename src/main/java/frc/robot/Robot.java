@@ -32,6 +32,7 @@ public class Robot extends TimedRobot {
   public static Wrist wrist;
   public static Cargo cargo;
   public static Hatch hatch;
+  public static NewHatch newHatch;
   public static VisionData vision;
   public static LineFollowing lineFollowing;
   public static Climb climb;
@@ -77,6 +78,7 @@ public class Robot extends TimedRobot {
     wrist = new Wrist();
     cargo = new Cargo();
     hatch = new Hatch();
+    newHatch = new NewHatch();
     vision = new VisionData();
     lineFollowing = new LineFollowing();
     climb = new Climb();
