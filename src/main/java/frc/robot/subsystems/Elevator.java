@@ -335,6 +335,7 @@ public class Elevator extends Subsystem {
 			SmartDashboard.putBoolean("Elev Upper Limit", getElevatorUpperLimit());
 
 			updateElevatorLog(false);
+			elevatorProfile.updateElevatorProfileLog(false);
 		}
 
 		// Sets elevator motors to percent power required as determined by motion profile.
