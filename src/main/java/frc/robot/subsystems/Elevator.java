@@ -119,8 +119,8 @@ public class Elevator extends Subsystem {
 		if (elevEncOK && elevCalibrated &&										// Elevator must be calibrated
 			  Robot.wrist.getWristAngle() < Robot.robotPrefs.wristKeepOut &&  	// Wrist must not be stowed
 			  Robot.wrist.getCurrentWristTarget() < Robot.robotPrefs.wristKeepOut && // Wrist must not be moving to stow
-			  ( Robot.wrist.getWristAngle() >= Robot.robotPrefs.wristStraight - 5.0 &&	// wrist must be at least horizontal
-				Robot.wrist.getCurrentWristTarget() >= Robot.robotPrefs.wristStraight - 5.0 ||
+			  ( Robot.wrist.getWristAngle() >= Robot.robotPrefs.wristLowerCrashWhenElevatorLow &&	// wrist must be at least wristLowerCrashWhenElevatorLow
+				Robot.wrist.getCurrentWristTarget() >= Robot.robotPrefs.wristLowerCrashWhenElevatorLow ||
 				pos >= Robot.robotPrefs.groundCargo &&						// Elevator is not going below groundCargo position
 				Robot.wrist.getWristAngle() >= Robot.robotPrefs.wristDown - 3.0 &&	     // wrist must be at least wristDown
 				Robot.wrist.getCurrentWristTarget() >= Robot.robotPrefs.wristDown - 3.0 )
