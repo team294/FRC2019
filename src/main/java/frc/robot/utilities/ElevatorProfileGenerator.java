@@ -30,6 +30,9 @@ public class ElevatorProfileGenerator {
 
 	private double prevError, error, intError;
 
+	double percentPowerFF = 0;
+	double percentPowerFB = 0;
+
 	private double kFF = 0.1;  // calibrated to 0.1
 	private double kVu = 0.0139;  // Should be around 0.015, calibrated to 0.0139
 	private double kAu = 0.002;   // Should be around 0.002
@@ -155,8 +158,6 @@ public class ElevatorProfileGenerator {
 			error = getCurrentPosition() - Robot.elevator.getElevatorPos();
 			intError = intError + error * dt;
 
-			double percentPowerFF = 0;
-			double percentPowerFB = 0;
 			if (directionSign == 1) {
 				percentPowerFF = kFF + kVu*currentMPVelocity*directionSign + kAu*currentMPAcceleration*directionSign;
 				percentPowerFB = kPu * error + ((error - prevError) * kDu) + (kIu * intError);
@@ -171,14 +172,7 @@ public class ElevatorProfileGenerator {
 			percentPowerFB = (percentPowerFB<-0.2) ? -0.2 : percentPowerFB;
 
 			if (Robot.log.getLogLevel()<=1 || currentMPVelocity>0 || Math.abs(percentPowerFB)>0.1) {
-				Robot.log.writeLog("ElevatorProfile", "updateCalc",
-						"MP Pos," + getCurrentPosition() + ",ActualPos,"
-								+ Robot.elevator.getElevatorPos() + ",TargetPos,"
-								+ finalPosition + ",Time since start," + getTimeSinceProfileStart() + ",dt," + dt
-								+ ",ActualVel," + Robot.elevator.getElevatorVelocity()
-								+ ",MP Vel," + (currentMPVelocity * directionSign)
-								+ ",MP Accel," + (currentMPAcceleration * directionSign)
-								+ ",PowerFF," + percentPowerFF + ",PowerFB," + percentPowerFB );
+				updateElevatorProfileLog(false);
 			}
 
 			return percentPowerFF + percentPowerFB;
@@ -187,6 +181,20 @@ public class ElevatorProfileGenerator {
 		}
 	}
 
+	/**
+    * Writes information about the elevator profile to the filelog
+    * @param logWhenDisabled true will log when disabled, false will discard the string
+    */
+	public void updateElevatorProfileLog(boolean logWhenDisabled) {
+		Robot.log.writeLog(logWhenDisabled, "ElevatorProfile", "updateCalc",
+		        "MP Pos," + getCurrentPosition() + ",ActualPos,"
+				+ Robot.elevator.getElevatorPos() + ",TargetPos,"
+				+ finalPosition + ",Time since start," + getTimeSinceProfileStart() + ",dt," + dt
+				+ ",ActualVel," + Robot.elevator.getElevatorVelocity()
+				+ ",MP Vel," + (currentMPVelocity * directionSign)
+				+ ",MP Accel," + (currentMPAcceleration * directionSign)
+				+ ",PowerFF," + percentPowerFF + ",PowerFB," + percentPowerFB );
+	}
 
 	/**
 	 * @return Current target position for the robot, in inches

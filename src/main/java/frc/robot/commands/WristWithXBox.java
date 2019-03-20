@@ -29,8 +29,9 @@ public class WristWithXBox extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double value = -Robot.oi.xBoxController.getY(Hand.kRight);
+    double value = -Robot.oi.xBoxController.getRawAxis(5) * 0.25;
     Robot.wrist.setWristMotorPercentOutput(value);
+    System.out.println("Wrist Manual " + value);
     Robot.wrist.updateWristLog(false);
   }
 

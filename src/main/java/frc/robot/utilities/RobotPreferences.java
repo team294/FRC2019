@@ -36,11 +36,11 @@ public class RobotPreferences {
 	public final double wristStowed = 110.0;
 	public final double wristKeepOut = 28.0; // Max angle to avoid interference with elevator or climber
 	public final double wristUp = 15.0;
-	public final double wristStraight = 7.0;	//  needed to bias upward to account for sag and insure that hatch cover gripper engages first
+	public final double wristStraight = 1.0;	//  needed to bias upward to account for sag and insure that hatch cover gripper engages first
 	public final double wristCargoShot = -30.0;	// Angle for wrist for cargo ship ball shot
 	public final double wristLowerCrashWhenElevatorLow = -45.0;   // If the elevator is in the low position, don't move the wrist below this!
-	public final double wristDown = -64.0;		// TODO Should be -59.0? // In this position, elevator must be able to go to groundCargo
-	public final double wristMin = -68;			// Location of lower limit switch for auto calibration
+	public final double wristDown = -60.0;		// TODO Should be -59.0? // In this position, elevator must be able to go to groundCargo
+	public final double wristMin = -61.0;			// Location of lower limit switch for auto calibration
 	public enum WristAngle {stowed, up, straight, cargoShot, down}
 
 	// TODO Update with 2019 base
@@ -63,10 +63,10 @@ public class RobotPreferences {
 	// Field level heights (for elevator targeting), in inches
 	public final double elevatorWristStow = 17.5;		// At the hard stop
 	public final double hatchLow = 19.0;
-  	public final double hatchMid = 47.0;
-  	public final double hatchHigh = 71.0;
+  	public final double hatchMid = 48.5;
+  	public final double hatchHigh = 72.8;
   	public final double cargoShipCargo = 43.0;   // Was 34.75
-	public final double rocketBallOffset = 2;  // Was 8.5", but did not account that ball intake is higher than the disc grabber
+	public final double rocketBallOffset = 2;  // Ball intake is higher than the disc grabber (low position only)
 	public final double loadCargo = 44.125;
 	public final double groundCargo = 18.0;  		// At this level, wrist must be able to go to wristDown  // TODO should this be the same as elevatorWristStow (at the hard stop)?
 
@@ -102,7 +102,7 @@ public class RobotPreferences {
 		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;	
 		elevatorGearCircumference = prefs.getDouble("elevatorGearDiameter", 1.43) * Math.PI; // TODO Recheck that value is correct (at OC Regional) Conversion factor for makeshift elevator 18/32.3568952084);
 		elevatorBottomToFloor = prefs.getDouble("elevatorBottomToFloor", 17.5); // inches from ground to elevator's lowest position
-		elevatorWristSafeStow = prefs.getDouble("elevatorWristSafeStow", 18.0); // max elevator position from floor where wrist can be stowed
+		elevatorWristSafeStow = prefs.getDouble("elevatorWristSafeStow", 18.5); // max elevator position from floor where wrist can be stowed
 		cameraDistanceFromFrontOfBumper = prefs.getDouble("cameraDistanceFromFrontOfBumper", 12);
 		wristGearRatio = prefs.getDouble("wristGearRatio", 1.0);
 		wristCalZero = prefs.getDouble("wristCalZero", -9999);
@@ -180,7 +180,7 @@ public class RobotPreferences {
 			prefs.putDouble("elevatorBottomToFloor", 17.5);
 		}
 		if (!prefs.containsKey("elevatorWristSafeStow")) {
-			prefs.putDouble("elevatorWristSafeStow", 18.0);
+			prefs.putDouble("elevatorWristSafeStow", 18.5);
 		}
 		if (!prefs.containsKey("cameraDistanceFromFrontOfBumper")){
 			prefs.putDouble("cameraDistanceFromFrontOfBumper", 12);

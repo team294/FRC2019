@@ -140,6 +140,7 @@ public class OI {
     SmartDashboard.putData("Wrist pos down", new WristMoveToAngle(WristAngle.down));
     SmartDashboard.putData("Wrist pos straight", new WristMoveToAngle(WristAngle.straight));
     SmartDashboard.putData("Wrist pos up", new WristMoveToAngle(WristAngle.up));
+    SmartDashboard.putData("Wrist add 10 deg", new WristChangeAngle(10.0));
 
     // Buttons for controlling FileLogging
     SmartDashboard.putData("Log 1 InitialTesting", new FileLogSetLevel(1));

@@ -11,11 +11,15 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 public class StopAllMotors extends Command {
+  /**
+   * Stops elevator, wrist, climb, and cargo motors
+   */
   public StopAllMotors() {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.elevator);
     requires(Robot.wrist);
     requires(Robot.climb);
+    requires(Robot.cargo);
   }
 
   // Called just before this Command runs the first time
@@ -24,6 +28,7 @@ public class StopAllMotors extends Command {
     Robot.elevator.stopElevator();
     Robot.wrist.stopWrist();
     Robot.climb.stopClimb();
+    Robot.cargo.stopCargoIntake();
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -34,7 +39,7 @@ public class StopAllMotors extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return true;
   }
 
   // Called once after isFinished returns true

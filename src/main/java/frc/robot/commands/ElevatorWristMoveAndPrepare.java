@@ -56,7 +56,7 @@ public class ElevatorWristMoveAndPrepare extends CommandGroup {
 
     // If going to hatch high, determine if we have a ball to adjust wrist angle
     if (position == ElevatorPosition.hatchHigh) {
-      addParallel(new ConditionalCommand(new WristMoveToAngle(WristAngle.up), new WristMoveToAngle(WristAngle.straight)){
+      addParallel(new ConditionalCommand(new WristMoveToAngle(WristAngle.up), new WristMoveToAngle(WristAngle.up)){
         @Override
         protected boolean condition() {
           if (Robot.log.getLogLevel() <= 3) {

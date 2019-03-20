@@ -7,52 +7,53 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.utilities.RobotPreferences.WristAngle;;
 
-public class ElevatorWithXBox extends Command {
-  
-  /** 
-   * Drive elevator manually using right joystick on the xBox controller
-  */
-  public ElevatorWithXBox() {
+public class WristChangeAngle extends Command {
+
+  private double target;
+
+  /**
+   * Moves wrist to target angle
+   * @param angle target angle in degrees
+   */
+  public WristChangeAngle(double angle) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.elevator);
+    requires (Robot.wrist);
+    target = angle;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.wrist.setWristAngle(target + Robot.wrist.getCurrentWristTarget());
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    if (Robot.wrist.getWristAngle() > -15 && Robot.wrist.getWristAngle() < 15) {
-      double value = -Robot.oi.xBoxController.getY(Hand.kLeft) * 0.4;
-      Robot.elevator.setElevatorMotorPercentOutput(value);
-      Robot.elevator.updateElevatorLog(false);
-    }
+    Robot.wrist.updateWristLog(false);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return !Robot.wrist.isEncoderCalibrated() || Math.abs(Robot.wrist.getWristAngle() - Robot.wrist.getCurrentWristTarget()) < 5.0; // tolerance of 5 degrees
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.elevator.stopElevator();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.elevator.stopElevator();
+    // Robot.wrist.stopWrist();
+    // Don't take the wrist out of automated mode if we interrupt a sequence!!!!
   }
 }
