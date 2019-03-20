@@ -102,7 +102,7 @@ public class RobotPreferences {
 		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;	
 		elevatorGearCircumference = prefs.getDouble("elevatorGearDiameter", 1.43) * Math.PI; // TODO Recheck that value is correct (at OC Regional) Conversion factor for makeshift elevator 18/32.3568952084);
 		elevatorBottomToFloor = prefs.getDouble("elevatorBottomToFloor", 17.5); // inches from ground to elevator's lowest position
-		elevatorWristSafeStow = prefs.getDouble("elevatorWristSafeStow", 18.0); // max elevator position from floor where wrist can be stowed
+		elevatorWristSafeStow = prefs.getDouble("elevatorWristSafeStow", 18.5); // max elevator position from floor where wrist can be stowed
 		cameraDistanceFromFrontOfBumper = prefs.getDouble("cameraDistanceFromFrontOfBumper", 12);
 		wristGearRatio = prefs.getDouble("wristGearRatio", 1.0);
 		wristCalZero = prefs.getDouble("wristCalZero", -9999);
@@ -180,7 +180,7 @@ public class RobotPreferences {
 			prefs.putDouble("elevatorBottomToFloor", 17.5);
 		}
 		if (!prefs.containsKey("elevatorWristSafeStow")) {
-			prefs.putDouble("elevatorWristSafeStow", 18.0);
+			prefs.putDouble("elevatorWristSafeStow", 18.5);
 		}
 		if (!prefs.containsKey("cameraDistanceFromFrontOfBumper")){
 			prefs.putDouble("cameraDistanceFromFrontOfBumper", 12);
