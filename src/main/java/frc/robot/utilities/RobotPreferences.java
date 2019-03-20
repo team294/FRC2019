@@ -39,8 +39,8 @@ public class RobotPreferences {
 	public final double wristStraight = 7.0;	//  needed to bias upward to account for sag and insure that hatch cover gripper engages first
 	public final double wristCargoShot = -30.0;	// Angle for wrist for cargo ship ball shot
 	public final double wristLowerCrashWhenElevatorLow = -45.0;   // If the elevator is in the low position, don't move the wrist below this!
-	public final double wristDown = -64.0;		// TODO Should be -59.0? // In this position, elevator must be able to go to groundCargo
-	public final double wristMin = -68;			// Location of lower limit switch for auto calibration
+	public final double wristDown = -60.0;		// TODO Should be -59.0? // In this position, elevator must be able to go to groundCargo
+	public final double wristMin = -61.0;			// Location of lower limit switch for auto calibration
 	public enum WristAngle {stowed, up, straight, cargoShot, down}
 
 	// TODO Update with 2019 base
