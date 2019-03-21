@@ -33,7 +33,7 @@ public class OI {
   public OI() {
     Button[] left = new Button[12];
     Button[] right = new Button[12];
-    Button[] coP = new Button[16];
+    Button[] coP = new Button[20];
     Button[] xbB = new Button[11];
     Trigger xbUp = new POVTrigger(xBoxController, 0);
     Trigger xbRight = new POVTrigger(xBoxController, 90);
