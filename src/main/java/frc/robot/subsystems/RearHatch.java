@@ -9,7 +9,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -25,7 +25,7 @@ public class RearHatch extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  private final WPI_TalonSRX rearHatchMotor = new WPI_TalonSRX(RobotMap.rearHatchMotor);
+  private final WPI_VictorSPX rearHatchMotor = new WPI_VictorSPX(RobotMap.rearHatchMotor);
   private final Solenoid rearHatchPiston = new Solenoid(RobotMap.pneumaticRearHatch);
   private boolean rearHatchPosition = false;
 
@@ -97,7 +97,7 @@ public class RearHatch extends Subsystem {
 		if (Robot.log.getLogRotation() == FileLog.REARHATCH_CYCLE) {
       Robot.log.writeLog(false, "Rear Hatch", "Update Variables", 
         "Piston," + (isRearHatchPistonExtended() ? "Extended" : "Retracted") + 
-        ",Volt," + rearHatchMotor.getMotorOutputVoltage() + ",Amp," + rearHatchMotor.getOutputCurrent());
+        ",Volt," + rearHatchMotor.getMotorOutputVoltage() + ",Amp," + Robot.pdp.getCurrent(RobotMap.rearHatchMotorPDP));
     }
 
   }
