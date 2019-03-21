@@ -14,7 +14,8 @@ public class RearHatchSet extends Command {
   private boolean extend;
 
   /**
-   * Extend or retract the rear hatch mechanism
+   * Extend or retract the rear hatch mechanism. Runs the hatch motor
+   * outtake for three seconds if going to stowed position (just in case we are holding a hatch).
    * @param grab true = extended position, false = retracted position
    */
   public RearHatchSet(boolean extend) {
@@ -29,6 +30,7 @@ public class RearHatchSet extends Command {
     if (extend) {
       Robot.rearHatch.setRearHatchPiston(true);
     } else {
+      Robot.rearHatch.setRearHatchMotorPercentOutput(-0.6);
       Robot.rearHatch.setRearHatchPiston(false);
     }
   }
@@ -41,17 +43,19 @@ public class RearHatchSet extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return true;
+    return (extend || timeSinceInitialized() >= 3);
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    if (!extend) Robot.rearHatch.stopRearHatch();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    end();
   }
 }

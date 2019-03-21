@@ -42,21 +42,19 @@ public class Cargo extends Subsystem {
 
   /**
    * Set the speed of the cargo motors
-   * @param percent1 From -1 (full speed out) to +1 (full speed in)
-   * @param percent2 From -1 (full speed out) to +1 (full speed in)
+   * @param percent From -1 (full speed out) to +1 (full speed in)
    */
-  public void setCargoMotorPercentOutput(double percent1, double percent2) {
-    cargoMotor1.set(ControlMode.PercentOutput, percent1); 
-    // cargoMotor2.set(ControlMode.PercentOutput, percent2);
+  public void setCargoMotorPercentOutput(double percent) {
+    cargoMotor1.set(ControlMode.PercentOutput, percent); 
 
-    Robot.log.writeLog("Cargo", "Percent Power", "Percent Power Top," + percent1 + ",Percent Power Bot," + percent2);
+    Robot.log.writeLog("Cargo", "Percent Power", "Percent Power Top," + percent);
   }
 
   /**
    * Stop the cargo intake motors
    */
   public void stopCargoIntake() {
-    setCargoMotorPercentOutput(0.0, 0.0);
+    setCargoMotorPercentOutput(0.0);
     Robot.log.writeLog("Cargo", "Stop Cargo", "");
   }
 
@@ -91,9 +89,7 @@ public class Cargo extends Subsystem {
       SmartDashboard.putBoolean("Cargo Has Ball", hasBall());
 
       Robot.log.writeLog(false, "Cargo", "Update Variables", "Photo Switch," + hasBall() + 
-        ",Volt1," + cargoMotor1.getMotorOutputVoltage() + ",Amp1," + Robot.pdp.getCurrent(RobotMap.cargoMotor1PDP) /* +
-        ",Volt2," + cargoMotor2.getMotorOutputVoltage() + ",Amp2," + Robot.pdp.getCurrent(RobotMap.cargoMotor2PDP) */
-        );
+        ",Volt1," + cargoMotor1.getMotorOutputVoltage() + ",Amp1," + Robot.pdp.getCurrent(RobotMap.cargoMotor1PDP));
     }
 
   }

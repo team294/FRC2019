@@ -10,17 +10,20 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class RearHatchOuttake extends Command {
+public class RearHatchSetPercentOutput extends Command {
   private double percent;
+  private double seconds;
 
   /**
-   * Run hatch outtake 5 seconds.
-   * @param percent percent output to release hatch, should be negative
+   * Run hatch motor for indicated time.
+   * @param percent percent output (negative = outtake, positive = intake)
+   * @param seconds seconds to run motor for (0 = run forever)
    */
-  public RearHatchOuttake(double percent) {
+  public RearHatchSetPercentOutput(double percent, double seconds) {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.rearHatch);
     this.percent = percent;
+    this.seconds = seconds;
   }
 
   // Called just before this Command runs the first time
@@ -38,14 +41,14 @@ public class RearHatchOuttake extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    if (timeSinceInitialized() >= 5) return true;
+    if (timeSinceInitialized() >= seconds) return true;
     else return false;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.rearHatch.stopRearHatch();
+    if (seconds > 0) Robot.rearHatch.stopRearHatch();
   }
 
   // Called when another command which requires one or more of the same

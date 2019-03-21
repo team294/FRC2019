@@ -30,19 +30,21 @@ public class RearHatch extends Subsystem {
 
   public RearHatch() {
     rearHatchMotor.set(ControlMode.PercentOutput, 0);
-    rearHatchMotor.setNeutralMode(NeutralMode.Coast);
+    rearHatchMotor.setNeutralMode(NeutralMode.Brake);
+    rearHatchMotor.configVoltageCompSaturation(12);
     rearHatchMotor.enableVoltageCompensation(true);
     rearHatchMotor.setInverted(false); // TODO determine if inverted
+    setRearHatchPiston(false);
     }
 
   /**
-   * Sets the percent output of the rear hatch intake motor.
+   * Sets the percent output of the rear hatch intake motor (positive = intaking, negative = outtaking).
    * 
    * @param percent percent output
    */
   public void setRearHatchMotorPercentOutput(double percent) {
     rearHatchMotor.set(ControlMode.PercentOutput, percent);
-    Robot.log.writeLog("Rear Hatch", "Motor", "Percent Output" + percent);
+    Robot.log.writeLog("Rear Hatch", "Motor", "Percent Output," + percent);
   }
 
   /**
@@ -50,23 +52,22 @@ public class RearHatch extends Subsystem {
    */
   public void stopRearHatch() {
     setRearHatchMotorPercentOutput(0);
-    Robot.log.writeLog("Rear Hatch", "Motor", "Stop Hatch");
   }
 
   /**
 	 * Sets the position of the hatch piston if the climber above the climb prep angle
    * (to avoid unintentionally extending during the climb).
 	 * 
-	 * @param position true = extended position, false = retracted position
+	 * @param extend true = extended position, false = retracted position
 	 */
-  public void setRearHatchPiston(boolean position) {
-    if (position && Robot.climb.getClimbAngle() > Robot.robotPrefs.climbPrep - 5) {
-      rearHatchPiston.set(false);
+  public void setRearHatchPiston(boolean extend) {
+    if (extend && Robot.climb.getClimbAngle() > Robot.robotPrefs.climbPrep - 5) {
+      rearHatchPiston.set(true);
       rearHatchPosition = true;
       Robot.log.writeLog("Rear Hatch", "Piston Position", "Extended");
       SmartDashboard.putString("Rear Hatch Position", "Extended");
-		} else if (!position && Robot.climb.getClimbAngle() > Robot.robotPrefs.climbPrep - 5) {
-      rearHatchPiston.set(true);
+		} else {
+      rearHatchPiston.set(false);
       rearHatchPosition = false;
       Robot.log.writeLog("Rear Hatch", "Piston Position", "Retracted");
       SmartDashboard.putString("Rear Hatch Position", "Retracted");
@@ -75,9 +76,9 @@ public class RearHatch extends Subsystem {
 
   /**
 	 * 
-	 * @return position of rear hatch piston.
+	 * @return true = extended, false = retracted.
 	 */
-	public boolean getRearHatchPiston() {
+	public boolean isRearHatchPistonExtended() {
 		return rearHatchPosition;
 	}
 

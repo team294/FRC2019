@@ -60,7 +60,7 @@ public class OI {
     xbB[2].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchMid)); // B
     xbB[3].whenPressed(new ElevatorWristStow()); // X
     xbB[4].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchHigh)); // Y
-    xbB[5].whenPressed(new RearHatchIntake(0.6)); // LB
+    // xbB[5].whenPressed(new RearHatchIntake(0.6)); // LB
     xbB[6].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.cargoShipCargo)); // RB
     xbB[7].whenPressed(new StopAllMotors()); // Back
     xbB[8].whenPressed(new CargoStop()); // Start
@@ -70,7 +70,7 @@ public class OI {
     xbRight.whenActive(new HatchSet(true)); // DPadRight
     xbDown.whenActive(new CargoIntakeFromGround()); // DPadDown
     xbLeft.whenActive(new HatchSet(false)); // DPadLeft
-    xbLT.whenActive(new CargoOrRearHatchOuttake()); // LT
+    // xbLT.whenActive(new CargoOrRearHatchOuttake()); // LT
     xbRT.whenActive(new CargoOuttake(-1.0)); // RT
 
     // Joystick buttons
@@ -134,8 +134,8 @@ public class OI {
     SmartDashboard.putData("Cargo Outtake", new CargoOuttake(-0.8));
 
     // Buttons for the rear hatch intake
-    SmartDashboard.putData("Rear Hatch Intake", new RearHatchIntake(0.6));
-    SmartDashboard.putData("Rear Hatch Outtake", new RearHatchOuttake(-0.6));
+    SmartDashboard.putData("Rear Hatch Intake", new RearHatchSetPercentOutput(0.6, 5));
+    SmartDashboard.putData("Rear Hatch Outtake", new RearHatchSetPercentOutput(-0.6, 5));
     SmartDashboard.putData("Rear Hatch Set Retract", new RearHatchSet(false));
     SmartDashboard.putData("Rear Hatch Set Extend", new RearHatchSet(true));
 
