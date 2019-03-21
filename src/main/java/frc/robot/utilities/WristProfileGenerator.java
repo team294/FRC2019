@@ -11,8 +11,8 @@ public class WristProfileGenerator {
 	private double currentMPDistance; // Distance that should have been travelled in current motion profile (always positive)
 	private double targetMPDistance; // Total distance to be travelled in current motion profile (always positive)
 
-	private double initialPosition; // Initial position in degrees
-	private double finalPosition; // Final position in degrees
+	private double initialAngle; // Initial angle in degrees
+	private double finalAngle; // Final angle in degrees
 
 	private double maxVelocity = 50;
 	private double currentMPVelocity;
@@ -24,7 +24,7 @@ public class WristProfileGenerator {
 
 	private double dt; // delta T (time)
 
-	private double directionSign; // +1 if finalPosition > InitialPosition, -1 if not
+	private double directionSign; // +1 if finalAngle > initialAngle, -1 if not
 
 	private long startTime, lastTime;
 
@@ -57,17 +57,18 @@ public class WristProfileGenerator {
 	}
 
 	/**
-	 * Sets target position for wrist, using motion profile movement.
+	 * 	/**
+	 * Sets target angle for wrist, using motion profile movement.
 	 * This enables the profiler to take control of the wrist, so only call it if the
 	 * encoder is working, the wrist is calibrated, and there are no physical obstructions
 	 * (check interlocks before calling).
 	 * Enables motion profile's control of motors
-	 * @param pos in degrees from the floor.
-	*/
-	public void setProfileTarget(double pos) {
+	 * @param angle
+	 */
+	public void setProfileTarget(double angle) {
 		profileEnabled = true;
-		finalPosition = pos;
-		initialPosition = Robot.wrist.getWristAngle();
+		finalAngle = angle;
+		initialAngle = Robot.wrist.getWristAngle();
 		intError = 0;			// Clear integrated error
 		prevError = 0;			// Clear previous error
 		approachingTarget = false;
@@ -76,13 +77,13 @@ public class WristProfileGenerator {
 		startTime = System.currentTimeMillis();
 		lastTime = startTime;
 
-		SmartDashboard.putNumber("WristInitPos", initialPosition);
-		SmartDashboard.putNumber("WristTarget", finalPosition);
+		SmartDashboard.putNumber("WristInitAng", initialAngle);
+		SmartDashboard.putNumber("WristTarget", finalAngle);
 
 		currentMPDistance = 0;
-		targetMPDistance = Math.abs(finalPosition - initialPosition);
+		targetMPDistance = Math.abs(finalAngle - initialAngle);
 
-		directionSign = Math.signum(finalPosition - initialPosition);
+		directionSign = Math.signum(finalAngle - initialAngle);
 
 		/* TODO uncomment if we decide to have different velocities/accelerations for up vs down
 		if(directionSign == 1) {
@@ -94,7 +95,7 @@ public class WristProfileGenerator {
 		// Seed the profile with the current velocity, in case the wrist is already moving
 		currentMPVelocity = Robot.wrist.getWristVelocity() * directionSign;
 
-		Robot.log.writeLog("WristProfile", "New Profile", "Init pos," + initialPosition + ",Final pos," + finalPosition);
+		Robot.log.writeLog("WristProfile", "New Profile", "Init ang," + initialAngle + ",Final ang," + finalAngle);
 	}
 
 	/**
@@ -152,7 +153,7 @@ public class WristProfileGenerator {
 	public double trackProfilePeriodic() {
 		if(profileEnabled) {
 			updateProfileCalcs();
-			error = getCurrentPosition() - Robot.wrist.getWristAngle();
+			error = getCurrentAngle() - Robot.wrist.getWristAngle();
 			intError = intError + error * dt;
 
 			double percentPowerFF = 0;
@@ -172,9 +173,9 @@ public class WristProfileGenerator {
 
 			if (Robot.log.getLogLevel()<=1 || currentMPVelocity>0 || Math.abs(percentPowerFB)>0.1) {
 				Robot.log.writeLog("WristProfile", "updateCalc",
-						"MP Pos," + getCurrentPosition() + ",ActualPos,"
-								+ Robot.wrist.getWristAngle() + ",TargetPos,"
-								+ finalPosition + ",Time since start," + getTimeSinceProfileStart() + ",dt," + dt
+						"MP Ang," + getCurrentAngle() + ",ActualAng,"
+								+ Robot.wrist.getWristAngle() + ",TargetAng,"
+								+ finalAngle + ",Time since start," + getTimeSinceProfileStart() + ",dt," + dt
 								+ ",ActualVel," + Robot.wrist.getWristVelocity()
 								+ ",MP Vel," + (currentMPVelocity * directionSign)
 								+ ",MP Accel," + (currentMPAcceleration * directionSign)
@@ -189,18 +190,18 @@ public class WristProfileGenerator {
 
 
 	/**
-	 * @return Current target position for the robot, in degrees
+	 * @return Current target angle for the robot, in degrees
 	 */
-	public double getCurrentPosition() {
-		return currentMPDistance * directionSign + initialPosition;
+	public double getCurrentAngle() {
+		return currentMPDistance * directionSign + initialAngle;
 
 	}
 
 	/**
-	 * @return Current final position of motion profile
+	 * @return Current final angle of motion profile
 	 */
-	public double getFinalPosition() {
-		return finalPosition;
+	public double getFinalAngle() {
+		return finalAngle;
 	}
 
 	/**
