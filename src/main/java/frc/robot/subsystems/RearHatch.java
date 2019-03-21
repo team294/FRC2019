@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.utilities.FileLog;
 
 /**
  * Rear hatch intake subsystem.
@@ -31,7 +32,7 @@ public class RearHatch extends Subsystem {
   public RearHatch() {
     rearHatchMotor.set(ControlMode.PercentOutput, 0);
     rearHatchMotor.setNeutralMode(NeutralMode.Brake);
-    rearHatchMotor.configVoltageCompSaturation(12);
+    rearHatchMotor.configVoltageCompSaturation(12.0);
     rearHatchMotor.enableVoltageCompensation(true);
     rearHatchMotor.setInverted(false); // TODO determine if inverted
     setRearHatchPiston(false);
@@ -87,4 +88,16 @@ public class RearHatch extends Subsystem {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
   }
+
+  @Override
+  public void periodic() {
+
+		if (Robot.log.getLogRotation() == FileLog.REARHATCH_CYCLE) {
+      Robot.log.writeLog(false, "Rear Hatch", "Update Variables", 
+        "Piston," + (isRearHatchPistonExtended() ? "Extended" : "Retracted") + 
+        ",Volt," + rearHatchMotor.getMotorOutputVoltage() + ",Amp," + rearHatchMotor.getOutputCurrent());
+    }
+
+  }
+
 }

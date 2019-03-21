@@ -60,18 +60,20 @@ public class OI {
     xbB[2].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchMid)); // B
     xbB[3].whenPressed(new ElevatorWristStow()); // X
     xbB[4].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchHigh)); // Y
-    // xbB[5].whenPressed(new RearHatchIntake(0.6)); // LB
+    xbB[5].whenPressed(new WristRearHatchStow()); // LB
     xbB[6].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.cargoShipCargo)); // RB
     xbB[7].whenPressed(new StopAllMotors()); // Back
-    xbB[8].whenPressed(new CargoStop()); // Start
+    xbB[8].whenPressed(new CargoRearHatchStop()); // Start
     xbB[9].whenPressed(new ElevatorWithXBox()); // LStick
     xbB[10].whenPressed(new WristWithXBox()); // RStick
     xbUp.whenActive(new CargoIntakeFromLoad()); // DPadUp
-    xbRight.whenActive(new HatchSet(true)); // DPadRight
+    // xbRight.whenActive(new HatchSet(true)); // DPadRight
+    xbRight.whenActive(new HatchFrontAndRearSet(true)); // DPadRight
     xbDown.whenActive(new CargoIntakeFromGround()); // DPadDown
-    xbLeft.whenActive(new HatchSet(false)); // DPadLeft
-    // xbLT.whenActive(new CargoOrRearHatchOuttake()); // LT
-    xbRT.whenActive(new CargoOuttake(-1.0)); // RT
+    // xbLeft.whenActive(new HatchSet(false)); // DPadLeft
+    xbLeft.whenActive(new HatchFrontAndRearSet(false)); // DPadLeft
+    xbLT.whenActive(new CargoOuttake(-1.0)); // LT
+    xbRT.whenActive(new CargoOuttake(-0.8)); // RT
 
     // Joystick buttons
     left[1].whenPressed(new Shift(true)); // high gear
@@ -136,8 +138,8 @@ public class OI {
     // Buttons for the rear hatch intake
     SmartDashboard.putData("Rear Hatch Intake", new RearHatchSetPercentOutput(0.6, 5));
     SmartDashboard.putData("Rear Hatch Outtake", new RearHatchSetPercentOutput(-0.6, 5));
-    SmartDashboard.putData("Rear Hatch Set Retract", new RearHatchSet(false));
-    SmartDashboard.putData("Rear Hatch Set Extend", new RearHatchSet(true));
+    SmartDashboard.putData("Rear Hatch Retract", new RearHatchSet(false));
+    SmartDashboard.putData("Rear Hatch Extend", new RearHatchSet(true));
 
     // Buttons for controlling the wrist
     SmartDashboard.putData("Wrist recalibrate", new WristEncoderFail());
