@@ -23,7 +23,8 @@ public class RobotMap {
   public static final int elevatorMotor2 = 31;   // Talon (with left drive encoder in Spark config)
 
   public static final int cargoMotor1 = 40;      // Top cargo motor
-  public static final int cargoMotor2 = 41;      // Bottom cargo motor
+  // public static final int cargoMotor2 = 41;      // Bottom cargo motor
+  public static final int rearHatchMotor = 41;       // Talon (was bottom cargo motor)
 
   public static final int climbMotor1 = 50;      // Talon (with right drive encoder in Spark config)
   public static final int climbMotor2 = 51;      // Talon with climb encoder and UL switch
@@ -32,12 +33,11 @@ public class RobotMap {
 
   public static final int wristMotor = 60;       // Talon with wrist encoder and UL/LL switches
 
-  public static final int hatchMotor = 70;       // Talon TODO determine CAN address
-
   // Pneumatic Addresses
   // public static final int pnuematicShifterLow = 0;
-  public static final int pnuematicShifterHigh = 0;   // Changed to single ended  Default Low
+  public static final int pnuematicShifterHigh = 0;   // Changed to single ended Default Low
   public static final int pneumaticHatch = 1;
+  public static final int pneumaticRearHatch = 2;
   
   public static final int pneumaticLedsBlue = 4;
   public static final int pneumaticLedsRed = 5;

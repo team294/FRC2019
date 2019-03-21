@@ -10,22 +10,27 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class HatchSetPercentOutput extends Command {
-  double percent;
+public class RearHatchSet extends Command {
+  private boolean extend;
 
   /**
-   * @param percent percent output to run hatch motor at
+   * Extend or retract the rear hatch mechanism
+   * @param grab true = extended position, false = retracted position
    */
-  public HatchSetPercentOutput(double percent) {
+  public RearHatchSet(boolean extend) {
     // Use requires() here to declare subsystem dependencies
-    requires(Robot.newHatch);
-    this.percent = percent;
+    requires(Robot.rearHatch);
+    this.extend = extend;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.newHatch.setHatchMotorPercentOutput(percent);
+    if (extend) {
+      Robot.rearHatch.setRearHatchPiston(true);
+    } else {
+      Robot.rearHatch.setRearHatchPiston(false);
+    }
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -42,13 +47,11 @@ public class HatchSetPercentOutput extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.newHatch.stopHatchIntake();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    end();
   }
 }

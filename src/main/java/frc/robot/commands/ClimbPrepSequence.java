@@ -12,10 +12,11 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class ClimbPrepSequence extends CommandGroup {
   /**
-   * Climbing sequence!  Stows the wrist safely (if needed), moves arm to get 
-   * vacuum, then lifts the robot.
+   * Climbing prep sequence! Retracts the rear hatch mechanism,
+   * stows the wrist safely (if needed), and moves arm to get vacuum.
    */
   public ClimbPrepSequence() {
+    addSequential(new RearHatchSet(false));
     addSequential(new ElevatorWristStow());
     addSequential(new ClimbArmSetAngle(Robot.robotPrefs.climbPrep));
   }

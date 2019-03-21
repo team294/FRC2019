@@ -60,18 +60,18 @@ public class OI {
     xbB[2].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchMid)); // B
     xbB[3].whenPressed(new ElevatorWristStow()); // X
     xbB[4].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchHigh)); // Y
-    xbB[5].whenPressed(new CargoStop()); // LB
+    xbB[5].whenPressed(new RearHatchIntake(0.6)); // LB
     xbB[6].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.cargoShipCargo)); // RB
     xbB[7].whenPressed(new StopAllMotors()); // Back
-    xbB[8].whenPressed(new CargoIntake()); // Start
+    xbB[8].whenPressed(new CargoStop()); // Start
     xbB[9].whenPressed(new ElevatorWithXBox()); // LStick
     xbB[10].whenPressed(new WristWithXBox()); // RStick
     xbUp.whenActive(new CargoIntakeFromLoad()); // DPadUp
     xbRight.whenActive(new HatchSet(true)); // DPadRight
     xbDown.whenActive(new CargoIntakeFromGround()); // DPadDown
     xbLeft.whenActive(new HatchSet(false)); // DPadLeft
-    xbLT.whenActive(new CargoOuttake(-1.0)); // LT
-    xbRT.whenActive(new CargoOuttake(-0.8)); // RT
+    xbLT.whenActive(new CargoOrRearHatchOuttake()); // LT
+    xbRT.whenActive(new CargoOuttake(-1.0)); // RT
 
     // Joystick buttons
     left[1].whenPressed(new Shift(true)); // high gear
@@ -89,7 +89,7 @@ public class OI {
 
     // Copanel buttons
     coP[1].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStart)); // top row, first button, UP
-    coP[2].whenPressed(new ClimbArmSetAngle(Robot.robotPrefs.climbStart)); // top row, first button, DOWN
+    coP[2].whenPressed(new ClimbPrepSequence()); // top row, first button, DOWN
     coP[3].whileHeld(new ClimbArmSetPercentOutput(0.3)); // top row, second button, UP
     coP[4].whileHeld(new ClimbArmSetPercentOutput(-0.3)); // top row, second button, DOWN
     coP[5].whenPressed(new ClimbVacuumTurnOn(true)); // top row, third button, UP
@@ -98,11 +98,12 @@ public class OI {
     coP[8].whenPressed(new ClimbSequence()); // BIG RED BUTTON
     coP[9].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchHigh)); // mid row, first button, UP
     coP[10].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchMid)); // mid row, first button, DOWN
-    coP[11].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.cargoShipCargo)); // mid row, second button, UP
-    coP[12].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchLow)); // mid row, second button, DOWN
+    coP[11].whenPressed(new RearHatchSet(true)); // mid row, second button, UP
+    coP[12].whenPressed(new RearHatchSet(false)); // mid row, second button, DOWN
     coP[13].whenPressed(new ClimbPrepSequence()); // mid row, third button, UP
-    // coP[14].whenPressed(new Command()); // mid row, third button, DOWN
-    // coP[15].whenPressed(new Command()); // third row, first button, UP
+    coP[14].whenPressed(new CargoIntake()); // mid row, third button, DOWN
+    coP[15].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.cargoShipCargo)); // third row, first button, UP
+    coP[16].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchLow)); // third row, first button, DOWN
 
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorSetPercentOutput(0.4)); // For testing limit switch and encoder
@@ -123,14 +124,20 @@ public class OI {
     SmartDashboard.putData("ClimbMoveUntilVacuum", new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
     SmartDashboard.putData("ClimbSequence", new ClimbSequence());
 
-
-    // test buttons
+    // Test Buttons
     SmartDashboard.putData("Turn to 90", new TurnWithGyro(90.0, false));
     SmartDashboard.putData("Turn to -90", new TurnWithGyro(-90.0, false));
     SmartDashboard.putData("Turn to 0", new TurnWithGyro(0.0, false));
+    
     // Buttons for the Cargo rollers
     SmartDashboard.putData("Cargo Intake", new CargoIntake());
     SmartDashboard.putData("Cargo Outtake", new CargoOuttake(-0.8));
+
+    // Buttons for the rear hatch intake
+    SmartDashboard.putData("Rear Hatch Intake", new RearHatchIntake(0.6));
+    SmartDashboard.putData("Rear Hatch Outtake", new RearHatchOuttake(-0.6));
+    SmartDashboard.putData("Rear Hatch Set Retract", new RearHatchSet(false));
+    SmartDashboard.putData("Rear Hatch Set Extend", new RearHatchSet(true));
 
     // Buttons for controlling the wrist
     SmartDashboard.putData("Wrist recalibrate", new WristEncoderFail());

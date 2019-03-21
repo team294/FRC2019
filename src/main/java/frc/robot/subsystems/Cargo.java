@@ -20,22 +20,23 @@ import frc.robot.utilities.FileLog;
 
 public class Cargo extends Subsystem {
   private final BaseMotorController cargoMotor1 = new WPI_VictorSPX(RobotMap.cargoMotor1); // top motor
-  private final BaseMotorController cargoMotor2 = new WPI_VictorSPX(RobotMap.cargoMotor2); // bottom motor
+  // private final BaseMotorController cargoMotor2 = new WPI_VictorSPX(RobotMap.cargoMotor2); // bottom motor
   private final DigitalInput photoSwitch = new DigitalInput(RobotMap.photoSwitchCargo); // Cargo Sensor
 
   public Cargo() {
-    // TODO determine which motor to invert
     cargoMotor1.set(ControlMode.PercentOutput, 0);
     cargoMotor1.setNeutralMode(NeutralMode.Brake);
     cargoMotor1.configVoltageCompSaturation(11.0, 0);
     cargoMotor1.enableVoltageCompensation(true);
     cargoMotor1.setInverted(false);
 
+    /*
     cargoMotor2.set(ControlMode.PercentOutput, 0);
     cargoMotor2.setNeutralMode(NeutralMode.Brake);
     cargoMotor2.configVoltageCompSaturation(11.0, 0);
     cargoMotor2.enableVoltageCompensation(true);
     cargoMotor2.setInverted(true);
+    */
 
   } 
 
@@ -44,9 +45,9 @@ public class Cargo extends Subsystem {
    * @param percent1 From -1 (full speed out) to +1 (full speed in)
    * @param percent2 From -1 (full speed out) to +1 (full speed in)
    */
-  public void setCargoMotorPercent(double percent1, double percent2) {
+  public void setCargoMotorPercentOutput(double percent1, double percent2) {
     cargoMotor1.set(ControlMode.PercentOutput, percent1); 
-    cargoMotor2.set(ControlMode.PercentOutput, percent2);
+    // cargoMotor2.set(ControlMode.PercentOutput, percent2);
 
     Robot.log.writeLog("Cargo", "Percent Power", "Percent Power Top," + percent1 + ",Percent Power Bot," + percent2);
   }
@@ -55,7 +56,7 @@ public class Cargo extends Subsystem {
    * Stop the cargo intake motors
    */
   public void stopCargoIntake() {
-    setCargoMotorPercent(0.0, 0.0);
+    setCargoMotorPercentOutput(0.0, 0.0);
     Robot.log.writeLog("Cargo", "Stop Cargo", "");
   }
 
@@ -90,8 +91,8 @@ public class Cargo extends Subsystem {
       SmartDashboard.putBoolean("Cargo Has Ball", hasBall());
 
       Robot.log.writeLog(false, "Cargo", "Update Variables", "Photo Switch," + hasBall() + 
-        ",Volt1," + cargoMotor1.getMotorOutputVoltage() + ",Amp1," + Robot.pdp.getCurrent(RobotMap.cargoMotor1PDP) +
-        ",Volt2," + cargoMotor2.getMotorOutputVoltage() + ",Amp2," + Robot.pdp.getCurrent(RobotMap.cargoMotor2PDP)
+        ",Volt1," + cargoMotor1.getMotorOutputVoltage() + ",Amp1," + Robot.pdp.getCurrent(RobotMap.cargoMotor1PDP) /* +
+        ",Volt2," + cargoMotor2.getMotorOutputVoltage() + ",Amp2," + Robot.pdp.getCurrent(RobotMap.cargoMotor2PDP) */
         );
     }
 

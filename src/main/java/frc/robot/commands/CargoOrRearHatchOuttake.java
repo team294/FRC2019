@@ -7,20 +7,21 @@
 
 package frc.robot.commands;
 
-import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.ConditionalCommand;
+import frc.robot.Robot;
 
-public class ClimbSequence extends CommandGroup {
+public class CargoOrRearHatchOuttake extends CommandGroup {
   /**
-   * Climbing sequence! Retracts the rear hatch mechanism,
-   * stows the wrist safely (if needed), moves arm to get vacuum,
-   * then lifts the robot.
+   * If cargo photo switch is triggered, run cargo motor to outtake.
+   * Otherwise, run rear hatch motor to outtake.
    */
-  public ClimbSequence() {
-    addSequential(new RearHatchSet(false));
-    addParallel(new ElevatorWristStow());
-    addSequential(new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
-    // addSequential(new ElevatorMoveToLevel(Robot.robotPrefs.elevatorBottomToFloor));
-    addSequential(new ClimbArmSetAngle(Robot.robotPrefs.climbLiftAngle));
+  public CargoOrRearHatchOuttake() {
+    addSequential(new ConditionalCommand(new CargoOuttake(-0.8), new RearHatchOuttake(-0.6)) {
+      @Override
+      protected boolean condition() {
+        return Robot.cargo.getPhotoSwitch();
+      }
+    });
   }
 }

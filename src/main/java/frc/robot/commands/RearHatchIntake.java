@@ -10,48 +10,43 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class StopAllMotors extends Command {
-  /**
-   * Stops elevator, wrist, climb, cargo, and rear hatch motors
-   */
-  public StopAllMotors() {
+public class RearHatchIntake extends Command {
+  private double percent;
+
+  public RearHatchIntake(double percent) {
     // Use requires() here to declare subsystem dependencies
-    requires(Robot.elevator);
-    requires(Robot.wrist);
-    requires(Robot.climb);
-    requires(Robot.cargo);
     requires(Robot.rearHatch);
+    this.percent = percent;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.elevator.stopElevator();
-    Robot.wrist.stopWrist();
-    Robot.climb.stopClimb();
-    Robot.cargo.stopCargoIntake();
-    Robot.rearHatch.stopRearHatch();
+    Robot.rearHatch.setRearHatchMotorPercentOutput(percent);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    Robot.rearHatch.setRearHatchMotorPercentOutput(percent);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return true;
+    return false;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.rearHatch.stopRearHatch();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    end();
   }
 }

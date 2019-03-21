@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
   public static Wrist wrist;
   public static Cargo cargo;
   public static Hatch hatch;
-  public static NewHatch newHatch;
+  public static RearHatch rearHatch;
   public static VisionData vision;
   public static LineFollowing lineFollowing;
   public static Climb climb;
@@ -78,7 +78,7 @@ public class Robot extends TimedRobot {
     wrist = new Wrist();
     cargo = new Cargo();
     hatch = new Hatch();
-    newHatch = new NewHatch();
+    rearHatch = new RearHatch();
     vision = new VisionData();
     lineFollowing = new LineFollowing();
     climb = new Climb();
@@ -134,6 +134,7 @@ public class Robot extends TimedRobot {
     elevator.stopElevator();
     climb.stopClimb();
     climb.enableVacuum(false);
+    rearHatch.stopRearHatch();
     
     driveTrain.zeroGyroRotation(); 
     driveTrain.zeroLeftEncoder();
