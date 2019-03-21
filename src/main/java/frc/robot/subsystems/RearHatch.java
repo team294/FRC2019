@@ -67,11 +67,13 @@ public class RearHatch extends Subsystem {
       rearHatchPosition = true;
       Robot.log.writeLog("Rear Hatch", "Piston Position", "Extended");
       SmartDashboard.putString("Rear Hatch Position", "Extended");
+      SmartDashboard.putBoolean("Rear Hatch Extended", rearHatchPosition);
 		} else {
       rearHatchPiston.set(false);
       rearHatchPosition = false;
       Robot.log.writeLog("Rear Hatch", "Piston Position", "Retracted");
       SmartDashboard.putString("Rear Hatch Position", "Retracted");
+      SmartDashboard.putBoolean("Rear Hatch Extended", rearHatchPosition);
     }
   }
 

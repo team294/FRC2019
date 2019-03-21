@@ -399,19 +399,18 @@ public class Elevator extends Subsystem {
 				}
 			}
 			*/
+		}
 
-			// Autocalibrate in the encoder is OK and the elevator is at the lower limit switch
-			if (!elevCalibrated && elevEncOK && getElevatorLowerLimit()) {
-				setDefaultCommand(null);
-				elevCalibrated = true;
-				stopElevator();
-				elevatorMotor1.setSelectedSensorPosition(0, 0, 0);
-				Robot.log.writeLog("Elevator", "Calibrate and Zero Encoder", "periodic");
+		// Autocalibrate in the encoder is OK and the elevator is at the lower limit switch
+		if (!elevCalibrated && elevEncOK && getElevatorLowerLimit()) {
+			setDefaultCommand(null);
+			elevCalibrated = true;
+			stopElevator();
+			elevatorMotor1.setSelectedSensorPosition(0, 0, 0);
+			Robot.log.writeLog("Elevator", "Calibrate and Zero Encoder", "periodic");
 
-				// posMoveCount = 0;
-				// negMoveCount = 0;
-			}
-
+			// posMoveCount = 0;
+			// negMoveCount = 0;
 		}
 		
 	}

@@ -35,11 +35,13 @@ public class Hatch extends Subsystem {
       hatchPiston.set(false);
       hatchPosition = true;
       SmartDashboard.putString("Disc Position", "Grab");
+      SmartDashboard.putBoolean("Disc Grabbed", hatchPosition);
       //Robot.leds.setColor(LedHandler.Color.GREEN, true); // blink the LEDs when the hatch grabber in engaged
 		} else {
       hatchPiston.set(true);
       hatchPosition = false;
       SmartDashboard.putString("Disc Position", "Release");
+      SmartDashboard.putBoolean("Disc Grabbed", hatchPosition);
     }
   }
 
