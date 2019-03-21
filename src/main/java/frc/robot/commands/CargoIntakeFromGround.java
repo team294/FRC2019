@@ -16,7 +16,7 @@ public class CargoIntakeFromGround extends CommandGroup {
    * intakes cargo, and moves elevator to low cargo position
    */
   public CargoIntakeFromGround() {
-    addSequential(new ElevatorMoveToLevel(25)); // move above position as a workaround for bug
+    // addSequential(new ElevatorMoveToLevel(25)); // move above position as a workaround for bug
     addSequential(new ElevatorWristMoveAndPrepare(ElevatorPosition.groundCargo));
     addSequential(new CargoIntake());
     addSequential(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchLow));

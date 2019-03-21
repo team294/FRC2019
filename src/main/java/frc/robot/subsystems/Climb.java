@@ -18,9 +18,12 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
+//import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+//import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
 
 import frc.robot.Robot;
@@ -37,9 +40,8 @@ public class Climb extends Subsystem {
   private final Compressor compressor = new Compressor(0);
   private final WPI_TalonSRX climbMotor1 = new WPI_TalonSRX(RobotMap.climbMotor1);
   private final WPI_TalonSRX climbMotor2 = new WPI_TalonSRX(RobotMap.climbMotor2);
-  private final BaseMotorController climbVacuum = new WPI_VictorSPX(RobotMap.climbVacuum1); //left Vacuum system
-  //private final BaseMotorController climbVacuum2 = new WPI_VictorSPX(RobotMap.climbVacuum2); //right Vacuum system
-  // private final DigitalInput vacuumSwitch = new DigitalInput(RobotMap.vacuumSwitch);
+  private final CANSparkMax climbVacuum = new CANSparkMax(RobotMap.climbVacuum1, MotorType.kBrushless);
+
   private final AnalogInput analogVacuumSensor = new AnalogInput(RobotMap.analogVacuum);
   private final AnalogTrigger vacuumTrigger = new AnalogTrigger(analogVacuumSensor);
   private final SensorCollection climbLimit;
@@ -54,7 +56,7 @@ public class Climb extends Subsystem {
   private double kMinOutput = -1.0;
 
   public Climb() {
-    enableCompressor(true);
+    enableCompressor(true);    
 
     climbMotor1.follow(climbMotor2);
     climbMotor2.set(ControlMode.PercentOutput, 0);
@@ -76,12 +78,11 @@ public class Climb extends Subsystem {
 
     climbMotor1.clearStickyFaults(0);
     climbMotor2.clearStickyFaults(0);
-    climbVacuum.clearStickyFaults();
-    //climbVacuum2.clearStickyFaults();
+    climbVacuum.clearFaults();
+
     climbMotor1.setNeutralMode(NeutralMode.Brake);
     climbMotor2.setNeutralMode(NeutralMode.Brake);
-    climbVacuum.setNeutralMode(NeutralMode.Brake);
-    //climbVacuum2.setNeutralMode(NeutralMode.Brake);
+    climbVacuum.setIdleMode(IdleMode.kCoast);
 
     // Wait 0.25 seconds before adjusting the climber calibration.  The reason is that .setInverted (above)
     // changes the sign of read encoder value, but that change can be delayed up to 50ms for a round trip
@@ -96,7 +97,7 @@ public class Climb extends Subsystem {
     analogVacuumSensor.setAverageBits(2);
 
     // Analog Trigger testing settings
-    vacuumTrigger.setLimitsVoltage(0.5, 4.4); // Random boundaries, no idea what real values are
+    vacuumTrigger.setLimitsVoltage(0.1, 4.9); // Random boundaries, no idea what real values are
     //vacuumTrigger.setAveraged(true); // Use the averaged value instead of raw
     vacuumTrigger.setFiltered(true); // Use a 3-point filter to reject outliers. CANNOT BE USED WITH AVERAGE VALUE
   }
@@ -156,29 +157,11 @@ public class Climb extends Subsystem {
 
   /**
    * Turns on or turns off the vacuum
-   * @param turnOn true turns vacuum on, false turns vacuum off
+   * @param turnOn true turns vacuum on, false turns vacuum off at full power
    */
   public void enableVacuum(boolean turnOn) {
-    if (turnOn) {
-      climbVacuum.set(ControlMode.PercentOutput, 1.0);
-      //climbVacuum2.set(ControlMode.PercentOutput, 0.5);
-    }
-    else {
-      climbVacuum.set(ControlMode.PercentOutput, 0.0);
-      //climbVacuum2.set(ControlMode.PercentOutput, 0.0);
-    }
+    climbVacuum.set((turnOn) ? 1.0 : 0.0);
   }
-
-   /**
-   * Returns true if pressure is low enough to initiate climb.
-   * If switch is disconnected, isVacuumPresent reads false.
-   * @return true = vacuum sufficient for climb, false = not enough vacuum
-   */
-  /*
-  public boolean isVacuumPresent(){
-    // Note:  Need to invert polarity from switch.
-    return !vacuumSwitch.get();
-  } */
 
   /**
    * Returns true if the pressure is low enough to climb. May have bad readings if sensor is disconnected (equates to ~25.5 reading)
@@ -195,6 +178,7 @@ public class Climb extends Subsystem {
    */
   public double getVacuumPressure(boolean raw) {
     double out = (raw) ? analogVacuumSensor.getVoltage() * -5.7 + 27 : analogVacuumSensor.getAverageVoltage() * -5.7 + 27;
+   
     return out;
   }
 
@@ -336,7 +320,7 @@ public class Climb extends Subsystem {
   public void updateClimbLog(boolean logWhenDisabled) {
     Robot.log.writeLog(logWhenDisabled, "Climb", "Update Variables", 
     "Volts1," + climbMotor2.getMotorOutputVoltage() + ",Volts2," + climbMotor1.getMotorOutputVoltage() + 
-    ",VacVolts," + climbVacuum.getMotorOutputVoltage() + //",VacVolts2," + climbVacuum2.getMotorOutputVoltage() +
+    ",VacVolts," + climbVacuum.getBusVoltage() + //",VacVolts2," + climbVacuum2.getMotorOutputVoltage() +
     ",Amps1," + Robot.pdp.getCurrent(RobotMap.climbMotor2PDP) + ",Amps2," + Robot.pdp.getCurrent(RobotMap.climbMotor1PDP) + 
     ",VacAmps," + Robot.pdp.getCurrent(RobotMap.climbVacuum1PDP) + //",VacAmps2," + Robot.pdp.getCurrent(RobotMap.climbVacuum2PDP) +
     ",EncCalZero," + Robot.robotPrefs.climbCalZero + ",Enc Raw," + getClimbEncTicksRaw() + 
@@ -365,14 +349,12 @@ public class Climb extends Subsystem {
       // SmartDashboard.putNumber("Climb Analog Voltage", analogVacuumSensor.getVoltage());
       // SmartDashboard.putNumber("Climb Analog Average (Oversampled) Voltage", analogVacuumSensor.getAverageVoltage());
       SmartDashboard.putNumber("Analog Vacuum Pressure", getVacuumPressure(false));
-      SmartDashboard.putBoolean("Vacuum Trigger In Window (0.5, 3.4)", vacuumTrigger.getInWindow());
-      //SmartDashboard.putBoolean("Vacuum Trigger Rising/Falling", vacuumTrigger.getTriggerState());
 
       updateClimbLog(false); 
     }
 
-    if (isVacuumPresent()) Robot.leds.setColor(LedHandler.Color.BLUE, false); // solid when vacuum drawn
-    else if (getVacuumPressure(false) > 7.0) Robot.leds.setColor(LedHandler.Color.BLUE, true); // blinking when vacuum is starting to rise
+    // if (isVacuumPresent()) Robot.leds.setColor(LedHandler.Color.BLUE, false); // solid when vacuum drawn
+    // else if (getVacuumPressure(false) > 7.0) Robot.leds.setColor(LedHandler.Color.BLUE, true); // blinking when vacuum is starting to rise
     
     // Checks if the climb is not calibrated and automatically calibrates it once the reverse limit switch is pressed
     // If the climb isn't calibrated at the start of the match, then we can calibrate using manual climb control

@@ -15,6 +15,7 @@ import frc.robot.utilities.FileLog;
 import frc.robot.utilities.Wait;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
@@ -34,31 +35,42 @@ public class Wrist extends Subsystem {
   private double encoderTicksPerDegrees = Robot.robotPrefs.encoderTicksPerRevolution / 360.0;
 
   // TODO test PID terms with actual wrist
-  private double kP = 1.0;  // was 3.0, reduced due to bobbling during elevator movement, was 2
-	private double kI = 0;
-	private double kD = 5.0;
-  private double kFF = 0;
-  private int kIz = 0;
-  private double kMaxOutput = 1.0; // up max output
-  private double kMinOutput = -1.0; // down max output
+
+  // kP = (desired-output-1.0max)*1024 / (error-in-encoder-ticks)
+  // kP = 2.5 -> output of 0.139 when error is 5 degrees
+  private double kP = 2.5;  // was 1.0 with original wrist, 2.5 is better with new wrist
+  // kI = (desired-output-1.0max)*1024 / [(time-ms) * (error-in-encoder-ticks)]
+  // kI = 0.036 -> output of 0.2 when error is 5 degrees for 100ms
+	private double kI = 0.0;      // Try 0.036?
+  // kD = (desired-output-1.0max)*1024 * (time-ms) / (error-in-encoder-ticks)
+  // kD = 200 -> output of 0.2 when error is changing by 90 degrees per second
+	private double kD = 0.0;  // was 5.0
+  private double kFF = 0.0;   // FF gain is multiplied by sensor value (probably in encoder ticks) and divided by 1024
+  private double kFFconst = 0.075;   // Add about 1V (0.075* 12V) feed foward constant
+  private double kIz = 10;    // Izone in degrees
+  private double kIAccumMax = 0.3/kI;     // Max Iaccumulator value, in encoderTicks*milliseconds.  Max I power = kI * kIAccumMax.
+  private double kMaxOutput = 0.6; // up max output
+  private double kMinOutput = -0.6; // down max output
   private double rampRate = 0.3;
 
   public Wrist() {
     wristMotor.set(ControlMode.PercentOutput, 0);
     wristMotor.setInverted(true);
     wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
-    // TODO The sensor phase (direction) was flipped from true (practice bot) to false (competition bot).  OK to use in lab?
     wristMotor.setSensorPhase(false);         // Flip sign of sensor reading
     wristMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
     wristMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
     wristMotor.setNeutralMode(NeutralMode.Brake);
+    wristMotor.configVoltageCompSaturation(12.0);
+    wristMotor.enableVoltageCompensation(true);
     wristMotor.clearStickyFaults();
 
     wristMotor.config_kP(0, kP);
 		wristMotor.config_kI(0, kI);
 		wristMotor.config_kD(0, kD);
 		wristMotor.config_kF(0, kFF);
-		wristMotor.config_IntegralZone(0, kIz);
+    wristMotor.config_IntegralZone(0, (int)degreesToEncoderTicks(kIz));
+    wristMotor.configMaxIntegralAccumulator(0, kIAccumMax);
 		wristMotor.configClosedloopRamp(rampRate);
 		wristMotor.configPeakOutputForward(kMaxOutput);
     wristMotor.configPeakOutputReverse(kMinOutput);
@@ -126,7 +138,9 @@ public class Wrist extends Subsystem {
         safeAngle = (safeAngle < Robot.robotPrefs.wristDown) ? Robot.robotPrefs.wristDown : safeAngle;
       }
 
-      wristMotor.set(ControlMode.Position, degreesToEncoderTicks(safeAngle) + Robot.robotPrefs.wristCalZero);
+      // wristMotor.set(ControlMode.Position, degreesToEncoderTicks(safeAngle) + Robot.robotPrefs.wristCalZero);
+      wristMotor.set(ControlMode.Position, degreesToEncoderTicks(safeAngle) + Robot.robotPrefs.wristCalZero, 
+                     DemandType.ArbitraryFeedForward, kFFconst);
       Robot.log.writeLog("Wrist", "Set angle", "Desired angle," + angle + ",Set angle," + safeAngle + ",Interlock,Allowed,"
        + ",Elevator Pos," + Robot.elevator.getElevatorPos() + ",Elevator Target," + Robot.elevator.getCurrentElevatorTarget());  
     }
@@ -330,6 +344,7 @@ public class Wrist extends Subsystem {
 			SmartDashboard.putBoolean("Wrist Lower Limit", getWristLowerLimit());
       SmartDashboard.putBoolean("Wrist Upper Limit", getWristUpperLimit());
       SmartDashboard.putNumber("Wrist target", getCurrentWristTarget());
+      SmartDashboard.putNumber("Wrist voltage", wristMotor.getMotorOutputVoltage());
     }
     
     // Checks if the wrist is not calibrated and automatically calibrates it once the limit switch is pressed

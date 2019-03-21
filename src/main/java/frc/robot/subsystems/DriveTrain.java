@@ -1,48 +1,33 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
+/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-
 package frc.robot.subsystems;
 
-import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Iterator;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.I2C;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.utilities.FileLog;
-import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.I2C;
 
 /**
- * Drive Train subsystem.  
+ * This is the parent class for a drive train. All the logic for line following, vision, etc. is here.
+ * Cim- and neo-specific code for encoders and motors goes in the respective drive train classes, which
+ * must implement all the abstract methods below.
  */
-public class DriveTrain extends Subsystem {
-  private final BaseMotorController leftMotor1;
-  private final WPI_TalonSRX leftMotor2 = new WPI_TalonSRX(RobotMap.leftMotor2);
-  private final BaseMotorController leftMotor3;
-  private final BaseMotorController rightMotor1;
-  private final WPI_TalonSRX rightMotor2 = new WPI_TalonSRX(RobotMap.rightMotor2);
-  private final BaseMotorController rightMotor3;
+public abstract class DriveTrain extends Subsystem {
 
-  public final DifferentialDrive robotDrive = new DifferentialDrive(leftMotor2, rightMotor2);
-
-  // Gyro variables
   private AHRS ahrs;
   private double yawZero = 0;
   
@@ -54,61 +39,13 @@ public class DriveTrain extends Subsystem {
   
   // Encoders
   private double leftEncoderZero = 0, rightEncoderZero = 0;
+
+  // Encoders
   private LinkedList<Double> lEncoderStack = new LinkedList<Double>();
   private LinkedList<Double> rEncoderStack = new LinkedList<Double>();
   private boolean lEncStopped = false, rEncStopped = false;
 
   public DriveTrain() {
-
-    // Reads the robot prefs to check if using Victors or Talons for alternate motor controllers
-    if (Robot.robotPrefs.prototypeRobot) { // true means Talons
-      leftMotor1 = new WPI_TalonSRX(RobotMap.leftMotor1);
-      leftMotor3 = new WPI_TalonSRX(RobotMap.leftMotor3);
-      rightMotor1 = new WPI_TalonSRX(RobotMap.rightMotor1);
-      rightMotor3 = new WPI_TalonSRX(RobotMap.rightMotor3);
-
-      leftMotor1.set(ControlMode.Follower, RobotMap.leftMotor2);
-      leftMotor3.set(ControlMode.Follower, RobotMap.leftMotor2);
-      rightMotor1.set(ControlMode.Follower, RobotMap.rightMotor2);
-      rightMotor3.set(ControlMode.Follower, RobotMap.rightMotor2);
-    } else {
-      leftMotor1 = new WPI_VictorSPX(RobotMap.leftMotor1);
-      leftMotor3 = new WPI_VictorSPX(RobotMap.leftMotor3);
-      rightMotor1 = new WPI_VictorSPX(RobotMap.rightMotor1);
-      rightMotor3 = new WPI_VictorSPX(RobotMap.rightMotor3);
-
-      leftMotor1.follow(leftMotor2);
-      leftMotor3.follow(leftMotor2);
-      rightMotor1.follow(rightMotor2);
-      rightMotor3.follow(rightMotor2);
-    }
-
-    leftMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-		rightMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-		zeroLeftEncoder();
-		zeroRightEncoder();
-
-    leftMotor1.setInverted(true);
-    leftMotor2.setInverted(true);
-    leftMotor3.setInverted(true);
-    rightMotor1.setInverted(true);
-    rightMotor2.setInverted(true);
-    rightMotor3.setInverted(true);
-
-    leftMotor1.clearStickyFaults(0);
-    leftMotor2.clearStickyFaults(0);
-    leftMotor3.clearStickyFaults(0);
-    rightMotor1.clearStickyFaults(0);
-    rightMotor2.clearStickyFaults(0);
-    rightMotor3.clearStickyFaults(0);
-
-    leftMotor1.setNeutralMode(NeutralMode.Brake);
-    leftMotor2.setNeutralMode(NeutralMode.Brake);
-    leftMotor3.setNeutralMode(NeutralMode.Brake);
-    rightMotor1.setNeutralMode(NeutralMode.Brake);
-    rightMotor2.setNeutralMode(NeutralMode.Brake);
-    rightMotor3.setNeutralMode(NeutralMode.Brake);
-
     // Configure navX
 		try {
 			/* Communicate w/navX MXP via the MXP SPI Bus.
@@ -123,12 +60,22 @@ public class DriveTrain extends Subsystem {
 			DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
 		}
 		ahrs.zeroYaw();
-		// zeroGyroRotation();
-	}
-
-  public void tankDrive(double powerLeft, double powerRight) {
-    robotDrive.tankDrive(powerLeft, powerRight);
+    // zeroGyroRotation();
   }
+
+  abstract public void tankDrive(double leftPercent, double rightPercent);
+
+  /**
+   * Set the left motors only
+   * @param percent [-1.0, 1.0]
+   */
+  abstract public void setLeftMotors(double percent);
+
+  /**
+   * Set the right motors only
+   * @param percent [-1.0, 1.0 ]
+   */
+  abstract public void setRightMotors(double percent);
 
   /**
 	 * Sets the robot to drive at a curve.
@@ -139,17 +86,115 @@ public class DriveTrain extends Subsystem {
 	 *            the rate at which the robot will curve -1.0 to 1.0. Clockwise is
 	 *            positive.
 	 */
-	public void driveAtCurve(double speedPct, double curve) {
-		robotDrive.curvatureDrive(speedPct, curve, false);
-  }
-  
+  abstract public void driveAtCurve(double speedPct, double curve);
+
   /**
-   * Drives the robot along a curve
-   * @param speedPct Percent output of motor [-1.0, 1.0]
-   * @param rotation Rotation rate (rate of heading change) from [-1.0, 1.0]
+	 * Turns voltage compensation on or off for drive motors.
+	 * Voltage compensation increases accuracy for autonomous code,
+	 * but it decreases maximum velocity/power when driving by joystick.
+	 * @param turnOn true=turn on, false= turn off
+	 */
+  abstract public void setVoltageCompensation(boolean turnOn);
+
+  abstract public double getLeftEncoderRaw();
+
+  abstract public double getRightEncoderRaw();
+
+  /**
+	 * Zeros the left encoder position in software
+	 */
+  public void zeroLeftEncoder() {
+    leftEncoderZero = getLeftEncoderRaw();
+  }
+
+  /**
+	 * Zeros the right encoder position in software
+	 */
+  public void zeroRightEncoder() {
+    rightEncoderZero = getRightEncoderRaw();
+  }
+
+  /**
+	 * Get the position of the left encoder, in encoder ticks since last zeroLeftEncoder()
+	 * 
+	 * @return encoder position, in ticks
+	 */
+  public double getLeftEncoderTicks() {
+    return getLeftEncoderRaw() - leftEncoderZero;
+  }
+
+  /**
+	 * Get the position of the right encoder, in encoder ticks since last zeroRightEncoder()
+	 * 
+	 * @return encoder position, in ticks
+	 */
+  public double getRightEncoderTicks() {
+    return -(getRightEncoderRaw() - rightEncoderZero);
+  }
+
+  public double encoderTicksToInches(double rotations) {
+    return rotations * Robot.robotPrefs.wheelCircumference; // This is not right
+  }
+
+  public double getLeftEncoderInches() {
+    return encoderTicksToInches(getLeftEncoderTicks());
+  }
+
+  public double getRightEncoderInches() {
+    return encoderTicksToInches(getRightEncoderTicks());
+  }
+
+  public double inchesToEncoderTicks(double inches) {
+    return (inches / Robot.robotPrefs.wheelCircumference) * Robot.robotPrefs.encoderTicksPerRevolution;
+  }
+
+  /**
+   * 
+   * @param setCoast true if want to put driveTrain in coast mode false to put in brake mode.
    */
-  public void driveItLikeYouStoleIt(double speedPct, double rotation) {
-    robotDrive.arcadeDrive(speedPct, rotation, false);
+  abstract public void setDriveMode(boolean setCoast);
+
+  /**
+   * Gets the raw value of the gyro
+   * @return
+   */
+  public double getGyroRaw() {
+    return ahrs.getAngle();
+  }
+
+  /**
+	 * Zeros the gyro position in software
+	 */
+	public void zeroGyroRotation() {
+		// set yawZero to gryo angle
+		yawZero = getGyroRaw();
+		// System.err.println("PLZ Never Zero the Gyro Rotation it is not good");
+	}
+
+  /**
+	 * Resets the gyro position in software to a specified angle
+	 * 
+	 * @param currentHeading Gyro heading to reset to, in degrees
+	 */
+	public void setGyroRotation(double currentHeading) {
+		// set yawZero to gryo angle, offset to currentHeading
+		yawZero = getGyroRaw() - currentHeading;
+		// System.err.println("PLZ Never Zero the Gyro Rotation it is not good");
+  }
+
+  /**
+	 * Gets the rotation of the gyro
+	 * 
+	 * @return Current angle from -180 to 180 degrees
+	 */
+	public double getGyroRotation() {
+		double angle = getGyroRaw() - yawZero;
+		// Angle will be in terms of raw gyro units (-inf,inf), so you need to convert
+		// to (-180, 180]
+		angle = angle % 360;
+		angle = (angle <= -180) ? (angle + 360) : angle;
+    angle = (angle > 180) ? (angle - 360) : angle;
+		return angle;
   }
 
   /**
@@ -160,98 +205,7 @@ public class DriveTrain extends Subsystem {
   }
 
   /**
-	 * Set the percent output of the left motor.
-	 * 
-	 * @param powerPct Percent of power -1.0 (reverse) to 1.0 (forward)
-	 */
-	public void setLeftMotors(double powerPct) {
-		//TODO check if direction forward/backward is correct
-		leftMotor2.set(ControlMode.PercentOutput, -powerPct);
-	}
-
-	/**
-	 * Set the percent output of the right motor.
-	 * 
-	 * @param powerPct Percent of power -1.0 (reverse) to 1.0 (forward)
-	 */
-	public void setRightMotors(double powerPct) {
-		//TODO check if direction forward/backward is correct
-		rightMotor2.set(ControlMode.PercentOutput, powerPct);
-  }
-
-  // Why does this exist? We have stop() for the same purpose. We don't need stopAllMotors()
-
-  /**
-	 * Stops all motors.
-	 */
-	public void stopAllMotors() {
-		setLeftMotors(0);
-		setRightMotors(0);
-	}
-  
-  /**
-	 * Turns voltage compensation on or off for drive motors.
-	 * Voltage compensation increases accuracy for autonomous code,
-	 * but it decreases maximum velocity/power when driving by joystick.
-	 * @param turnOn true=turn on, false= turn off
-	 */
-	public void setVoltageCompensation(boolean turnOn) {
-		leftMotor1.enableVoltageCompensation(turnOn);
-		leftMotor2.enableVoltageCompensation(turnOn);
-		leftMotor3.enableVoltageCompensation(turnOn);
-		rightMotor1.enableVoltageCompensation(turnOn);
-		rightMotor2.enableVoltageCompensation(turnOn);
-		rightMotor3.enableVoltageCompensation(turnOn);
-	}
-  
-  /**
-	 * Zeros the left encoder position in software
-	 */
-	public void zeroLeftEncoder() {
-		leftEncoderZero = leftMotor2.getSelectedSensorPosition(0);
-	}
-
-	/**
-	 * Zeros the right encoder position in software
-	 */
-	public void zeroRightEncoder() {
-    rightEncoderZero = rightMotor2.getSelectedSensorPosition(0);
-	}
-
-	/**
-	 * Get the position of the left encoder, in encoder ticks since last zeroLeftEncoder()
-	 * 
-	 * @return encoder position, in ticks
-	 */
-	public double getLeftEncoderTicks() {
-    return leftMotor2.getSelectedSensorPosition(0) - leftEncoderZero;
-	}
-
-	/**
-	 * Get the position of the right encoder, in encoder ticks since last zeroRightEncoder()
-	 * 
-	 * @return encoder position, in ticks
-	 */
-	public double getRightEncoderTicks() {
-		return -(rightMotor2.getSelectedSensorPosition(0) - rightEncoderZero);
-	}
-
-  public double encoderTicksToInches(double encoderTicks) {
-    return (encoderTicks / Robot.robotPrefs.encoderTicksPerRevolution) * Robot.robotPrefs.wheelCircumference ;
-  }
-  public double inchesToEncoderTicks(double inches) {
-    return (inches / Robot.robotPrefs.wheelCircumference) * Robot.robotPrefs.encoderTicksPerRevolution;
-  }
-  public double getLeftEncoderInches() {
-    return encoderTicksToInches(getLeftEncoderTicks());
-  }
-
-  public double getRightEncoderInches() {
-    return encoderTicksToInches(getRightEncoderTicks());
-  }
-  
-  /**
-   * Empties the ecoder tracking stack and zeroes the left and right encoders
+   * Empties the encoder tracking stack and zeroes the left and right encoders
    */
   public void clearEncoderList() {
     Robot.log.writeLogEcho("DriveTrain", "Encoders Cleared", "");
@@ -276,64 +230,6 @@ public class DriveTrain extends Subsystem {
 
   public double getAverageDistance() {
 		return (getRightEncoderInches() + getLeftEncoderInches()) / 2.0;
-  }
-
-	/**
-	 * Zeros the gyro position in software
-	 */
-	public void zeroGyroRotation() {
-		// set yawZero to gryo angle
-		yawZero = ahrs.getAngle();
-		// System.err.println("PLZ Never Zero the Gyro Rotation it is not good");
-	}
-
-	/**
-	 * Resets the gyro position in software to a specified angle
-	 * 
-	 * @param currentHeading Gyro heading to reset to, in degrees
-	 */
-	public void setGyroRotation(double currentHeading) {
-		// set yawZero to gryo angle, offset to currentHeading
-		yawZero = ahrs.getAngle() - currentHeading;
-		// System.err.println("PLZ Never Zero the Gyro Rotation it is not good");
-	}
-
-	/**
-	 * Gets the rotation of the gyro
-	 * 
-	 * @return Current angle from -180 to 180 degrees
-	 */
-	public double getGyroRotation() {
-		double angle = ahrs.getAngle() - yawZero;
-		// Angle will be in terms of raw gyro units (-inf,inf), so you need to convert
-		// to (-180, 180]
-		angle = angle % 360;
-		angle = (angle <= -180) ? (angle + 360) : angle;
-    angle = (angle > 180) ? (angle - 360) : angle;
-		return angle;
-  }
-
-  /**
-   * 
-   * @param setCoast true if want to put driveTrain in coast mode false to put in brake mode.
-   */
-  public void setDriveMode(boolean setCoast){
-   if (setCoast) {
-    leftMotor1.setNeutralMode(NeutralMode.Coast);
-    leftMotor2.setNeutralMode(NeutralMode.Coast);
-    leftMotor3.setNeutralMode(NeutralMode.Coast);
-    rightMotor1.setNeutralMode(NeutralMode.Coast);
-    rightMotor2.setNeutralMode(NeutralMode.Coast);
-    rightMotor3.setNeutralMode(NeutralMode.Coast);
-   } else {
-    leftMotor1.setNeutralMode(NeutralMode.Brake);
-    leftMotor2.setNeutralMode(NeutralMode.Brake);
-    leftMotor3.setNeutralMode(NeutralMode.Brake);
-    rightMotor1.setNeutralMode(NeutralMode.Brake);
-    rightMotor2.setNeutralMode(NeutralMode.Brake);
-    rightMotor3.setNeutralMode(NeutralMode.Brake);
-   }
-   
   }
 
   /**
@@ -389,16 +285,7 @@ public class DriveTrain extends Subsystem {
     * Writes information about the subsystem to the filelog
     * @param logWhenDisabled true will log when disabled, false will discard the string
     */
-  public void updateDriveLog (boolean logWhenDisabled) {
-    Robot.log.writeLog(logWhenDisabled, "DriveTrain", "Update Variables",
-      "Drive L1 Volts," + leftMotor1.getMotorOutputVoltage() + ",Drive L2 Volts," + leftMotor2.getMotorOutputVoltage() + ",Drive L3 Volts," + leftMotor3.getMotorOutputVoltage() +
-      ",Drive L1 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor1PDP) + ",Drive L2 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor2PDP) + ",Drive L3 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor3PDP) + 
-      ",Drive R1 Volts," + rightMotor1.getMotorOutputVoltage() + ",Drive R2 Volts," + rightMotor2.getMotorOutputVoltage() + ",Drive R3 Volts," + rightMotor3.getMotorOutputVoltage() + 
-      ",Drive R1 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor1PDP) + ",Drive R2 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor2PDP) + ",Drive R3 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor3PDP) + 
-      ",L Enc Ticks," + getLeftEncoderTicks() + ",L Drive Inches," + getLeftEncoderInches() + 
-      ",R Enc Ticks," + getRightEncoderTicks() + ",R Drive Inches," + getRightEncoderInches() + 
-      ",High Gear," + Robot.shifter.isShifterInHighGear());
-  }
+  abstract void updateDriveLog(boolean logWhenDisabled);
 
   /**
    * Gets the predicted scoring quadrant of the robot based on what the gyro currently reads
@@ -515,27 +402,6 @@ public class DriveTrain extends Subsystem {
      + ",Target Area," + area + ",Joystick Ouput," + lJoystickAdjust + ",Left Percent," + lPercentOutput + ",Right Percent," + rPercentOutput);
   }
 
-   /**
-   * Turns in place to target
-   */
-  public void turnToCrosshair() {
-    double gainConstant = 1.0/30.0;
-    double xVal = Robot.vision.xValue.getDouble(0);
-    double fixSpeed = 0.4;
-    double lPercentOutput = fixSpeed + (gainConstant * xVal);
-    double rPercentOutput = fixSpeed - (gainConstant * xVal);
-    
-    if (xVal > 0.5) {
-      this.robotDrive.tankDrive(lPercentOutput, -lPercentOutput);
-    } else if (xVal < -0.5) {
-      this.robotDrive.tankDrive(-rPercentOutput, rPercentOutput);
-    } else {
-      this.robotDrive.tankDrive(0, 0);
-    }
-    updateEncoderList();
-    //Robot.log.writeLog("DriveTrain", "Vision Turning", "Degrees from Target," + xVal + ",Inches from Target," + Robot.vision.distanceFromTarget() + ",Target Area," + Robot.vision.areaFromCamera);
-  }
-
   /**
    * Turns in place to target
    */
@@ -547,11 +413,11 @@ public class DriveTrain extends Subsystem {
     double rPercentOutput = fixSpeed - (gainConstant * xVal);
     System.out.println("x-val = " + xVal + ", " + getGyroRotation());
     if(xVal > 0.5){
-      this.robotDrive.tankDrive(lPercentOutput, -lPercentOutput);
+      tankDrive(lPercentOutput, -lPercentOutput);
     } else if (xVal < -0.5){
-      this.robotDrive.tankDrive(-rPercentOutput, rPercentOutput);
+      tankDrive(-rPercentOutput, rPercentOutput);
     } else {
-      this.robotDrive.tankDrive(0,0);
+      tankDrive(0,0);
     }
     updateEncoderList();
   }
@@ -601,7 +467,7 @@ public class DriveTrain extends Subsystem {
     if (rEncStopped && rPercentPower != 0) lPercentPower = 1.0;
     if (lPercentPower == 1 || rPercentPower == 1) System.out.println("STOP DETECTED, INITIATING EVASIVE MANEUVERS"); 
 
-    this.robotDrive.tankDrive(lPercentPower, rPercentPower);
+    tankDrive(lPercentPower, rPercentPower);
     updateEncoderList();
   }
 
@@ -677,7 +543,7 @@ public class DriveTrain extends Subsystem {
     if (rEncStopped && rPercentPower != 0) lPercentPower = 1.0;
     if (lPercentPower == 1 || rPercentPower == 1) System.out.println("STOP DETECTED, INITIATING EVASIVE MANEUVERS"); 
 
-    this.robotDrive.tankDrive(lPercentPower, rPercentPower);
+    tankDrive(lPercentPower, rPercentPower);
     updateEncoderList();
   }
 
@@ -744,6 +610,9 @@ public class DriveTrain extends Subsystem {
       SmartDashboard.putNumber("Drive Left Inches", getLeftEncoderInches());
       SmartDashboard.putNumber("Drive Right Inches", getRightEncoderInches());
       SmartDashboard.putNumber("Gyro Angle", getGyroRotation());
+      SmartDashboard.putNumber("Drive Left Ticks", getLeftEncoderTicks());
+      SmartDashboard.putNumber("Drive Right Ticks", getRightEncoderTicks());
+
       
       updateDriveLog(false);
 

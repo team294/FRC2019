@@ -28,14 +28,16 @@ public class CargoIntake extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.cargo.setCargoMotorPercent(0.8, 0.5);
+    //TODO Change percent power when we get a cargo intake
+    Robot.cargo.setCargoMotorPercent(0.0, 0.8);  // 0.8, 0.5
     hasBallTime = false;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.cargo.setCargoMotorPercent(0.8, 0.5);
+    //TODO Change percent power when we get a cargo intake
+    Robot.cargo.setCargoMotorPercent(0.0, 0.8);   // 0.8, 0.5
 
     // Record time when we grabbed the ball
     if (!hasBallTime && Robot.cargo.hasBall()) {
@@ -47,7 +49,7 @@ public class CargoIntake extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return (hasBallTime && (timeSinceInitialized() > timeWhenGrabbedBall + 1));
+    return (hasBallTime && (timeSinceInitialized() > timeWhenGrabbedBall + 0.3));
   }
 
   // Called once after isFinished returns true

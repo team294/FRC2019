@@ -194,7 +194,7 @@
             "content": {
               "_type": "Boolean Box",
               "_source0": "network_table:///SmartDashboard/problemExists",
-              "_title": "Problem Exists",
+              "_title": "Problem Flag",
               "Colors/Color when true": "#FF0000FF",
               "Colors/Color when false": "#00FF00FF"
             }
@@ -326,6 +326,13 @@
                   "_type": "Boolean Box",
                   "_source0": "network_table:///SmartDashboard/Elev Mode",
                   "_title": "Elev Mode",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Elev Calibrated",
+                  "_title": "Elev Calibrated",
                   "Colors/Color when true": "#7CFC00FF",
                   "Colors/Color when false": "#8B0000FF"
                 },
