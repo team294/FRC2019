@@ -32,10 +32,10 @@ public class Wrist extends Subsystem {
   private boolean wristPosControl = false; // true is in position control mode, false is manual motor control (percent output)
 
 
-	private int posMoveCount = 0; // increments every cycle the wrist moves up
-	private int negMoveCount = 0; // increments every cycle the wrist moves down
-	private double currEnc = 0.0; // current recorded encoder value
-	private double encSnapShot = 0.0; // snapshot of encoder value used to make sure encoder is working
+	// private int posMoveCount = 0; // increments every cycle the wrist moves up
+	// private int negMoveCount = 0; // increments every cycle the wrist moves down
+	// private double currEnc = 0.0; // current recorded encoder value
+	// private double encSnapShot = 0.0; // snapshot of encoder value used to make sure encoder is working
   private double encoderDegreesPerTicks = 360.0 / Robot.robotPrefs.encoderTicksPerRevolution;
   private double encoderTicksPerDegrees = Robot.robotPrefs.encoderTicksPerRevolution / 360.0;
 
