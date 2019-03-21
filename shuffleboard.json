@@ -312,7 +312,7 @@
               ]
             }
           },
-          "5,1": {
+          "7,1": {
             "size": [
               2,
               4
@@ -439,7 +439,7 @@
               ]
             }
           },
-          "9,1": {
+          "5,1": {
             "size": [
               2,
               2
@@ -469,7 +469,7 @@
               ]
             }
           },
-          "7,1": {
+          "9,1": {
             "size": [
               2,
               5
@@ -553,30 +553,68 @@
               ]
             }
           },
-          "9,3": {
+          "5,3": {
             "size": [
               2,
               2
             ],
             "content": {
               "_type": "List Layout",
-              "_title": "Disc",
+              "_title": "Front Hatch",
               "Layout/Label position": "LEFT",
               "_children": [
                 {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/Disc Position",
-                  "_title": "Disc Position"
+                  "_title": "Hatch Position"
                 },
                 {
                   "_type": "Command",
                   "_source0": "network_table:///SmartDashboard/Disc Grab",
-                  "_title": "Disc Grab"
+                  "_title": "Hatch Grab"
                 },
                 {
                   "_type": "Command",
                   "_source0": "network_table:///SmartDashboard/Disc Release",
-                  "_title": "Disc Release"
+                  "_title": "Hatch Release"
+                }
+              ]
+            }
+          },
+          "3,3": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Rear Hatch",
+              "Layout/Label position": "LEFT",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Rear Hatch Position",
+                  "_title": "Position"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Rear Hatch Extend",
+                  "_title": "Hatch Extend"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Rear Hatch Retract",
+                  "_title": "Hatch Retract"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Rear Hatch Intake",
+                  "_title": "Hatch Intake"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Rear Hatch Outtake",
+                  "_title": "Hatch Outtake"
                 }
               ]
             }
