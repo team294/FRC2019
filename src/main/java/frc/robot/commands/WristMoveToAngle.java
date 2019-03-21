@@ -43,23 +43,29 @@ public class WristMoveToAngle extends Command {
   @Override
   protected void initialize() {
     if (targetAngle) {
-      Robot.wrist.setWristAngle(target);
+      // Robot.wrist.setWristAngle(target);
+      Robot.wrist.setWristProfileTarget(target);
     } else {
       switch (pos) {
         case stowed:
-          Robot.wrist.setWristAngle(Robot.robotPrefs.wristStowed);
+          // Robot.wrist.setWristAngle(Robot.robotPrefs.wristStowed);
+          Robot.wrist.setWristProfileTarget(Robot.robotPrefs.wristStowed);
           break;
         case up:
-          Robot.wrist.setWristAngle(Robot.robotPrefs.wristUp);
+          // Robot.wrist.setWristAngle(Robot.robotPrefs.wristUp);
+          Robot.wrist.setWristProfileTarget(Robot.robotPrefs.wristUp);
           break;
         case straight:
-          Robot.wrist.setWristAngle(Robot.robotPrefs.wristStraight);
+          // Robot.wrist.setWristAngle(Robot.robotPrefs.wristStraight);
+          Robot.wrist.setWristProfileTarget(Robot.robotPrefs.wristStraight);
           break;
         case cargoShot:
-          Robot.wrist.setWristAngle(Robot.robotPrefs.wristCargoShot);
+          // Robot.wrist.setWristAngle(Robot.robotPrefs.wristCargoShot);
+          Robot.wrist.setWristProfileTarget(Robot.robotPrefs.wristCargoShot);
           break;
         case down:
-          Robot.wrist.setWristAngle(Robot.robotPrefs.wristDown);
+          // Robot.wrist.setWristAngle(Robot.robotPrefs.wristDown);
+          Robot.wrist.setWristProfileTarget(Robot.robotPrefs.wristDown);
           break;
       }
     }

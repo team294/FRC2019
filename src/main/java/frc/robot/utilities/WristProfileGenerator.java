@@ -147,7 +147,7 @@ public class WristProfileGenerator {
 
 	/**
 	 * Code to make the wrist follow the MotionProfile, should be called exactly once per scheduler cycle.
-	 * ONLY follow the MotionProfile if elevPosControl is true, else we should be in manual mode so do nothing.
+	 * ONLY follow the MotionProfile if wristPosControl is true, else we should be in manual mode so do nothing.
 	 * @return percent power to set the wrist motors to based on calculations
 	 */
 	public double trackProfilePeriodic() {

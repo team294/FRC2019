@@ -29,6 +29,9 @@ public class Wrist extends Subsystem {
 
   private WristProfileGenerator wristProfile;
 
+  private boolean wristPosControl = false; // true is in position control mode, false is manual motor control (percent output)
+
+
 	private int posMoveCount = 0; // increments every cycle the wrist moves up
 	private int negMoveCount = 0; // increments every cycle the wrist moves down
 	private double currEnc = 0.0; // current recorded encoder value
@@ -93,6 +96,7 @@ public class Wrist extends Subsystem {
       Robot.log.writeLog("Wrist" , "Percent Output", "Percent Output," + percentOutput);
     }
     wristMotor.set(ControlMode.PercentOutput, percentOutput);
+    wristPosControl = false;
   }
 
   /**
@@ -128,6 +132,7 @@ public class Wrist extends Subsystem {
       }
 
       wristProfile.setProfileTarget(safeAngle);
+      wristPosControl = true;
       Robot.log.writeLog("Wrist", "Set angle", "Desired angle," + angle + ",Set angle," + safeAngle + ",Interlock,Allowed,"
        + ",Elevator Pos," + Robot.elevator.getElevatorPos() + ",Elevator Target," + Robot.elevator.getCurrentElevatorTarget());  
     }
@@ -165,6 +170,7 @@ public class Wrist extends Subsystem {
       }
 
       wristMotor.set(ControlMode.Position, degreesToEncoderTicks(safeAngle) + Robot.robotPrefs.wristCalZero);
+      wristPosControl = true;
       Robot.log.writeLog("Wrist", "Set angle", "Desired angle," + angle + ",Set angle," + safeAngle + ",Interlock,Allowed,"
        + ",Elevator Pos," + Robot.elevator.getElevatorPos() + ",Elevator Target," + Robot.elevator.getCurrentElevatorTarget());  
     }
@@ -314,17 +320,20 @@ public class Wrist extends Subsystem {
     double currentTarget;
 
     if (Robot.robotPrefs.wristCalibrated) {
-      if (wristMotor.getControlMode() == ControlMode.Position) {
-        currentTarget = encoderTicksToDegrees(wristMotor.getClosedLoopTarget(0) - Robot.robotPrefs.wristCalZero);
+      if (wristPosControl) {
+        if (wristMotor.getControlMode() == ControlMode.Position) {
+          // Closed loop control using Talon PID
+					currentTarget = encoderTicksToDegrees(wristMotor.getClosedLoopTarget(0));
+        } else {
+          // Motion profile control
+					currentTarget = wristProfile.getFinalAngle();
+        }
       } else {
+        // Manual control mode
         // If we are not in position control mode, then we aren't moving towards a target (and the target
         // angle may be undefined).  So, get the actual wrist angle instead.
         currentTarget = getWristAngle();
       }
-
-      /* if(motionProfile is being used) {
-        currentTarget = wristProfile.getFinalPosition();
-      } */ //TODO uncomment after we figure out how to tell what mode we're in for wrist
 
       currentTarget = currentTarget % 360; // If encoder wraps around 360 degrees
       currentTarget = (currentTarget > 180) ? currentTarget - 360 : currentTarget; // Change range to -180 to +180
@@ -374,6 +383,7 @@ public class Wrist extends Subsystem {
 
     if (Robot.log.getLogRotation() == FileLog.WRIST_CYCLE) {
       SmartDashboard.putBoolean("Wrist calibrated", Robot.robotPrefs.wristCalibrated);
+      SmartDashboard.putBoolean("Wrist Mode", wristPosControl);
       SmartDashboard.putNumber("Wrist Angle", getWristAngle());
       SmartDashboard.putNumber("Wrist enc raw", getWristEncoderTicksRaw());
 			SmartDashboard.putBoolean("Wrist Lower Limit", getWristLowerLimit());
@@ -404,14 +414,14 @@ public class Wrist extends Subsystem {
       updateWristLog(false);
     }
 
-  	// Sets wrist motor to percent power required as determined by motion profile.
+		// Sets wrist motors to percent power required as determined by motion profile.
 		// Only set percent power IF the motion profile is enabled.
 		// Note:  If we are using our motion profile control loop, then set the power directly using wristMotor.set().
 		// Do not call setWristMotorPercentOutput(), since that will change the wristPosControl to false (manual control).
-		if (wristMotor.getControlMode() != ControlMode.Position) {
+		if (wristPosControl && wristMotor.getControlMode() != ControlMode.Position) {
 			wristMotor.set(ControlMode.PercentOutput, wristProfile.trackProfilePeriodic());  
-    } //TODO make a way to decipher between posControl and motionProfile
-    
+    }
+        
     // if (DriverStation.getInstance().isEnabled()) {
  
       
