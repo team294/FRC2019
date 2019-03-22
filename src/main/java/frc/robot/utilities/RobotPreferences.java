@@ -206,7 +206,9 @@ public class RobotPreferences {
 		this.wristCalZero = wristCalZero;
 		wristCalibrated = true;
 		Robot.wrist.stopWrist();	// Stop motor, so it doesn't jump to new value
-		Robot.log.writeLog("Preferences", "Calibrate wrist", "zero value," + wristCalZero);
+		Robot.log.writeLog("Preferences", "Calibrate wrist", "zero value," + wristCalZero + 
+			",Enc Raw," + Robot.wrist.getWristEncoderTicksRaw() +
+			",Wrist Angle," + Robot.wrist.getWristAngle() + ",Wrist Target," + Robot.wrist.getCurrentWristTarget());
 		if (writeCalToPreferences) {
 			prefs.putDouble("wristCalZero", wristCalZero);
 		}
@@ -217,8 +219,9 @@ public class RobotPreferences {
 	 */
 	public void setWristUncalibrated() {
 		Robot.wrist.stopWrist();
+		Robot.log.writeLog("Preferences", "Uncalibrate wrist", "Enc Raw," + Robot.wrist.getWristEncoderTicksRaw() +
+			",Wrist Angle," + Robot.wrist.getWristAngle() + ",Wrist Target," + Robot.wrist.getCurrentWristTarget());
 		wristCalibrated = false;
-		Robot.log.writeLog("Preferences", "Uncalibrate wrist", "");
 	}
 
 	// Much of this is not going to be useful in competition. The drivers are not going to look at the laptop screen to see if a subsystem has thrown an error.

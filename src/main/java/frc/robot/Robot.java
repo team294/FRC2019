@@ -80,6 +80,8 @@ public class Robot extends TimedRobot {
     hatch = new Hatch();
     rearHatch = new RearHatch();
     vision = new VisionData();
+    vision.setLedMode(1);       // TODO Turn on (set to 3) if we are using vision
+
     lineFollowing = new LineFollowing();
     climb = new Climb();
     leds = new LedHandler();

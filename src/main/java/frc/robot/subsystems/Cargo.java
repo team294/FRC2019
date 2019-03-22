@@ -28,7 +28,7 @@ public class Cargo extends Subsystem {
     cargoMotor1.setNeutralMode(NeutralMode.Brake);
     cargoMotor1.configVoltageCompSaturation(11.0, 0);
     cargoMotor1.enableVoltageCompensation(true);
-    cargoMotor1.setInverted(false);
+    cargoMotor1.setInverted(true);
 
     /*
     cargoMotor2.set(ControlMode.PercentOutput, 0);
