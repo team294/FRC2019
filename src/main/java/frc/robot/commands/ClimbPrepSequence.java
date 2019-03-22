@@ -17,7 +17,7 @@ public class ClimbPrepSequence extends CommandGroup {
    */
   public ClimbPrepSequence() {
     addParallel(new RearHatchSet(false));
-    addSequential(new ElevatorWristStow());
+    addParallel(new ElevatorWristStow());
     addSequential(new ClimbArmSetAngle(Robot.robotPrefs.climbPrep));
   }
 }
