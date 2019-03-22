@@ -60,7 +60,7 @@ public class OI {
     xbB[2].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchMid)); // B
     xbB[3].whenPressed(new ElevatorWristStow()); // X
     xbB[4].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchHigh)); // Y
-    xbB[5].whenPressed(new WristRearHatchStow()); // LB
+    xbB[5].whenPressed(new RearHatchSet(false)); // LB
     xbB[6].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.cargoShipCargo)); // RB
     xbB[7].whenPressed(new StopAllMotors()); // Back
     xbB[8].whenPressed(new CargoRearHatchStop()); // Start
@@ -68,10 +68,12 @@ public class OI {
     xbB[10].whenPressed(new WristWithXBox()); // RStick
     xbUp.whenActive(new CargoIntakeFromLoad()); // DPadUp
     // xbRight.whenActive(new HatchSet(true)); // DPadRight
-    xbRight.whenActive(new HatchFrontAndRearSet(true)); // DPadRight
+    xbRight.whenActive(new HatchFrontAndRearSet(true)); // DPadRight press
+    xbRight.whenInactive(new RearHatchSetPercentOutput(0.6, 1)); // DPadRight release
     xbDown.whenActive(new CargoIntakeFromGround()); // DPadDown
     // xbLeft.whenActive(new HatchSet(false)); // DPadLeft
-    xbLeft.whenActive(new HatchFrontAndRearSet(false)); // DPadLeft
+    xbLeft.whenActive(new HatchFrontAndRearSet(false)); // DPadLeft press
+    xbLeft.whenInactive(new RearHatchSetPercentOutput(-0.6, 1.5)); // DPadLeft release
     xbLT.whenActive(new CargoOuttake(-1.0)); // LT
     xbRT.whenActive(new CargoOuttake(-0.8)); // RT
 
