@@ -32,7 +32,7 @@ public class RobotPreferences {
 	* Measurements
 	*/
 	// Wrist Angles (in degrees)
-	public final double wristMax = 111.0;		// Location of upper limit switch for auto calibration
+	public final double wristMax = 113.0;		// Location of upper limit switch for auto calibration
 	public final double wristStowed = 110.0;
 	public final double wristKeepOut = 28.0; // Max angle to avoid interference with elevator or climber
 	public final double wristUp = 15.0;

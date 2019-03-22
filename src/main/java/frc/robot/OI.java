@@ -116,8 +116,8 @@ public class OI {
     SmartDashboard.putData("Move Elevator to High", new ElevatorMoveToLevel(ElevatorPosition.hatchHigh)); // Move to high position (test wrist interlock)
 
     // Buttons for controlling the climber
-    SmartDashboard.putData("Climb Up", new ClimbArmSetPercentOutput(0.3));  // For testing
-    SmartDashboard.putData("Climb Down", new ClimbArmSetPercentOutput(-0.3));  // For testing
+    SmartDashboard.putData("Climb Up", new ClimbArmSetPercentOutput(0.8));
+    SmartDashboard.putData("Climb Down", new ClimbArmSetPercentOutput(-0.8));
     SmartDashboard.putData("Climb move to start", new ClimbArmStow());  // For testing
     SmartDashboard.putData("Climb move to vacuum", new ClimbArmSetAngle(Robot.robotPrefs.climbVacuumAngle));  // For testing
     SmartDashboard.putData("Climb lift robot", new ClimbArmSetAngle(Robot.robotPrefs.climbLiftAngle));  // For testing
@@ -137,7 +137,7 @@ public class OI {
 
     // Buttons for the rear hatch intake
     SmartDashboard.putData("Rear Hatch Intake", new RearHatchSetPercentOutput(0.6, 5));
-    SmartDashboard.putData("Rear Hatch Outtake", new RearHatchSetPercentOutput(-0.6, 5));
+    SmartDashboard.putData("Rear Hatch Outtake", new RearHatchSetPercentOutput(-0.6, 3));
     SmartDashboard.putData("Rear Hatch Retract", new RearHatchSet(false));
     SmartDashboard.putData("Rear Hatch Extend", new RearHatchSet(true));
 

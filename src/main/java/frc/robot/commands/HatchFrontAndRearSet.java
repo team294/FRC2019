@@ -23,9 +23,9 @@ public class HatchFrontAndRearSet extends CommandGroup {
     // Deploy and turn on the rear grabber as needed.
     addSequential(new RearHatchSet(true));
     if (grab) {
-      addSequential(new RearHatchSetPercentOutput(0.6, 5));
+      addSequential(new RearHatchSetPercentOutput(0.6, 3));
     } else {
-      addSequential(new RearHatchSetPercentOutput(-0.6, 5));
+      addSequential(new RearHatchSetPercentOutput(-0.6, 1.5));
     }
   }
 }

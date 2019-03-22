@@ -43,7 +43,7 @@ public class RearHatchSet extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return (extend || timeSinceInitialized() >= 3);
+    return (extend || timeSinceInitialized() >= 1.5);
   }
 
   // Called once after isFinished returns true

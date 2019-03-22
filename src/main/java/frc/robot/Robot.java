@@ -169,6 +169,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     log.writeLogEcho("Robot", "Autonomous mode init", "");
     beforeFirstEnable = false; // set variable that robot has been enabled
+    elevator.setElevatorMotorPercentOutput(-0.2);
     m_autonomousCommand = new VisionSandstormSetup(); //m_chooser.getSelected();
 
     climb.enableCompressor(true);

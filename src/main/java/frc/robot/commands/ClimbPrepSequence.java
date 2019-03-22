@@ -16,7 +16,7 @@ public class ClimbPrepSequence extends CommandGroup {
    * stows the wrist safely (if needed), and moves arm to get vacuum.
    */
   public ClimbPrepSequence() {
-    addParallel(new RearHatchSet(false));
+    // addParallel(new RearHatchSet(false));
     addParallel(new ElevatorWristStow());
     addSequential(new ClimbArmSetAngle(Robot.robotPrefs.climbPrep));
   }

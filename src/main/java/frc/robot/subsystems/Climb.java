@@ -150,9 +150,9 @@ public class Climb extends Subsystem {
       safeAngle = (safeAngle > Robot.robotPrefs.climbWristMovingSafe) ? Robot.robotPrefs.climbWristMovingSafe : safeAngle;
     }
     // If rear hatch piston is extended and climb is told to go below climb prep, climber will only go to climb prep (to prevent crash).
-    if (Robot.rearHatch.isRearHatchPistonExtended() && safeAngle < Robot.robotPrefs.climbPrep - 5) {
-      safeAngle = Robot.robotPrefs.climbPrep;
-    }
+    // if (/* Robot.rearHatch.isRearHatchPistonExtended() && */ safeAngle < Robot.robotPrefs.climbPrep - 5) {
+    //   safeAngle = Robot.robotPrefs.climbPrep;
+    // }
 
     climbMotor2.set(ControlMode.Position, climbAngleToEncTicks(safeAngle) + Robot.robotPrefs.climbCalZero);
     Robot.log.writeLog("Climb", "Set angle", "Desired angle," + angle + ",Set angle," + safeAngle + ",Wrist Upper Limit," + Robot.wrist.getWristUpperLimit()
