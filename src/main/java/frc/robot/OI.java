@@ -80,7 +80,8 @@ public class OI {
     // Joystick buttons
     left[1].whenPressed(new Shift(true)); // high gear
     right[1].whenPressed(new Shift(false)); // low gear
-    left[2].whileHeld(new DriveAssist()); // drive with vision assist
+    left[2].whenPressed(new DriveAssist()); // Turn on vision pipeline and move elevator low
+    // left[2].whileHeld(new DriveWithVision(false, false)); // drive with visionf
     left[2].whenReleased(new DriveWithJoysticks());
     right[2].whileHeld(new DriveStraightJoystick()); // drive straight with right joystick
     right[2].whenReleased(new DriveWithJoysticks()); // drive with joysticks

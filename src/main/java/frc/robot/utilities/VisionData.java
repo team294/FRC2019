@@ -66,7 +66,7 @@ public class VisionData {
 
     /**
      * Sets the pipeline number to use
-     * @param pipeNum Pipeline to change to (see limelight web dashboard for details)
+     * @param pipeNum Pipeline to change to (see limelight web dashboard for details).   (0 = vision, 2 = driver feed)
      */
     public void setPipe(double pipeNum) {
         pipeline.setDouble(pipeNum);

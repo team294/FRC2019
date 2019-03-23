@@ -44,6 +44,8 @@ public class DriveWithVision extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.vision.setPipe(0);
+    Robot.vision.setLedMode(3);
     Robot.driveTrain.setDriveMode(true);
     SmartDashboard.putBoolean("Ready to Score", false);
     Robot.driveTrain.clearEncoderList(); // May not be necessary to clear
@@ -72,6 +74,8 @@ public class DriveWithVision extends Command {
   @Override
   protected void end() {
     Robot.driveTrain.stop();
+    Robot.vision.setPipe(2);
+    Robot.vision.setLedMode(1);
     Robot.log.writeLogEcho("DriveTrain", "Vision Tracking Ended", "");
     // Robot.leds.setColor(LedHandler.Color.OFF);   // Robot Periodic will turn off LEDs
   }
