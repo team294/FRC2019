@@ -38,7 +38,7 @@ public class DriveWithVision extends Command {
     this.gyro = gyro;
 
     Robot.vision.setPipe(0); // On vision pipeline
-    Robot.vision.setLedMode(1); // TODO Change back to 3 to turn on LEDs.  Make sure the LEDs are on before driving
+    Robot.vision.setLedMode(3); // TODO Change back to 3 to turn on LEDs.  Make sure the LEDs are on before driving
   }
 
   // Called just before this Command runs the first time

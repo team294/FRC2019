@@ -195,7 +195,7 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     climb.enableCompressor(true);
-    vision.setLedMode(1);       // TODO Turn on (set to 3) if we are using vision
+    // vision.setLedMode(1);       // TODO Turn on (set to 3) if we are using vision
     log.writeLogEcho("Robot", "Teleop mode init", "");
     beforeFirstEnable = false; // set variable that robot has been enabled
     
