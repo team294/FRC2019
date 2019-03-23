@@ -9,12 +9,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class PathfinderLoadToRocket extends CommandGroup {
+public class DriveToCargoShip extends CommandGroup {
   /**
-   * Add your docs here.
+   * Drives to front face of cargo ship from being
+   * lined up directly on the HAB platform
    */
-  public PathfinderLoadToRocket() {
-    addSequential(new DrivePathfinder("RLoadToRocketPT1-A", true, false));
-    addSequential(new DrivePathfinder("RLoadToRocketPT2-A", false, true));
+  public DriveToCargoShip() {
+    // addParallel(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchLow));
+    addSequential(new DriveStraightDistanceProfile(100, 0, 80, 65));
+    addSequential(new DriveAssist());
   }
 }

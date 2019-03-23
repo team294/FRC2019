@@ -148,7 +148,7 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
 
-    double pipeline = SmartDashboard.getNumber("Vision pipeline", 2.0);
+    double pipeline = SmartDashboard.getNumber("Vision pipeline", 0.0);
     vision.setPipe(pipeline);
 
   }
