@@ -74,7 +74,7 @@ public class DriveWithVision extends Command {
   protected void end() {
     Robot.driveTrain.stop();
     Robot.log.writeLogEcho("DriveTrain", "Vision Tracking Ended", "");
-    Robot.leds.setColor(LedHandler.Color.OFF);
+    // Robot.leds.setColor(LedHandler.Color.OFF);   // Robot Periodic will turn off LEDs
   }
 
   // Called when another command which requires one or more of the same
