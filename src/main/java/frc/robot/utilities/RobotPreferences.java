@@ -68,7 +68,7 @@ public class RobotPreferences {
   	public final double cargoShipCargo = 43.0;   // Was 34.75
 	public final double rocketBallOffset = 2;  // Ball intake is higher than the disc grabber (low position only)
 	public final double loadCargo = 44.125;
-	public final double groundCargo = 18.0;  		// At this level, wrist must be able to go to wristDown  // TODO should this be the same as elevatorWristStow (at the hard stop)?
+	public final double groundCargo = 16.5;  		// At this level, wrist must be able to go to wristDown  // TODO should this be the same as elevatorWristStow (at the hard stop)?
 
 	public enum ElevatorPosition {bottom, wristStow, hatchLow, hatchMid, hatchHigh, cargoShipCargo, loadCargo, groundCargo}
 
