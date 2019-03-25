@@ -132,8 +132,8 @@ public abstract class DriveTrain extends Subsystem {
     return -(getRightEncoderRaw() - rightEncoderZero);
   }
 
-  public double encoderTicksToInches(double rotations) {
-    return rotations * Robot.robotPrefs.wheelCircumference; // This is not right
+  public double encoderTicksToInches(double ticks) {
+    return ticks * Robot.robotPrefs.wheelCircumference; //TODO This is not right
   }
 
   public double getLeftEncoderInches() {
@@ -238,6 +238,7 @@ public abstract class DriveTrain extends Subsystem {
    * @return true if the difference between the average and the last element is less than the precision specified (this means both encoders are stopped)
    */
   public boolean areEncodersStopped(double precision) {
+    //TODO Should the next line have comparison operators "==" instead of assignment operators "="?
     if (lEncoderStack.size()<50) return (lEncStopped = false) || (rEncStopped = false); // Sets both to false while returning.
     double lSum = 0.0, rSum = 0.0;
     Iterator<Double> lIterator = lEncoderStack.descendingIterator();

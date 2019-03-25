@@ -186,6 +186,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
+
+    //TODO Add camera periodic code from TeleopPeriodic to AutonomousPeriodic?
   }
 
   @Override
