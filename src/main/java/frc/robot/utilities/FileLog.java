@@ -23,6 +23,7 @@ public class FileLog {
 	public final static int ELEVATOR_CYCLE = 3;
 	public final static int WRIST_CYCLE = 5;
 	public final static int CLIMB_CYCLE = 7;
+	public final static int REARHATCH_CYCLE = 8;
 	public final static int CARGO_CYCLE = 9;
 
 	/**

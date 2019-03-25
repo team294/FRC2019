@@ -29,7 +29,7 @@ public class CargoIntake extends Command {
   @Override
   protected void initialize() {
     //TODO Change percent power when we get a cargo intake
-    Robot.cargo.setCargoMotorPercent(0.0, 0.8);  // 0.8, 0.5
+    Robot.cargo.setCargoMotorPercentOutput(0.8);  // 0.8, 0.5
     hasBallTime = false;
   }
 
@@ -37,7 +37,7 @@ public class CargoIntake extends Command {
   @Override
   protected void execute() {
     //TODO Change percent power when we get a cargo intake
-    Robot.cargo.setCargoMotorPercent(0.0, 0.8);   // 0.8, 0.5
+    Robot.cargo.setCargoMotorPercentOutput(0.8);   // 0.8, 0.5
 
     // Record time when we grabbed the ball
     if (!hasBallTime && Robot.cargo.hasBall()) {

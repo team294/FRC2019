@@ -9,7 +9,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.utilities.RobotPreferences.ElevatorPosition;
-import frc.robot.utilities.RobotPreferences.WristAngle;
 
 public class DriveAssist extends CommandGroup {
   /**
@@ -18,10 +17,9 @@ public class DriveAssist extends CommandGroup {
   public DriveAssist() {
     
     addSequential(new VisionChangePipeline(0));
-    addSequential(new WristMoveToAngle(WristAngle.straight));
-    addSequential(new ElevatorMoveToLevel(ElevatorPosition.hatchLow));
+    addSequential(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchLow));
     addSequential(new DriveWithVision(false, false)); //  true, true  is endOnLine, use gyro
-    addSequential(new DriveWithLineFollowing(true));
+    // addSequential(new DriveWithLineFollowing(true));
 
   }
 }

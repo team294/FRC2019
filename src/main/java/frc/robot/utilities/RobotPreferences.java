@@ -32,7 +32,7 @@ public class RobotPreferences {
 	* Measurements
 	*/
 	// Wrist Angles (in degrees)
-	public final double wristMax = 111.0;		// Location of upper limit switch for auto calibration
+	public final double wristMax = 113.0;		// Location of upper limit switch for auto calibration
 	public final double wristStowed = 110.0;
 	public final double wristKeepOut = 28.0; // Max angle to avoid interference with elevator or climber
 	public final double wristUp = 15.0;
@@ -61,14 +61,14 @@ public class RobotPreferences {
 	*/
 
 	// Field level heights (for elevator targeting), in inches
-	public final double elevatorWristStow = 17.5;		// At the hard stop
+	public final double elevatorWristStow = 15.5;		// At the hard stop
 	public final double hatchLow = 19.0;
   	public final double hatchMid = 48.5;
   	public final double hatchHigh = 72.8;
   	public final double cargoShipCargo = 43.0;   // Was 34.75
 	public final double rocketBallOffset = 2;  // Ball intake is higher than the disc grabber (low position only)
 	public final double loadCargo = 44.125;
-	public final double groundCargo = 18.0;  		// At this level, wrist must be able to go to wristDown  // TODO should this be the same as elevatorWristStow (at the hard stop)?
+	public final double groundCargo = 16.5;  		// At this level, wrist must be able to go to wristDown  // TODO should this be the same as elevatorWristStow (at the hard stop)?
 
 	public enum ElevatorPosition {bottom, wristStow, hatchLow, hatchMid, hatchHigh, cargoShipCargo, loadCargo, groundCargo}
 
@@ -206,7 +206,9 @@ public class RobotPreferences {
 		this.wristCalZero = wristCalZero;
 		wristCalibrated = true;
 		Robot.wrist.stopWrist();	// Stop motor, so it doesn't jump to new value
-		Robot.log.writeLog("Preferences", "Calibrate wrist", "zero value," + wristCalZero);
+		Robot.log.writeLog("Preferences", "Calibrate wrist", "zero value," + wristCalZero + 
+			",Enc Raw," + Robot.wrist.getWristEncoderTicksRaw() +
+			",Wrist Angle," + Robot.wrist.getWristAngle() + ",Wrist Target," + Robot.wrist.getCurrentWristTarget());
 		if (writeCalToPreferences) {
 			prefs.putDouble("wristCalZero", wristCalZero);
 		}
@@ -217,8 +219,9 @@ public class RobotPreferences {
 	 */
 	public void setWristUncalibrated() {
 		Robot.wrist.stopWrist();
+		Robot.log.writeLog("Preferences", "Uncalibrate wrist", "Enc Raw," + Robot.wrist.getWristEncoderTicksRaw() +
+			",Wrist Angle," + Robot.wrist.getWristAngle() + ",Wrist Target," + Robot.wrist.getCurrentWristTarget());
 		wristCalibrated = false;
-		Robot.log.writeLog("Preferences", "Uncalibrate wrist", "");
 	}
 
 	// Much of this is not going to be useful in competition. The drivers are not going to look at the laptop screen to see if a subsystem has thrown an error.

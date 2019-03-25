@@ -121,9 +121,16 @@ public class ElevatorMoveToLevel extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-   return !Robot.elevator.encoderCalibrated() ||         // End immediately if encoder can't read
-     Math.abs(Robot.elevator.getElevatorPos() - target) <= 0.5 ||
-     (startTime && timeSinceInitialized() - timeAtLooseTolerance > 2.0);
+    if (target == Robot.robotPrefs.elevatorWristStow &&
+      Robot.elevator.getElevatorPos() < Robot.robotPrefs.elevatorWristSafeStow) {
+        return true;
+    } else if (!Robot.elevator.encoderCalibrated() ||         // End immediately if encoder can't read
+      Math.abs(Robot.elevator.getElevatorPos() - target) <= 0.5 || // 0.5
+      (startTime && timeSinceInitialized() - timeAtLooseTolerance > 2.0)) {
+        return true;
+    } else {
+        return false;
+    }
   }
 
   // Called once after isFinished returns true

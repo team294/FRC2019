@@ -68,6 +68,9 @@ public class ElevatorWristMoveAndPrepare extends CommandGroup {
     } else if (position == ElevatorPosition.cargoShipCargo) {
       // If going to cargo ship shot, then use cargo ship angle
       addParallel(new WristMoveToAngle(WristAngle.cargoShot));
+    } else if (position == ElevatorPosition.groundCargo){
+      addParallel(new WristMoveToAngle(WristAngle.down));
+      addParallel(new CargoIntake());
     } else {
       // Otherwise, move wrist straight
       addParallel(new WristMoveToAngle(WristAngle.straight));
@@ -76,8 +79,8 @@ public class ElevatorWristMoveAndPrepare extends CommandGroup {
     addSequential(new ElevatorMoveToLevel(position));
     
     // If going to cargo ground intake, move wrist down last
-    if(position == ElevatorPosition.groundCargo){
-      addSequential(new WristMoveToAngle(WristAngle.down));
-    }
+    // if(position == ElevatorPosition.groundCargo){
+    //   addSequential(new WristMoveToAngle(WristAngle.down));
+    // }
   }
 }

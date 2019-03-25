@@ -7,20 +7,16 @@
 
 package frc.robot.commands;
 
-import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class ClimbSequence extends CommandGroup {
+public class DriveToCargoShip extends CommandGroup {
   /**
-   * Climbing sequence! Retracts the rear hatch mechanism,
-   * stows the wrist safely (if needed), moves arm to get vacuum,
-   * then lifts the robot.
+   * Drives to front face of cargo ship from being
+   * lined up directly on the HAB platform
    */
-  public ClimbSequence() {
-    addParallel(new RearHatchSet(false));
-    addParallel(new ElevatorWristStow());
-    addSequential(new ClimbMoveUntilVacuum(Robot.robotPrefs.climbVacuumAngle));
-    // addSequential(new ElevatorMoveToLevel(Robot.robotPrefs.elevatorBottomToFloor));
-    addSequential(new ClimbArmSetAngle(Robot.robotPrefs.climbLiftAngle));
+  public DriveToCargoShip() {
+    // addParallel(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchLow));
+    addSequential(new DriveStraightDistanceProfile(100, 0, 80, 65));
+    addSequential(new DriveAssist());
   }
 }

@@ -30,8 +30,8 @@ public class ElevatorWithXBox extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    if (Robot.wrist.getWristAngle() > -15 && Robot.wrist.getWristAngle() < 15) {
-      double value = -Robot.oi.xBoxController.getY(Hand.kLeft) * 0.4;
+    double value = -Robot.oi.xBoxController.getY(Hand.kLeft) * 0.4;
+    if (Robot.wrist.getWristAngle() > -15 && Robot.wrist.getWristAngle() < 15 || value < 0.0) {
       Robot.elevator.setElevatorMotorPercentOutput(value);
       Robot.elevator.updateElevatorLog(false);
     }

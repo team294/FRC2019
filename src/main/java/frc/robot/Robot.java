@@ -32,6 +32,7 @@ public class Robot extends TimedRobot {
   public static Wrist wrist;
   public static Cargo cargo;
   public static Hatch hatch;
+  public static RearHatch rearHatch;
   public static VisionData vision;
   public static LineFollowing lineFollowing;
   public static Climb climb;
@@ -57,7 +58,7 @@ public class Robot extends TimedRobot {
     canDeviceFinder.enumerateCANBusToStdOut();
 
     // Create file log first, so any other class constructors can log data
-    log = new FileLog("B5");
+    log = new FileLog("C4");
 
     // Read robot preference next, so any other class constructors can use preferences 
     robotPrefs = new RobotPreferences();
@@ -77,7 +78,10 @@ public class Robot extends TimedRobot {
     wrist = new Wrist();
     cargo = new Cargo();
     hatch = new Hatch();
+    rearHatch = new RearHatch();
     vision = new VisionData();
+    vision.setLedMode(1);       // TODO Turn on (set to 3) if we are using vision
+
     lineFollowing = new LineFollowing();
     climb = new Climb();
     leds = new LedHandler();
@@ -110,7 +114,7 @@ public class Robot extends TimedRobot {
 
     if (Robot.climb.isVacuumPresent()) Robot.leds.setColor(LedHandler.Color.BLUE, false); // solid BLUE when vacuum drawn
     else if (Robot.climb.getVacuumPressure(false) > 7.0) Robot.leds.setColor(LedHandler.Color.BLUE, true); // blinking BLUE when vacuum is starting to rise
-    else if (Robot.vision.areaFromCamera > 1.0 && Robot.vision.areaFromCamera < 5.5) Robot.leds.setColor(LedHandler.Color.GREEN, false); // blinking GREEN when limelight target has specified area
+    else if (Robot.vision.areaFromCamera > 1.0 && Robot.vision.areaFromCamera < 4.7) Robot.leds.setColor(LedHandler.Color.GREEN, false); // blinking GREEN when limelight target has specified area
     else if (Robot.cargo.getPhotoSwitch()) Robot.leds.setColor(LedHandler.Color.RED, false); // solid RED when cargo is present
     else if (Robot.hatch.getHatchPiston()) Robot.leds.setColor(LedHandler.Color.RED, true); // blinking RED when hatch piston is in extended position
     // else Robot.leds.setOff(); // if none of the above are true, turn OFF leds
@@ -132,6 +136,7 @@ public class Robot extends TimedRobot {
     elevator.stopElevator();
     climb.stopClimb();
     climb.enableVacuum(false);
+    rearHatch.stopRearHatch();
     
     driveTrain.zeroGyroRotation(); 
     driveTrain.zeroLeftEncoder();
@@ -164,6 +169,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     log.writeLogEcho("Robot", "Autonomous mode init", "");
     beforeFirstEnable = false; // set variable that robot has been enabled
+    elevator.setElevatorMotorPercentOutput(-0.2);
     m_autonomousCommand = new VisionSandstormSetup(); //m_chooser.getSelected();
 
     climb.enableCompressor(true);
@@ -180,6 +186,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
+
+    //TODO Add camera periodic code from TeleopPeriodic to AutonomousPeriodic?
   }
 
   @Override
@@ -189,7 +197,7 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     climb.enableCompressor(true);
-    vision.setLedMode(1);       // TODO Turn on (set to 3) if we are using vision
+    // vision.setLedMode(1);       // TODO Turn on (set to 3) if we are using vision
     log.writeLogEcho("Robot", "Teleop mode init", "");
     beforeFirstEnable = false; // set variable that robot has been enabled
     

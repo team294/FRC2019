@@ -28,13 +28,16 @@ import frc.robot.utilities.FileLog;
  */
 public abstract class DriveTrain extends Subsystem {
 
-  private double leftMotorFaultCount; // increments every cycle the left side detects an issue
-  private double rightMotorFaultCount; // increments every cycle the right side detects an issue
-  private boolean driveDirection = true; // true = forward, false = reverse
-
   private AHRS ahrs;
   private double yawZero = 0;
-
+  
+  private double leftMotorFaultCount; // increments every cycle the left side detects an issue
+  private double rightMotorFaultCount; // increments every cycle the right side detects an issue
+  boolean driveDirection = true; // true = forward, false = reverse
+  private double fieldX;
+	private double fieldY;
+  
+  // Encoders
   private double leftEncoderZero = 0, rightEncoderZero = 0;
 
   // Encoders
@@ -129,8 +132,8 @@ public abstract class DriveTrain extends Subsystem {
     return -(getRightEncoderRaw() - rightEncoderZero);
   }
 
-  public double encoderTicksToInches(double rotations) {
-    return rotations * Robot.robotPrefs.wheelCircumference; // This is not right
+  public double encoderTicksToInches(double ticks) {
+    return ticks * Robot.robotPrefs.wheelCircumference; //TODO This is not right
   }
 
   public double getLeftEncoderInches() {
@@ -235,6 +238,7 @@ public abstract class DriveTrain extends Subsystem {
    * @return true if the difference between the average and the last element is less than the precision specified (this means both encoders are stopped)
    */
   public boolean areEncodersStopped(double precision) {
+    //TODO Should the next line have comparison operators "==" instead of assignment operators "="?
     if (lEncoderStack.size()<50) return (lEncStopped = false) || (rEncStopped = false); // Sets both to false while returning.
     double lSum = 0.0, rSum = 0.0;
     Iterator<Double> lIterator = lEncoderStack.descendingIterator();
@@ -381,7 +385,8 @@ public abstract class DriveTrain extends Subsystem {
     double lJoystickRaw = Math.abs(Robot.oi.leftJoystick.getY());
     //double lJoystickAdjust = 0.7 * Math.sqrt(lJoystickRaw);
     //double lJoystickAdjust = 0.55 / (1 + Math.exp(-10 * (lJoystickRaw - 0.35)));
-    double lJoystickAdjust = 0.50 / (1 + Math.exp(-8 * (lJoystickRaw - 0.4))); // Slightly longer acceleration curve than previous sigmoid
+    // double lJoystickAdjust = 0.50 / (1 + Math.exp(-8 * (lJoystickRaw - 0.4))); // Slightly longer acceleration curve than previous sigmoid
+    double lJoystickAdjust = lJoystickRaw * 0.8;
     SmartDashboard.putNumber("Vision Joystick Value", lJoystickAdjust);
     double lPercentOutput = lJoystickAdjust + (gainConstant * finalAngle); //xVal
     double rPercentOutput = lJoystickAdjust - (gainConstant * finalAngle); //xVal
@@ -558,6 +563,41 @@ public abstract class DriveTrain extends Subsystem {
   public boolean getDriveDirection() {
     return driveDirection;
   }
+
+  public void setFieldPositionX(double x) {
+		this.fieldX = x;
+		SmartDashboard.putNumber("FieldX", fieldX);
+	}
+
+	public void setFieldPositionY(double y) {
+		this.fieldY = y;
+		SmartDashboard.putNumber("FieldY", fieldY);
+	}
+
+	public void addFieldPositionX(double x) {
+		setFieldPositionX(fieldX + x);
+	}
+
+	public void addFieldPositionY(double y) {
+		setFieldPositionY(fieldY + y);
+	}
+
+	public double getFieldPositionX() {
+		return this.fieldX;
+	}
+
+	public double getFieldPositionY() {
+		return this.fieldY;
+  } 
+  
+  /**
+	 * Get the average position of the two encoders, in inches
+	 * 
+	 * @return encoder position, in inches
+	 */
+	public double getAverageEncoderInches() {
+		return (getRightEncoderInches() + getLeftEncoderInches()) / 2.0;
+	}
 
   @Override
   public void initDefaultCommand() {

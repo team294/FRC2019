@@ -12,7 +12,7 @@ import frc.robot.Robot;
 
 public class StopAllMotors extends Command {
   /**
-   * Stops elevator, wrist, climb, and cargo motors
+   * Stops elevator, wrist, climb, cargo, and rear hatch motors
    */
   public StopAllMotors() {
     // Use requires() here to declare subsystem dependencies
@@ -20,6 +20,7 @@ public class StopAllMotors extends Command {
     requires(Robot.wrist);
     requires(Robot.climb);
     requires(Robot.cargo);
+    requires(Robot.rearHatch);
   }
 
   // Called just before this Command runs the first time
@@ -29,6 +30,7 @@ public class StopAllMotors extends Command {
     Robot.wrist.stopWrist();
     Robot.climb.stopClimb();
     Robot.cargo.stopCargoIntake();
+    Robot.rearHatch.stopRearHatch();
   }
 
   // Called repeatedly when this Command is scheduled to run

@@ -38,13 +38,15 @@ public class DriveWithVision extends Command {
     this.gyro = gyro;
 
     Robot.vision.setPipe(0); // On vision pipeline
-    Robot.vision.setLedMode(1); // TODO Change back to 3 to turn on LEDs.  Make sure the LEDs are on before driving
+    Robot.vision.setLedMode(3); // TODO Change back to 3 to turn on LEDs.  Make sure the LEDs are on before driving
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.driveTrain.setDriveMode(false);
+    Robot.vision.setPipe(0);
+    Robot.vision.setLedMode(3);
+    Robot.driveTrain.setDriveMode(true);
     SmartDashboard.putBoolean("Ready to Score", false);
     Robot.driveTrain.clearEncoderList(); // May not be necessary to clear
     //Robot.driveTrain.driveToCrosshair();
@@ -62,16 +64,20 @@ public class DriveWithVision extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    Robot.driveTrain.areEncodersStopped(5.0);
-    return endOnLine && Robot.lineFollowing.isLinePresent() && Robot.vision.distanceFromTarget() < 40; // Stops when a line is detected by the line followers within a reasonable expected distance
-    // TODO:: with an accurate distance measurement, we can stop automatically when close enough
+    // Robot.driveTrain.areEncodersStopped(5.0);
+    return Robot.vision.areaFromCamera > 4.8;
+    // return endOnLine && Robot.lineFollowing.isLinePresent() && Robot.vision.distanceFromTarget() < 40; // Stops when a line is detected by the line followers within a reasonable expected distance
+    // TODO with an accurate distance measurement, we can stop automatically when close enough
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
     Robot.driveTrain.stop();
+    Robot.vision.setPipe(2);
+    Robot.vision.setLedMode(1);
     Robot.log.writeLogEcho("DriveTrain", "Vision Tracking Ended", "");
+    // Robot.leds.setColor(LedHandler.Color.OFF);   // Robot Periodic will turn off LEDs
   }
 
   // Called when another command which requires one or more of the same

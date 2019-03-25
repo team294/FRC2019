@@ -10,37 +10,26 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class WristChangeAngle extends Command {
-
-  private double target;
-
-  /**
-   * Moves wrist to target angle
-   * @param angle target angle in degrees
-   */
-  public WristChangeAngle(double angle) {
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
-    requires (Robot.wrist);
-    target = angle;
+public class ElevatorCalibrateIfAtLowerLimit extends Command {
+  public ElevatorCalibrateIfAtLowerLimit() {
+    requires(Robot.elevator);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.wrist.setWristAngle(target + Robot.wrist.getCurrentWristTarget());
+    Robot.elevator.checkAndZeroElevatorEnc();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.wrist.updateWristLog(false);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return !Robot.wrist.isEncoderCalibrated() || Math.abs(Robot.wrist.getWristAngle() - Robot.wrist.getCurrentWristTarget()) < 5.0; // tolerance of 5 degrees
+    return true;
   }
 
   // Called once after isFinished returns true
@@ -52,7 +41,5 @@ public class WristChangeAngle extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    // Robot.wrist.stopWrist();
-    // Don't take the wrist out of automated mode if we interrupt a sequence!!!!
   }
 }

@@ -10,49 +10,51 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class WristChangeAngle extends Command {
-
-  private double target;
+public class RearHatchSetPercentOutput extends Command {
+  private double percent;
+  private double seconds;
 
   /**
-   * Moves wrist to target angle
-   * @param angle target angle in degrees
+   * Run hatch motor for indicated time.
+   * @param percent percent output (negative = outtake, positive = intake)
+   * @param seconds seconds to run motor for (0 = run forever)
    */
-  public WristChangeAngle(double angle) {
+  public RearHatchSetPercentOutput(double percent, double seconds) {
     // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
-    requires (Robot.wrist);
-    target = angle;
+    requires(Robot.rearHatch);
+    this.percent = percent;
+    this.seconds = seconds;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.wrist.setWristAngle(target + Robot.wrist.getCurrentWristTarget());
+    Robot.rearHatch.setRearHatchMotorPercentOutput(percent);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.wrist.updateWristLog(false);
+    Robot.rearHatch.setRearHatchMotorPercentOutput(percent);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return !Robot.wrist.isEncoderCalibrated() || Math.abs(Robot.wrist.getWristAngle() - Robot.wrist.getCurrentWristTarget()) < 5.0; // tolerance of 5 degrees
+    if (timeSinceInitialized() >= seconds) return true;
+    else return false;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    if (seconds > 0) Robot.rearHatch.stopRearHatch();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    // Robot.wrist.stopWrist();
-    // Don't take the wrist out of automated mode if we interrupt a sequence!!!!
+    end();
   }
 }

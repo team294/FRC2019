@@ -16,6 +16,9 @@ import frc.robot.Robot;
 public class VisionChangePipeline extends Command {
   double pipeline;
 
+  /**
+  * changes vision pipeline (0 = vision, 2 = driver feed)
+  */
   public VisionChangePipeline(double pipeline) {
     // Use requires() here to declare subsystem dependencies
     this.pipeline = pipeline;
@@ -25,6 +28,7 @@ public class VisionChangePipeline extends Command {
   @Override
   protected void initialize() {
     Robot.vision.setPipe(pipeline);
+    Robot.vision.setLedMode(3 - (int)pipeline);
   }
 
   // Called repeatedly when this Command is scheduled to run
