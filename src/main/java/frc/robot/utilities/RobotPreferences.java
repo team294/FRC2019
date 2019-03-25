@@ -224,9 +224,6 @@ public class RobotPreferences {
 		wristCalibrated = false;
 	}
 
-	// Much of this is not going to be useful in competition. The drivers are not going to look at the laptop screen to see if a subsystem has thrown an error.
-	// TODO: delete the method(s) below by competition time
-
 	/**
 	 * Records in robotPreferences, fileLog, and Shuffleboard that a problem was found in a subsystem
 	 * (only records if the subsystem wasn't already flagged)

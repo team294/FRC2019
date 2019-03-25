@@ -34,8 +34,6 @@ public class Wrist extends Subsystem {
   private double encoderDegreesPerTicks = 360.0 / Robot.robotPrefs.encoderTicksPerRevolution;
   private double encoderTicksPerDegrees = Robot.robotPrefs.encoderTicksPerRevolution / 360.0;
 
-  // TODO test PID terms with actual wrist
-
   // kP = (desired-output-1.0max)*1024 / (error-in-encoder-ticks)
   // kP = 2.5 -> output of 0.139 when error is 5 degrees
   private double kP = 2.5;  // was 1.0 with original wrist, 2.5 is better with new wrist
@@ -209,7 +207,6 @@ public class Wrist extends Subsystem {
    * @return raw encoder ticks, adjusted direction (positive is towards stowed, negative is towards lower hard stop)
    */
   public double getWristEncoderTicksRaw() {
-    // TODO verify direction, add minus sign if needed
     return wristMotor.getSelectedSensorPosition(0);
   }
 

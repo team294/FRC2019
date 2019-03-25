@@ -34,7 +34,7 @@ public class RearHatch extends Subsystem {
     rearHatchMotor.setNeutralMode(NeutralMode.Brake);
     rearHatchMotor.configVoltageCompSaturation(12.0);
     rearHatchMotor.enableVoltageCompensation(true);
-    rearHatchMotor.setInverted(false); // TODO determine if inverted
+    rearHatchMotor.setInverted(false);
     setRearHatchPiston(false);
     }
 
