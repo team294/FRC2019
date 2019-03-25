@@ -42,6 +42,9 @@ public class VisionData {
         vertOffset = yValue.getDouble(0);
         areaFromCamera = aValue.getDouble(0); 
         ledMode = ledM.getDouble(0);
+        SmartDashboard.putNumber("Vision X", horizOffset);
+        SmartDashboard.putNumber("Vision Y", vertOffset);
+        SmartDashboard.putNumber("Vision Area", areaFromCamera);
     }
 
     /*
@@ -120,6 +123,7 @@ public class VisionData {
     */
     public double distanceFromTarget () {
         double distance = 3.7 * vertOffset + 65.9; // TODO: Based on crosshair at default for camera mount +angle on 2018 practice; will need to be updated for real robot
+        SmartDashboard.putNumber("Vision Distance", distance);
         return distance;
     }
 }

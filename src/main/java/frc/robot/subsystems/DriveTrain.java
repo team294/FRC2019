@@ -360,9 +360,9 @@ public abstract class DriveTrain extends Subsystem {
 
     //double minDistanceToTarget = 13;
     double distance = Robot.vision.distanceFromTarget(); // Distance formula should work now; need to modulate speed based on dist
-    System.out.println("Measured Distance: " + distance);
     double area = Robot.vision.areaFromCamera;
     double xVal = Robot.vision.horizOffset; // Alpha offset
+    double yVal = Robot.vision.vertOffset;
     double finalAngle;
 
     if (quadrant != 0) {
@@ -399,8 +399,9 @@ public abstract class DriveTrain extends Subsystem {
     if (area != 0) tankDrive(lPercentOutput, rPercentOutput); // area goes to zero before the front hits the wall
     else tankDrive(0, 0);
 
-    Robot.log.writeLogEcho("DriveTrain", "Vision Tracking", "Crosshair Horiz Offset," + xVal + ",Inches from Target," + distance
-     + ",Target Area," + area + ",Joystick Ouput," + lJoystickAdjust + ",Left Percent," + lPercentOutput + ",Right Percent," + rPercentOutput);
+    Robot.log.writeLogEcho("DriveTrain", "Vision Tracking", "Crosshair Horiz Offset," + xVal + ",Vert Offset," + yVal
+     + ",Target Area," + area + ",Inches from Target," + distance
+     + ",Joystick Output," + lJoystickAdjust + ",Left Percent," + lPercentOutput + ",Right Percent," + rPercentOutput);
   }
 
   /**

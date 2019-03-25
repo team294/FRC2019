@@ -112,6 +112,11 @@ public class Robot extends TimedRobot {
       lineFollowing.displayLineSensors();
     }
 
+    vision.readCameraData();
+    //SmartDashboard.putNumber("Target Distance", Robot.vision.distanceFromTarget()); // Distance isn't used for any segmentation
+    SmartDashboard.putNumber("Target Quadrant", Robot.driveTrain.checkScoringQuadrant());
+    //SmartDashboard.putBoolean("Vision Assistance Available", vision.areaFromCamera != 0); // This should work, need to test to see if there is a better metric to use
+
     if (Robot.climb.isVacuumPresent()) Robot.leds.setColor(LedHandler.Color.BLUE, false); // solid BLUE when vacuum drawn
     else if (Robot.climb.getVacuumPressure(false) > 7.0) Robot.leds.setColor(LedHandler.Color.BLUE, true); // blinking BLUE when vacuum is starting to rise
     else if (Robot.vision.areaFromCamera > 1.0 && Robot.vision.areaFromCamera < 4.7) Robot.leds.setColor(LedHandler.Color.GREEN, false); // blinking GREEN when limelight target has specified area
@@ -186,8 +191,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
-
-    //TODO Add camera periodic code from TeleopPeriodic to AutonomousPeriodic?
   }
 
   @Override
@@ -212,11 +215,6 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
-    vision.readCameraData(); // Don't think this is the issue of the loop time over run
-
-    //SmartDashboard.putNumber("Target Distance", Robot.vision.distanceFromTarget()); // Distance isn't used for any segmentation
-    SmartDashboard.putNumber("Target Quadrant", Robot.driveTrain.checkScoringQuadrant());
-    //SmartDashboard.putBoolean("Vision Assistance Available", vision.areaFromCamera != 0); // This should work, need to test to see if there is a better metric to use
   }
 
   /**
