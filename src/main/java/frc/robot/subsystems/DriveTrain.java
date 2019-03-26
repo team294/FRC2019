@@ -345,15 +345,9 @@ public abstract class DriveTrain extends Subsystem {
   }
 
   /**
-   * Drives to the crosshair without gyro adjustment
-   */
-  public void driveToCrosshair() {
-    driveToCrosshair(0, 25);
-  }
-
-  /**
-   * Drives towards target and stops in front of it using speed from left joystick
-   * This may change depending on driver preferences
+   * Drives towards target and stops in front of it.
+   * @param quadrant 0 = ignore gyro.  0.5-4.5 = quadrant facing towards target
+   * @param stopDistance Distance in inches away from the target to stop 
    */
   public void driveToCrosshair(double quadrant, double stopDistance) {
 
@@ -400,7 +394,7 @@ public abstract class DriveTrain extends Subsystem {
     if (priorVisionSpeed < visionSpeed) visionSpeed = priorVisionSpeed;
     priorVisionSpeed = visionSpeed;
 
-    SmartDashboard.putNumber("Vision Joystick Value", visionSpeed);
+    SmartDashboard.putNumber("Vision Speed", visionSpeed);
     double lPercentOutput = visionSpeed + (gainConstant * finalAngle); //xVal
     double rPercentOutput = visionSpeed - (gainConstant * finalAngle); //xVal
 
