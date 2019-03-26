@@ -45,6 +45,9 @@ public abstract class DriveTrain extends Subsystem {
   private LinkedList<Double> rEncoderStack = new LinkedList<Double>();
   private boolean lEncStopped = false, rEncStopped = false;
 
+  // Vision driving
+  private double priorVisionSpeed = 0.0;
+
   public DriveTrain() {
     // Configure navX
 		try {
@@ -345,24 +348,25 @@ public abstract class DriveTrain extends Subsystem {
    * Drives to the crosshair without gyro adjustment
    */
   public void driveToCrosshair() {
-    driveToCrosshair(0);
+    driveToCrosshair(0, 25);
   }
 
   /**
    * Drives towards target and stops in front of it using speed from left joystick
    * This may change depending on driver preferences
    */
-  public void driveToCrosshair(double quadrant) {
+  public void driveToCrosshair(double quadrant, double stopDistance) {
 
     double xOffsetAdjustmentFactor = 1.5; // Should be tested to be perfect; 2 seems to go out of frame too quickly. Must be greater than 1.
     //double xOffsetAdjustmentFactor = 2.0 + Robot.oi.leftJoystick.getY(); // xAdjustment based on distance
 
 
     //double minDistanceToTarget = 13;
-    double distance = Robot.vision.distanceFromTarget(); // Distance formula should work now; need to modulate speed based on dist
+    double distance = Robot.vision.distance; // Distance formula should work now; need to modulate speed based on dist
     double area = Robot.vision.areaFromCamera;
     double xVal = Robot.vision.horizOffset; // Alpha offset
     double yVal = Robot.vision.vertOffset;
+    double skew = Robot.vision.skew;
     double finalAngle;
 
     if (quadrant != 0) {
@@ -377,19 +381,28 @@ public abstract class DriveTrain extends Subsystem {
       SmartDashboard.putNumber("Final Angle", finalAngle);
     } else {
       finalAngle = xVal;
+      if (distance>40) finalAngle -= skew*distance/40.0;
     }
 
-    double gainConstant = 1.0/30.0;
+    double gainConstant = distance * 0.00005 + 0.005;  // Was 1/30
 
     //double lJoystickAdjust = Math.abs(Robot.oi.leftJoystick.getY());
-    double lJoystickRaw = Math.abs(Robot.oi.leftJoystick.getY());
     //double lJoystickAdjust = 0.7 * Math.sqrt(lJoystickRaw);
     //double lJoystickAdjust = 0.55 / (1 + Math.exp(-10 * (lJoystickRaw - 0.35)));
     // double lJoystickAdjust = 0.50 / (1 + Math.exp(-8 * (lJoystickRaw - 0.4))); // Slightly longer acceleration curve than previous sigmoid
-    double lJoystickAdjust = lJoystickRaw * 0.8;
-    SmartDashboard.putNumber("Vision Joystick Value", lJoystickAdjust);
-    double lPercentOutput = lJoystickAdjust + (gainConstant * finalAngle); //xVal
-    double rPercentOutput = lJoystickAdjust - (gainConstant * finalAngle); //xVal
+
+    // Prior code
+    // double lJoystickRaw = Math.abs(Robot.oi.leftJoystick.getY());
+    // double lJoystickAdjust = lJoystickRaw * 0.8;
+
+    if (distance > stopDistance + 10) priorVisionSpeed = 0.65;
+    double visionSpeed = (distance > stopDistance + 10) ? 0.65 : 0.65 * (distance-stopDistance)/10.0;
+    if (priorVisionSpeed < visionSpeed) visionSpeed = priorVisionSpeed;
+    priorVisionSpeed = visionSpeed;
+
+    SmartDashboard.putNumber("Vision Joystick Value", visionSpeed);
+    double lPercentOutput = visionSpeed + (gainConstant * finalAngle); //xVal
+    double rPercentOutput = visionSpeed - (gainConstant * finalAngle); //xVal
 
     /* Untested auto-turn stuff */
     if (lEncStopped && lPercentOutput != 0) rPercentOutput = 1.0; // The goal here is to slam the right side so that we still line up to the wall
@@ -399,9 +412,9 @@ public abstract class DriveTrain extends Subsystem {
     if (area != 0) tankDrive(lPercentOutput, rPercentOutput); // area goes to zero before the front hits the wall
     else tankDrive(0, 0);
 
-    Robot.log.writeLogEcho("DriveTrain", "Vision Tracking", "Crosshair Horiz Offset," + xVal + ",Vert Offset," + yVal
-     + ",Target Area," + area + ",Inches from Target," + distance
-     + ",Joystick Output," + lJoystickAdjust + ",Left Percent," + lPercentOutput + ",Right Percent," + rPercentOutput);
+    Robot.log.writeLog(false, "DriveTrain", "Vision Tracking", "Crosshair Horiz Offset," + xVal + ",Vert Offset," + yVal
+     + ",Target Area," + area + ",Target Skew," + skew + ",Inches from Target," + distance
+     + ",Base power," + visionSpeed + ",Left Percent," + lPercentOutput + ",Right Percent," + rPercentOutput);
   }
 
   /**
@@ -538,7 +551,7 @@ public abstract class DriveTrain extends Subsystem {
       }
     }
 
-    Robot.log.writeLogEcho("DriveTrain", "Line Tracking", "Quadrant," + quadrant + ",Left," + left + ",Right," + right + ",Line Number," + lineNum + ",Left Percent," + lPercentPower + ",Right Percent," + rPercentPower);
+    Robot.log.writeLog(false, "DriveTrain", "Line Tracking", "Quadrant," + quadrant + ",Left," + left + ",Right," + right + ",Line Number," + lineNum + ",Left Percent," + lPercentPower + ",Right Percent," + rPercentPower);
 
     /* Untested auto-turn stuff */
     if (lEncStopped && lPercentPower != 0) rPercentPower = 1.0; // The goal here is to slam the right side so that we still line up to the wall

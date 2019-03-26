@@ -16,6 +16,7 @@ public class DriveWithVision extends Command {
   private boolean endOnLine = false;
   private boolean gyro = false;
   private double targetQuad = 0; // The quadrant of the target we want to drive to
+  public double stopDistance = 21.0;
 
   /**
    * Vision assisted driving without gyro, keep going and never end on the line
@@ -46,26 +47,26 @@ public class DriveWithVision extends Command {
   protected void initialize() {
     Robot.vision.setPipe(0);
     Robot.vision.setLedMode(3);
-    Robot.driveTrain.setDriveMode(true);
+    // Robot.driveTrain.setDriveMode(true);
     SmartDashboard.putBoolean("Ready to Score", false);
     Robot.driveTrain.clearEncoderList(); // May not be necessary to clear
     //Robot.driveTrain.driveToCrosshair();
     if (gyro) targetQuad = Robot.driveTrain.checkScoringQuadrant();
     System.out.println("Target Quadrant:" + targetQuad);
-    Robot.log.writeLogEcho("DriveTrain", "Vision Tracking Init", "Gyro," + gyro + ",Quadrant,"+targetQuad);
+    Robot.log.writeLog("DriveTrain", "Vision Tracking Init", "Gyro," + gyro + ",Quadrant,"+targetQuad);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.driveTrain.driveToCrosshair(targetQuad);
+    Robot.driveTrain.driveToCrosshair(targetQuad, stopDistance);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
     // Robot.driveTrain.areEncodersStopped(5.0);
-    return Robot.vision.areaFromCamera > 4.8;
+    return Robot.vision.distance < stopDistance;
     // return endOnLine && Robot.lineFollowing.isLinePresent() && Robot.vision.distanceFromTarget() < 40; // Stops when a line is detected by the line followers within a reasonable expected distance
     // TODO with an accurate distance measurement, we can stop automatically when close enough
   }
@@ -76,7 +77,7 @@ public class DriveWithVision extends Command {
     Robot.driveTrain.stop();
     Robot.vision.setPipe(2);
     Robot.vision.setLedMode(1);
-    Robot.log.writeLogEcho("DriveTrain", "Vision Tracking Ended", "");
+    Robot.log.writeLog("DriveTrain", "Vision Tracking Ended", "");
     // Robot.leds.setColor(LedHandler.Color.OFF);   // Robot Periodic will turn off LEDs
   }
 
