@@ -17,7 +17,9 @@ public class DriveAssist extends CommandGroup {
   public DriveAssist() {
     
     addSequential(new VisionChangePipeline(0));
-    addSequential(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchLow));
+    //TODO change this back to sequential when we have a robot with an elevator!!!
+    // addSequential(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchLow));
+    addParallel(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchLow));
     addSequential(new DriveWithVision(false, false)); //  true, true  is endOnLine, use gyro
     // addSequential(new DriveWithLineFollowing(true));
 

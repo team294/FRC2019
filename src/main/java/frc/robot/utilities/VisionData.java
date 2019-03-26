@@ -11,10 +11,12 @@ public class VisionData {
 
     public double horizOffset;    //  Horizontal angle error
     public double vertOffset;       // Vertical angle error
+    public double distance;         // Distance to target in inches
+    public double skew;         // Skew angle of target, -45 to +45 degrees
     
     public double areaFromCamera,ledMode;
     private NetworkTableEntry ledM, pipeline, camMode, stream, snapshot;
-    public NetworkTableEntry xValue,yValue,aValue;
+    public NetworkTableEntry xValue,yValue,aValue,sValue;
     /**
      * Creates a VisionData object and connects to Limelight Camera
      */
@@ -31,6 +33,7 @@ public class VisionData {
         xValue = limelight.getEntry("tx");
         yValue = limelight.getEntry("ty");
         aValue = limelight.getEntry("ta");
+        sValue = limelight.getEntry("ts");
 
         SmartDashboard.putNumber("Vision pipeline", 2.0);
     // Aim error and angle error based on calibrated limelight cross-hair
@@ -42,9 +45,15 @@ public class VisionData {
         vertOffset = yValue.getDouble(0);
         areaFromCamera = aValue.getDouble(0); 
         ledMode = ledM.getDouble(0);
+        distance = 76.48 / Math.sqrt(areaFromCamera); // Distance in inches, center of limelight to center of target
+        skew = sValue.getDouble(0);
+        skew = (skew<-45) ? skew+90 : skew;  // convert skew from (-90, 0) to (-45, 45)
+
         SmartDashboard.putNumber("Vision X", horizOffset);
         SmartDashboard.putNumber("Vision Y", vertOffset);
         SmartDashboard.putNumber("Vision Area", areaFromCamera);
+        SmartDashboard.putNumber("Vision Distance", distance);
+        SmartDashboard.putNumber("Vision Skew", skew);
     }
 
     /*
@@ -116,14 +125,4 @@ public class VisionData {
         camMode.setDouble(mode);
     }
     
-    /**
-     *  questionable accuracy
-    * @return the distance from the target in inches
-    * 
-    */
-    public double distanceFromTarget () {
-        double distance = 3.7 * vertOffset + 65.9; // TODO: Based on crosshair at default for camera mount +angle on 2018 practice; will need to be updated for real robot
-        SmartDashboard.putNumber("Vision Distance", distance);
-        return distance;
-    }
 }
