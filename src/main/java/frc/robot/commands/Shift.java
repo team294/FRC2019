@@ -14,9 +14,13 @@ public class Shift extends Command {
 
   private boolean shift;
 
+  /**
+	 * Shifts according to parameter
+	 * 
+	 * @param high
+	 *            true for high gear, false for low gear
+	 */
   public Shift(boolean high) {
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
     requires(Robot.shifter);
     shift = high;
   }
@@ -24,21 +28,18 @@ public class Shift extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.log.writeLog("Shift", "initialize start", "current time," + System.currentTimeMillis());
+    Robot.log.writeLog(false, "Shift", "", shift ? "high" : "low");
     Robot.shifter.setShift(shift);
-    Robot.log.writeLog("Shift", "initialize finish", "current time," + System.currentTimeMillis());
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.log.writeLog("Shift", "execute", "current time," + System.currentTimeMillis());
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    Robot.log.writeLog("Shift", "isFinished", "current time," + System.currentTimeMillis());
     return true;
   }
 

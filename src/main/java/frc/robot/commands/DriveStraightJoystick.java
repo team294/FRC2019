@@ -28,6 +28,9 @@ public class DriveStraightJoystick extends Command {
     //double leftValue = Robot.oi.leftJoystick.getY();
     double rightValue = Robot.oi.rightJoystick.getY();
 
+    rightValue = (rightValue>0.55) ? 0.55 : rightValue;
+    rightValue = (rightValue<-0.55) ? -0.55 : rightValue;
+
     if (Robot.driveTrain.getDriveDirection())  {
       Robot.driveTrain.tankDrive(-rightValue, -rightValue);
     } else {
