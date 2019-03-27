@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
     canDeviceFinder.enumerateCANBusToStdOut();
 
     // Create file log first, so any other class constructors can log data
-    log = new FileLog("C4");
+    log = new FileLog("D0");
 
     // Read robot preference next, so any other class constructors can use preferences 
     robotPrefs = new RobotPreferences();
