@@ -16,7 +16,7 @@ public class DriveWithVision extends Command {
   private boolean endOnLine = false;
   private boolean gyro = false;
   private double targetQuad = 0; // The quadrant of the target we want to drive to
-  public double stopDistance = 21.0;
+  public double stopDistance = 26.0;    // Was 21  The camera is 21.7 inches from the front of the back of the hatch cover
 
   /**
    * Vision assisted driving without gyro, keep going and never end on the line

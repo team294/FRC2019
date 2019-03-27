@@ -398,12 +398,13 @@ public abstract class DriveTrain extends Subsystem {
     double lPercentOutput = visionSpeed + (gainConstant * finalAngle); //xVal
     double rPercentOutput = visionSpeed - (gainConstant * finalAngle); //xVal
 
-    /* Untested auto-turn stuff */
+/* Untested auto-turn stuff This was tested when we were hitting the wall with the bumper.  This is not recommended - It will damage the intake
+    
     if (lEncStopped && lPercentOutput != 0) rPercentOutput = 1.0; // The goal here is to slam the right side so that we still line up to the wall
     if (rEncStopped && rPercentOutput != 0) lPercentOutput = 1.0; 
     if (lPercentOutput == 1.0 || rPercentOutput == 1.0) System.out.println("STOP DETECTED, INITIATING EVASIVE MANEUVERS"); // TODO: test this because it doesn't look like it ever works
-
-    if (area != 0) tankDrive(lPercentOutput, rPercentOutput); // area goes to zero before the front hits the wall
+*/
+    if (area != 0) tankDrive(lPercentOutput, rPercentOutput); // area goes to zero before the front hits the wall???
     else tankDrive(0, 0);
 
     Robot.log.writeLog(false, "DriveTrain", "Vision Tracking", "Crosshair Horiz Offset," + xVal + ",Vert Offset," + yVal
