@@ -78,8 +78,8 @@ public class OI {
     xbRT.whenActive(new CargoOuttake(-0.8)); // RT
 
     // Joystick buttons
-    left[1].whenPressed(new Shift(true)); // high gear
-    right[1].whenPressed(new Shift(false)); // low gear
+    left[1].whenPressed(new Shift(false)); // low gear
+    right[1].whenPressed(new Shift(true)); // high gear
     left[2].whenPressed(new DriveAssist()); // Turn on vision pipeline and move elevator low
     // left[2].whileHeld(new DriveWithVision(false, false)); // drive with visionf
     left[2].whenReleased(new DriveWithJoysticks());

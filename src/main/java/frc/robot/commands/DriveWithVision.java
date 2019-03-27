@@ -16,14 +16,24 @@ public class DriveWithVision extends Command {
   private boolean endOnLine = false;
   private boolean gyro = false;
   private double targetQuad = 0; // The quadrant of the target we want to drive to
-  public double stopDistance = 26.0;    // Was 21  The camera is 21.7 inches from the front of the back of the hatch cover
+
+  private double stopDistance = 28.0;  // Used 26.0 in the lab, changed to 28 for safety
+  private final double MAX_SPEED = 0.65;
+  private double priorVisionSpeed = MAX_SPEED;
+  private double visionSpeed = MAX_SPEED;
+
+  private double lPercentOutput, rPercentOutput;
+
+  private double distance = 0;
+  private double area = 0;
+  private double xVal = 0;
+  private double yVal = 0;
+  private double skew = 0;
 
   /**
    * Vision assisted driving without gyro, keep going and never end on the line
    */
   public DriveWithVision() {
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
     this(false, false);
   }
 
@@ -40,6 +50,8 @@ public class DriveWithVision extends Command {
 
     Robot.vision.setPipe(0); // On vision pipeline
     Robot.vision.setLedMode(3); // TODO Change back to 3 to turn on LEDs.  Make sure the LEDs are on before driving
+
+    updateLog();  // Prime StringBuilder to speed up code during execution
   }
 
   // Called just before this Command runs the first time
@@ -51,15 +63,86 @@ public class DriveWithVision extends Command {
     SmartDashboard.putBoolean("Ready to Score", false);
     Robot.driveTrain.clearEncoderList(); // May not be necessary to clear
     //Robot.driveTrain.driveToCrosshair();
-    if (gyro) targetQuad = Robot.driveTrain.checkScoringQuadrant();
-    System.out.println("Target Quadrant:" + targetQuad);
-    Robot.log.writeLog("DriveTrain", "Vision Tracking Init", "Gyro," + gyro + ",Quadrant,"+targetQuad);
+    if (gyro) {
+      targetQuad = Robot.driveTrain.checkScoringQuadrant();
+      Robot.log.writeLog(false, "DriveWithVision", "Init", "Gyro,true,Quadrant,"+targetQuad);
+    } else {
+      Robot.log.writeLog(false, "DriveWithVision", "Init", "Gyro,false");
+    }
+
+    priorVisionSpeed = MAX_SPEED;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.driveTrain.driveToCrosshair(targetQuad, stopDistance);
+    double xOffsetAdjustmentFactor = 1.5; // Should be tested to be perfect; 2 seems to go out of frame too quickly. Must be greater than 1.
+    //double xOffsetAdjustmentFactor = 2.0 + Robot.oi.leftJoystick.getY(); // xAdjustment based on distance
+
+
+    //double minDistanceToTarget = 13;
+    distance = Robot.vision.distance; // Distance formula should work now; need to modulate speed based on dist
+    area = Robot.vision.areaFromCamera;
+    xVal = Robot.vision.horizOffset; // Alpha offset
+    yVal = Robot.vision.vertOffset;
+    skew = Robot.vision.skew;
+    double finalAngle;
+
+    if (targetQuad != 0) {
+      SmartDashboard.putNumber("Measured Angle", xVal);
+      double alphaT = xVal + Robot.driveTrain.getGyroRotation() - Robot.driveTrain.getTargetAngle(targetQuad); // true angle for measuring x displacement
+      SmartDashboard.putNumber("Adjusted angle to target ", alphaT);
+      double alphaA = Math.toDegrees(Math.atan(xOffsetAdjustmentFactor * Math.tan(Math.toRadians(alphaT)))); // Adjusted angle for x displacement
+      SmartDashboard.putNumber("False displacement angle", alphaA);
+      finalAngle = alphaA + Robot.driveTrain.getTargetAngle(targetQuad) - Robot.driveTrain.getGyroRotation();
+      if (finalAngle > 180) finalAngle -= 360; // Should fix problems in quadrant 3.5 regarding angle overflow
+      if (finalAngle < -180) finalAngle += 360; // Relative angle
+      SmartDashboard.putNumber("Final Angle", finalAngle);
+    } else {
+      // Drive directly towards target
+      finalAngle = xVal;
+
+      // If we are farther than 40in from the target, use the target skew to 
+      // follow an S-curve path to approach the target from a perpendicular line
+      if (distance>43) finalAngle -= skew*distance * 0.035;  // tuned to 0.035  for distance > 43
+    }
+
+    double gainConstant = distance * 0.00005 + 0.008;  // tuned to 0.008
+
+    //double lJoystickAdjust = Math.abs(Robot.oi.leftJoystick.getY());
+    //double lJoystickAdjust = 0.7 * Math.sqrt(lJoystickRaw);
+    //double lJoystickAdjust = 0.55 / (1 + Math.exp(-10 * (lJoystickRaw - 0.35)));
+    // double lJoystickAdjust = 0.50 / (1 + Math.exp(-8 * (lJoystickRaw - 0.4))); // Slightly longer acceleration curve than previous sigmoid
+
+    // Prior code
+    // double lJoystickRaw = Math.abs(Robot.oi.leftJoystick.getY());
+    // double lJoystickAdjust = lJoystickRaw * 0.8;
+
+    // Decease speed in last 10 inches
+    visionSpeed = (distance > stopDistance + 10) ? MAX_SPEED : MAX_SPEED * (distance-stopDistance)/10.0;
+    // Don't allow speed to increase
+    if (priorVisionSpeed < visionSpeed) visionSpeed = priorVisionSpeed;
+    priorVisionSpeed = visionSpeed;
+
+    SmartDashboard.putNumber("Vision Speed", visionSpeed);
+    lPercentOutput = visionSpeed + (gainConstant * finalAngle);
+    rPercentOutput = visionSpeed - (gainConstant * finalAngle);
+
+    /* Untested auto-turn stuff */
+    // if (lEncStopped && lPercentOutput != 0) rPercentOutput = 1.0; // The goal here is to slam the right side so that we still line up to the wall
+    // if (rEncStopped && rPercentOutput != 0) lPercentOutput = 1.0; 
+    // if (lPercentOutput == 1.0 || rPercentOutput == 1.0) System.out.println("STOP DETECTED, INITIATING EVASIVE MANEUVERS"); 
+
+    if (area != 0) Robot.driveTrain.tankDrive(lPercentOutput, rPercentOutput); // area goes to zero before the front hits the wall
+    else Robot.driveTrain.stop();
+
+    updateLog();
+  }
+
+  private void updateLog() {
+    Robot.log.writeLog(false, "DriveWithVision", "update", "Crosshair Horiz Offset," + xVal + ",Vert Offset," + yVal
+     + ",Target Area," + area + ",Target Skew," + skew + ",Inches from Target," + distance
+     + ",Base power," + visionSpeed + ",Left Percent," + lPercentOutput + ",Right Percent," + rPercentOutput);
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -68,7 +151,6 @@ public class DriveWithVision extends Command {
     // Robot.driveTrain.areEncodersStopped(5.0);
     return Robot.vision.distance < stopDistance;
     // return endOnLine && Robot.lineFollowing.isLinePresent() && Robot.vision.distanceFromTarget() < 40; // Stops when a line is detected by the line followers within a reasonable expected distance
-    // TODO with an accurate distance measurement, we can stop automatically when close enough
   }
 
   // Called once after isFinished returns true
@@ -77,7 +159,7 @@ public class DriveWithVision extends Command {
     Robot.driveTrain.stop();
     Robot.vision.setPipe(2);
     Robot.vision.setLedMode(1);
-    Robot.log.writeLog("DriveTrain", "Vision Tracking Ended", "");
+    Robot.log.writeLog("DriveWithVision", "end", "");
     // Robot.leds.setColor(LedHandler.Color.OFF);   // Robot Periodic will turn off LEDs
   }
 
