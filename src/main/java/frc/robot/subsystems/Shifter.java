@@ -43,7 +43,7 @@ public class Shifter extends Subsystem {
 	 * @return true for high gear, false for low
 	 */
 	public boolean isShifterInHighGear() {
-		return shifter.get() == false; // get() false is high gear, get() true is low gear
+		return shifter.get(); // get() false is high gear, get() true is low gear
 		//return shifter.get() == Value.kForward; // get() Forward is high gear, get() Reverse is low gear
 	}
 
