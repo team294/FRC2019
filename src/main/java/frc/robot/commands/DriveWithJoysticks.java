@@ -32,11 +32,11 @@ public class DriveWithJoysticks extends Command {
     double rightValue = Robot.oi.rightJoystick.getY();
 
     if (Robot.driveTrain.getDriveDirection() && Robot.shifter.isShifterInHighGear())  {
-      Robot.driveTrain.tankDrive(-leftValue * 0.7, -rightValue * 0.7);
+      Robot.driveTrain.tankDrive(-leftValue * 0.8, -rightValue * 0.8);
     } else if (Robot.driveTrain.getDriveDirection() && !Robot.shifter.isShifterInHighGear()) {
       Robot.driveTrain.tankDrive(-leftValue, -rightValue);
     } else if (!Robot.driveTrain.getDriveDirection() && Robot.shifter.isShifterInHighGear()) {
-      Robot.driveTrain.tankDrive(leftValue * 0.7, rightValue * 0.7);
+      Robot.driveTrain.tankDrive(leftValue * 0.8, rightValue * 0.8);
     } else {
       Robot.driveTrain.tankDrive(leftValue, rightValue);
     }
