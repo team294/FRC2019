@@ -11,18 +11,21 @@ public class VisionData {
 
     public double horizOffset;    //  Horizontal angle error
     public double vertOffset;       // Vertical angle error
-    public double distance;         // Distance to target in inches
+    public double distance;         // Distance to target in inches, calculated from area
+    public double distanceUsingCorners;   // Distance to target in inches, calculated from contour corners
     public double skew;         // Skew angle of target, -45 to +45 degrees
     public boolean valid;       // Do we have a valid target?
     public boolean vtemp;
     
     public double areaFromCamera,ledMode;
 
+    public double[] cornX, cornY;
+
     private NetworkTableEntry ledM, pipeline, camMode, stream, snapshot;
     private NetworkTableEntry nteX, nteY, nteA, nteS;
     private NetworkTableEntry nteV, nteCornX, nteCornY;
 
-    private 
+    private double[] defaultArray = new double[0];          // Default value for returning arrays for networktables
 
     /**
      * Creates a VisionData object and connects to Limelight Camera
@@ -52,7 +55,7 @@ public class VisionData {
     }
 
     public void readCameraData() {
-        valid = nteV.getDouble(0) == 1;
+        valid = (nteV.getDouble(0) == 1);
         horizOffset = nteX.getDouble(0);
         vertOffset = nteY.getDouble(0);
         areaFromCamera = nteA.getDouble(0); 
@@ -61,11 +64,29 @@ public class VisionData {
         skew = nteS.getDouble(0);
         skew = (skew<-45) ? skew+90 : skew;  // convert skew from (-90, 0) to (-45, 45)
 
+        cornX = nteCornX.getDoubleArray(defaultArray);
+        cornY = nteCornY.getDoubleArray(defaultArray);
+
+        // Re-check valid, to see if it has changed
+        valid = valid && (nteV.getDouble(0) == 1);
+
+
+
+        SmartDashboard.putBoolean("Vision valid", valid);
         SmartDashboard.putNumber("Vision X", horizOffset);
         SmartDashboard.putNumber("Vision Y", vertOffset);
         SmartDashboard.putNumber("Vision Area", areaFromCamera);
         SmartDashboard.putNumber("Vision Distance", distance);
         SmartDashboard.putNumber("Vision Skew", skew);
+    }
+
+    private boolean calcDistanceFromCorners() {
+        if (!valid || cornX.length != 8 || cornY.length != 8) {
+            distanceUsingCorners = 0;
+            return false;
+        }
+
+        return true;
     }
 
     /*
