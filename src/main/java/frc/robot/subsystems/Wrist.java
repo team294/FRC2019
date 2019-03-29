@@ -357,9 +357,9 @@ public class Wrist extends Subsystem {
       }
     }
     
-    // Un-calibrates the wrist if the angle is outside of bounds... can we figure out a way to not put this in periodic()?
+    // Un-calibrates the wrist if the angle is outside of bounds
     if (getWristAngle() > Robot.robotPrefs.wristMax + 5.0 || getWristAngle() < Robot.robotPrefs.wristMin - 5.0) {
-     // Robot.robotPrefs.setWristUncalibrated();   // This seems to be causing more harm than good 3/21  Temporarily removed.
+     Robot.robotPrefs.setWristUncalibrated();
       updateWristLog(true);
     }
 
