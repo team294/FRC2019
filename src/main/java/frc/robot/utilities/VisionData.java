@@ -13,10 +13,17 @@ public class VisionData {
     public double vertOffset;       // Vertical angle error
     public double distance;         // Distance to target in inches
     public double skew;         // Skew angle of target, -45 to +45 degrees
+    public boolean valid;       // Do we have a valid target?
+    public boolean vtemp;
     
     public double areaFromCamera,ledMode;
+
     private NetworkTableEntry ledM, pipeline, camMode, stream, snapshot;
-    public NetworkTableEntry xValue,yValue,aValue,sValue;
+    private NetworkTableEntry nteX, nteY, nteA, nteS;
+    private NetworkTableEntry nteV, nteCornX, nteCornY;
+
+    private 
+
     /**
      * Creates a VisionData object and connects to Limelight Camera
      */
@@ -30,23 +37,28 @@ public class VisionData {
         stream = limelight.getEntry("stream");
         snapshot = limelight.getEntry("snapshot");
     
-        xValue = limelight.getEntry("tx");
-        yValue = limelight.getEntry("ty");
-        aValue = limelight.getEntry("ta");
-        sValue = limelight.getEntry("ts");
+        nteX = limelight.getEntry("tx");
+        nteY = limelight.getEntry("ty");
+        nteA = limelight.getEntry("ta");
+        nteS = limelight.getEntry("ts");
+
+        nteV = limelight.getEntry("tv");
+        nteCornX = limelight.getEntry("tcornx");
+        nteCornY = limelight.getEntry("tcorny");
 
         SmartDashboard.putNumber("Vision pipeline", 2.0);
     // Aim error and angle error based on calibrated limelight cross-hair
     // aimXError = limelight.getEntry("cx0");  // aim error from CrossHair
     }
 
-    public void readCameraData() {       
-        horizOffset = xValue.getDouble(0);
-        vertOffset = yValue.getDouble(0);
-        areaFromCamera = aValue.getDouble(0); 
+    public void readCameraData() {
+        valid = nteV.getDouble(0) == 1;
+        horizOffset = nteX.getDouble(0);
+        vertOffset = nteY.getDouble(0);
+        areaFromCamera = nteA.getDouble(0); 
         ledMode = ledM.getDouble(0);
         distance = 76.48 / Math.sqrt(areaFromCamera); // Distance in inches, center of limelight to center of target
-        skew = sValue.getDouble(0);
+        skew = nteS.getDouble(0);
         skew = (skew<-45) ? skew+90 : skew;  // convert skew from (-90, 0) to (-45, 45)
 
         SmartDashboard.putNumber("Vision X", horizOffset);
