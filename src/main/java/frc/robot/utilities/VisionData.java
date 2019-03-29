@@ -83,7 +83,7 @@ public class VisionData {
     private boolean calcDistanceUsingCorners() {
         if (!valid || cornX.length != 8 || cornY.length != 8) {
             distanceUsingCorners = 0;
-            SmartDashboard.putNumber("Vision DistUC rawDX", cornX[7]-cornX[0]);
+            SmartDashboard.putNumber("Vision DistUC rawDX", 0);
             return false;
         }
 
