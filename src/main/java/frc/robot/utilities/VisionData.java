@@ -64,15 +64,23 @@ public class VisionData {
         skew = nteS.getDouble(0);
         skew = (skew<-45) ? skew+90 : skew;  // convert skew from (-90, 0) to (-45, 45)
 
-        cornX = nteCornX.getDoubleArray(defaultArray);
-        cornY = nteCornY.getDoubleArray(defaultArray);
+        int i = 0;
+        do {
+            cornX = nteCornX.getDoubleArray(defaultArray);
+            cornY = nteCornY.getDoubleArray(defaultArray);
+            i++;
+        } while (i<3 && (cornX.length != cornY.length || cornX.length<5));
 
         // Re-check valid, to see if it has changed
         valid = valid && (nteV.getDouble(0) == 1);
 
-
+        calcDistanceUsingCorners();
+        SmartDashboard.putNumber("Vision Distance Area", distance);
+        distance = distanceUsingCorners;
 
         SmartDashboard.putBoolean("Vision valid", valid);
+        SmartDashboard.putNumber("Vision cx.len", cornX.length);
+        SmartDashboard.putNumber("Vision cy.len", cornY.length);
         SmartDashboard.putNumber("Vision X", horizOffset);
         SmartDashboard.putNumber("Vision Y", vertOffset);
         SmartDashboard.putNumber("Vision Area", areaFromCamera);
@@ -81,13 +89,36 @@ public class VisionData {
     }
 
     private boolean calcDistanceUsingCorners() {
-        if (!valid || cornX.length != 8 || cornY.length != 8) {
+        if (!valid || cornX.length != cornY.length) {
             distanceUsingCorners = 0;
-            SmartDashboard.putNumber("Vision DistUC rawDX", 0);
+            SmartDashboard.putNumber("Vision DistUC", distanceUsingCorners);
             return false;
         }
 
-        SmartDashboard.putNumber("Vision DistUC rawDX", cornX[7]-cornX[0]);
+        // Find the top left and top right corners
+        int i = 0;
+        int topLeftIndex = i;
+        int topRightIndex = i;
+        double minTopLeftMetric = cornX[i] + cornY[i];
+        double maxTopRightMetric = cornX[i] - cornY[i];
+
+        for (i =1; i<cornX.length; i++) {
+            if (cornX[i] + cornY[i] < minTopLeftMetric) {
+                topLeftIndex = i;
+                minTopLeftMetric = cornX[i] + cornY[i];
+            }
+            if (cornX[i] - cornY[i] > maxTopRightMetric) {
+                topRightIndex = i;
+                maxTopRightMetric = cornX[i] - cornY[i];
+            }
+        }
+
+        distanceUsingCorners = 2820.0 / ( cornX[topRightIndex] - cornX[topLeftIndex] );
+
+        // SmartDashboard.putNumber("Vision TLIndex", topLeftIndex);   // Always 0?
+        // SmartDashboard.putNumber("Vision TRIndex", topRightIndex);   // Always 7?
+        // SmartDashboard.putNumber("Vision DistUC rawDX", cornX[topRightIndex]-cornX[topLeftIndex]);
+        SmartDashboard.putNumber("Vision DistUC", distanceUsingCorners);
 
         return true;
     }
