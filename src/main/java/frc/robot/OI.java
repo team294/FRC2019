@@ -60,7 +60,9 @@ public class OI {
     xbB[2].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchMid)); // B
     xbB[3].whenPressed(new ElevatorWristStow()); // X
     xbB[4].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchHigh)); // Y
-    xbB[5].whenPressed(new RearHatchSet(false)); // LB
+    // xbB[5].whenPressed(new RearHatchSet(false)); // LB
+    xbB[5].whenActive(new HatchSet(false)); // LB
+    xbB[5].whenInactive(new HatchSet(true)); // LB
     xbB[6].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.cargoShipCargo)); // RB
     xbB[7].whenPressed(new StopAllMotors()); // Back
     xbB[8].whenPressed(new CargoRearHatchStop()); // Start
@@ -68,12 +70,14 @@ public class OI {
     xbB[10].whenPressed(new WristWithXBox()); // RStick
     xbUp.whenActive(new CargoIntakeFromLoad()); // DPadUp
     // xbRight.whenActive(new HatchSet(true)); // DPadRight
-    xbRight.whenActive(new HatchFrontAndRearSet(true)); // DPadRight press
-    xbRight.whenInactive(new RearHatchSetPercentOutput(0.6, 1)); // DPadRight release
+    // xbRight.whenActive(new HatchFrontAndRearSet(true)); // DPadRight press
+    // xbRight.whenInactive(new RearHatchSetPercentOutput(0.6, 1)); // DPadRight release
     xbDown.whenActive(new CargoIntakeFromGround()); // DPadDown
     // xbLeft.whenActive(new HatchSet(false)); // DPadLeft
-    xbLeft.whenActive(new HatchFrontAndRearSet(false)); // DPadLeft press
-    xbLeft.whenInactive(new RearHatchSetPercentOutput(-0.6, 1.5)); // DPadLeft release
+    // xbLeft.whenActive(new HatchFrontAndRearSet(false)); // DPadLeft press
+    // xbLeft.whenInactive(new RearHatchSetPercentOutput(-0.6, 1.5)); // DPadLeft release
+    // xbLeft.whenActive(new HatchSet(false)); // DPad Left Press
+    // xbLeft.whenInactive(new HatchSet(true)); // DPad Left Release
     xbLT.whenActive(new CargoOuttake(-1.0)); // LT
     xbRT.whenActive(new CargoOuttake(-0.8)); // RT
 
@@ -103,8 +107,8 @@ public class OI {
     coP[8].whenPressed(new ClimbSequence()); // BIG RED BUTTON
     coP[9].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchHigh)); // mid row, first button, UP
     coP[10].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchMid)); // mid row, first button, DOWN
-    coP[11].whenPressed(new RearHatchSet(true)); // mid row, second button, UP
-    coP[12].whenPressed(new RearHatchSet(false)); // mid row, second button, DOWN
+    // coP[11].whenPressed(new RearHatchSet(true)); // mid row, second button, UP
+    // coP[12].whenPressed(new RearHatchSet(false)); // mid row, second button, DOWN
     coP[13].whenPressed(new WristSetPercentOutput(0.2)); // mid row, third button, UP
     coP[14].whenPressed(new WristSetPercentOutput(-0.2)); // mid row, third button, DOWN
     coP[15].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.cargoShipCargo)); // third row, first button, UP
@@ -189,6 +193,6 @@ public class OI {
 	 */
 	public void setXBoxRumble(double percentRumble) {
 		xBoxController.setRumble(RumbleType.kLeftRumble, percentRumble);
-		xBoxController.setRumble(RumbleType.kRightRumble, percentRumble);
+    xBoxController.setRumble(RumbleType.kRightRumble, percentRumble);
 	}
 }

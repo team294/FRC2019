@@ -39,10 +39,10 @@ public class NeoDriveTrain extends DriveTrain {
     super();
 
     leftMotor1.setIdleMode(IdleMode.kCoast);
-    leftMotor2.setIdleMode(IdleMode.kBrake);
+    leftMotor2.setIdleMode(IdleMode.kCoast);  // was brake
     leftMotor3.setIdleMode(IdleMode.kCoast);
     rightMotor1.setIdleMode(IdleMode.kCoast);
-    rightMotor2.setIdleMode(IdleMode.kBrake);
+    rightMotor2.setIdleMode(IdleMode.kCoast);   // was Brake
     rightMotor3.setIdleMode(IdleMode.kCoast);
 
     leftMotor1.setInverted(true);

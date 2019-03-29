@@ -17,7 +17,7 @@ public class DriveWithVision extends Command {
   private boolean gyro = false;
   private double targetQuad = 0; // The quadrant of the target we want to drive to
 
-  private double stopDistance = 28.0;  // Used 26.0 in the lab, changed to 28 for safety
+  private double stopDistance = 45.0;  // Used 26.0 in the lab, changed to 28 for safety, used to be 28
   private final double MAX_SPEED = 0.65;
   private double priorVisionSpeed = MAX_SPEED;
   private double visionSpeed = MAX_SPEED;
@@ -104,7 +104,7 @@ public class DriveWithVision extends Command {
 
       // If we are farther than 40in from the target, use the target skew to 
       // follow an S-curve path to approach the target from a perpendicular line
-      if (distance>43) finalAngle -= skew*distance * 0.035;  // tuned to 0.035  for distance > 43
+      // if (distance>43) finalAngle -= skew*distance * 0.035;  // tuned to 0.035  for distance > 43
     }
 
     double gainConstant = distance * 0.00005 + 0.008;  // tuned to 0.008
