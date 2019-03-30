@@ -11,7 +11,8 @@ public class VisionData {
 
     public double horizOffset;    //  Horizontal angle error
     public double vertOffset;       // Vertical angle error
-    public double distance;         // Distance to target in inches, calculated from area
+    public double distance;         // Distance to target in inches, final best estimate (use for driving code)
+    public double distanceUsingArea;         // Distance to target in inches, calculated from area
     public double distanceUsingCorners;   // Distance to target in inches, calculated from contour corners
     public double skew;         // Skew angle of target, -45 to +45 degrees
     public boolean valid;       // Do we have a valid target?
@@ -59,7 +60,7 @@ public class VisionData {
         vertOffset = nteY.getDouble(0);
         areaFromCamera = nteA.getDouble(0); 
         ledMode = ledM.getDouble(0);
-        distance = 76.48 / Math.sqrt(areaFromCamera); // Distance in inches, center of limelight to center of target
+        distanceUsingArea = 76.48 / Math.sqrt(areaFromCamera); // Distance in inches, center of limelight to center of target
         skew = nteS.getDouble(0);
         skew = (skew<-45) ? skew+90 : skew;  // convert skew from (-90, 0) to (-45, 45)
 
@@ -81,12 +82,14 @@ public class VisionData {
         valid = valid && (nteV.getDouble(0) == 1);
 
         calcDistanceUsingCorners();
-        SmartDashboard.putNumber("Vision Distance Area", distance);
+        SmartDashboard.putNumber("Vision DistArea", distanceUsingArea);
+        SmartDashboard.putNumber("Vision DistUC", distanceUsingCorners);
+        SmartDashboard.putNumber("Vision cx.len", cornX.length);
+        SmartDashboard.putNumber("Vision cy.len", cornY.length);
+
         distance = distanceUsingCorners;        // Use distance calcs from corners instead of area
 
         SmartDashboard.putBoolean("Vision valid", valid);
-        SmartDashboard.putNumber("Vision cx.len", cornX.length);
-        SmartDashboard.putNumber("Vision cy.len", cornY.length);
         SmartDashboard.putNumber("Vision X", horizOffset);
         SmartDashboard.putNumber("Vision Y", vertOffset);
         SmartDashboard.putNumber("Vision Area", areaFromCamera);
@@ -103,7 +106,6 @@ public class VisionData {
     private boolean calcDistanceUsingCorners() {
         if (!valid || cornX.length != cornY.length) {
             distanceUsingCorners = 0;
-            SmartDashboard.putNumber("Vision DistUC", distanceUsingCorners);
             return false;
         }
 
@@ -130,7 +132,6 @@ public class VisionData {
         // SmartDashboard.putNumber("Vision TLIndex", topLeftIndex);   // Always 0?
         // SmartDashboard.putNumber("Vision TRIndex", topRightIndex);   // Always 7?
         // SmartDashboard.putNumber("Vision DistUC rawDX", cornX[topRightIndex]-cornX[topLeftIndex]);
-        SmartDashboard.putNumber("Vision DistUC", distanceUsingCorners);
 
         return true;
     }

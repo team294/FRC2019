@@ -141,7 +141,8 @@ public class DriveWithVision extends Command {
 
   private void updateLog() {
     Robot.log.writeLog(false, "DriveWithVision", "update", "Crosshair Horiz Offset," + xVal + ",Vert Offset," + yVal
-     + ",Target Area," + area + ",Target Skew," + skew + ",Inches from Target," + distance
+     + ",Target Area," + area + ",Target Skew," + skew + ",gyro," + Robot.driveTrain.getGyroRotation() + ",Inches from Target," + distance
+     + ",DistUseArea," + Robot.vision.distanceUsingArea + ",DistUseCorner," + Robot.vision.distanceUsingCorners
      + ",Base power," + visionSpeed + ",Left Percent," + lPercentOutput + ",Right Percent," + rPercentOutput);
   }
 
