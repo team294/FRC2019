@@ -59,7 +59,7 @@ public class DriveWithVision extends Command {
   protected void initialize() {
     Robot.vision.setPipe(0);
     Robot.vision.setLedMode(3);
-    // Robot.driveTrain.setDriveMode(true);
+    Robot.driveTrain.setDriveMode(false);
     SmartDashboard.putBoolean("Ready to Score", false);
     Robot.driveTrain.clearEncoderList(); // May not be necessary to clear
     //Robot.driveTrain.driveToCrosshair();
@@ -104,7 +104,7 @@ public class DriveWithVision extends Command {
 
       // If we are farther than 40in from the target, use the target skew to 
       // follow an S-curve path to approach the target from a perpendicular line
-      if (distance>43) finalAngle -= skew*distance * 0.035;  // tuned to 0.035  for distance > 43
+      // if (distance>43) finalAngle -= skew*distance * 0.035;  // tuned to 0.035  for distance > 43
     }
 
     double gainConstant = distance * 0.00005 + 0.008;  // tuned to 0.008
@@ -160,6 +160,7 @@ public class DriveWithVision extends Command {
     Robot.driveTrain.stop();
     Robot.vision.setPipe(2);
     Robot.vision.setLedMode(1);
+    Robot.driveTrain.setDriveMode(true);
     Robot.log.writeLog("DriveWithVision", "end", "");
     // Robot.leds.setColor(LedHandler.Color.OFF);   // Robot Periodic will turn off LEDs
   }
