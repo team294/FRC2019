@@ -15,7 +15,6 @@ public class VisionData {
     public double distanceUsingCorners;   // Distance to target in inches, calculated from contour corners
     public double skew;         // Skew angle of target, -45 to +45 degrees
     public boolean valid;       // Do we have a valid target?
-    public boolean vtemp;
     
     public double areaFromCamera,ledMode;
 
@@ -64,6 +63,13 @@ public class VisionData {
         skew = nteS.getDouble(0);
         skew = (skew<-45) ? skew+90 : skew;  // convert skew from (-90, 0) to (-45, 45)
 
+        // When we read arrays from the network tables in two sequential statements, we could occasionally get the
+        // X array and Y array from different passes of the vision pipeline, so they may not have the same
+        // array length.  However, the network tables change slowly (every 5 or 10 ms?), so if we are unlucky 
+        // enough to catch a change between reading the X array and the Y array, we can re-try reading both and
+        // then they should be synchronized.
+        // Try reading up to 3 times to get synchronized arrays.  This should be very robust.
+        // We should have at least 5 verticies is 2 targets are recognized.
         int i = 0;
         do {
             cornX = nteCornX.getDoubleArray(defaultArray);
@@ -76,7 +82,7 @@ public class VisionData {
 
         calcDistanceUsingCorners();
         SmartDashboard.putNumber("Vision Distance Area", distance);
-        distance = distanceUsingCorners;
+        distance = distanceUsingCorners;        // Use distance calcs from corners instead of area
 
         SmartDashboard.putBoolean("Vision valid", valid);
         SmartDashboard.putNumber("Vision cx.len", cornX.length);
@@ -88,6 +94,12 @@ public class VisionData {
         SmartDashboard.putNumber("Vision Skew", skew);
     }
 
+    /**
+     * Calculate the distance to target using the X-size of the target, as calculated across
+     * the top of the target (since the bottom of the target may get clipped by the intake
+     * in the field of view).
+     * @return true = target was found, false = target not found
+     */
     private boolean calcDistanceUsingCorners() {
         if (!valid || cornX.length != cornY.length) {
             distanceUsingCorners = 0;
@@ -99,8 +111,8 @@ public class VisionData {
         int i = 0;
         int topLeftIndex = i;
         int topRightIndex = i;
-        double minTopLeftMetric = cornX[i] + cornY[i];
-        double maxTopRightMetric = cornX[i] - cornY[i];
+        double minTopLeftMetric = cornX[i] + cornY[i];          // Top-left corner has min value of X+Y
+        double maxTopRightMetric = cornX[i] - cornY[i];         // Top-right corner has max value of X-Y
 
         for (i =1; i<cornX.length; i++) {
             if (cornX[i] + cornY[i] < minTopLeftMetric) {
