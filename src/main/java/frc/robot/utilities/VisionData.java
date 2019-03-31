@@ -11,12 +11,22 @@ public class VisionData {
 
     public double horizOffset;    //  Horizontal angle error
     public double vertOffset;       // Vertical angle error
-    public double distance;         // Distance to target in inches
+    public double distance;         // Distance to target in inches, final best estimate (use for driving code)
+    public double distanceUsingArea;         // Distance to target in inches, calculated from area
+    public double distanceUsingCorners;   // Distance to target in inches, calculated from contour corners
     public double skew;         // Skew angle of target, -45 to +45 degrees
+    public boolean valid;       // Do we have a valid target?
     
     public double areaFromCamera,ledMode;
+
+    public double[] cornX, cornY;
+
     private NetworkTableEntry ledM, pipeline, camMode, stream, snapshot;
-    public NetworkTableEntry xValue,yValue,aValue,sValue;
+    private NetworkTableEntry nteX, nteY, nteA, nteS;
+    private NetworkTableEntry nteV, nteCornX, nteCornY;
+
+    private double[] defaultArray = new double[0];          // Default value for returning arrays for networktables
+
     /**
      * Creates a VisionData object and connects to Limelight Camera
      */
@@ -30,30 +40,100 @@ public class VisionData {
         stream = limelight.getEntry("stream");
         snapshot = limelight.getEntry("snapshot");
     
-        xValue = limelight.getEntry("tx");
-        yValue = limelight.getEntry("ty");
-        aValue = limelight.getEntry("ta");
-        sValue = limelight.getEntry("ts");
+        nteX = limelight.getEntry("tx");
+        nteY = limelight.getEntry("ty");
+        nteA = limelight.getEntry("ta");
+        nteS = limelight.getEntry("ts");
+
+        nteV = limelight.getEntry("tv");
+        nteCornX = limelight.getEntry("tcornx");
+        nteCornY = limelight.getEntry("tcorny");
 
         SmartDashboard.putNumber("Vision pipeline", 2.0);
     // Aim error and angle error based on calibrated limelight cross-hair
     // aimXError = limelight.getEntry("cx0");  // aim error from CrossHair
     }
 
-    public void readCameraData() {       
-        horizOffset = xValue.getDouble(0);
-        vertOffset = yValue.getDouble(0);
-        areaFromCamera = aValue.getDouble(0); 
+    public void readCameraData() {
+        valid = (nteV.getDouble(0) == 1);
+        horizOffset = nteX.getDouble(0);
+        vertOffset = nteY.getDouble(0);
+        areaFromCamera = nteA.getDouble(0); 
         ledMode = ledM.getDouble(0);
-        distance = 76.48 / Math.sqrt(areaFromCamera); // Distance in inches, center of limelight to center of target
-        skew = sValue.getDouble(0);
+        distanceUsingArea = 76.48 / Math.sqrt(areaFromCamera); // Distance in inches, center of limelight to center of target
+        skew = nteS.getDouble(0);
         skew = (skew<-45) ? skew+90 : skew;  // convert skew from (-90, 0) to (-45, 45)
 
+        // When we read arrays from the network tables in two sequential statements, we could occasionally get the
+        // X array and Y array from different passes of the vision pipeline, so they may not have the same
+        // array length.  However, the network tables change slowly (every 5 or 10 ms?), so if we are unlucky 
+        // enough to catch a change between reading the X array and the Y array, we can re-try reading both and
+        // then they should be synchronized.
+        // Try reading up to 3 times to get synchronized arrays.  This should be very robust.
+        // We should have at least 5 verticies is 2 targets are recognized.
+        int i = 0;
+        do {
+            cornX = nteCornX.getDoubleArray(defaultArray);
+            cornY = nteCornY.getDoubleArray(defaultArray);
+            i++;
+        } while (i<3 && (cornX.length != cornY.length || cornX.length<5));
+
+        // Re-check valid, to see if it has changed
+        valid = valid && (nteV.getDouble(0) == 1);
+
+        calcDistanceUsingCorners();
+        SmartDashboard.putNumber("Vision DistArea", distanceUsingArea);
+        SmartDashboard.putNumber("Vision DistUC", distanceUsingCorners);
+        SmartDashboard.putNumber("Vision cx.len", cornX.length);
+        SmartDashboard.putNumber("Vision cy.len", cornY.length);
+
+        distance = distanceUsingCorners;        // Use distance calcs from corners instead of area
+
+        SmartDashboard.putBoolean("Vision valid", valid);
         SmartDashboard.putNumber("Vision X", horizOffset);
         SmartDashboard.putNumber("Vision Y", vertOffset);
         SmartDashboard.putNumber("Vision Area", areaFromCamera);
         SmartDashboard.putNumber("Vision Distance", distance);
         SmartDashboard.putNumber("Vision Skew", skew);
+    }
+
+    /**
+     * Calculate the distance to target using the X-size of the target, as calculated across
+     * the top of the target (since the bottom of the target may get clipped by the intake
+     * in the field of view).
+     * @return true = target was found, false = target not found
+     */
+    private boolean calcDistanceUsingCorners() {
+        if (!valid || cornX.length != cornY.length) {
+            distanceUsingCorners = 0;
+            return false;
+        }
+
+        // Find the top left and top right corners
+        int i = 0;
+        int topLeftIndex = i;
+        int topRightIndex = i;
+        double minTopLeftMetric = cornX[i] + cornY[i];          // Top-left corner has min value of X+Y
+        double maxTopRightMetric = cornX[i] - cornY[i];         // Top-right corner has max value of X-Y
+
+        for (i =1; i<cornX.length; i++) {
+            if (cornX[i] + cornY[i] < minTopLeftMetric) {
+                topLeftIndex = i;
+                minTopLeftMetric = cornX[i] + cornY[i];
+            }
+            if (cornX[i] - cornY[i] > maxTopRightMetric) {
+                topRightIndex = i;
+                maxTopRightMetric = cornX[i] - cornY[i];
+            }
+        }
+
+        distanceUsingCorners = 2820.0 / ( cornX[topRightIndex] - cornX[topLeftIndex] );
+
+        // SmartDashboard.putNumber("Vision TLIndex", topLeftIndex);   // Always 0?
+        // SmartDashboard.putNumber("Vision TRIndex", topRightIndex);   // Always 7?
+        // SmartDashboard.putNumber("Vision DistUC rawDX", cornX[topRightIndex]-cornX[topLeftIndex]);
+
+        return true;
     }
 
     /*

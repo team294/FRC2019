@@ -17,7 +17,7 @@ public class DriveWithVision extends Command {
   private boolean gyro = false;
   private double targetQuad = 0; // The quadrant of the target we want to drive to
 
-  private double stopDistance = 28.0;  // Used 26.0 in the lab, changed to 28 for safety
+  private double stopDistance = 34.0;  // Used 26.0 in the lab, changed to 28 for safety.  Should be able to use 34 with intake low.
   private final double MAX_SPEED = 0.65;
   private double priorVisionSpeed = MAX_SPEED;
   private double visionSpeed = MAX_SPEED;
@@ -59,7 +59,7 @@ public class DriveWithVision extends Command {
   protected void initialize() {
     Robot.vision.setPipe(0);
     Robot.vision.setLedMode(3);
-    // Robot.driveTrain.setDriveMode(true);
+    Robot.driveTrain.setDriveMode(false);
     SmartDashboard.putBoolean("Ready to Score", false);
     Robot.driveTrain.clearEncoderList(); // May not be necessary to clear
     //Robot.driveTrain.driveToCrosshair();
@@ -104,7 +104,7 @@ public class DriveWithVision extends Command {
 
       // If we are farther than 40in from the target, use the target skew to 
       // follow an S-curve path to approach the target from a perpendicular line
-      if (distance>43) finalAngle -= skew*distance * 0.035;  // tuned to 0.035  for distance > 43
+      // if (distance>43) finalAngle -= skew*distance * 0.035;  // tuned to 0.035  for distance > 43
     }
 
     double gainConstant = distance * 0.00005 + 0.008;  // tuned to 0.008
@@ -141,7 +141,8 @@ public class DriveWithVision extends Command {
 
   private void updateLog() {
     Robot.log.writeLog(false, "DriveWithVision", "update", "Crosshair Horiz Offset," + xVal + ",Vert Offset," + yVal
-     + ",Target Area," + area + ",Target Skew," + skew + ",Inches from Target," + distance
+     + ",Target Area," + area + ",Target Skew," + skew + ",gyro," + Robot.driveTrain.getGyroRotation() + ",Inches from Target," + distance
+     + ",DistUseArea," + Robot.vision.distanceUsingArea + ",DistUseCorner," + Robot.vision.distanceUsingCorners
      + ",Base power," + visionSpeed + ",Left Percent," + lPercentOutput + ",Right Percent," + rPercentOutput);
   }
 
@@ -159,6 +160,7 @@ public class DriveWithVision extends Command {
     Robot.driveTrain.stop();
     Robot.vision.setPipe(2);
     Robot.vision.setLedMode(1);
+    Robot.driveTrain.setDriveMode(true);
     Robot.log.writeLog("DriveWithVision", "end", "");
     // Robot.leds.setColor(LedHandler.Color.OFF);   // Robot Periodic will turn off LEDs
   }

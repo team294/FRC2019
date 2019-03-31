@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
     canDeviceFinder.enumerateCANBusToStdOut();
 
     // Create file log first, so any other class constructors can log data
-    log = new FileLog("D0");
+    log = new FileLog("E4");
 
     // Read robot preference next, so any other class constructors can use preferences 
     robotPrefs = new RobotPreferences();
@@ -116,6 +116,9 @@ public class Robot extends TimedRobot {
     //SmartDashboard.putNumber("Target Distance", Robot.vision.distanceFromTarget()); // Distance isn't used for any segmentation
     SmartDashboard.putNumber("Target Quadrant", Robot.driveTrain.checkScoringQuadrant());
     //SmartDashboard.putBoolean("Vision Assistance Available", vision.areaFromCamera != 0); // This should work, need to test to see if there is a better metric to use
+
+    if (!Robot.hatch.getHatchPiston()) Robot.oi.setXBoxRumble(1.0);
+    else Robot.oi.setXBoxRumble(0);
 
     if (Robot.climb.isVacuumPresent()) Robot.leds.setColor(LedHandler.Color.BLUE, false); // solid BLUE when vacuum drawn
     else if (Robot.climb.getVacuumPressure(false) > 7.0) Robot.leds.setColor(LedHandler.Color.BLUE, true); // blinking BLUE when vacuum is starting to rise

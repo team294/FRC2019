@@ -39,10 +39,10 @@ public class NeoDriveTrain extends DriveTrain {
     super();
 
     leftMotor1.setIdleMode(IdleMode.kCoast);
-    leftMotor2.setIdleMode(IdleMode.kBrake);
+    leftMotor2.setIdleMode(IdleMode.kCoast);  // was brake
     leftMotor3.setIdleMode(IdleMode.kCoast);
     rightMotor1.setIdleMode(IdleMode.kCoast);
-    rightMotor2.setIdleMode(IdleMode.kBrake);
+    rightMotor2.setIdleMode(IdleMode.kCoast);   // was Brake
     rightMotor3.setIdleMode(IdleMode.kCoast);
 
     leftMotor1.setInverted(true);
@@ -127,12 +127,12 @@ public class NeoDriveTrain extends DriveTrain {
      rightMotor2.setIdleMode(IdleMode.kCoast);
      rightMotor3.setIdleMode(IdleMode.kCoast);
     } else {
-     leftMotor1.setIdleMode(IdleMode.kBrake);
+     leftMotor1.setIdleMode(IdleMode.kCoast);
      leftMotor2.setIdleMode(IdleMode.kBrake);
-     leftMotor3.setIdleMode(IdleMode.kBrake);
-     rightMotor1.setIdleMode(IdleMode.kBrake);
+     leftMotor3.setIdleMode(IdleMode.kCoast);
+     rightMotor1.setIdleMode(IdleMode.kCoast);
      rightMotor2.setIdleMode(IdleMode.kBrake);
-     rightMotor3.setIdleMode(IdleMode.kBrake);
+     rightMotor3.setIdleMode(IdleMode.kCoast);
     }
     
   }
@@ -140,9 +140,9 @@ public class NeoDriveTrain extends DriveTrain {
   @Override
   public void updateDriveLog (boolean logWhenDisabled) {
     Robot.log.writeLog(logWhenDisabled, "DriveTrain", "Update Variables",
-      "Drive L1 Volts," + leftMotor1.getBusVoltage() + ",Drive L2 Volts," + leftMotor2.getBusVoltage() + ",Drive L3 Volts," + leftMotor3.getBusVoltage() +
+      "Drive L1 Volts," + leftMotor1.getAppliedOutput() + ",Drive L2 Volts," + leftMotor2.get() + ",Drive L3 Volts," + leftMotor3.getAppliedOutput() +
       ",Drive L1 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor1PDP) + ",Drive L2 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor2PDP) + ",Drive L3 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor3PDP) + 
-      ",Drive R1 Volts," + rightMotor1.getBusVoltage() + ",Drive R2 Volts," + rightMotor2.getBusVoltage() + ",Drive R3 Volts," + rightMotor3.getBusVoltage() + 
+      ",Drive R1 Volts," + rightMotor1.getAppliedOutput() + ",Drive R2 Volts," + rightMotor2.get() + ",Drive R3 Volts," + rightMotor3.getAppliedOutput() + 
       ",Drive R1 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor1PDP) + ",Drive R2 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor2PDP) + ",Drive R3 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor3PDP) + 
       ",L Enc Ticks," + getLeftEncoderTicks() + ",L Drive Inches," + getLeftEncoderInches() + 
       ",R Enc Ticks," + getRightEncoderTicks() + ",R Drive Inches," + getRightEncoderInches() + 

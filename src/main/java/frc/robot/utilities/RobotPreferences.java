@@ -101,7 +101,7 @@ public class RobotPreferences {
 		neoDrivetrain = prefs.getBoolean("neoDrivetrain", true); // Default to true (using Neos) on competition bot
 		wheelCircumference = prefs.getDouble("wheelDiameter", 6) * Math.PI;	
 		elevatorGearCircumference = prefs.getDouble("elevatorGearDiameter", 1.43) * Math.PI; // TODO Recheck that value is correct (at OC Regional) Conversion factor for makeshift elevator 18/32.3568952084);
-		elevatorBottomToFloor = prefs.getDouble("elevatorBottomToFloor", 17.5); // inches from ground to elevator's lowest position
+		elevatorBottomToFloor = prefs.getDouble("elevatorBottomToFloor", 15.5); // inches from ground to elevator's lowest position
 		elevatorWristSafeStow = prefs.getDouble("elevatorWristSafeStow", 18.5); // max elevator position from floor where wrist can be stowed
 		cameraDistanceFromFrontOfBumper = prefs.getDouble("cameraDistanceFromFrontOfBumper", 12);
 		wristGearRatio = prefs.getDouble("wristGearRatio", 1.0);
@@ -177,7 +177,7 @@ public class RobotPreferences {
 			prefs.putDouble("elevatorGearDiameter", 1.43);
 		}
 		if (!prefs.containsKey("elevatorBottomToFloor")) {
-			prefs.putDouble("elevatorBottomToFloor", 17.5);
+			prefs.putDouble("elevatorBottomToFloor", 15.5);
 		}
 		if (!prefs.containsKey("elevatorWristSafeStow")) {
 			prefs.putDouble("elevatorWristSafeStow", 18.5);

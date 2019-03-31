@@ -133,7 +133,7 @@ public abstract class DriveTrain extends Subsystem {
   }
 
   public double encoderTicksToInches(double ticks) {
-    return ticks * Robot.robotPrefs.wheelCircumference; //TODO This is not right
+    return ticks * Robot.robotPrefs.wheelCircumference / Robot.robotPrefs.encoderTicksPerRevolution;
   }
 
   public double getLeftEncoderInches() {
