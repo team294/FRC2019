@@ -12,14 +12,15 @@ import frc.robot.Robot;
 import frc.robot.pathfinder.Pathfinder;
 import frc.robot.pathfinder.Trajectory;
 import frc.robot.pathfinder.followers.DistanceFollower;
-import frc.robot.utilities.Wait;
 
 public class DrivePathfinder extends Command {
   private DistanceFollower dfLeft, dfRight;
-  Trajectory trajCenter;
-  Trajectory trajRight;
-  Trajectory trajLeft;
-  boolean resetGyro;
+  private Trajectory trajCenter;
+  private Trajectory trajRight;
+  private Trajectory trajLeft;
+  private boolean resetGyro;
+  private static boolean enablePathfinder = true; // true = all paths loaded and allow pathfinder to work,
+                                                  // false = a path did not load, stop pathfinder
 
   double distL = 0, distR = 0;      // Distance traveled
   Trajectory.Segment segLeft, segRight;
@@ -38,6 +39,7 @@ public class DrivePathfinder extends Command {
     requires(Robot.driveTrain);
     resetGyro = gyroReset;
 
+    // Load Pathfinder paths
     if (driveDirection) {
       trajCenter = Pathfinder.readFromCSV(pathName + ".pf1.csv", driveDirection);
       trajRight = Pathfinder.readFromCSV(pathName + ".left.pf1.csv", driveDirection);
@@ -48,6 +50,22 @@ public class DrivePathfinder extends Command {
       trajLeft = Pathfinder.readFromCSV(pathName + ".left.pf1.csv", driveDirection);
     }
   
+    // If a path file was missing, then disable Pathfinder for all paths.
+    // Note that enablePathfinder is static, so one copy is shared by all DrivePathfinder objects.
+    // We disable all paths, because if one path is missing in a sequence, then the we don't
+    // want any subsequent paths to run assuming that we followed the missing path.
+    if (trajCenter == null || trajRight == null || trajLeft == null) {
+      enablePathfinder = false;
+      Robot.robotPrefs.recordStickyFaults("Pathfinder");
+      Robot.log.writeLogEcho("Pathfinder", "", "Missing path " + pathName);
+      return;
+    }
+
+    // Don't do anything if any other path is missing
+    if (!enablePathfinder) {
+      return;
+    }
+
     // Create DistanceFollowers for the Trajectories and configure them
     dfLeft = new DistanceFollower(trajLeft);
     dfRight = new DistanceFollower(trajRight);
@@ -64,6 +82,11 @@ public class DrivePathfinder extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    // Don't do anything if this path or any other path is missing
+    if (!enablePathfinder) {
+      return;
+    }
+    
     Robot.log.writeLog("Pathfinder", "initialize", "current time," + System.currentTimeMillis() + ",start time," + dfLeft.getStartTimeMillis());
     Robot.driveTrain.setDriveMode(true);
     Robot.driveTrain.zeroLeftEncoder();
@@ -83,6 +106,11 @@ public class DrivePathfinder extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    // Don't do anything if this path or any other path is missing
+    if (!enablePathfinder) {
+      return;
+    }
+    
     distL = Robot.driveTrain.getLeftEncoderInches();
     distR = Robot.driveTrain.getRightEncoderInches();
 
@@ -119,6 +147,11 @@ public class DrivePathfinder extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
+    // Don't do anything if this path or any other path is missing
+    if (!enablePathfinder) {
+      return true;
+    }
+    
     if (dfLeft.isFinished()) {
       Robot.driveTrain.setVoltageCompensation(false);
       Robot.driveTrain.setDriveMode(false);
@@ -137,5 +170,6 @@ public class DrivePathfinder extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.driveTrain.tankDrive(0, 0);
   }
 }
