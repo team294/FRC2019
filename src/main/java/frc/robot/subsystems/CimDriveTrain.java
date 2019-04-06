@@ -139,6 +139,16 @@ public class CimDriveTrain extends DriveTrain {
   }
 
   @Override
+  public double getLeftEncoderVelocityRaw() {
+    return leftMotor2.getSelectedSensorVelocity(0);
+  }
+
+  @Override
+  public double getRightEncoderVelocityRaw() {
+    return -rightMotor2.getSelectedSensorVelocity(0);
+  }
+
+  @Override
   public void setDriveMode(boolean setCoast) {
     if (setCoast) {
       leftMotor1.setNeutralMode(NeutralMode.Coast);
@@ -164,8 +174,8 @@ public class CimDriveTrain extends DriveTrain {
       ",Drive L1 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor1PDP) + ",Drive L2 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor2PDP) + ",Drive L3 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor3PDP) + 
       ",Drive R1 Volts," + rightMotor1.getBusVoltage() + ",Drive R2 Volts," + rightMotor2.getBusVoltage() + ",Drive R3 Volts," + rightMotor3.getBusVoltage() + 
       ",Drive R1 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor1PDP) + ",Drive R2 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor2PDP) + ",Drive R3 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor3PDP) + 
-      ",L Enc Ticks," + getLeftEncoderTicks() + ",L Drive Inches," + getLeftEncoderInches() + 
-      ",R Enc Ticks," + getRightEncoderTicks() + ",R Drive Inches," + getRightEncoderInches() + 
+      ",L Enc Ticks," + getLeftEncoderTicks() + ",L Drive Inches," + getLeftEncoderInches() + ",L Vel," + getLeftEncoderVelocity() +
+      ",R Enc Ticks," + getRightEncoderTicks() + ",R Drive Inches," + getRightEncoderInches() +  ",R Vel," + getRightEncoderVelocity() +
       ",High Gear," + Robot.shifter.isShifterInHighGear());
   }
 }

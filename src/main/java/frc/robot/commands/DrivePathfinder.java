@@ -52,9 +52,12 @@ public class DrivePathfinder extends Command {
     dfLeft = new DistanceFollower(trajLeft);
     dfRight = new DistanceFollower(trajRight);
 
-    dfLeft.configurePIDVA(0.0, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.0); // P = 0.2
-    dfRight.configurePIDVA(0.0, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.0); // A = 0.0032
+    dfLeft.configurePIDVA(0.05, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.004); // P = 0.2
+    dfRight.configurePIDVA(0.05, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.004); // A = 0.0032
     
+    segLeft = dfLeft.getSegment();
+    segRight = dfRight.getSegment();
+
     logData();
   }
 
@@ -103,14 +106,14 @@ public class DrivePathfinder extends Command {
 
 
   private void logData() {
-    // Robot.log.writeLog(false, "Pathfinder", "execute", "time," + ((double)(System.currentTimeMillis() - dfLeft.getStartTimeMillis())) / 1000.0 +
-    // ",left power," + l + ",right power," + r + ",turn power," + turn +
-    // ",left distance," + distL + ",right distance," + distR +
-    // ",heading," + gyro_heading + ",left isFinished," + dfLeft.isFinished() +
-    // ",left segPos," + segLeft.position + ",left segVel," + segLeft.velocity + ",left segAccel," + segLeft.acceleration + 
-    // ",left segJerk," + segLeft.jerk + ",left segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segLeft.heading)) + ",left segdt," + segLeft.dt + ",right isFinished," + dfRight.isFinished() + 
-    // ",right segPos," + segRight.position + ",right segVel," + segRight.velocity + ",right segAccel," + segRight.acceleration + 
-    // ",right segJerk," + segRight.jerk + ",right segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segRight.heading)) + ",right segdt," + segRight.dt);
+    Robot.log.writeLog(false, "Pathfinder", "execute", "time," + ((double)(System.currentTimeMillis() - dfLeft.getStartTimeMillis())) / 1000.0 +
+    ",left power," + l + ",right power," + r + ",turn power," + turn +
+    ",left distance," + distL + ",right distance," + distR + ",left vel," + Robot.driveTrain.getLeftEncoderVelocity() + ",right vel," + Robot.driveTrain.getRightEncoderVelocity() +
+    ",heading," + gyro_heading + ",left isFinished," + dfLeft.isFinished() +
+    ",left segPos," + segLeft.position + ",left segVel," + segLeft.velocity + ",left segAccel," + segLeft.acceleration + 
+    ",left segJerk," + segLeft.jerk + ",left segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segLeft.heading)) + ",left segdt," + segLeft.dt + ",right isFinished," + dfRight.isFinished() + 
+    ",right segPos," + segRight.position + ",right segVel," + segRight.velocity + ",right segAccel," + segRight.acceleration + 
+    ",right segJerk," + segRight.jerk + ",right segHeading," + Pathfinder.boundHalfDegrees(Pathfinder.r2d(segRight.heading)) + ",right segdt," + segRight.dt);
   }
 
   // Make this return true when this Command no longer needs to run execute()
