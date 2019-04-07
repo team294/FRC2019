@@ -65,39 +65,6 @@
               "imageHeight": 0
             }
           },
-          "4,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Area",
-              "_title": "/SmartDashboard/Area"
-            }
-          },
-          "4,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Angle to Crosshair",
-              "_title": "SmartDashboard/Angle to Crosshair"
-            }
-          },
-          "4,2": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Distance",
-              "_title": "/SmartDashboard/Distance"
-            }
-          },
           "3,4": {
             "size": [
               1,
@@ -170,7 +137,40 @@
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Vision pipeline",
-              "_title": "/SmartDashboard/Vision pipeline"
+              "_title": "Vision pipeline"
+            }
+          },
+          "4,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Vision DistArea",
+              "_title": "SmartDashboard/Vision DistArea"
+            }
+          },
+          "5,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Vision DistUC",
+              "_title": "SmartDashboard/Vision DistUC"
+            }
+          },
+          "4,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Vision Distance",
+              "_title": "SmartDashboard/Vision Distance"
             }
           }
         }
@@ -629,6 +629,17 @@
                 }
               ]
             }
+          },
+          "7,5": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/Wrist add 10 deg",
+              "_title": "SmartDashboard/Wrist add 10 deg"
+            }
           }
         }
       }
@@ -708,7 +719,7 @@
               "Crosshair/Crosshair color": "#FFFFFFFF",
               "Controls/Show controls": true,
               "Controls/Rotation": "NONE",
-              "compression": 0.0,
+              "compression": -1.0,
               "fps": -1,
               "imageWidth": 0,
               "imageHeight": 0
@@ -956,7 +967,7 @@
               "Crosshair/Crosshair color": "#FFFFFFFF",
               "Controls/Show controls": true,
               "Controls/Rotation": "NONE",
-              "compression": 0.0,
+              "compression": -1.0,
               "fps": -1,
               "imageWidth": 0,
               "imageHeight": 0

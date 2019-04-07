@@ -37,11 +37,12 @@ public class RobotPreferences {
 	public final double wristKeepOut = 28.0; // Max angle to avoid interference with elevator or climber
 	public final double wristUp = 15.0;
 	public final double wristStraight = 1.0;	//  needed to bias upward to account for sag and insure that hatch cover gripper engages first
+	public final double wristVision = -10.0;    // wrist angle for optimal vision tracking
 	public final double wristCargoShot = -30.0;	// Angle for wrist for cargo ship ball shot
 	public final double wristLowerCrashWhenElevatorLow = -45.0;   // If the elevator is in the low position, don't move the wrist below this!
 	public final double wristDown = -60.0;		// TODO Should be -59.0? // In this position, elevator must be able to go to groundCargo
 	public final double wristMin = -61.0;			// Location of lower limit switch for auto calibration
-	public enum WristAngle {stowed, up, straight, cargoShot, down}
+	public enum WristAngle {stowed, up, straight, cargoShot, vision, down}
 
 	// TODO Update with 2019 base
   	// Robot Pathfinder data
@@ -70,7 +71,7 @@ public class RobotPreferences {
 	public final double loadCargo = 44.125;
 	public final double groundCargo = 16.5;  		// At this level, wrist must be able to go to wristDown  // TODO should this be the same as elevatorWristStow (at the hard stop)?
 
-	public enum ElevatorPosition {bottom, wristStow, hatchLow, hatchMid, hatchHigh, cargoShipCargo, loadCargo, groundCargo}
+	public enum ElevatorPosition {bottom, vision, wristStow, hatchLow, hatchMid, hatchHigh, cargoShipCargo, loadCargo, groundCargo}
 
 	//Climb Target Angles (in degrees)
 	public final double climbLimitAngle = 137.7;		// Max angle for climber (limit switch), was 120

@@ -49,7 +49,7 @@ public class ElevatorMoveToLevel extends Command {
     if(!targetInches) {
       if(Robot.cargo.hasBall()) { 
         switch (pos) {
-          case bottom:
+          case bottom:  case vision:
             target = Robot.robotPrefs.elevatorBottomToFloor;
             break;
           case wristStow:
@@ -76,7 +76,7 @@ public class ElevatorMoveToLevel extends Command {
         }
       } else {
         switch (pos) {
-          case bottom:
+          case bottom:  case vision:
             target = Robot.robotPrefs.elevatorBottomToFloor;
             break;
           case wristStow:
