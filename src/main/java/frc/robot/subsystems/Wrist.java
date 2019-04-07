@@ -358,7 +358,8 @@ public class Wrist extends Subsystem {
     }
     
     // Un-calibrates the wrist if the angle is outside of bounds
-    if (getWristAngle() > Robot.robotPrefs.wristMax + 5.0 || getWristAngle() < Robot.robotPrefs.wristMin - 10.0) {
+    // TODO change low back to - 10.0
+    if (getWristAngle() > Robot.robotPrefs.wristMax + 5.0 || getWristAngle() < Robot.robotPrefs.wristMin - 15.0) {
      Robot.robotPrefs.setWristUncalibrated();
       updateWristLog(true);
     }
