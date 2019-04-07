@@ -161,6 +161,17 @@
               "Range/Max": 30.0,
               "Visuals/Show value": true
             }
+          },
+          "4,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Vision pipeline",
+              "_title": "/SmartDashboard/Vision pipeline"
+            }
           }
         }
       }
@@ -196,7 +207,7 @@
               "_source0": "network_table:///SmartDashboard/problemExists",
               "_title": "Problem Flag",
               "Colors/Color when true": "#FF0000FF",
-              "Colors/Color when false": "#00FF00FF"
+              "Colors/Color when false": "#4D4D4DFF"
             }
           },
           "5,0": {
@@ -717,7 +728,7 @@
               "Visuals/Show value": true
             }
           },
-          "0,2": {
+          "0,1": {
             "size": [
               1,
               1
@@ -730,7 +741,7 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "0,3": {
+          "0,2": {
             "size": [
               1,
               1
@@ -741,7 +752,7 @@
               "_title": "Wrist Angle"
             }
           },
-          "1,3": {
+          "1,2": {
             "size": [
               1,
               1
@@ -752,7 +763,7 @@
               "_title": "Elev Pos"
             }
           },
-          "2,3": {
+          "2,2": {
             "size": [
               1,
               1
@@ -763,7 +774,7 @@
               "_title": "Climb Angle"
             }
           },
-          "2,2": {
+          "2,1": {
             "size": [
               1,
               1
@@ -812,7 +823,7 @@
           "0,0": {
             "size": [
               2,
-              2
+              1
             ],
             "content": {
               "_type": "Boolean Box",
@@ -822,7 +833,7 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "1,2": {
+          "1,1": {
             "size": [
               1,
               1
@@ -849,29 +860,7 @@
               "Slider Settings/Block increment": 45.0
             }
           },
-          "1,5": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Rear Hatch Position",
-              "_title": "Rear Hatch"
-            }
-          },
-          "0,5": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Disc Position",
-              "_title": "Front Hatch"
-            }
-          },
-          "1,4": {
+          "3,3": {
             "size": [
               1,
               1
@@ -884,7 +873,7 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "0,4": {
+          "2,3": {
             "size": [
               1,
               1
@@ -896,15 +885,169 @@
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
             }
+          },
+          "0,4": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Manual Control",
+              "Layout/Label position": "LEFT",
+              "_children": [
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Wrist Up",
+                  "_title": "Wrist Up"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Wrist Down",
+                  "_title": "Wrist Down"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Elevator Down",
+                  "_title": "Elevator Down"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Elevator Up",
+                  "_title": "Elevator Up"
+                }
+              ]
+            }
+          },
+          "1,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/Elevator Cal if Low",
+              "_title": "Elev Cal Bottom"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Driver 2",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "2,0": {
+            "size": [
+              11,
+              6
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://limelight",
+              "_title": "limelight",
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": true,
+              "Controls/Rotation": "NONE",
+              "compression": 0.0,
+              "fps": -1,
+              "imageWidth": 0,
+              "imageHeight": 0
+            }
+          },
+          "0,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Simple Dial",
+              "_source0": "network_table:///SmartDashboard/Analog Vacuum Pressure",
+              "_title": "Analog Vacuum Pressure",
+              "Range/Min": 0.0,
+              "Range/Max": 30.0,
+              "Visuals/Show value": true
+            }
+          },
+          "0,1": {
+            "size": [
+              2,
+              5
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Elevator  / Climb / Wrist Controls",
+              "Layout/Label position": "LEFT",
+              "_children": [
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Elev Calibrated",
+                  "_title": "Elev Calibrated",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Elevator Up",
+                  "_title": "Elevator UP"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Elevator Down",
+                  "_title": "Elevator DOWN"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Elevator Cal if Low",
+                  "_title": "Elevator Cal if Low"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Climb calibrated",
+                  "_title": "Climb Calibrated",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Wrist Up",
+                  "_title": "Wrist UP"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Wrist Down",
+                  "_title": "Wrist DOWN"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Wrist pos straight",
+                  "_title": "Wrist Pos Straight"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Wrist calibrated",
+                  "_title": "Wrist Calibrated",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                }
+              ]
+            }
           }
         }
       }
     }
   ],
   "windowGeometry": {
-    "x": -8.0,
-    "y": -8.0,
-    "width": 1936.0,
-    "height": 1056.0
+    "x": -7.0,
+    "y": 2.0,
+    "width": 1932.0,
+    "height": 1045.0
   }
 }
