@@ -11,7 +11,7 @@ import frc.robot.pathfinder.Trajectory;
 public class DistanceFollower {
 
     Trajectory trajectory;              // Trajectory to follow
-    double kp, ki, kd, kv, ka;          // PIDVA constants for follower
+    double kp, ki, kd, kv, kaa, kad;    // PIDVA constants for follower
 
     double dt;                          // time delta between points in trajectory array
     double last_error;                  // distance error from last calculation (for derivative calc)
@@ -63,11 +63,12 @@ public class DistanceFollower {
      * @param kv The velocity ratio. This should be 1 over your maximum velocity @ 100% throttle.
      *           This converts m/s given by the algorithm to a scale of -1..1 to be used by your
      *           motor controllers
-     * @param ka The acceleration term. Adjust this if you want to reach higher or lower speeds faster. 0.0 is the default
+     * @param kaa The acceleration term (when accelerating). Adjust this if you want to reach higher or lower speeds faster. 0.0 is the default
+     * @param kad The acceleration term (when decelerating). Adjust this if you want to slow down faster. 0.0 is the default
      */
-    public void configurePIDVA(double kp, double ki, double kd, double kv, double ka) {
+    public void configurePIDVA(double kp, double ki, double kd, double kv, double kaa, double kad) {
         this.kp = kp; this.ki = ki; this.kd = kd;
-        this.kv = kv; this.ka = ka;
+        this.kv = kv; this.kaa = kaa; this.kad = kad;
     }
 
     /**
@@ -105,7 +106,12 @@ public class DistanceFollower {
         calculated_value =
                 kp * error +                                    // Proportional
                 kd * ((error - last_error) / dt) +              // Derivative
-                (kv * seg.velocity + ka * seg.acceleration);    // V and A Terms
+                kv * seg.velocity;                              // V Term
+        if (seg.velocity*seg.acceleration >=0) {
+            calculated_value += kaa * seg.acceleration;         // A term when accelerating
+        } else {
+            calculated_value += kad * seg.acceleration;         // A term when decelerating            
+        }
         last_error = error;
 
         return calculated_value;

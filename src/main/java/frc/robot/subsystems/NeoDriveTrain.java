@@ -63,7 +63,8 @@ public class NeoDriveTrain extends DriveTrain {
     rightMotor1.clearFaults();
     rightMotor2.clearFaults();
     rightMotor3.clearFaults();
-    
+
+    robotDrive.setDeadband(0.05);
   }
 
   @Override

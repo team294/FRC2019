@@ -36,7 +36,7 @@ public class RobotPreferences {
 	public final double wristStowed = 110.0;
 	public final double wristKeepOut = 28.0; // Max angle to avoid interference with elevator or climber
 	public final double wristUp = 15.0;
-	public final double wristStraight = 1.0;	//  needed to bias upward to account for sag and insure that hatch cover gripper engages first
+	public final double wristStraight = -1.0;	//  needed to bias upward to account for sag and insure that hatch cover gripper engages first
 	public final double wristVision = -10.0;    // wrist angle for optimal vision tracking
 	public final double wristCargoShot = -30.0;	// Angle for wrist for cargo ship ball shot
 	public final double wristLowerCrashWhenElevatorLow = -45.0;   // If the elevator is in the low position, don't move the wrist below this!
@@ -50,7 +50,7 @@ public class RobotPreferences {
   	public final double wheelbase_in = 26.5;       // wheelbase, in inches was 25
   	// public static final double wheel_diameter_in = 6.0;   // wheel diamater, in inches  -- DO NOT USE -- Use wheelCircumference preference instead
   	// public static final double wheel_distance_in_per_tick = wheel_diameter_in*Math.PI/encoderTicksPerRevolution;  // wheel distance traveled per encoder tick, in inches
-  	public final double max_velocity_ips = 200.0;   // max robot velocity, in inches per second
+  	public final double max_velocity_ips = 110.0;   // max robot velocity, in inches per second
   	public final double max_acceleration_ipsps = 130.0;  // max robot acceleration, in inches per second per second
   	public final double max_jerk_ipspsps = 2400.0;  // max robot jerk, in inches per second per second per second
 

@@ -558,6 +558,11 @@
                 },
                 {
                   "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Wrist vision",
+                  "_title": "Wrist vision"
+                },
+                {
+                  "_type": "Command",
                   "_source0": "network_table:///SmartDashboard/Wrist pos down",
                   "_title": "Wrist pos down"
                 }
@@ -630,15 +635,15 @@
               ]
             }
           },
-          "7,5": {
+          "6,5": {
             "size": [
               1,
               1
             ],
             "content": {
               "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Wrist add 10 deg",
-              "_title": "SmartDashboard/Wrist add 10 deg"
+              "_source0": "network_table:///SmartDashboard/Pathfinder Test",
+              "_title": "SmartDashboard/Pathfinder Test"
             }
           }
         }
