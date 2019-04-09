@@ -86,7 +86,8 @@ public class OI {
     right[1].whenPressed(new Shift(true)); // high gear
     left[2].whenPressed(new DriveAssist()); // Turn on vision pipeline and move elevator low
     // left[2].whileHeld(new DriveWithVision(false, false)); // drive with visionf
-    left[2].whenReleased(new DriveWithJoysticks());
+    // left[2].whenReleased(new DriveWithJoysticks());
+    left[2].whenReleased(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchLow));
     right[2].whileHeld(new DriveStraightJoystick()); // drive straight with right joystick
     right[2].whenReleased(new DriveWithJoysticks()); // drive with joysticks
     // left[3].whenPressed(new Command());
@@ -154,10 +155,12 @@ public class OI {
     SmartDashboard.putData("Wrist Up", new WristSetPercentOutput(0.2));  // For testing
     SmartDashboard.putData("Wrist Down", new WristSetPercentOutput(-0.2));  // For testing
     SmartDashboard.putData("Wrist pos stow", new WristMoveToAngle(WristAngle.stowed));
+    SmartDashboard.putData("Wrist vision", new WristMoveToAngle(WristAngle.vision));
     SmartDashboard.putData("Wrist pos down", new WristMoveToAngle(WristAngle.down));
     SmartDashboard.putData("Wrist pos straight", new WristMoveToAngle(WristAngle.straight));
     SmartDashboard.putData("Wrist pos up", new WristMoveToAngle(WristAngle.up));
-    SmartDashboard.putData("Wrist add 10 deg", new WristChangeAngle(10.0));
+    SmartDashboard.putData("Wrist +10 deg", new WristChangeAngle(10.0));
+    SmartDashboard.putData("Wrist -10 deg", new WristChangeAngle(-10.0));
 
     // Buttons for controlling FileLogging
     SmartDashboard.putData("Log 1 InitialTesting", new FileLogSetLevel(1));

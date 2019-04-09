@@ -19,7 +19,7 @@ public class DriveAssist extends CommandGroup {
     addSequential(new VisionChangePipeline(0));
     addParallel(new Shift(false));    // go to low gear
     // addSequential(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchLow));
-    addSequential(new ElevatorWristMoveAndPrepare(ElevatorPosition.bottom));
+    addSequential(new ElevatorWristMoveAndPrepare(ElevatorPosition.vision));
     // addParallel(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchLow));
     addSequential(new DriveWithVision(false, false)); //  true, true  is endOnLine, use gyro
     addSequential(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchLow));

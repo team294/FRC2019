@@ -87,6 +87,8 @@ public class CimDriveTrain extends DriveTrain {
     rightMotor1.setNeutralMode(NeutralMode.Brake);
     rightMotor2.setNeutralMode(NeutralMode.Brake);
     rightMotor3.setNeutralMode(NeutralMode.Brake);
+
+    robotDrive.setDeadband(0.05);
   }
   
   @Override

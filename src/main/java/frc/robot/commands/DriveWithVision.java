@@ -17,8 +17,9 @@ public class DriveWithVision extends Command {
   private boolean gyro = false;
   private double targetQuad = 0; // The quadrant of the target we want to drive to
 
-  private double stopDistance = 34.0;  // Used 26.0 in the lab, changed to 28 for safety.  Should be able to use 34 with intake low.
+  private double stopDistance = 32.0;  // Used 26.0 in the lab, changed to 28 for safety.  Should be able to use 34 with intake low.
   private final double MAX_SPEED = 0.65;
+  private final double MIN_SPEED = 0.2;
   private double priorVisionSpeed = MAX_SPEED;
   private double visionSpeed = MAX_SPEED;
 
@@ -104,7 +105,7 @@ public class DriveWithVision extends Command {
 
       // If we are farther than 40in from the target, use the target skew to 
       // follow an S-curve path to approach the target from a perpendicular line
-      // if (distance>43) finalAngle -= skew*distance * 0.035;  // tuned to 0.035  for distance > 43
+      if (distance>43) finalAngle -= skew*distance * 0.035;  // tuned to 0.035  for distance > 43
     }
 
     double gainConstant = distance * 0.00005 + 0.008;  // tuned to 0.008
@@ -119,7 +120,7 @@ public class DriveWithVision extends Command {
     // double lJoystickAdjust = lJoystickRaw * 0.8;
 
     // Decease speed in last 10 inches
-    visionSpeed = (distance > stopDistance + 10) ? MAX_SPEED : MAX_SPEED * (distance-stopDistance)/10.0;
+    visionSpeed = (distance > stopDistance + 10) ? MAX_SPEED : (MAX_SPEED - MIN_SPEED) * (distance-stopDistance)/10.0 + MIN_SPEED;
     // Don't allow speed to increase
     if (priorVisionSpeed < visionSpeed) visionSpeed = priorVisionSpeed;
     priorVisionSpeed = visionSpeed;
@@ -150,7 +151,7 @@ public class DriveWithVision extends Command {
   @Override
   protected boolean isFinished() {
     // Robot.driveTrain.areEncodersStopped(5.0);
-    return Robot.vision.distance < stopDistance;
+    return Robot.vision.distance <= stopDistance;
     // return endOnLine && Robot.lineFollowing.isLinePresent() && Robot.vision.distanceFromTarget() < 40; // Stops when a line is detected by the line followers within a reasonable expected distance
   }
 
