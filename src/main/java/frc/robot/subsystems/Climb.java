@@ -86,7 +86,7 @@ public class Climb extends Subsystem {
     climbVacuum.setIdleMode(IdleMode.kCoast);
 
     if (Robot.robotPrefs.neoDrivetrain) {
-			climbMotor1.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 20);
+			climbMotor1.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 5);
 		}
 
     // Wait 0.25 seconds before adjusting the climber calibration.  The reason is that .setInverted (above)

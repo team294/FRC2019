@@ -70,8 +70,8 @@ public class DrivePathfinder extends Command {
     dfLeft = new DistanceFollower(trajLeft);
     dfRight = new DistanceFollower(trajRight);
 
-    dfLeft.configurePIDVA(0.0, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.003, 0.002); // P = 0.2, 0.05
-    dfRight.configurePIDVA(0.0, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.003, 0.002); // A = 0.0032, 0.004
+    dfLeft.configurePIDVA(0.05, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.004, 0.002); // P = 0.2, 0.05
+    dfRight.configurePIDVA(0.05, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.004, 0.002); // A = 0.0032, 0.004
     
     segLeft = dfLeft.getSegment();
     segRight = dfRight.getSegment();

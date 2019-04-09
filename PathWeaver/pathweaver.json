@@ -3,7 +3,7 @@
   "timeStep": 0.02,
   "maxVelocity": 100.0,
   "maxAcceleration": 130.0,
-  "maxJerk": 1300.0,
+  "maxJerk": 400.0,
   "wheelBase": 26.5,
   "gameName": "Destination: Deep Space",
   "outputDir": ""

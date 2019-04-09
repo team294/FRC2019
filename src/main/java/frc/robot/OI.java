@@ -181,7 +181,7 @@ public class OI {
     SmartDashboard.putData("DriveStraight 100 in", new DriveStraightDistanceProfile(100, 0, 80, 65));
     SmartDashboard.putData("DriveToCargoShip", new DriveToCargoShip());
 
-    SmartDashboard.putData("Pathfinder Test", new DrivePathfinder("Straight", true, true));
+    SmartDashboard.putData("Pathfinder Test", new DrivePathfinder("R2ShipFront", true, true));
 
 /*
     SmartDashboard.putData("LEDSet Purple", new LEDSet(0));

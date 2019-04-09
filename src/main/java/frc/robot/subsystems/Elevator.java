@@ -86,7 +86,7 @@ public class Elevator extends Subsystem {
 		elevatorMotor2.setNeutralMode(NeutralMode.Brake);
 
 		if (Robot.robotPrefs.neoDrivetrain) {
-			elevatorMotor2.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 20);
+			elevatorMotor2.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 5);
 		}
 
 		// Wait 0.25 seconds before checking the limit switch or encoder ticks.  The reason is that zeroing the encoder (above)
