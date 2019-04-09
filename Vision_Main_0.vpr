@@ -7,7 +7,7 @@ black_level:25
 blue_balance:1975
 calibration_type:0
 contour_grouping:1
-contour_sort_final:0
+contour_sort_final:6
 convexity_max:100.000000
 convexity_min:10
 corner_approx:5.000000

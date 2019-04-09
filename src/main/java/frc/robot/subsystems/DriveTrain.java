@@ -563,7 +563,7 @@ public abstract class DriveTrain extends Subsystem {
   @Override
   public void periodic() {
 
-    updateDriveLog(false);
+    // updateDriveLog(false);
 
     if (Robot.log.getLogRotation() == FileLog.DRIVE_CYCLE) {
       SmartDashboard.putNumber("Drive Left Inches", getLeftEncoderInches());
@@ -573,7 +573,7 @@ public abstract class DriveTrain extends Subsystem {
       SmartDashboard.putNumber("Drive Right Ticks", getRightEncoderTicks());
 
       
-      // updateDriveLog(false);
+      updateDriveLog(false);
 
       if (DriverStation.getInstance().isEnabled()) {
         Robot.lineFollowing.logLineFollowers();
