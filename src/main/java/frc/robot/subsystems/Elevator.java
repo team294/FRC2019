@@ -24,6 +24,7 @@ import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 
 /**
  * Add your docs here.
@@ -83,6 +84,10 @@ public class Elevator extends Subsystem {
 		elevatorMotor2.clearStickyFaults();
 		elevatorMotor1.setNeutralMode(NeutralMode.Brake);
 		elevatorMotor2.setNeutralMode(NeutralMode.Brake);
+
+		if (Robot.robotPrefs.neoDrivetrain) {
+			elevatorMotor2.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 20);
+		}
 
 		// Wait 0.25 seconds before checking the limit switch or encoder ticks.  The reason is that zeroing the encoder (above)
 		// or setting the limit swtich type (above) can be delayed up to 50ms for a round trip

@@ -25,6 +25,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 
 import frc.robot.Robot;
 import frc.robot.RobotMap;
@@ -83,6 +84,10 @@ public class Climb extends Subsystem {
     climbMotor1.setNeutralMode(NeutralMode.Brake);
     climbMotor2.setNeutralMode(NeutralMode.Brake);
     climbVacuum.setIdleMode(IdleMode.kCoast);
+
+    if (Robot.robotPrefs.neoDrivetrain) {
+			climbMotor1.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 20);
+		}
 
     // Wait 0.25 seconds before adjusting the climber calibration.  The reason is that .setInverted (above)
     // changes the sign of read encoder value, but that change can be delayed up to 50ms for a round trip
