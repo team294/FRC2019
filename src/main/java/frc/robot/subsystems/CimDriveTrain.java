@@ -89,6 +89,13 @@ public class CimDriveTrain extends DriveTrain {
     rightMotor3.setNeutralMode(NeutralMode.Brake);
 
     robotDrive.setDeadband(0.05);
+
+    leftMotor1.configVoltageCompSaturation(12.0);
+    leftMotor2.configVoltageCompSaturation(12.0);
+    leftMotor3.configVoltageCompSaturation(12.0);
+    rightMotor1.configVoltageCompSaturation(12.0);
+    rightMotor2.configVoltageCompSaturation(12.0);
+    rightMotor3.configVoltageCompSaturation(12.0);
   }
   
   @Override

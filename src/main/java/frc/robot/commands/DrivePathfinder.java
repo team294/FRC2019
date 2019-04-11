@@ -70,8 +70,8 @@ public class DrivePathfinder extends Command {
     dfLeft = new DistanceFollower(trajLeft);
     dfRight = new DistanceFollower(trajRight);
 
-    dfLeft.configurePIDVA(0.05, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.004, 0.002); // P = 0.2, 0.05
-    dfRight.configurePIDVA(0.05, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.004, 0.002); // A = 0.0032, 0.004
+    dfLeft.configurePIDVA(0.08, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.0013, 0.0012); // P = 0.2, 0.05
+    dfRight.configurePIDVA(0.08, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.0013, 0.0012); // A = 0.0032, 0.004
     
     segLeft = dfLeft.getSegment();
     segRight = dfRight.getSegment();
@@ -124,7 +124,7 @@ public class DrivePathfinder extends Command {
     desired_heading = Pathfinder.r2d(dfLeft.getHeading());  // Should also be in degrees
 
     double angleDifference = Pathfinder.boundHalfDegrees(desired_heading - gyro_heading);
-    turn = 0.04 * angleDifference;
+    turn = 0.01 * angleDifference;
 
     Robot.driveTrain.setLeftMotors(-(l + turn));
     Robot.driveTrain.setRightMotors(-(r - turn));
@@ -171,5 +171,6 @@ public class DrivePathfinder extends Command {
   @Override
   protected void interrupted() {
     Robot.driveTrain.tankDrive(0, 0);
+    Robot.driveTrain.setVoltageCompensation(false);
   }
 }
