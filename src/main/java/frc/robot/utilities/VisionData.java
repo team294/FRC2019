@@ -87,6 +87,7 @@ public class VisionData {
         SmartDashboard.putNumber("Vision cx.len", cornX.length);
         SmartDashboard.putNumber("Vision cy.len", cornY.length);
 
+        //TODO Decide which distance to use for drive code:  distanceUsingCorners vs distanceUsingArea
         distance = distanceUsingCorners;        // Use distance calcs from corners instead of area
 
         SmartDashboard.putBoolean("Vision valid", valid);
@@ -104,7 +105,7 @@ public class VisionData {
      * @return true = target was found, false = target not found
      */
     private boolean calcDistanceUsingCorners() {
-        if (!valid || cornX.length != cornY.length) {
+        if (!valid || cornX.length != cornY.length || cornX.length<5) {
             distanceUsingCorners = 0;
             return false;
         }
@@ -127,7 +128,7 @@ public class VisionData {
             }
         }
 
-        distanceUsingCorners = 2820.0 / ( cornX[topRightIndex] - cornX[topLeftIndex] );
+        distanceUsingCorners = 3080.0 / ( cornX[topRightIndex] - cornX[topLeftIndex] );
 
         // SmartDashboard.putNumber("Vision TLIndex", topLeftIndex);   // Always 0?
         // SmartDashboard.putNumber("Vision TRIndex", topRightIndex);   // Always 7?

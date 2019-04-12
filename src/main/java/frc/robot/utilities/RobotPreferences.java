@@ -36,20 +36,21 @@ public class RobotPreferences {
 	public final double wristStowed = 110.0;
 	public final double wristKeepOut = 28.0; // Max angle to avoid interference with elevator or climber
 	public final double wristUp = 15.0;
-	public final double wristStraight = 1.0;	//  needed to bias upward to account for sag and insure that hatch cover gripper engages first
+	public final double wristStraight = -1.0;	//  needed to bias upward to account for sag and insure that hatch cover gripper engages first
+	public final double wristVision = -10.0;    // wrist angle for optimal vision tracking
 	public final double wristCargoShot = -30.0;	// Angle for wrist for cargo ship ball shot
 	public final double wristLowerCrashWhenElevatorLow = -45.0;   // If the elevator is in the low position, don't move the wrist below this!
 	public final double wristDown = -60.0;		// TODO Should be -59.0? // In this position, elevator must be able to go to groundCargo
 	public final double wristMin = -61.0;			// Location of lower limit switch for auto calibration
-	public enum WristAngle {stowed, up, straight, cargoShot, down}
+	public enum WristAngle {stowed, up, straight, cargoShot, vision, down}
 
 	// TODO Update with 2019 base
   	// Robot Pathfinder data
   	public final double encoderTicksPerRevolution = 4096.0;
-  	public final double wheelbase_in = 25.0;       // wheelbase, in inches
+  	public final double wheelbase_in = 26.5;       // wheelbase, in inches was 25
   	// public static final double wheel_diameter_in = 6.0;   // wheel diamater, in inches  -- DO NOT USE -- Use wheelCircumference preference instead
   	// public static final double wheel_distance_in_per_tick = wheel_diameter_in*Math.PI/encoderTicksPerRevolution;  // wheel distance traveled per encoder tick, in inches
-  	public final double max_velocity_ips = 200.0;   // max robot velocity, in inches per second
+  	public final double max_velocity_ips = 110.0;   // max robot velocity, in inches per second
   	public final double max_acceleration_ipsps = 130.0;  // max robot acceleration, in inches per second per second
   	public final double max_jerk_ipspsps = 2400.0;  // max robot jerk, in inches per second per second per second
 
@@ -70,7 +71,7 @@ public class RobotPreferences {
 	public final double loadCargo = 44.125;
 	public final double groundCargo = 16.5;  		// At this level, wrist must be able to go to wristDown  // TODO should this be the same as elevatorWristStow (at the hard stop)?
 
-	public enum ElevatorPosition {bottom, wristStow, hatchLow, hatchMid, hatchHigh, cargoShipCargo, loadCargo, groundCargo}
+	public enum ElevatorPosition {bottom, vision, wristStow, hatchLow, hatchMid, hatchHigh, cargoShipCargo, loadCargo, groundCargo}
 
 	//Climb Target Angles (in degrees)
 	public final double climbLimitAngle = 137.7;		// Max angle for climber (limit switch), was 120

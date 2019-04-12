@@ -71,6 +71,8 @@ public class ElevatorWristMoveAndPrepare extends CommandGroup {
     } else if (position == ElevatorPosition.groundCargo){
       addParallel(new WristMoveToAngle(WristAngle.down));
       addParallel(new CargoIntake());
+    } else if (position == ElevatorPosition.vision) {
+      addParallel(new WristMoveToAngle(WristAngle.vision));
     } else {
       // Otherwise, move wrist straight
       addParallel(new WristMoveToAngle(WristAngle.straight));

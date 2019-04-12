@@ -63,7 +63,8 @@ public class NeoDriveTrain extends DriveTrain {
     rightMotor1.clearFaults();
     rightMotor2.clearFaults();
     rightMotor3.clearFaults();
-    
+
+    robotDrive.setDeadband(0.05);
   }
 
   @Override
@@ -98,6 +99,16 @@ public class NeoDriveTrain extends DriveTrain {
     return -rShaftEncoder.getQuadraturePosition();
   }
 
+  @Override
+  public double getLeftEncoderVelocityRaw() {
+    return -lShaftEncoder.getQuadratureVelocity();
+  }
+
+  @Override
+  public double getRightEncoderVelocityRaw() {
+    return rShaftEncoder.getQuadratureVelocity();
+  }
+  
   @Override
 	public void setVoltageCompensation(boolean turnOn) {
 		if (turnOn) {
@@ -144,8 +155,8 @@ public class NeoDriveTrain extends DriveTrain {
       ",Drive L1 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor1PDP) + ",Drive L2 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor2PDP) + ",Drive L3 Amps," + Robot.pdp.getCurrent(RobotMap.leftMotor3PDP) + 
       ",Drive R1 Volts," + rightMotor1.getAppliedOutput() + ",Drive R2 Volts," + rightMotor2.get() + ",Drive R3 Volts," + rightMotor3.getAppliedOutput() + 
       ",Drive R1 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor1PDP) + ",Drive R2 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor2PDP) + ",Drive R3 Amps," + Robot.pdp.getCurrent(RobotMap.rightMotor3PDP) + 
-      ",L Enc Ticks," + getLeftEncoderTicks() + ",L Drive Inches," + getLeftEncoderInches() + 
-      ",R Enc Ticks," + getRightEncoderTicks() + ",R Drive Inches," + getRightEncoderInches() + 
+      ",L Enc Ticks," + getLeftEncoderTicks() + ",L Drive Inches," + getLeftEncoderInches() + ",L Vel," + getLeftEncoderVelocity() +
+      ",R Enc Ticks," + getRightEncoderTicks() + ",R Drive Inches," + getRightEncoderInches() +  ",R Vel," + getRightEncoderVelocity() +
       ",High Gear," + Robot.shifter.isShifterInHighGear());
   }
 

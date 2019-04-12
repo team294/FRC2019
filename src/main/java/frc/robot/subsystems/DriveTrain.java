@@ -100,6 +100,10 @@ public abstract class DriveTrain extends Subsystem {
 
   abstract public double getRightEncoderRaw();
 
+  abstract public double getLeftEncoderVelocityRaw();
+
+  abstract public double getRightEncoderVelocityRaw();
+
   /**
 	 * Zeros the left encoder position in software
 	 */
@@ -142,6 +146,20 @@ public abstract class DriveTrain extends Subsystem {
 
   public double getRightEncoderInches() {
     return encoderTicksToInches(getRightEncoderTicks());
+  }
+
+  /**
+   * @return left encoder velocity in inches / sec
+   */
+  public double getLeftEncoderVelocity() {
+    return encoderTicksToInches(getLeftEncoderVelocityRaw()) * 10;
+  }
+
+    /**
+   * @return right encoder velocity in inches / sec
+   */
+  public double getRightEncoderVelocity() {
+    return encoderTicksToInches(getRightEncoderVelocityRaw()) * 10;
   }
 
   public double inchesToEncoderTicks(double inches) {
@@ -544,6 +562,8 @@ public abstract class DriveTrain extends Subsystem {
 
   @Override
   public void periodic() {
+
+    // updateDriveLog(false);
 
     if (Robot.log.getLogRotation() == FileLog.DRIVE_CYCLE) {
       SmartDashboard.putNumber("Drive Left Inches", getLeftEncoderInches());
