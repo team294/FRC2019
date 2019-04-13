@@ -32,13 +32,13 @@ public class DriveWithJoysticks extends Command {
     double rightValue = Robot.oi.rightJoystick.getY();
 
     if (Robot.driveTrain.getDriveDirection() && Robot.shifter.isShifterInHighGear())  {
-      Robot.driveTrain.tankDrive(-leftValue * 0.8, -rightValue * 0.8);
+      Robot.driveTrain.tankDrive(-leftValue * 0.8, -rightValue * 0.7,false);
     } else if (Robot.driveTrain.getDriveDirection() && !Robot.shifter.isShifterInHighGear()) {
-      Robot.driveTrain.tankDrive(-leftValue, -rightValue);
+      Robot.driveTrain.tankDrive(-leftValue, -rightValue,false);
     } else if (!Robot.driveTrain.getDriveDirection() && Robot.shifter.isShifterInHighGear()) {
-      Robot.driveTrain.tankDrive(leftValue * 0.8, rightValue * 0.8);
+      Robot.driveTrain.tankDrive(leftValue * 0.8, rightValue * 0.7,false);
     } else {
-      Robot.driveTrain.tankDrive(leftValue, rightValue);
+      Robot.driveTrain.tankDrive(leftValue, rightValue, false);
     }
 
     //SmartDashboard.putBoolean("Vision Assistance Available", Robot.vision.areaFromCamera != 0); // May move to teleopPeriodic

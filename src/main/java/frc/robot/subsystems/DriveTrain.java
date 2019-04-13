@@ -63,7 +63,23 @@ public abstract class DriveTrain extends Subsystem {
     // zeroGyroRotation();
   }
 
+  /**
+   * Drive the robot using tank controls.  You must call this method every 100ms,
+   * or the watchdog will turn off the drive motors.  The inputs are squared before
+   * sending to the motors.
+   * @param leftPercent  -1 to 1
+   * @param rightPercent  -1 to 1
+   */
   abstract public void tankDrive(double leftPercent, double rightPercent);
+
+  /**
+   * Drive the robot using tank controls.  You must call this method every 100ms,
+   * or the watchdog will turn off the drive motors.
+   * @param leftPercent  -1 to 1
+   * @param rightPercent  -1 to 1
+   * @param squaredInputs true = square inputs, false = linear inputs
+   */
+  abstract public void tankDrive(double leftPercent, double rightPercent, boolean squaredInputs);
 
   /**
    * Set the left motors only
