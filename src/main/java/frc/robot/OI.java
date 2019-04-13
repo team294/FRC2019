@@ -115,6 +115,10 @@ public class OI {
     coP[15].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.cargoShipCargo)); // third row, first button, UP
     coP[16].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchLow)); // third row, first button, DOWN
 
+    // Buttons for shifter
+    SmartDashboard.putData("Shift High", new Shift(true));
+    SmartDashboard.putData("Shift Low", new Shift(false));
+
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorSetPercentOutput(0.4)); // For testing limit switch and encoder
     SmartDashboard.putData("Elevator Down", new ElevatorSetPercentOutput(-0.2)); // For testing limit switch and encoder
@@ -139,6 +143,10 @@ public class OI {
     SmartDashboard.putData("Turn to 90", new TurnWithGyro(90.0, false));
     SmartDashboard.putData("Turn to -90", new TurnWithGyro(-90.0, false));
     SmartDashboard.putData("Turn to 0", new TurnWithGyro(0.0, false));
+    SmartDashboard.putData("Turn +90", new TurnWithGyro(90.0, true));
+    SmartDashboard.putData("Turn -90", new TurnWithGyro(-90.0, true));
+    SmartDashboard.putData("Turn +10", new TurnWithGyro(10.0, true));
+    SmartDashboard.putData("Turn -10", new TurnWithGyro(-10.0, true));
     
     // Buttons for the Cargo rollers
     SmartDashboard.putData("Cargo Intake", new CargoIntake());

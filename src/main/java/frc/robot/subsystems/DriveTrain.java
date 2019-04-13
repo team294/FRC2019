@@ -35,7 +35,9 @@ public abstract class DriveTrain extends Subsystem {
   private double rightMotorFaultCount; // increments every cycle the right side detects an issue
   boolean driveDirection = true; // true = forward, false = reverse
   private double fieldX;
-	private double fieldY;
+  private double fieldY;
+  
+  private double priorTurnPercentOutput = 0.0;
   
   // Encoders
   private double leftEncoderZero = 0, rightEncoderZero = 0;
@@ -209,6 +211,16 @@ public abstract class DriveTrain extends Subsystem {
 		double angle = getGyroRaw() - yawZero;
 		// Angle will be in terms of raw gyro units (-inf,inf), so you need to convert
 		// to (-180, 180]
+		angle = normalizeAngle(angle);
+		return angle;
+  }
+
+  /**
+	 * Converts the input angle to a number between -179.999 and +180.0
+	 * 
+	 * @return Normalized angle
+	 */
+	public double normalizeAngle(double angle) {
 		angle = angle % 360;
 		angle = (angle <= -180) ? (angle + 360) : angle;
     angle = (angle > 180) ? (angle - 360) : angle;
@@ -360,23 +372,57 @@ public abstract class DriveTrain extends Subsystem {
   }
 
   /**
-   * Turns in place to target
+   * Prepares turnWithGyro to run.
    */
-  public void turnWithGyro(double targetAngle){
-    double gainConstant = 0.005;
-    double xVal = targetAngle - getGyroRotation();
-    double fixSpeed = 0.38;
-    double lPercentOutput = fixSpeed + (gainConstant * xVal);
-    double rPercentOutput = fixSpeed - (gainConstant * xVal);
-    System.out.println("x-val = " + xVal + ", " + getGyroRotation());
-    if(xVal > 0.5){
-      tankDrive(lPercentOutput, -lPercentOutput);
-    } else if (xVal < -0.5){
-      tankDrive(-rPercentOutput, rPercentOutput);
-    } else {
-      tankDrive(0,0);
+  public void turnwithGyroReset() {
+    priorTurnPercentOutput = 0.0;
+  }
+
+  /**
+   * Turns in place to absolute gyro target angle.  Turns in either direction, choosing
+   * whichever is the shorter path.  Call this repeatedly in a periodic method to continue
+   * or complete the turn.
+   * @param targetAngle Angle to turn to, in degrees
+  */
+  public void turnWithGyro(double targetAngle) {
+    double gainConstant;      // was 0.005
+    gainConstant = Robot.shifter.isShifterInHighGear() ? 0.002 : 0.005;  // 0.02, 0.05
+    double xVal = normalizeAngle(targetAngle - getGyroRotation());
+    double fixSpeed;            // was 0.38
+    fixSpeed = Robot.shifter.isShifterInHighGear() ? 0.05 : 0.1;  // 0.05, 0.1
+    fixSpeed = SmartDashboard.getNumber("turn min", 0);
+
+    double percentOutput = fixSpeed + Math.abs(gainConstant * xVal);
+    if (percentOutput - priorTurnPercentOutput > 0.005) {
+      percentOutput += 0.005;
     }
-    updateEncoderList();
+    priorTurnPercentOutput = percentOutput;
+
+    if(xVal > 0.5){
+      setLeftMotors(-percentOutput);
+      setRightMotors(percentOutput);
+    } else if (xVal < -0.5) {
+      setLeftMotors(percentOutput);
+      setRightMotors(-percentOutput);
+    } else {
+      stop();
+    }
+
+
+    // double lPercentOutput = fixSpeed + (gainConstant * xVal);
+    // double rPercentOutput = fixSpeed - (gainConstant * xVal);
+    // System.out.println("x-val = " + xVal + ", " + getGyroRotation());
+    // if(xVal > 0.5){
+    //   setLeftMotors(-lPercentOutput);
+    //   setRightMotors(lPercentOutput);
+    // } else if (xVal < -0.5) {
+    //   setLeftMotors(rPercentOutput);
+    //   setRightMotors(-rPercentOutput);
+    // } else {
+    //   stop();
+    // }
+
+    updateDriveLog(false);
   }
 
   public void driveOnLine() {
