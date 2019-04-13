@@ -393,9 +393,9 @@ public abstract class DriveTrain extends Subsystem {
     double xVal = normalizeAngle(targetAngle - getGyroRotation());
     double percentOutput = fixSpeed + Math.abs(gainConstant * xVal);
 
-    if (percentOutput - priorTurnPercentOutput > 0.005) {
+    if (percentOutput - priorTurnPercentOutput > 0.02) {
       // Prevent the motors from accelerating too quickly and causing the wheels to slip
-      percentOutput += 0.005;
+      percentOutput = priorTurnPercentOutput + 0.02;
     }
     priorTurnPercentOutput = percentOutput;
 
