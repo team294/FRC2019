@@ -28,7 +28,9 @@ public class VisionChangePipeline extends Command {
   @Override
   protected void initialize() {
     Robot.vision.setPipe(pipeline);
-    Robot.vision.setLedMode(3 - (int)pipeline);
+    // Robot.vision.setLedMode(3 - (int)pipeline);
+    if (pipeline == 0 || pipeline == 1) Robot.vision.setLedMode(3);
+    else if (pipeline == 2) Robot.vision.setLedMode(1);
   }
 
   // Called repeatedly when this Command is scheduled to run

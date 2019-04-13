@@ -49,7 +49,7 @@ public class DriveWithVision extends Command {
     this.endOnLine = endOnLine;
     this.gyro = gyro;
 
-    Robot.vision.setPipe(0); // On vision pipeline
+    // Robot.vision.setPipe(0); // On vision pipeline
     Robot.vision.setLedMode(3); // TODO Change back to 3 to turn on LEDs.  Make sure the LEDs are on before driving
 
     updateLog();  // Prime StringBuilder to speed up code during execution
@@ -58,7 +58,7 @@ public class DriveWithVision extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.vision.setPipe(0);
+    // Robot.vision.setPipe(0);
     Robot.vision.setLedMode(3);
     Robot.driveTrain.setDriveMode(false);
     SmartDashboard.putBoolean("Ready to Score", false);

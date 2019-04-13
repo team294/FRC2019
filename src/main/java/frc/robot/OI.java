@@ -84,7 +84,7 @@ public class OI {
     xbLT.whenActive(new HatchExtensionSet(true)); // LT
     //xbLT.whenInactive(new HatchExtensionSet(false)); // LT
     xbLT.whenInactive(new HatchReleaseSequenceB()); // LT
-    xbRT.whenActive(new CargoOuttake(-0.8)); // RT
+    xbRT.whenActive(new CargoOuttake(-1.0)); // RT
 
     // Joystick buttons
     left[1].whenPressed(new Shift(false)); // low gear
@@ -97,9 +97,12 @@ public class OI {
     right[2].whenReleased(new DriveWithJoysticks()); // drive with joysticks
     // left[3].whenPressed(new Command());
     // right[3].whenPressed(new Command());
-    left[4].whenPressed(new VisionChangePipeline(0)); // set pipeline for vision
+    // left[4].whenPressed(new VisionChangePipeline(0)); // set pipeline for vision
     // right[4].whenPressed(new Command());
-    left[5].whenPressed(new VisionChangePipeline(2)); // set pipeline for drive feed
+    left[4].whenPressed(new VisionChangePipeline(1)); // leftmost pipeline
+    left[3].whenPressed(new VisionChangePipeline(2)); // driver pipeline
+    left[5].whenPressed(new VisionChangePipeline(0)); // rightmost pipeline
+    // left[5].whenPressed(new VisionChangePipeline(2)); // set pipeline for drive feed
     // right[5].whenPressed(new Command());
 
     // Copanel buttons
@@ -115,6 +118,8 @@ public class OI {
     coP[10].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchMid)); // mid row, first button, DOWN
     // coP[11].whenPressed(new RearHatchSet(true)); // mid row, second button, UP
     // coP[12].whenPressed(new RearHatchSet(false)); // mid row, second button, DOWN
+    // coP[11].whenPressed(new VisionChangePipeline(1)); // mid row, second button, UP
+    // coP[12].whenPressed(new VisionChangePipeline(0)); // mid row, second button, DOWN
     coP[13].whenPressed(new WristSetPercentOutput(0.2)); // mid row, third button, UP
     coP[14].whenPressed(new WristSetPercentOutput(-0.2)); // mid row, third button, DOWN
     coP[15].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.cargoShipCargo)); // third row, first button, UP
@@ -147,7 +152,7 @@ public class OI {
     
     // Buttons for the Cargo rollers
     SmartDashboard.putData("Cargo Intake", new CargoIntake());
-    SmartDashboard.putData("Cargo Outtake", new CargoOuttake(-0.8));
+    SmartDashboard.putData("Cargo Outtake", new CargoOuttake(-1.0));
 
     // Buttons for the rear hatch intake
     SmartDashboard.putData("Rear Hatch Intake", new RearHatchSetPercentOutput(0.6, 5));
