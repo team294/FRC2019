@@ -88,7 +88,7 @@ public class DrivePathfinder extends Command {
     }
     
     Robot.log.writeLog("Pathfinder", "initialize", "current time," + System.currentTimeMillis() + ",start time," + dfLeft.getStartTimeMillis());
-    Robot.driveTrain.setDriveMode(true);
+    Robot.driveTrain.setDriveModeCoast(true);
     Robot.driveTrain.zeroLeftEncoder();
     Robot.driveTrain.zeroRightEncoder();
     Robot.driveTrain.setVoltageCompensation(true);
@@ -164,13 +164,15 @@ public class DrivePathfinder extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.driveTrain.tankDrive(0, 0);
+    Robot.driveTrain.setVoltageCompensation(false);
+    Robot.driveTrain.setDriveModeCoast(false);
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.driveTrain.tankDrive(0, 0);
-    Robot.driveTrain.setVoltageCompensation(false);
+    end();
   }
 }

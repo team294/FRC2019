@@ -186,7 +186,7 @@ public abstract class DriveTrain extends Subsystem {
    * 
    * @param setCoast true if want to put driveTrain in coast mode false to put in brake mode.
    */
-  abstract public void setDriveMode(boolean setCoast);
+  abstract public void setDriveModeCoast(boolean setCoast);
 
   /**
    * Gets the raw value of the gyro
