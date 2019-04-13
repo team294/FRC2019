@@ -118,8 +118,8 @@ public class OI {
     coP[10].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchMid)); // mid row, first button, DOWN
     // coP[11].whenPressed(new RearHatchSet(true)); // mid row, second button, UP
     // coP[12].whenPressed(new RearHatchSet(false)); // mid row, second button, DOWN
-    // coP[11].whenPressed(new VisionChangePipeline(1)); // mid row, second button, UP
-    // coP[12].whenPressed(new VisionChangePipeline(0)); // mid row, second button, DOWN
+    coP[11].whenPressed(new VisionChangePipeline(1)); // mid row, second button, UP
+    coP[12].whenPressed(new VisionChangePipeline(0)); // mid row, second button, DOWN
     coP[13].whenPressed(new WristSetPercentOutput(0.2)); // mid row, third button, UP
     coP[14].whenPressed(new WristSetPercentOutput(-0.2)); // mid row, third button, DOWN
     coP[15].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.cargoShipCargo)); // third row, first button, UP
