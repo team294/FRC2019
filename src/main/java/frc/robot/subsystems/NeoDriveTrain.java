@@ -39,10 +39,10 @@ public class NeoDriveTrain extends DriveTrain {
     super();
 
     leftMotor1.setIdleMode(IdleMode.kCoast);
-    leftMotor2.setIdleMode(IdleMode.kCoast);  // was brake
+    leftMotor2.setIdleMode(IdleMode.kBrake);  // was brake
     leftMotor3.setIdleMode(IdleMode.kCoast);
     rightMotor1.setIdleMode(IdleMode.kCoast);
-    rightMotor2.setIdleMode(IdleMode.kCoast);   // was Brake
+    rightMotor2.setIdleMode(IdleMode.kBrake);   // was Brake
     rightMotor3.setIdleMode(IdleMode.kCoast);
 
     leftMotor1.setInverted(true);
@@ -75,6 +75,11 @@ public class NeoDriveTrain extends DriveTrain {
   @Override
   public void tankDrive(double powerLeft, double powerRight) {
     robotDrive.tankDrive(powerLeft, powerRight);
+  }
+
+  @Override
+  public void tankDrive(double powerLeft, double powerRight, boolean squaredInputs) {
+    robotDrive.tankDrive(powerLeft, powerRight, squaredInputs);
   }
 
   @Override

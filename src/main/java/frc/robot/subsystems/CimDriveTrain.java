@@ -104,6 +104,11 @@ public class CimDriveTrain extends DriveTrain {
   }
 
   @Override
+  public void tankDrive(double powerLeft, double powerRight, boolean squaredInputs) {
+    robotDrive.tankDrive(powerLeft, powerRight, squaredInputs);
+  }
+
+  @Override
 	public void driveAtCurve(double speedPct, double curve) {
 		robotDrive.curvatureDrive(speedPct, curve, false);
   }
