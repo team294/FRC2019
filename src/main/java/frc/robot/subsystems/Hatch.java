@@ -18,11 +18,14 @@ public class Hatch extends Subsystem {
   // here. Call these from Commands.
 
   private final Solenoid hatchPiston = new Solenoid(RobotMap.pneumaticHatch);
+  private final Solenoid hatchExtensionPiston = new Solenoid(RobotMap.hatchExtensionPiston);
   //private HatchPistonPositions hatchPosition = HatchPistonPositions.unknown;
   private boolean hatchPosition = true;
+  private boolean hatchExtensionPosition = true;
 
   public Hatch() {
       setHatchPiston(true);
+      setHatchExtensionPiston(true);
   }
 
   /**
@@ -51,6 +54,31 @@ public class Hatch extends Subsystem {
 	 */
 	public boolean getHatchPiston() {
 		return hatchPosition;
+	}
+
+  /**
+	 * Sets the position of the hatch extension piston
+	 * 
+	 * @param position true is retract hatch grabber; false is extend hatch grabber
+	 */
+  public void setHatchExtensionPiston(boolean position) {
+    if (position) {
+      hatchExtensionPiston.set(false);
+      hatchExtensionPosition = true;
+      SmartDashboard.putString("Hatch Grabber Position", "Retract");
+		} else {
+      hatchExtensionPiston.set(true);
+      hatchExtensionPosition = false;
+      SmartDashboard.putString("Hatch Grabber Position", "Extend");
+    }
+  }
+
+  /**
+	 * 
+	 * @return position of hatch extension piston
+	 */
+	public boolean getHatchExtensionPiston() {
+		return hatchExtensionPosition;
 	}
 
   @Override

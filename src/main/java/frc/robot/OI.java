@@ -61,8 +61,11 @@ public class OI {
     xbB[3].whenPressed(new ElevatorWristStow()); // X
     xbB[4].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchHigh)); // Y
     // xbB[5].whenPressed(new RearHatchSet(false)); // LB
-    xbB[5].whenActive(new HatchSet(false)); // LB
-    xbB[5].whenInactive(new HatchSet(true)); // LB
+    // xbB[5].whenActive(new HatchSet(false)); // LB
+    // xbB[5].whenInactive(new HatchSet(true)); // LB
+    xbB[5].whenActive(new HatchGrabSequenceA()); // LT
+    xbB[5].whenInactive(new HatchGrabSequenceB()); // LT
+
     xbB[6].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.cargoShipCargo)); // RB
     xbB[7].whenPressed(new StopAllMotors()); // Back
     xbB[8].whenPressed(new CargoRearHatchStop()); // Start
@@ -78,7 +81,9 @@ public class OI {
     // xbLeft.whenInactive(new RearHatchSetPercentOutput(-0.6, 1.5)); // DPadLeft release
     // xbLeft.whenActive(new HatchSet(false)); // DPad Left Press
     // xbLeft.whenInactive(new HatchSet(true)); // DPad Left Release
-    xbLT.whenActive(new CargoOuttake(-1.0)); // LT
+    xbLT.whenActive(new HatchExtensionSet(true)); // LT
+    //xbLT.whenInactive(new HatchExtensionSet(false)); // LT
+    xbLT.whenInactive(new HatchReleaseSequenceB()); // LT
     xbRT.whenActive(new CargoOuttake(-0.8)); // RT
 
     // Joystick buttons

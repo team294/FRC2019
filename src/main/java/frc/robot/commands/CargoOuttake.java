@@ -41,6 +41,9 @@ public class CargoOuttake extends Command {
       timeWithoutBall = timeSinceInitialized();
       startTime = true;
     }
+    if(timeSinceInitialized() >= 1.5) {
+      Robot.cargo.setCargoMotorPercentOutput(percentOutput - 0.2);
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
