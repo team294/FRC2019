@@ -385,15 +385,16 @@ public abstract class DriveTrain extends Subsystem {
    * @param targetAngle Angle to turn to, in degrees
   */
   public void turnWithGyro(double targetAngle) {
-    double gainConstant;      // was 0.005
-    gainConstant = Robot.shifter.isShifterInHighGear() ? 0.002 : 0.005;  // 0.02, 0.05
-    double xVal = normalizeAngle(targetAngle - getGyroRotation());
-    double fixSpeed;            // was 0.38
-    fixSpeed = Robot.shifter.isShifterInHighGear() ? 0.05 : 0.1;  // 0.05, 0.1
-    fixSpeed = SmartDashboard.getNumber("turn min", 0);
+    double gainConstant, fixSpeed;
 
+    gainConstant = Robot.shifter.isShifterInHighGear() ? 0.002 : 0.005;  
+    fixSpeed = Robot.shifter.isShifterInHighGear() ? 0.05 : 0.1; 
+
+    double xVal = normalizeAngle(targetAngle - getGyroRotation());
     double percentOutput = fixSpeed + Math.abs(gainConstant * xVal);
+
     if (percentOutput - priorTurnPercentOutput > 0.005) {
+      // Prevent the motors from accelerating too quickly and causing the wheels to slip
       percentOutput += 0.005;
     }
     priorTurnPercentOutput = percentOutput;
@@ -407,20 +408,6 @@ public abstract class DriveTrain extends Subsystem {
     } else {
       stop();
     }
-
-
-    // double lPercentOutput = fixSpeed + (gainConstant * xVal);
-    // double rPercentOutput = fixSpeed - (gainConstant * xVal);
-    // System.out.println("x-val = " + xVal + ", " + getGyroRotation());
-    // if(xVal > 0.5){
-    //   setLeftMotors(-lPercentOutput);
-    //   setRightMotors(lPercentOutput);
-    // } else if (xVal < -0.5) {
-    //   setLeftMotors(rPercentOutput);
-    //   setRightMotors(-rPercentOutput);
-    // } else {
-    //   stop();
-    // }
 
     updateDriveLog(false);
   }

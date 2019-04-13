@@ -8,7 +8,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 public class TurnWithGyro extends Command {
@@ -18,13 +17,18 @@ public class TurnWithGyro extends Command {
   boolean isRelativeGyroAngle;
   double originalGyroAngle;
 
+  /**
+   * Turns the robot in place
+   * @param targetAngle in degrees
+   * @param isRelativeAngle true = turn relative to current robot heading (+ = turn right, - = turn left).  
+   * false = turn to absolute robot heading on the gyro.
+   */
   public TurnWithGyro(double targetAngle, boolean isRelativeAngle) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.driveTrain);
     inputAngle = targetAngle;
     isRelativeGyroAngle = isRelativeAngle;
-    SmartDashboard.putNumber("turn min", 0.1);
   }
 
   // Called just before this Command runs the first time
@@ -38,7 +42,6 @@ public class TurnWithGyro extends Command {
     } else {
       targetAngle = inputAngle;
     }
-    SmartDashboard.putNumber("target angle", targetAngle);
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -50,7 +53,6 @@ public class TurnWithGyro extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    System.out.println(Robot.driveTrain.getGyroRotation() + " target= " + targetAngle + " error " + Robot.driveTrain.normalizeAngle(Robot.driveTrain.getGyroRotation() - targetAngle) );
     return Math.abs( Robot.driveTrain.normalizeAngle(Robot.driveTrain.getGyroRotation() - targetAngle) ) <= 1.5;
   }
 
