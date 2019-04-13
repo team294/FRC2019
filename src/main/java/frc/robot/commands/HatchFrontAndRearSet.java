@@ -18,7 +18,7 @@ public class HatchFrontAndRearSet extends CommandGroup {
    */
   public HatchFrontAndRearSet(boolean grab) {
     // Move the front grabber as needed.
-    addParallel(new HatchSet(grab));
+    addParallel(new HatchFingersGrab(grab));
 
     // Deploy and turn on the rear grabber as needed.
     addSequential(new RearHatchSet(true));

@@ -15,8 +15,8 @@ public class HatchGrabSequenceB extends CommandGroup {
    * set hatch grabber to grabbed and retract extension
    */
   public HatchGrabSequenceB() {
-    addSequential(new HatchSet(true));
+    addSequential(new HatchFingersGrab(true));
     addSequential(new WaitCommand(0.1));
-    addSequential(new HatchExtensionSet(false));
+    addSequential(new HatchExtensionExtend(false));
   }
 }

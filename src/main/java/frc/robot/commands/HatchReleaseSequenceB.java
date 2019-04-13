@@ -15,10 +15,10 @@ public class HatchReleaseSequenceB extends CommandGroup {
    * releases hatch, retract hatch extension, and sets hatch grabber to grabbed
    */
   public HatchReleaseSequenceB() {
-    addSequential(new HatchSet(false));
+    addSequential(new HatchFingersGrab(false));
     addSequential(new WaitCommand(0.1));
-    addSequential(new HatchExtensionSet(false));
+    addSequential(new HatchExtensionExtend(false));
     addSequential(new WaitCommand(1.5));
-    addSequential(new HatchSet(true));
+    addSequential(new HatchFingersGrab(true));
   }
 }

@@ -24,16 +24,16 @@ public class Hatch extends Subsystem {
   private boolean hatchExtensionPosition = true;
 
   public Hatch() {
-      setHatchPiston(true);
-      setHatchExtensionPiston(true);
+      setHatchGrab(true);
+      setHatchExtensionRetracted(true);
   }
 
   /**
-	 * Sets the position of the hatch piston
+	 * Sets the position of the hatch grabber piston
 	 * 
 	 * @param position true is grab hatch; false is release hatch
 	 */
-  public void setHatchPiston(boolean position) {
+  public void setHatchGrab(boolean position) {
     if (position) {
       hatchPiston.set(false);
       hatchPosition = true;
@@ -50,34 +50,34 @@ public class Hatch extends Subsystem {
 
   /**
 	 * 
-	 * @return position of hatch piston
+	 * @return position of hatch grabber piston (true = grabbed, false = released)
 	 */
-	public boolean getHatchPiston() {
+	public boolean isHatchGrabbed() {
 		return hatchPosition;
 	}
 
   /**
 	 * Sets the position of the hatch extension piston
 	 * 
-	 * @param position true is retract hatch grabber; false is extend hatch grabber
+	 * @param retract true is retract hatch grabber; false is extend hatch grabber
 	 */
-  public void setHatchExtensionPiston(boolean position) {
-    if (position) {
+  public void setHatchExtensionRetracted(boolean retract) {
+    if (retract) {
       hatchExtensionPiston.set(false);
       hatchExtensionPosition = true;
-      SmartDashboard.putString("Hatch Grabber Position", "Retract");
+      SmartDashboard.putString("Disc Extension", "Retract");
 		} else {
       hatchExtensionPiston.set(true);
       hatchExtensionPosition = false;
-      SmartDashboard.putString("Hatch Grabber Position", "Extend");
+      SmartDashboard.putString("Disc Extension", "Extend");
     }
   }
 
   /**
 	 * 
-	 * @return position of hatch extension piston
+	 * @return position of hatch extension piston (true = retracted, false = extended)
 	 */
-	public boolean getHatchExtensionPiston() {
+	public boolean isHatchExtensionRetracted() {
 		return hatchExtensionPosition;
 	}
 

@@ -8,13 +8,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 
 public class HatchGrabSequenceA extends CommandGroup {
   /**
    * set hatch grabber to released and extend extension
    */
   public HatchGrabSequenceA() {
-    addSequential(new HatchSet(false));
-    addSequential(new HatchExtensionSet(true));
+    addSequential(new HatchFingersGrab(false));
+    addSequential(new WaitCommand(0.1));
+    addSequential(new HatchExtensionExtend(true));
   }
 }

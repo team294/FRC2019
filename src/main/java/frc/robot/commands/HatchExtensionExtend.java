@@ -11,14 +11,14 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 
-public class HatchExtensionSet extends Command {
+public class HatchExtensionExtend extends Command {
   private boolean extend;
 
   /**
-   * Grab or releae the hatch claw
+   * Extend or retract the hatch claw
    * @param extend false = retracted, true = extended
    */
-  public HatchExtensionSet(boolean extend) {
+  public HatchExtensionExtend(boolean extend) {
     requires(Robot.hatch);
     this.extend = extend;
   }
@@ -26,11 +26,7 @@ public class HatchExtensionSet extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    if (extend) {
-      Robot.hatch.setHatchExtensionPiston(false);
-    } else {
-      Robot.hatch.setHatchExtensionPiston(true);
-    }
+    Robot.hatch.setHatchExtensionRetracted(!extend);
   }
 
   // Called repeatedly when this Command is scheduled to run
