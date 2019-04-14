@@ -22,6 +22,7 @@ public class RobotPreferences {
 	public double elevatorBottomToFloor; //distance of elevator 0 value from the ground
 	public double elevatorWristSafeStow; 	 // highest elevator position (from ground) where wrist can be stowed
 	public double cameraDistanceFromFrontOfBumper;  // (default = 12 inches)
+	public double cameraXOffset;		// Fudge factor to account for camera mount not being centered
 	public double wristGearRatio; 		// wrist gear ratio, gear with encoder / gear driving wrist
 	public double wristCalZero;   		// Wrist encoder position at O degrees, in encoder ticks (i.e. the calibration factor)
 	public boolean wristCalibrated = false;     // Default to wrist being uncalibrated.  Calibrate from robot preferences or "Calibrate Wrist Zero" button on dashboard
@@ -104,6 +105,7 @@ public class RobotPreferences {
 		elevatorBottomToFloor = prefs.getDouble("elevatorBottomToFloor", 15.5); // inches from ground to elevator's lowest position
 		elevatorWristSafeStow = prefs.getDouble("elevatorWristSafeStow", 18.5); // max elevator position from floor where wrist can be stowed
 		cameraDistanceFromFrontOfBumper = prefs.getDouble("cameraDistanceFromFrontOfBumper", 12);
+		cameraXOffset = prefs.getDouble("cameraXOffset", 0.0);
 		wristGearRatio = prefs.getDouble("wristGearRatio", 1.0);
 		wristCalZero = prefs.getDouble("wristCalZero", -9999);
 		wristCalibrated = (wristCalZero != -9999);
@@ -184,6 +186,9 @@ public class RobotPreferences {
 		}
 		if (!prefs.containsKey("cameraDistanceFromFrontOfBumper")){
 			prefs.putDouble("cameraDistanceFromFrontOfBumper", 12);
+		}
+		if (!prefs.containsKey("cameraXOffset")){
+			prefs.putDouble("cameraXOffset", 0.0);
 		}
 		if (!prefs.containsKey("wristGearRatio")) {
 			prefs.putDouble("wristGearRatio", 1.0);
