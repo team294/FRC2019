@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.commands.*;
+import frc.robot.subsystems.Hatch;
 import frc.robot.triggers.*;
 import frc.robot.utilities.RobotPreferences.ElevatorPosition;
 import frc.robot.utilities.RobotPreferences.WristAngle;
@@ -68,11 +69,14 @@ public class OI {
     xbB[3].whenPressed(new ElevatorWristStow()); // X
     xbB[4].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchHigh)); // Y
     // xbB[5].whenPressed(new RearHatchSet(false)); // LB
-    xbB[5].whenActive(new HatchSet(false)); // LB
-    xbB[5].whenInactive(new HatchSet(true)); // LB
+    // xbB[5].whenActive(new HatchSet(false)); // LB
+    // xbB[5].whenInactive(new HatchSet(true)); // LB
+    xbB[5].whenActive(new HatchGrabSequenceA()); // LB
+    xbB[5].whenInactive(new HatchGrabSequenceB()); // LB
+
     xbB[6].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.cargoShipCargo)); // RB
-    xbB[7].whenPressed(new StopAllMotors()); // Back
-    xbB[8].whenPressed(new CargoRearHatchStop()); // Start
+    xbB[7].whenPressed(new VisionChangePipeline(1)); // Back
+    xbB[8].whenPressed(new VisionChangePipeline(0)); // Start
     xbB[9].whenPressed(new ElevatorWithXBox()); // LStick
     xbB[10].whenPressed(new WristWithXBox()); // RStick
     xbUp.whenActive(new CargoIntakeFromLoad()); // DPadUp
@@ -85,8 +89,10 @@ public class OI {
     // xbLeft.whenInactive(new RearHatchSetPercentOutput(-0.6, 1.5)); // DPadLeft release
     // xbLeft.whenActive(new HatchSet(false)); // DPad Left Press
     // xbLeft.whenInactive(new HatchSet(true)); // DPad Left Release
-    xbLT.whenActive(new CargoOuttake(-1.0)); // LT
-    xbRT.whenActive(new CargoOuttake(-0.8)); // RT
+    xbLT.whenActive(new HatchExtensionExtend(true)); // LT
+    //xbLT.whenInactive(new HatchExtensionSet(false)); // LT
+    xbLT.whenInactive(new HatchReleaseSequenceB()); // LT
+    xbRT.whenActive(new CargoOuttake(-1.0)); // RT
 
     // Joystick buttons
     left[1].whenPressed(new Shift(false)); // low gear
@@ -99,9 +105,12 @@ public class OI {
     right[2].whenReleased(new DriveWithJoysticks()); // drive with joysticks
     // left[3].whenPressed(new Command());
     // right[3].whenPressed(new Command());
-    left[4].whenPressed(new VisionChangePipeline(0)); // set pipeline for vision
+    // left[4].whenPressed(new VisionChangePipeline(0)); // set pipeline for vision
     // right[4].whenPressed(new Command());
-    left[5].whenPressed(new VisionChangePipeline(2)); // set pipeline for drive feed
+    left[4].whenPressed(new VisionChangePipeline(1)); // leftmost pipeline
+    left[3].whenPressed(new VisionChangePipeline(2)); // driver pipeline
+    left[5].whenPressed(new VisionChangePipeline(0)); // rightmost pipeline
+    // left[5].whenPressed(new VisionChangePipeline(2)); // set pipeline for drive feed
     // right[5].whenPressed(new Command());
 
     // Copanel buttons
@@ -117,6 +126,8 @@ public class OI {
     coP[10].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchMid)); // mid row, first button, DOWN
     // coP[11].whenPressed(new RearHatchSet(true)); // mid row, second button, UP
     // coP[12].whenPressed(new RearHatchSet(false)); // mid row, second button, DOWN
+    coP[11].whenPressed(new StopAllMotors()); // mid row, second button, UP
+    coP[12].whenPressed(new CargoRearHatchStop()); // mid row, second button, DOWN
     coP[13].whenPressed(new WristSetPercentOutput(0.2)); // mid row, third button, UP
     coP[14].whenPressed(new WristSetPercentOutput(-0.2)); // mid row, third button, DOWN
     coP[15].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.cargoShipCargo)); // third row, first button, UP
@@ -135,6 +146,9 @@ public class OI {
     chooser_startPosition.addObject("Right Level 1", StartingPosition.Right1);
     chooser_startPosition.addObject("Right Level 2", StartingPosition.Right2);
 		SmartDashboard.putData("Starting Pos Selection", chooser_startPosition);
+    // Buttons for shifter
+    SmartDashboard.putData("Shift High", new Shift(true));
+    SmartDashboard.putData("Shift Low", new Shift(false));
 
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorSetPercentOutput(0.4)); // For testing limit switch and encoder
@@ -160,10 +174,14 @@ public class OI {
     SmartDashboard.putData("Turn to 90", new TurnWithGyro(90.0, false));
     SmartDashboard.putData("Turn to -90", new TurnWithGyro(-90.0, false));
     SmartDashboard.putData("Turn to 0", new TurnWithGyro(0.0, false));
+    SmartDashboard.putData("Turn +90", new TurnWithGyro(90.0, true));
+    SmartDashboard.putData("Turn -90", new TurnWithGyro(-90.0, true));
+    SmartDashboard.putData("Turn +10", new TurnWithGyro(10.0, true));
+    SmartDashboard.putData("Turn -10", new TurnWithGyro(-10.0, true));
     
     // Buttons for the Cargo rollers
     SmartDashboard.putData("Cargo Intake", new CargoIntake());
-    SmartDashboard.putData("Cargo Outtake", new CargoOuttake(-0.8));
+    SmartDashboard.putData("Cargo Outtake", new CargoOuttake(-1.0));
 
     // Buttons for the rear hatch intake
     SmartDashboard.putData("Rear Hatch Intake", new RearHatchSetPercentOutput(0.6, 5));
@@ -196,8 +214,10 @@ public class OI {
 
     SmartDashboard.putData("Clear Sticky Faults", new ClearStickyFaults());
     Robot.robotPrefs.showStickyFaults();
-    SmartDashboard.putData("Disc Grab", new HatchSet(true));
-    SmartDashboard.putData("Disc Release", new HatchSet(false));
+    SmartDashboard.putData("Disc Grab", new HatchFingersGrab(true));
+    SmartDashboard.putData("Disc Release", new HatchFingersGrab(false));
+    SmartDashboard.putData("Disc Extend", new HatchExtensionExtend(true));
+    SmartDashboard.putData("Disc Retract", new HatchExtensionExtend(false));
     SmartDashboard.putString("Disc Position", "Null");
     SmartDashboard.putData("DriveStraight 100 in", new DriveStraightDistanceProfile(100, 0, 80, 65));
     SmartDashboard.putData("DriveToCargoShip", new DriveToCargoShip());

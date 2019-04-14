@@ -37,7 +37,8 @@ public class RobotMap {
   // public static final int pnuematicShifterLow = 0;
   public static final int pnuematicShifterHigh = 0;   // Changed to single ended Default Low
   public static final int pneumaticHatch = 1;
-  public static final int pneumaticRearHatch = 2;
+  public static final int pneumaticRearHatch = 3; // not used
+  public static final int hatchExtensionPiston = 2;
   
   public static final int pneumaticLedsBlue = 4;
   public static final int pneumaticLedsRed = 5;

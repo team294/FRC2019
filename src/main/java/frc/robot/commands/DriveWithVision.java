@@ -18,7 +18,7 @@ public class DriveWithVision extends Command {
   private double targetQuad = 0; // The quadrant of the target we want to drive to
 
   private double stopDistance = 32.0;  // Used 26.0 in the lab, changed to 28 for safety.  Should be able to use 34 with intake low.
-  private final double MAX_SPEED = 0.65;
+  private final double MAX_SPEED = 0.75;
   private final double MIN_SPEED = 0.2;
   private double priorVisionSpeed = MAX_SPEED;
   private double visionSpeed = MAX_SPEED;
@@ -49,7 +49,7 @@ public class DriveWithVision extends Command {
     this.endOnLine = endOnLine;
     this.gyro = gyro;
 
-    Robot.vision.setPipe(0); // On vision pipeline
+    // Robot.vision.setPipe(0); // On vision pipeline
     Robot.vision.setLedMode(3); // TODO Change back to 3 to turn on LEDs.  Make sure the LEDs are on before driving
 
     updateLog();  // Prime StringBuilder to speed up code during execution
@@ -58,9 +58,9 @@ public class DriveWithVision extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.vision.setPipe(0);
+    // Robot.vision.setPipe(0);
     Robot.vision.setLedMode(3);
-    Robot.driveTrain.setDriveMode(false);
+    Robot.driveTrain.setDriveModeCoast(false);
     SmartDashboard.putBoolean("Ready to Score", false);
     Robot.driveTrain.clearEncoderList(); // May not be necessary to clear
     //Robot.driveTrain.driveToCrosshair();
@@ -101,7 +101,7 @@ public class DriveWithVision extends Command {
       SmartDashboard.putNumber("Final Angle", finalAngle);
     } else {
       // Drive directly towards target
-      finalAngle = xVal;
+      finalAngle = xVal - Robot.robotPrefs.cameraXOffset;
 
       // If we are farther than 40in from the target, use the target skew to 
       // follow an S-curve path to approach the target from a perpendicular line
@@ -121,6 +121,13 @@ public class DriveWithVision extends Command {
 
     // Decease speed in last 10 inches
     visionSpeed = (distance > stopDistance + 10) ? MAX_SPEED : (MAX_SPEED - MIN_SPEED) * (distance-stopDistance)/10.0 + MIN_SPEED;
+
+    // Check for bad values from vision.  If so, then just go forward at prior speed and we will correct on next cycle.
+    if ( distance > 150 || distance < stopDistance - 2) {
+      visionSpeed = priorVisionSpeed;
+      finalAngle = 0;
+    }
+
     // Don't allow speed to increase
     if (priorVisionSpeed < visionSpeed) visionSpeed = priorVisionSpeed;
     priorVisionSpeed = visionSpeed;
@@ -134,7 +141,7 @@ public class DriveWithVision extends Command {
     // if (rEncStopped && rPercentOutput != 0) lPercentOutput = 1.0; 
     // if (lPercentOutput == 1.0 || rPercentOutput == 1.0) System.out.println("STOP DETECTED, INITIATING EVASIVE MANEUVERS"); 
 
-    if (area != 0) Robot.driveTrain.tankDrive(lPercentOutput, rPercentOutput); // area goes to zero before the front hits the wall
+    if (area != 0 && Robot.vision.distance > stopDistance) Robot.driveTrain.tankDrive(lPercentOutput, rPercentOutput); // area goes to zero before the front hits the wall
     else Robot.driveTrain.stop();
 
     updateLog();
@@ -151,7 +158,11 @@ public class DriveWithVision extends Command {
   @Override
   protected boolean isFinished() {
     // Robot.driveTrain.areEncodersStopped(5.0);
-    return Robot.vision.distance <= stopDistance;
+
+    // We get some false readings in the first few cycles (likely due to robot vibration from wrist/elevator move), so 
+    // keep going for at least 1 second
+    return Robot.vision.distance <= stopDistance  && timeSinceInitialized()>1.0;
+
     // return endOnLine && Robot.lineFollowing.isLinePresent() && Robot.vision.distanceFromTarget() < 40; // Stops when a line is detected by the line followers within a reasonable expected distance
   }
 
@@ -161,7 +172,7 @@ public class DriveWithVision extends Command {
     Robot.driveTrain.stop();
     Robot.vision.setPipe(2);
     Robot.vision.setLedMode(1);
-    Robot.driveTrain.setDriveMode(true);
+    Robot.driveTrain.setDriveModeCoast(false);
     Robot.log.writeLog("DriveWithVision", "end", "");
     // Robot.leds.setColor(LedHandler.Color.OFF);   // Robot Periodic will turn off LEDs
   }

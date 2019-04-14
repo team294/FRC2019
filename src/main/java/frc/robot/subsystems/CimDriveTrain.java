@@ -81,12 +81,7 @@ public class CimDriveTrain extends DriveTrain {
     rightMotor2.clearStickyFaults(0);
     rightMotor3.clearStickyFaults(0);
 
-    leftMotor1.setNeutralMode(NeutralMode.Brake);
-    leftMotor2.setNeutralMode(NeutralMode.Brake);
-    leftMotor3.setNeutralMode(NeutralMode.Brake);
-    rightMotor1.setNeutralMode(NeutralMode.Brake);
-    rightMotor2.setNeutralMode(NeutralMode.Brake);
-    rightMotor3.setNeutralMode(NeutralMode.Brake);
+    setDriveModeCoast(false);      // Set to brake drive mode
 
     robotDrive.setDeadband(0.05);
 
@@ -163,7 +158,7 @@ public class CimDriveTrain extends DriveTrain {
   }
 
   @Override
-  public void setDriveMode(boolean setCoast) {
+  public void setDriveModeCoast(boolean setCoast) {
     if (setCoast) {
       leftMotor1.setNeutralMode(NeutralMode.Coast);
       leftMotor2.setNeutralMode(NeutralMode.Coast);

@@ -14,6 +14,9 @@ import frc.robot.Robot;
  * An example command. You can replace me with your own command.
  */
 public class DriveWithJoysticks extends Command {
+  private double highGearLimit = 0.7;       // Scaling factor (max percent output) in high gear
+
+
   public DriveWithJoysticks() {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.driveTrain);
@@ -32,11 +35,11 @@ public class DriveWithJoysticks extends Command {
     double rightValue = Robot.oi.rightJoystick.getY();
 
     if (Robot.driveTrain.getDriveDirection() && Robot.shifter.isShifterInHighGear())  {
-      Robot.driveTrain.tankDrive(-leftValue * 0.8, -rightValue * 0.7,false);
+      Robot.driveTrain.tankDrive(-leftValue * highGearLimit, -rightValue * highGearLimit, false);
     } else if (Robot.driveTrain.getDriveDirection() && !Robot.shifter.isShifterInHighGear()) {
       Robot.driveTrain.tankDrive(-leftValue, -rightValue,false);
     } else if (!Robot.driveTrain.getDriveDirection() && Robot.shifter.isShifterInHighGear()) {
-      Robot.driveTrain.tankDrive(leftValue * 0.8, rightValue * 0.7,false);
+      Robot.driveTrain.tankDrive(leftValue * highGearLimit, rightValue * highGearLimit,false);
     } else {
       Robot.driveTrain.tankDrive(leftValue, rightValue, false);
     }
