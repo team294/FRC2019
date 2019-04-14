@@ -2,12 +2,12 @@ package frc.robot.utilities;
 
 import frc.robot.Robot;
 import frc.robot.commands.DrivePathfinder;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutoSelection {
-	public Command autonomousCommand;
+	private Command autonomousCommand;
+	private int priorProgramSelected = -1;
 
 	// Auto path selections
 	public static final int AUTO_PLANS = 3;
@@ -62,6 +62,12 @@ public class AutoSelection {
 		} else {
 			programSelected = startingAutoPrograms[selectedPlan][4];
 		}
+
+		// Don't generat a new command if the selection has not changed
+		if (programSelected == priorProgramSelected) return;
+
+		priorProgramSelected = programSelected;
+		SmartDashboard.putString("Auto path", "loading path file...");
 
 		switch (programSelected) {
 			case 1:
@@ -133,6 +139,10 @@ public class AutoSelection {
 	}
 
 	public void startAutoCommand() {
-		if (autonomousCommand != null) autonomousCommand.start();
+		Robot.log.writeLogEcho("AutoSelection", "Start Command", "Init");
+		if (autonomousCommand != null) {
+			Robot.log.writeLogEcho("AutoSelection", "Start Command", "Command Name," + autonomousCommand.getName());
+			autonomousCommand.start();
+		}
 	}
 }

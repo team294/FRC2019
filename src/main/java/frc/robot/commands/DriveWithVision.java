@@ -120,7 +120,7 @@ public class DriveWithVision extends Command {
     // double lJoystickAdjust = lJoystickRaw * 0.8;
 
     // Decease speed in last 10 inches
-    visionSpeed = (distance > stopDistance + 10) ? MAX_SPEED : (MAX_SPEED - MIN_SPEED) * (distance-stopDistance)/10.0 + MIN_SPEED;
+    visionSpeed = (distance > stopDistance + 15) ? MAX_SPEED : (MAX_SPEED - MIN_SPEED) * (distance-stopDistance)/15.0 + MIN_SPEED;
 
     // Check for bad values from vision.  If so, then just go forward at prior speed and we will correct on next cycle.
     if ( distance > 150 || distance < stopDistance - 2) {
