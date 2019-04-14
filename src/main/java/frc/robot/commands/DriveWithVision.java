@@ -108,7 +108,7 @@ public class DriveWithVision extends Command {
       if (distance>43) finalAngle -= skew*distance * 0.035;  // tuned to 0.035  for distance > 43
     }
 
-    double gainConstant = distance * 0.00005 + 0.008;  // tuned to 0.008
+    double gainConstant = distance * 0.00005 + 0.012;  // tuned to 0.008
 
     //double lJoystickAdjust = Math.abs(Robot.oi.leftJoystick.getY());
     //double lJoystickAdjust = 0.7 * Math.sqrt(lJoystickRaw);
