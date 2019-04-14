@@ -19,9 +19,7 @@ import frc.robot.subsystems.Hatch;
 import frc.robot.triggers.*;
 import frc.robot.utilities.RobotPreferences.ElevatorPosition;
 import frc.robot.utilities.RobotPreferences.WristAngle;
-import frc.robot.utilities.AutoSelection;
-import frc.robot.utilities.AutoSelection.AutoPlan;
-import frc.robot.utilities.AutoSelection.StartingPosition;
+import frc.robot.utilities.AutoSelection.*;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -59,7 +57,15 @@ public class OI {
       xbB[i] = new JoystickButton(xBoxController, i);
     }
 
-    for (int i = 0; i < coP.length; i++) {
+    // for (int i = 0; i < coP.length; i++) {
+    //   coP[i] = new JoystickButton(coPanel, i);
+    // }
+
+    for (int i = 0; i < 7; i++) {
+      coP[i] = new JoystickButton(coPanel, i);
+    }
+
+    for (int i = 8; i < coP.length; i++) {
       coP[i] = new JoystickButton(coPanel, i);
     }
 
@@ -120,7 +126,7 @@ public class OI {
     coP[4].whileHeld(new ClimbArmSetPercentOutput(-0.5)); // top row, second button, DOWN
     coP[5].whenPressed(new ClimbVacuumTurnOn(true)); // top row, third button, UP
     coP[6].whenPressed(new ClimbVacuumTurnOn(false)); // top row, third button, DOWN
-    coP[7].whileHeld(new CargoIntake()); // mid row, fourth button, UP or DOWN
+    // coP[7].whileHeld(new CargoIntake()); // mid row, fourth button, UP or DOWN
     coP[8].whenPressed(new ClimbSequence()); // BIG RED BUTTON
     coP[9].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchHigh)); // mid row, first button, UP
     coP[10].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchMid)); // mid row, first button, DOWN
@@ -220,9 +226,7 @@ public class OI {
     SmartDashboard.putData("Disc Retract", new HatchExtensionExtend(false));
     SmartDashboard.putString("Disc Position", "Null");
     SmartDashboard.putData("DriveStraight 100 in", new DriveStraightDistanceProfile(100, 0, 80, 65));
-    SmartDashboard.putData("DriveToCargoShip", new DriveToCargoShip());
-
-    SmartDashboard.putData("Pathfinder Test", new DrivePathfinder("R2ShipFront", true, true));
+    SmartDashboard.putData("Pathfinder Test", new DrivePathfinder("Straight150", true, true));
 
 /*
     SmartDashboard.putData("LEDSet Purple", new LEDSet(0));

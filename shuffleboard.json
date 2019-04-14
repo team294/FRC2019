@@ -995,7 +995,7 @@
           "0,1": {
             "size": [
               2,
-              5
+              3
             ],
             "content": {
               "_type": "List Layout",
@@ -1052,6 +1052,29 @@
                   "_title": "Wrist Calibrated",
                   "Colors/Color when true": "#7CFC00FF",
                   "Colors/Color when false": "#8B0000FF"
+                }
+              ]
+            }
+          },
+          "0,4": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Auto Selection",
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "ComboBox Chooser",
+                  "_source0": "network_table:///SmartDashboard/Auto Plan Selection",
+                  "_title": "SmartDashboard/Auto Plan Selection"
+                },
+                {
+                  "_type": "ComboBox Chooser",
+                  "_source0": "network_table:///SmartDashboard/Starting Pos Selection",
+                  "_title": "SmartDashboard/Starting Pos Selection"
                 }
               ]
             }
