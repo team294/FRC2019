@@ -129,8 +129,8 @@ public class Wrist extends Subsystem {
       // Apply interlocks if elevator is low
       if (Robot.elevator.getElevatorPos() < Robot.robotPrefs.groundCargo - 2.0 || Robot.elevator.getCurrentElevatorTarget() < Robot.robotPrefs.groundCargo -2.0) {
         // Elevator is very low or is going very low
-        // Wrist can not be below horizontal
-        safeAngle = (safeAngle < Robot.robotPrefs.wristStraight) ? Robot.robotPrefs.wristStraight : safeAngle;
+        // Wrist can not be below vision level
+        safeAngle = (safeAngle < Robot.robotPrefs.wristVision) ? Robot.robotPrefs.wristVision : safeAngle;
       } else {
         // Wrist is safe to move as far down as wristDown
         safeAngle = (safeAngle < Robot.robotPrefs.wristDown) ? Robot.robotPrefs.wristDown : safeAngle;

@@ -37,7 +37,7 @@ public class RobotPreferences {
 	public final double wristKeepOut = 28.0; // Max angle to avoid interference with elevator or climber
 	public final double wristUp = 15.0;
 	public final double wristStraight = -1.0;	//  needed to bias upward to account for sag and insure that hatch cover gripper engages first
-	public final double wristVision = -10.0;    // wrist angle for optimal vision tracking
+	public final double wristVision = -5.0;    // wrist angle for optimal vision tracking
 	public final double wristCargoShot = -30.0;	// Angle for wrist for cargo ship ball shot
 	public final double wristLowerCrashWhenElevatorLow = -45.0;   // If the elevator is in the low position, don't move the wrist below this!
 	public final double wristDown = -60.0;		// TODO Should be -59.0? // In this position, elevator must be able to go to groundCargo
@@ -62,7 +62,6 @@ public class RobotPreferences {
 	*/
 
 	// Field level heights (for elevator targeting), in inches
-	public final double elevatorWristStow = 15.5;		// At the hard stop
 	public final double hatchLow = 19.0;
   	public final double hatchMid = 48.5;
   	public final double hatchHigh = 72.8;

@@ -49,11 +49,8 @@ public class ElevatorMoveToLevel extends Command {
     if(!targetInches) {
       if(Robot.cargo.hasBall()) { 
         switch (pos) {
-          case bottom:  case vision:
+          case bottom:  case vision:  case wristStow:
             target = Robot.robotPrefs.elevatorBottomToFloor;
-            break;
-          case wristStow:
-            target = Robot.robotPrefs.elevatorWristStow;
             break;
           case hatchLow:
             target = Robot.robotPrefs.hatchLow + Robot.robotPrefs.rocketBallOffset;
@@ -76,11 +73,8 @@ public class ElevatorMoveToLevel extends Command {
         }
       } else {
         switch (pos) {
-          case bottom:  case vision:
+          case bottom:  case vision:   case wristStow:
             target = Robot.robotPrefs.elevatorBottomToFloor;
-            break;
-          case wristStow:
-            target = Robot.robotPrefs.elevatorWristStow;
             break;
           case hatchLow:
             target = Robot.robotPrefs.hatchLow;
@@ -121,7 +115,7 @@ public class ElevatorMoveToLevel extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    if (target == Robot.robotPrefs.elevatorWristStow &&
+    if (target == Robot.robotPrefs.elevatorBottomToFloor &&
       Robot.elevator.getElevatorPos() < Robot.robotPrefs.elevatorWristSafeStow) {
         return true;
     } else if (!Robot.elevator.encoderCalibrated() ||         // End immediately if encoder can't read
