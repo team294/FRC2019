@@ -403,15 +403,15 @@ public abstract class DriveTrain extends Subsystem {
   public void turnWithGyro(double targetAngle) {
     double gainConstant, fixSpeed;
 
-    gainConstant = Robot.shifter.isShifterInHighGear() ? 0.002 : 0.005;  
-    fixSpeed = Robot.shifter.isShifterInHighGear() ? 0.05 : 0.1; 
+    gainConstant = Robot.shifter.isShifterInHighGear() ? 0.005 : 0.008;  // was 0.005;
+    fixSpeed = Robot.shifter.isShifterInHighGear() ? 0.08 : 0.1;
 
     double xVal = normalizeAngle(targetAngle - getGyroRotation());
     double percentOutput = fixSpeed + Math.abs(gainConstant * xVal);
 
-    if (percentOutput - priorTurnPercentOutput > 0.02) {
+    if (percentOutput - priorTurnPercentOutput > 0.1) {
       // Prevent the motors from accelerating too quickly and causing the wheels to slip
-      percentOutput = priorTurnPercentOutput + 0.02;
+      percentOutput = priorTurnPercentOutput + 0.1;
     }
     priorTurnPercentOutput = percentOutput;
 
