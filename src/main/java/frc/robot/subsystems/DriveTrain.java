@@ -403,7 +403,7 @@ public abstract class DriveTrain extends Subsystem {
   public void turnWithGyro(double targetAngle) {
     double gainConstant, fixSpeed;
 
-    gainConstant = Robot.shifter.isShifterInHighGear() ? 0.005 : 0.008;  // was 0.005;
+    gainConstant = Robot.shifter.isShifterInHighGear() ? 0.005 : 0.005;
     fixSpeed = Robot.shifter.isShifterInHighGear() ? 0.08 : 0.1;
 
     double xVal = normalizeAngle(targetAngle - getGyroRotation());
