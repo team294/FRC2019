@@ -11,12 +11,16 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.Trigger;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.commands.*;
 import frc.robot.triggers.*;
 import frc.robot.utilities.RobotPreferences.ElevatorPosition;
 import frc.robot.utilities.RobotPreferences.WristAngle;
+import frc.robot.utilities.AutoSelection;
+import frc.robot.utilities.AutoSelection.AutoPlan;
+import frc.robot.utilities.AutoSelection.StartingPosition;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -29,6 +33,9 @@ public class OI {
   public Joystick rightJoystick = new Joystick(1);
   public Joystick coPanel = new Joystick(2);
   public Joystick xBoxController = new Joystick(3);
+
+  SendableChooser<AutoPlan> chooser_autoPlan = new SendableChooser<>();
+  SendableChooser<StartingPosition> chooser_startPosition = new SendableChooser<>();
 
   public OI() {
     Button[] left = new Button[12];
@@ -115,6 +122,20 @@ public class OI {
     coP[15].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.cargoShipCargo)); // third row, first button, UP
     coP[16].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchLow)); // third row, first button, DOWN
 
+    // Setting up autonomous chooser
+    chooser_autoPlan.addObject("CargoShip Front", AutoPlan.CargoShipFront);
+    chooser_autoPlan.addObject("Rocket Front", AutoPlan.RocketFront);
+    chooser_autoPlan.addObject("Rocket Back", AutoPlan.RocketBack);
+    SmartDashboard.putData("Auto Plan Selection", chooser_autoPlan);
+
+    // Setting up starting position chooser
+    chooser_startPosition.addObject("Left Level 1", StartingPosition.Left1);
+    chooser_startPosition.addObject("Left Level 2", StartingPosition.Left2);
+    chooser_startPosition.addObject("Middle", StartingPosition.Middle);
+    chooser_startPosition.addObject("Right Level 1", StartingPosition.Right1);
+    chooser_startPosition.addObject("Right Level 2", StartingPosition.Right2);
+		SmartDashboard.putData("Starting Pos Selection", chooser_startPosition);
+
     // Buttons for controlling the elevator
     SmartDashboard.putData("Elevator Up", new ElevatorSetPercentOutput(0.4)); // For testing limit switch and encoder
     SmartDashboard.putData("Elevator Down", new ElevatorSetPercentOutput(-0.2)); // For testing limit switch and encoder
@@ -199,5 +220,13 @@ public class OI {
 	public void setXBoxRumble(double percentRumble) {
 		xBoxController.setRumble(RumbleType.kLeftRumble, percentRumble);
     xBoxController.setRumble(RumbleType.kRightRumble, percentRumble);
+  }
+  
+  public AutoPlan readAutoPlan() {
+		return chooser_autoPlan.getSelected();
+  }
+  
+  public StartingPosition readStartPosition() {
+		return chooser_startPosition.getSelected();
 	}
 }

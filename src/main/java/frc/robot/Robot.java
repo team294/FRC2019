@@ -42,8 +42,10 @@ public class Robot extends TimedRobot {
   public static PowerDistributionPanel pdp;
   public static LedHandler leds;
   public static CANDeviceFinder canDeviceFinder;
+  public static AutoSelection autoSelection;
 
   public static boolean beforeFirstEnable = true; // true before the first time the robot is enabled after loading code
+  public static boolean startedAuto = false;
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
@@ -86,12 +88,15 @@ public class Robot extends TimedRobot {
     climb = new Climb();
     leds = new LedHandler();
     pdp = new PowerDistributionPanel();
+
     // pdp.clearStickyFaults();
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
-    SmartDashboard.putData("Auto mode", m_chooser);
     climb.enableCompressor(true);
 
+    // Create auto selection utility
+    autoSelection = new AutoSelection();
+    
     // Create OI last, so all subsystem and utility objects are created before OI
     oi = new OI();
   }
@@ -176,16 +181,16 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     log.writeLogEcho("Robot", "Autonomous mode init", "");
-    beforeFirstEnable = false; // set variable that robot has been enabled
-    elevator.setElevatorMotorPercentOutput(-0.2);
-    m_autonomousCommand = new VisionSandstormSetup(); //m_chooser.getSelected();
+    // beforeFirstEnable = false; // set variable that robot has been enabled
+    // elevator.setElevatorMotorPercentOutput(-0.2); // drive elevator down in case it isn't calibrated
+    // m_autonomousCommand = new VisionSandstormSetup(); //m_chooser.getSelected();
 
-    climb.enableCompressor(true);
+    // climb.enableCompressor(true);
 
-    // schedule the autonomous command (example)
+    // schedule the autonomous command
     if (m_autonomousCommand != null) {
       m_autonomousCommand.start();
-    }
+		}
   }
 
   /**
@@ -194,6 +199,13 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
+    if (autoSelection.autonomousCommand != null && !startedAuto) {
+      autoSelection.autonomousCommand.start();
+      Robot.log.writeLogEcho("AutoSelection", "Started Path", autoSelection.autonomousCommand.getName());
+      startedAuto = true;
+		} else if (autoSelection.autonomousCommand == null && !startedAuto) {
+      autoSelection.selectPath();
+    }
   }
 
   @Override
