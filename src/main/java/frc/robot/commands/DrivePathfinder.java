@@ -19,6 +19,7 @@ public class DrivePathfinder extends Command {
   private Trajectory trajRight;
   private Trajectory trajLeft;
   private boolean resetGyro;
+  private String pathName;
   private static boolean enablePathfinder = true; // true = all paths loaded and allow pathfinder to work,
                                                   // false = a path did not load, stop pathfinder
 
@@ -38,6 +39,7 @@ public class DrivePathfinder extends Command {
     // eg. requires(chassis);
     requires(Robot.driveTrain);
     resetGyro = gyroReset;
+    this.pathName = pathName;
 
     // Load Pathfinder paths
     if (driveDirection) {
@@ -77,6 +79,10 @@ public class DrivePathfinder extends Command {
     segRight = dfRight.getSegment();
 
     logData();
+  }
+
+  public String getPathName() {
+    return pathName;
   }
 
   // Called just before this Command runs the first time

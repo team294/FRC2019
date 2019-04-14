@@ -46,8 +46,6 @@ public class Robot extends TimedRobot {
 
   public static boolean beforeFirstEnable = true; // true before the first time the robot is enabled after loading code
   public static boolean startedAuto = false;
-  Command m_autonomousCommand;
-  SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   /**
    * This function is run when the robot is first started up and should be
@@ -163,7 +161,8 @@ public class Robot extends TimedRobot {
 
     double pipeline = SmartDashboard.getNumber("Vision pipeline", 2.0);
     vision.setPipe(pipeline);
-
+    
+    autoSelection.selectPath();
   }
 
   /**
@@ -186,11 +185,6 @@ public class Robot extends TimedRobot {
     // m_autonomousCommand = new VisionSandstormSetup(); //m_chooser.getSelected();
 
     // climb.enableCompressor(true);
-
-    // schedule the autonomous command
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.start();
-		}
   }
 
   /**
@@ -199,13 +193,13 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
-    if (autoSelection.autonomousCommand != null && !startedAuto) {
-      autoSelection.autonomousCommand.start();
-      Robot.log.writeLogEcho("AutoSelection", "Started Path", autoSelection.autonomousCommand.getName());
-      startedAuto = true;
-		} else if (autoSelection.autonomousCommand == null && !startedAuto) {
-      autoSelection.selectPath();
-    }
+    // if (autoSelection.autonomousCommand != null && !startedAuto) {
+    //   autoSelection.autonomousCommand.start();
+    //   Robot.log.writeLogEcho("AutoSelection", "Started Path", autoSelection.autonomousCommand.getName());
+    //   startedAuto = true;
+		// } else if (autoSelection.autonomousCommand == null && !startedAuto) {
+    //   autoSelection.selectPath();
+    // }
   }
 
   @Override
