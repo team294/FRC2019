@@ -593,16 +593,6 @@
                   "_type": "Command",
                   "_source0": "network_table:///SmartDashboard/Disc Release",
                   "_title": "Hatch Release"
-                },
-                {
-                  "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Disc Extend",
-                  "_title": "Hatch Extend"
-                },
-                {
-                  "_type": "Command",
-                  "_source0": "network_table:///SmartDashboard/Disc Retract",
-                  "_title": "Hatch Retract"
                 }
               ]
             }
@@ -645,7 +635,7 @@
               ]
             }
           },
-          "7,5": {
+          "6,5": {
             "size": [
               1,
               1
