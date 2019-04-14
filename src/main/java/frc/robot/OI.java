@@ -73,8 +73,8 @@ public class OI {
     xbB[5].whenInactive(new HatchGrabSequenceB()); // LB
 
     xbB[6].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.cargoShipCargo)); // RB
-    xbB[7].whenPressed(new VisionChangePipeline(1)); // Back
-    xbB[8].whenPressed(new VisionChangePipeline(0)); // Start
+    xbB[7].whenPressed(new VisionChangePipelineAndMoveWrist(1)); // Back
+    xbB[8].whenPressed(new VisionChangePipelineAndMoveWrist(0)); // Start
     xbB[9].whenPressed(new ElevatorWithXBox()); // LStick
     xbB[10].whenPressed(new WristWithXBox()); // RStick
     xbUp.whenActive(new CargoIntakeFromLoad()); // DPadUp
@@ -105,9 +105,9 @@ public class OI {
     // right[3].whenPressed(new Command());
     // left[4].whenPressed(new VisionChangePipeline(0)); // set pipeline for vision
     // right[4].whenPressed(new Command());
-    left[4].whenPressed(new VisionChangePipeline(1)); // leftmost pipeline
+    left[4].whenPressed(new VisionChangePipelineAndMoveWrist(1)); // leftmost pipeline
     left[3].whenPressed(new VisionChangePipeline(2)); // driver pipeline
-    left[5].whenPressed(new VisionChangePipeline(0)); // rightmost pipeline
+    left[5].whenPressed(new VisionChangePipelineAndMoveWrist(0)); // rightmost pipeline
     // left[5].whenPressed(new VisionChangePipeline(2)); // set pipeline for drive feed
     // right[5].whenPressed(new Command());
 

@@ -79,15 +79,15 @@ public class AutoSelection {
 				Robot.log.writeLogEcho("AutoSelection", "Ran Auto Path 1 (CargoShip Front)", "startPos = " + startPosition.name());
 				break;
 			case 3:
-				autonomousCommand = new DrivePathfinder("Middle1ShipF", true, true); //new DrivePathfinder("Middle1ShipF", true, true);
+				autonomousCommand = new DrivePathfinder("Middle1CargoF", true, true); //new DrivePathfinder("Middle1ShipF", true, true);
 				Robot.log.writeLogEcho("AutoSelection", "Ran Auto Path 1 (CargoShip Front)", "startPos = " + startPosition.name());
 				break;
 			case 4:
-				autonomousCommand = new DrivePathfinder("Right1ShipF", true, true); //new DrivePathfinder("Right1ShipF", true, true);
+				autonomousCommand = new DrivePathfinder("Right1Cargo", true, true); //new DrivePathfinder("Right1ShipF", true, true);
 				Robot.log.writeLogEcho("AutoSelection", "Ran Auto Path 1 (CargoShip Front)", "startPos = " + startPosition.name());
 				break;
 			case 5:
-				autonomousCommand = new DrivePathfinder("Right2ShipF", true, true); //new DrivePathfinder("Right2ShipF", true, true);
+				autonomousCommand = new DrivePathfinder("Right2CargoF", true, true); //new DrivePathfinder("Right2ShipF", true, true);
 				Robot.log.writeLogEcho("AutoSelection", "Ran Auto Path 1 (CargoShip Front)", "startPos = " + startPosition.name());
 				break;
 			case 6:
