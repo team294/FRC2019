@@ -33,7 +33,7 @@ public class ElevatorProfileGenerator {
 	double percentPowerFF = 0;
 	double percentPowerFB = 0;
 
-	private double kFF = 0.1;  // calibrated to 0.1
+	private double kFF = 0.12;  // calibrated to 0.1
 	private double kVu = 0.0139;  // Should be around 0.015, calibrated to 0.0139
 	private double kAu = 0.002;   // Should be around 0.002
 	private double kPu = 0.15;  // was 0.15

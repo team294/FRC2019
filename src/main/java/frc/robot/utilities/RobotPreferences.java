@@ -22,6 +22,7 @@ public class RobotPreferences {
 	public double elevatorBottomToFloor; //distance of elevator 0 value from the ground
 	public double elevatorWristSafeStow; 	 // highest elevator position (from ground) where wrist can be stowed
 	public double cameraDistanceFromFrontOfBumper;  // (default = 12 inches)
+	public double cameraXOffset;		// Fudge factor to account for camera mount not being centered
 	public double wristGearRatio; 		// wrist gear ratio, gear with encoder / gear driving wrist
 	public double wristCalZero;   		// Wrist encoder position at O degrees, in encoder ticks (i.e. the calibration factor)
 	public boolean wristCalibrated = false;     // Default to wrist being uncalibrated.  Calibrate from robot preferences or "Calibrate Wrist Zero" button on dashboard
@@ -37,7 +38,7 @@ public class RobotPreferences {
 	public final double wristKeepOut = 28.0; // Max angle to avoid interference with elevator or climber
 	public final double wristUp = 15.0;
 	public final double wristStraight = -1.0;	//  needed to bias upward to account for sag and insure that hatch cover gripper engages first
-	public final double wristVision = -10.0;    // wrist angle for optimal vision tracking
+	public final double wristVision = -5.0;    // wrist angle for optimal vision tracking
 	public final double wristCargoShot = -30.0;	// Angle for wrist for cargo ship ball shot
 	public final double wristLowerCrashWhenElevatorLow = -45.0;   // If the elevator is in the low position, don't move the wrist below this!
 	public final double wristDown = -60.0;		// TODO Should be -59.0? // In this position, elevator must be able to go to groundCargo
@@ -62,7 +63,6 @@ public class RobotPreferences {
 	*/
 
 	// Field level heights (for elevator targeting), in inches
-	public final double elevatorWristStow = 15.5;		// At the hard stop
 	public final double hatchLow = 19.0;
   	public final double hatchMid = 48.5;
   	public final double hatchHigh = 72.8;
@@ -105,6 +105,7 @@ public class RobotPreferences {
 		elevatorBottomToFloor = prefs.getDouble("elevatorBottomToFloor", 15.5); // inches from ground to elevator's lowest position
 		elevatorWristSafeStow = prefs.getDouble("elevatorWristSafeStow", 18.5); // max elevator position from floor where wrist can be stowed
 		cameraDistanceFromFrontOfBumper = prefs.getDouble("cameraDistanceFromFrontOfBumper", 12);
+		cameraXOffset = prefs.getDouble("cameraXOffset", 0.0);
 		wristGearRatio = prefs.getDouble("wristGearRatio", 1.0);
 		wristCalZero = prefs.getDouble("wristCalZero", -9999);
 		wristCalibrated = (wristCalZero != -9999);
@@ -185,6 +186,9 @@ public class RobotPreferences {
 		}
 		if (!prefs.containsKey("cameraDistanceFromFrontOfBumper")){
 			prefs.putDouble("cameraDistanceFromFrontOfBumper", 12);
+		}
+		if (!prefs.containsKey("cameraXOffset")){
+			prefs.putDouble("cameraXOffset", 0.0);
 		}
 		if (!prefs.containsKey("wristGearRatio")) {
 			prefs.putDouble("wristGearRatio", 1.0);

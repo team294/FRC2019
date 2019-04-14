@@ -10,27 +10,23 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-/**
- * changes vision pipeline (0 = vision, 2 = driver feed)
- */
-public class VisionChangePipeline extends Command {
-  double pipeline;
+
+public class HatchFingersGrab extends Command {
+  private boolean grab;
 
   /**
-  * changes vision pipeline (0 = vision, 2 = driver feed)
-  */
-  public VisionChangePipeline(double pipeline) {
-    // Use requires() here to declare subsystem dependencies
-    this.pipeline = pipeline;
+   * Grab or releae the hatch claw
+   * @param grab true = grab position, false = release position
+   */
+  public HatchFingersGrab(boolean grab) {
+    requires(Robot.hatch);
+    this.grab = grab;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.vision.setPipe(pipeline);
-    // Robot.vision.setLedMode(3 - (int)pipeline);
-    if (pipeline == 0 || pipeline == 1) Robot.vision.setLedMode(3);
-    else if (pipeline == 2) Robot.vision.setLedMode(1);
+    Robot.hatch.setHatchGrab(grab);
   }
 
   // Called repeatedly when this Command is scheduled to run

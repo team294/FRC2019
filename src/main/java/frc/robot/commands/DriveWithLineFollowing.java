@@ -33,7 +33,7 @@ public class DriveWithLineFollowing extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.driveTrain.setDriveMode(false);
+    Robot.driveTrain.setDriveModeCoast(false);
     if (gyro) targetQuad = Robot.driveTrain.checkScoringQuadrant(); // Probably should compare this to the quadrant from the vision command too
     Robot.log.writeLogEcho("DriveTrain", "Line Tracking Init", "Gyro," + gyro + ",Quadrant," + targetQuad);
     

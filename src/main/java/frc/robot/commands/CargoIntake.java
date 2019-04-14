@@ -28,14 +28,14 @@ public class CargoIntake extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.cargo.setCargoMotorPercentOutput(0.8);  // 0.8, 0.5
+    Robot.cargo.setCargoMotorPercentOutput(1.0);  // 0.8, 0.5
     hasBallTime = false;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.cargo.setCargoMotorPercentOutput(0.8);   // 0.8, 0.5
+    Robot.cargo.setCargoMotorPercentOutput(1.0);   // 0.8, 0.5
 
     // Record time when we grabbed the ball
     if (!hasBallTime && Robot.cargo.hasBall()) {

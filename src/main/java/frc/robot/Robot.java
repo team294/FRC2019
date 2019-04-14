@@ -117,14 +117,14 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Target Quadrant", Robot.driveTrain.checkScoringQuadrant());
     //SmartDashboard.putBoolean("Vision Assistance Available", vision.areaFromCamera != 0); // This should work, need to test to see if there is a better metric to use
 
-    if (!Robot.hatch.getHatchPiston()) Robot.oi.setXBoxRumble(1.0);
+    if (!Robot.hatch.isHatchGrabbed()) Robot.oi.setXBoxRumble(1.0);
     else Robot.oi.setXBoxRumble(0);
 
     if (Robot.climb.isVacuumPresent()) Robot.leds.setColor(LedHandler.Color.BLUE, false); // solid BLUE when vacuum drawn
     else if (Robot.climb.getVacuumPressure(false) > 7.0) Robot.leds.setColor(LedHandler.Color.BLUE, true); // blinking BLUE when vacuum is starting to rise
     else if (Robot.vision.areaFromCamera > 0.1 && Robot.vision.areaFromCamera < 4.7) Robot.leds.setColor(LedHandler.Color.GREEN, false); // blinking GREEN when limelight target has specified area
     else if (Robot.cargo.getPhotoSwitch()) Robot.leds.setColor(LedHandler.Color.RED, false); // solid RED when cargo is present
-    else if (Robot.hatch.getHatchPiston()) Robot.leds.setColor(LedHandler.Color.RED, true); // blinking RED when hatch piston is in extended position
+    else if (Robot.hatch.isHatchGrabbed()) Robot.leds.setColor(LedHandler.Color.RED, true); // blinking RED when hatch piston is in extended position
     // else Robot.leds.setOff(); // if none of the above are true, turn OFF leds
     else Robot.leds.setColor(LedHandler.Color.OFF, false);    
   }

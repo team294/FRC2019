@@ -8,17 +8,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import frc.robot.utilities.RobotPreferences.ElevatorPosition;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 
-public class CargoIntakeFromGround extends CommandGroup {
+public class HatchGrabSequenceA extends CommandGroup {
   /**
-   * Moves wrist to 0, elevator to ground intake position, wrist down,
-   * intakes cargo, and moves elevator to low cargo position
+   * set hatch grabber to released and extend extension
    */
-  public CargoIntakeFromGround() {
-    addSequential(new HatchFingersGrab(true));
-    addSequential(new ElevatorWristMoveAndPrepare(ElevatorPosition.groundCargo));
-    addSequential(new CargoIntake());
-    addSequential(new ElevatorWristMoveAndPrepare(ElevatorPosition.hatchLow));
+  public HatchGrabSequenceA() {
+    addSequential(new HatchFingersGrab(false));
+    addSequential(new WaitCommand(0.1));
+    addSequential(new HatchExtensionExtend(true));
   }
 }

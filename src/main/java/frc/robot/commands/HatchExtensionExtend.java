@@ -11,26 +11,22 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 
-public class HatchSet extends Command {
-  private boolean grab;
+public class HatchExtensionExtend extends Command {
+  private boolean extend;
 
   /**
-   * Grab or releae the hatch claw
-   * @param grab true = grab position, false = release position
+   * Extend or retract the hatch claw
+   * @param extend false = retracted, true = extended
    */
-  public HatchSet(boolean grab) {
+  public HatchExtensionExtend(boolean extend) {
     requires(Robot.hatch);
-    this.grab = grab;
+    this.extend = extend;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    if (grab) {
-      Robot.hatch.setHatchPiston(true);
-    } else {
-      Robot.hatch.setHatchPiston(false);
-    }
+    Robot.hatch.setHatchExtensionRetracted(!extend);
   }
 
   // Called repeatedly when this Command is scheduled to run
