@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.pathfinder.Pathfinder;
 import frc.robot.pathfinder.Trajectory;
@@ -58,12 +59,14 @@ public class DrivePathfinder extends Command {
     // want any subsequent paths to run assuming that we followed the missing path.
     if (trajCenter == null || trajRight == null || trajLeft == null) {
       enablePathfinder = false;
+      this.pathName = "FILE NOT FOUND: " + this.pathName;
       Robot.robotPrefs.recordStickyFaults("Pathfinder");
-      Robot.log.writeLogEcho("Pathfinder", "", "Missing path " + pathName);
-      return;
+      Robot.log.writeLogEcho("Pathfinder", "", this.pathName);
     }
 
-    // Don't do anything if any other path is missing
+    SmartDashboard.putBoolean("Pathfinder enabled", enablePathfinder);
+
+    // Don't do anything if this path or any other path is missing
     if (!enablePathfinder) {
       return;
     }
@@ -81,6 +84,10 @@ public class DrivePathfinder extends Command {
     logData();
   }
 
+  /**
+   * Filename of path file loaded
+   * @return
+   */
   public String getPathName() {
     return pathName;
   }

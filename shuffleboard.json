@@ -59,7 +59,7 @@
               "Crosshair/Crosshair color": "#FFFFFFFF",
               "Controls/Show controls": true,
               "Controls/Rotation": "NONE",
-              "compression": 0.0,
+              "compression": -1.0,
               "fps": -1,
               "imageWidth": 0,
               "imageHeight": 0
@@ -572,7 +572,7 @@
           "5,3": {
             "size": [
               2,
-              2
+              3
             ],
             "content": {
               "_type": "List Layout",
@@ -593,6 +593,21 @@
                   "_type": "Command",
                   "_source0": "network_table:///SmartDashboard/Disc Release",
                   "_title": "Hatch Release"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Disc Extension",
+                  "_title": "Hatch Extension"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Disc Extend",
+                  "_title": "Hatch Extend"
+                },
+                {
+                  "_type": "Command",
+                  "_source0": "network_table:///SmartDashboard/Disc Retract",
+                  "_title": "Hatch Retract"
                 }
               ]
             }
@@ -633,17 +648,6 @@
                   "_title": "Hatch Outtake"
                 }
               ]
-            }
-          },
-          "6,5": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Pathfinder Test",
-              "_title": "SmartDashboard/Pathfinder Test"
             }
           }
         }
@@ -1064,17 +1068,29 @@
             "content": {
               "_type": "List Layout",
               "_title": "Auto Selection",
-              "Layout/Label position": "BOTTOM",
+              "Layout/Label position": "LEFT",
               "_children": [
                 {
                   "_type": "ComboBox Chooser",
                   "_source0": "network_table:///SmartDashboard/Auto Plan Selection",
-                  "_title": "SmartDashboard/Auto Plan Selection"
+                  "_title": "Plan"
                 },
                 {
                   "_type": "ComboBox Chooser",
                   "_source0": "network_table:///SmartDashboard/Starting Pos Selection",
-                  "_title": "SmartDashboard/Starting Pos Selection"
+                  "_title": "Position"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Auto path",
+                  "_title": "File"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Pathfinder enabled",
+                  "_title": "Pathfinder enabled",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
                 }
               ]
             }
