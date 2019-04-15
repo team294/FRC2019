@@ -59,10 +59,6 @@ public class NeoDriveTrain extends DriveTrain {
     rightMotor2.clearFaults();
     rightMotor3.clearFaults();
 
-
-    leftMotor2.setOpenLoopRampRate(0.2);
-    rightMotor2.setOpenLoopRampRate(0.2);
-
     robotDrive.setDeadband(0.05);
   }
 

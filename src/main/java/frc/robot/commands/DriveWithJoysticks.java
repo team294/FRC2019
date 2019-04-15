@@ -17,7 +17,6 @@ public class DriveWithJoysticks extends Command {
   private double highGearLimit = 0.7;       // Scaling factor (max percent output) in high gear
 
 
-
   public DriveWithJoysticks() {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.driveTrain);
@@ -34,8 +33,6 @@ public class DriveWithJoysticks extends Command {
   protected void execute() {
     double leftValue = Robot.oi.leftJoystick.getY();
     double rightValue = Robot.oi.rightJoystick.getY();
-
-   
 
     if (Robot.driveTrain.getDriveDirection() && Robot.shifter.isShifterInHighGear())  {
       Robot.driveTrain.tankDrive(-leftValue * highGearLimit, -rightValue * highGearLimit, false);

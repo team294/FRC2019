@@ -16,7 +16,7 @@ public class Auto2CargoF extends CommandGroup {
    * @param fieldSide "Left" or "Right"
    */
   public Auto2CargoF(String fieldSide) {
-    addSequential(new DrivePathfinder(fieldSide + "2CargoF-1", true, false));
+    addSequential(new DrivePathfinder(fieldSide + "2CargoF", true, false));
     addSequential(new ConditionalCommand(new TurnWithGyro(90, false), new TurnWithGyro(-90, false)){
     
       @Override

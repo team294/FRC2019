@@ -16,7 +16,7 @@ public class Auto1RocketB extends CommandGroup {
    * @param fieldSide "Left" or "Right"
    */
   public Auto1RocketB(String fieldSide) {
-    addSequential(new DrivePathfinder(fieldSide + "1RocketB-1", true, false));
+    addSequential(new DrivePathfinder(fieldSide + "1RocketB", true, false));
     addSequential(new ConditionalCommand(new TurnWithGyro(-90, false), new TurnWithGyro(90, false)){
     
       @Override
@@ -26,6 +26,6 @@ public class Auto1RocketB extends CommandGroup {
       }
     });
 
-    addSequential(new DrivePathfinder(fieldSide + "1RocketB-2", false, true));
+    addSequential(new DrivePathfinder(fieldSide + "1RocketB", false, true));
   }
 }

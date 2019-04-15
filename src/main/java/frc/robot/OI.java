@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.Trigger;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.commands.*;
@@ -18,6 +19,7 @@ import frc.robot.subsystems.Hatch;
 import frc.robot.triggers.*;
 import frc.robot.utilities.RobotPreferences.ElevatorPosition;
 import frc.robot.utilities.RobotPreferences.WristAngle;
+import frc.robot.utilities.AutoSelection.*;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -30,6 +32,9 @@ public class OI {
   public Joystick rightJoystick = new Joystick(1);
   public Joystick coPanel = new Joystick(2);
   public Joystick xBoxController = new Joystick(3);
+
+  SendableChooser<AutoPlan> chooser_autoPlan = new SendableChooser<>();
+  SendableChooser<StartingPosition> chooser_startPosition = new SendableChooser<>();
 
   public OI() {
     Button[] left = new Button[12];
@@ -68,8 +73,8 @@ public class OI {
     xbB[5].whenInactive(new HatchGrabSequenceB()); // LB
 
     xbB[6].whenPressed(new ElevatorWristMoveAndPrepare(ElevatorPosition.cargoShipCargo)); // RB
-    xbB[7].whenPressed(new VisionChangePipeline(1)); // Back
-    xbB[8].whenPressed(new VisionChangePipeline(0)); // Start
+    xbB[7].whenPressed(new VisionChangePipelineAndMoveWrist(1)); // Back
+    xbB[8].whenPressed(new VisionChangePipelineAndMoveWrist(0)); // Start
     xbB[9].whenPressed(new ElevatorWithXBox()); // LStick
     xbB[10].whenPressed(new WristWithXBox()); // RStick
     xbUp.whenActive(new CargoIntakeFromLoad()); // DPadUp
@@ -100,9 +105,9 @@ public class OI {
     // right[3].whenPressed(new Command());
     // left[4].whenPressed(new VisionChangePipeline(0)); // set pipeline for vision
     // right[4].whenPressed(new Command());
-    left[4].whenPressed(new VisionChangePipeline(1)); // leftmost pipeline
+    left[4].whenPressed(new VisionChangePipelineAndMoveWrist(1)); // leftmost pipeline
     left[3].whenPressed(new VisionChangePipeline(2)); // driver pipeline
-    left[5].whenPressed(new VisionChangePipeline(0)); // rightmost pipeline
+    left[5].whenPressed(new VisionChangePipelineAndMoveWrist(0)); // rightmost pipeline
     // left[5].whenPressed(new VisionChangePipeline(2)); // set pipeline for drive feed
     // right[5].whenPressed(new Command());
 
@@ -113,7 +118,8 @@ public class OI {
     coP[4].whileHeld(new ClimbArmSetPercentOutput(-0.5)); // top row, second button, DOWN
     coP[5].whenPressed(new ClimbVacuumTurnOn(true)); // top row, third button, UP
     coP[6].whenPressed(new ClimbVacuumTurnOn(false)); // top row, third button, DOWN
-    coP[7].whileHeld(new CargoIntake()); // mid row, fourth button, UP or DOWN
+    // coP[7].whileHeld(new CargoIntake()); // mid row, fourth button, UP or DOWN
+    coP[7].whenPressed(new RunAutoCommand()); // mid row, fourth button, UP or DOWN
     coP[8].whenPressed(new ClimbSequence()); // BIG RED BUTTON
     coP[9].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchHigh)); // mid row, first button, UP
     coP[10].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchMid)); // mid row, first button, DOWN
@@ -126,6 +132,19 @@ public class OI {
     coP[15].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.cargoShipCargo)); // third row, first button, UP
     coP[16].whenPressed(new ElevatorMoveToLevel(ElevatorPosition.hatchLow)); // third row, first button, DOWN
 
+    // Setting up autonomous chooser
+    chooser_autoPlan.addObject("CargoShip Front", AutoPlan.CargoShipFront);
+    chooser_autoPlan.addObject("Rocket Front", AutoPlan.RocketFront);
+    chooser_autoPlan.addObject("Rocket Back", AutoPlan.RocketBack);
+    SmartDashboard.putData("Auto Plan Selection", chooser_autoPlan);
+
+    // Setting up starting position chooser
+    chooser_startPosition.addObject("Left Level 1", StartingPosition.Left1);
+    chooser_startPosition.addObject("Left Level 2", StartingPosition.Left2);
+    chooser_startPosition.addObject("Middle", StartingPosition.Middle);
+    chooser_startPosition.addObject("Right Level 1", StartingPosition.Right1);
+    chooser_startPosition.addObject("Right Level 2", StartingPosition.Right2);
+		SmartDashboard.putData("Starting Pos Selection", chooser_startPosition);
     // Buttons for shifter
     SmartDashboard.putData("Shift High", new Shift(true));
     SmartDashboard.putData("Shift Low", new Shift(false));
@@ -200,9 +219,7 @@ public class OI {
     SmartDashboard.putData("Disc Retract", new HatchExtensionExtend(false));
     SmartDashboard.putString("Disc Position", "Null");
     SmartDashboard.putData("DriveStraight 100 in", new DriveStraightDistanceProfile(100, 0, 80, 65));
-    SmartDashboard.putData("DriveToCargoShip", new DriveToCargoShip());
-
-    SmartDashboard.putData("Pathfinder Test", new DrivePathfinder("R2ShipFront", true, true));
+    SmartDashboard.putData("Pathfinder Test", new DrivePathfinder("Straight150", true, true));
 
 /*
     SmartDashboard.putData("LEDSet Purple", new LEDSet(0));
@@ -220,5 +237,13 @@ public class OI {
 	public void setXBoxRumble(double percentRumble) {
 		xBoxController.setRumble(RumbleType.kLeftRumble, percentRumble);
     xBoxController.setRumble(RumbleType.kRightRumble, percentRumble);
+  }
+  
+  public AutoPlan readAutoPlan() {
+		return chooser_autoPlan.getSelected();
+  }
+  
+  public StartingPosition readStartPosition() {
+		return chooser_startPosition.getSelected();
 	}
 }
