@@ -258,7 +258,7 @@ public class Wrist extends Subsystem {
       double wristAngle = getWristEncoderDegrees();
       wristAngle = wristAngle % 360; // If encoder wraps around 360 degrees
       wristAngle = (wristAngle > 180) ? wristAngle - 360 : wristAngle; // Change range to -180 to +180
-      wristAngle = (wristAngle <= -180) ? wristAngle + 360 : wristAngle; // Change range to -180 to +180
+      // wristAngle = (wristAngle <= -180) ? wristAngle + 360 : wristAngle; // Change range to -180 to +180  THIS LINE OF CODE DOESN'T WORK!!!!
       if (Robot.log.getLogLevel() == 1){
         Robot.log.writeLog("Wrist", "Get Wrist Angle", "Wrist Angle," + wristAngle);
       }

@@ -41,6 +41,8 @@ public class AutoSelection {
 		StartingPosition startPosition = Robot.oi.readStartPosition();
 		autoPlan = Robot.oi.readAutoPlan();
 
+		if (autoPlan == null || startPosition == null) return;
+
 		switch (autoPlan) {
 			case CargoShipFront:
 				selectedPlan = 0;
