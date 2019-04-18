@@ -407,7 +407,7 @@ public class Elevator extends Subsystem {
 		}
 
 		// Autocalibrate in the encoder is OK and the elevator is at the lower limit switch
-		if ((!elevCalibrated || Math.abs(getElevatorEncTicks()) > 225) && elevEncOK && getElevatorLowerLimit()) {
+		if ((!elevCalibrated || Math.abs(getElevatorEncTicks()) > 600) && elevEncOK && getElevatorLowerLimit()) {
 			setDefaultCommand(null);
 			elevCalibrated = true;
 			stopElevator();

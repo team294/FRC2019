@@ -94,11 +94,11 @@ public class RearHatch extends Subsystem {
   @Override
   public void periodic() {
 
-		if (Robot.log.getLogRotation() == FileLog.REARHATCH_CYCLE) {
-      Robot.log.writeLog(false, "Rear Hatch", "Update Variables", 
-        "Piston," + (isRearHatchPistonExtended() ? "Extended" : "Retracted") + 
-        ",Volt," + rearHatchMotor.getMotorOutputVoltage() + ",Amp," + Robot.pdp.getCurrent(RobotMap.rearHatchMotorPDP));
-    }
+		// if (Robot.log.getLogRotation() == FileLog.REARHATCH_CYCLE) {
+    //   Robot.log.writeLog(false, "Rear Hatch", "Update Variables", 
+    //     "Piston," + (isRearHatchPistonExtended() ? "Extended" : "Retracted") + 
+    //     ",Volt," + rearHatchMotor.getMotorOutputVoltage() + ",Amp," + Robot.pdp.getCurrent(RobotMap.rearHatchMotorPDP));
+    // }
 
   }
 
