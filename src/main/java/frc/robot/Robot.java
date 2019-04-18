@@ -88,6 +88,7 @@ public class Robot extends TimedRobot {
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     climb.enableCompressor(true);
+    vision.setStreamMode(0);
 
     // Create auto selection utility
     autoSelection = new AutoSelection();
