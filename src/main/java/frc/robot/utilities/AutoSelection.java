@@ -71,6 +71,7 @@ public class AutoSelection {
 
 		priorProgramSelected = programSelected;
 		SmartDashboard.putString("Auto path", "loading path file...");
+		Robot.log.writeLogEcho("AutoSelection", "Load path init", "Plan," + autoPlan.name() + ",startPos," + startPosition.name() + ",program selected," + programSelected);
 
 		switch (programSelected) {
 			// case 0:
@@ -89,7 +90,7 @@ public class AutoSelection {
 				// Robot.log.writeLogEcho("AutoSelection", "Ran Auto Path 1 (CargoShip Front)", "startPos = " + startPosition.name());
 				break;
 			case 3:
-				autonomousCommand = new DrivePathfinder("Right1CargoF", true, true); //new DrivePathfinder("Right1ShipF", true, true);
+				autonomousCommand = new DrivePathfinder("Right1Cargo", true, true); //new DrivePathfinder("Right1ShipF", true, true);
 				strProgram = ((DrivePathfinder)autonomousCommand).getPathName();
 				// Robot.log.writeLogEcho("AutoSelection", "Ran Auto Path 1 (CargoShip Front)", "startPos = " + startPosition.name());
 				break;
@@ -108,11 +109,11 @@ public class AutoSelection {
 				strProgram = ((DrivePathfinder)autonomousCommand).getPathName();
 				// Robot.log.writeLogEcho("AutoSelection", "Ran Auto Path 1 (CargoShip Front)", "startPos = " + startPosition.name());
 				break;
-			case 7:
-				autonomousCommand = new DrivePathfinder("Middle1RocketF", true, true); //new DrivePathfinder("Middle1RocketF", true, true);
-				strProgram = ((DrivePathfinder)autonomousCommand).getPathName();
-				// Robot.log.writeLogEcho("AutoSelection", "Ran Auto Path 1 (CargoShip Front)", "startPos = " + startPosition.name());
-				break;
+			// case 7:
+			// 	autonomousCommand = new DrivePathfinder("Middle1RocketF", true, true); //new DrivePathfinder("Middle1RocketF", true, true);
+			// 	strProgram = ((DrivePathfinder)autonomousCommand).getPathName();
+			// 	// Robot.log.writeLogEcho("AutoSelection", "Ran Auto Path 1 (CargoShip Front)", "startPos = " + startPosition.name());
+			// 	break;
 			case 8:
 				autonomousCommand = new DrivePathfinder("Right1RocketF", true, true); //new DrivePathfinder("Right1RocketF", true, true);
 				strProgram = ((DrivePathfinder)autonomousCommand).getPathName();
@@ -133,11 +134,11 @@ public class AutoSelection {
 			// 	strProgram = ((DrivePathfinder)autonomousCommand).getPathName();
 			// 	// Robot.log.writeLogEcho("AutoSelection", "Ran Auto Path 1 (CargoShip Front)", "startPos = " + startPosition.name());
 			// 	break;
-			case 12:
-				autonomousCommand = new DrivePathfinder("Middle1RocketB", true, true); //new DrivePathfinder("Middle1RocketB", true, true);
-				strProgram = ((DrivePathfinder)autonomousCommand).getPathName();
-				// Robot.log.writeLogEcho("AutoSelection", "Ran Auto Path 1 (CargoShip Front)", "startPos = " + startPosition.name());
-				break;
+			// case 12:
+			// 	autonomousCommand = new DrivePathfinder("Middle1RocketB", true, true); //new DrivePathfinder("Middle1RocketB", true, true);
+			// 	strProgram = ((DrivePathfinder)autonomousCommand).getPathName();
+			// 	// Robot.log.writeLogEcho("AutoSelection", "Ran Auto Path 1 (CargoShip Front)", "startPos = " + startPosition.name());
+			// 	break;
 			case 13:
 				autonomousCommand = new DrivePathfinder("Right1RocketB", true, true); //new DrivePathfinder("Right1RocketB", true, true);
 				strProgram = ((DrivePathfinder)autonomousCommand).getPathName();
