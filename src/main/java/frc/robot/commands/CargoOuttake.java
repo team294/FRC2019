@@ -14,7 +14,7 @@ public class CargoOuttake extends Command {
 
   private double timeWithoutBall = 0; // the amount of time from the photo switch not sensing a ball
   private boolean startTime = false; // have we started to count the time from 
-  private double percentOutput;
+  private double initialPercentOutput, finalPercentOutput, delayTime;
 
   /**
    * Run cargo outtake 5 seconds, or until we no longer see the ball plus 1 additional second.
@@ -23,27 +23,46 @@ public class CargoOuttake extends Command {
   public CargoOuttake(double percentOutput) {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.cargo);
-    this.percentOutput = percentOutput;
+    initialPercentOutput = percentOutput;
+    finalPercentOutput = percentOutput;
+    delayTime = 10.0;
+  }
+
+  /**
+   * Run cargo outtake 5 seconds, or until we no longer see the ball plus 1 additional second.
+   * Increase speed after a delay to ensure that the ball is ejected.
+   * @param initialPercentOutput when command starts, power to kick the ball out, 0 to -1 (should be negative!)
+   * @param delayTime time (in seconds) to transition from initialPercentOutput to finalPercentOutput
+   * @param finalPercentOutput after delay has elapsed, power to kick the ball out, 0 to -1 (should be negative!)
+   */
+  public CargoOuttake(double initialPercentOutput, double delayTime, double finalPercentOutput) {
+    // Use requires() here to declare subsystem dependencies
+    requires(Robot.cargo);
+    this.initialPercentOutput = initialPercentOutput;
+    this.finalPercentOutput = finalPercentOutput;
+    this.delayTime = delayTime;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.cargo.setCargoMotorPercentOutput(percentOutput);   // was 0.6
+    Robot.cargo.setCargoMotorPercentOutput(initialPercentOutput);
     startTime = false;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.cargo.setCargoMotorPercentOutput(percentOutput);
+    if (timeSinceInitialized() <= delayTime) {
+      Robot.cargo.setCargoMotorPercentOutput(initialPercentOutput);
+    } else {
+      Robot.cargo.setCargoMotorPercentOutput(finalPercentOutput);
+    }
+
     if(!Robot.cargo.hasBall() && !startTime){
       timeWithoutBall = timeSinceInitialized();
       startTime = true;
     }
-    // if(timeSinceInitialized() >= 1.5) {
-    //   Robot.cargo.setCargoMotorPercentOutput(percentOutput - 0.2);
-    // }
   }
 
   // Make this return true when this Command no longer needs to run execute()
