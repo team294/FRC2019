@@ -4,6 +4,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 
 public class VisionData {
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -56,7 +57,7 @@ public class VisionData {
 
     public void readCameraData() {
         valid = (nteV.getDouble(0) == 1);
-        horizOffset = nteX.getDouble(0);
+        horizOffset = nteX.getDouble(0) - Robot.robotPrefs.cameraXOffset;
         vertOffset = nteY.getDouble(0);
         areaFromCamera = nteA.getDouble(0); 
         ledMode = ledM.getDouble(0);

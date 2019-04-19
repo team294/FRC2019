@@ -90,7 +90,7 @@ public class OI {
     xbLT.whenActive(new HatchExtensionExtend(true)); // LT
     //xbLT.whenInactive(new HatchExtensionSet(false)); // LT
     xbLT.whenInactive(new HatchReleaseSequenceB()); // LT
-    xbRT.whenActive(new CargoOuttake(-1.0)); // RT
+    xbRT.whenActive(new CargoOuttake(-0.8, 0.75, -1.0)); // RT
 
     // Joystick buttons
     left[1].whenPressed(new Shift(false)); // low gear
@@ -180,7 +180,7 @@ public class OI {
     
     // Buttons for the Cargo rollers
     SmartDashboard.putData("Cargo Intake", new CargoIntake());
-    SmartDashboard.putData("Cargo Outtake", new CargoOuttake(-1.0));
+    SmartDashboard.putData("Cargo Outtake", new CargoOuttake(-0.8, 0.75, -1.0));
 
     // Buttons for the rear hatch intake
     SmartDashboard.putData("Rear Hatch Intake", new RearHatchSetPercentOutput(0.6, 5));
@@ -219,8 +219,8 @@ public class OI {
     SmartDashboard.putData("Disc Retract", new HatchExtensionExtend(false));
     SmartDashboard.putString("Disc Position", "Null");
     SmartDashboard.putData("DriveStraight 100 in", new DriveStraightDistanceProfile(100, 0, 80, 65));
-    SmartDashboard.putData("Pathfinder Test", new DrivePathfinder("Straight150", true, true));
-
+    //SmartDashboard.putData("Pathfinder Test", new DrivePathfinder("Right2RocketF", true, true));
+    SmartDashboard.putData("AutoChooser Run", new RunAutoCommand());
 /*
     SmartDashboard.putData("LEDSet Purple", new LEDSet(0));
     SmartDashboard.putData("LEDSet Red", new LEDSet(1));

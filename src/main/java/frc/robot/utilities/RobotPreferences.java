@@ -65,7 +65,7 @@ public class RobotPreferences {
 	// Field level heights (for elevator targeting), in inches
 	public final double hatchLow = 19.0;
   	public final double hatchMid = 48.5;
-  	public final double hatchHigh = 72.8;
+  	public final double hatchHigh = 69.7;		// was 72.8
   	public final double cargoShipCargo = 43.0;   // Was 34.75
 	public final double rocketBallOffset = 2;  // Ball intake is higher than the disc grabber (low position only)
 	public final double loadCargo = 44.125;

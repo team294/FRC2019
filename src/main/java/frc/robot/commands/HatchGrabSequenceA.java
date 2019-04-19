@@ -16,7 +16,7 @@ public class HatchGrabSequenceA extends CommandGroup {
    */
   public HatchGrabSequenceA() {
     addSequential(new HatchFingersGrab(false));
-    addSequential(new WaitCommand(0.1));
+    addSequential(new WaitCommand(0.3));
     addSequential(new HatchExtensionExtend(true));
   }
 }

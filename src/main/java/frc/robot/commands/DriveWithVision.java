@@ -101,7 +101,7 @@ public class DriveWithVision extends Command {
       SmartDashboard.putNumber("Final Angle", finalAngle);
     } else {
       // Drive directly towards target
-      finalAngle = xVal - Robot.robotPrefs.cameraXOffset;
+      finalAngle = xVal;
 
       // If we are farther than 40in from the target, use the target skew to 
       // follow an S-curve path to approach the target from a perpendicular line

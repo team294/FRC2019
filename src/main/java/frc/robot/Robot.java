@@ -55,7 +55,7 @@ public class Robot extends TimedRobot {
     canDeviceFinder.enumerateCANBusToStdOut();
 
     // Create file log first, so any other class constructors can log data
-    log = new FileLog("F0");
+    log = new FileLog("G3");
 
     // Read robot preference next, so any other class constructors can use preferences 
     robotPrefs = new RobotPreferences();
@@ -88,6 +88,7 @@ public class Robot extends TimedRobot {
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     climb.enableCompressor(true);
+    vision.setStreamMode(0);
 
     // Create auto selection utility
     autoSelection = new AutoSelection();
