@@ -53,10 +53,10 @@ public class ElevatorMoveToLevel extends Command {
             target = Robot.robotPrefs.elevatorBottomToFloor;
             break;
           case hatchLow:
-            target = Robot.robotPrefs.hatchLow + Robot.robotPrefs.rocketBallOffset;
+            target = Robot.robotPrefs.hatchLow + Robot.robotPrefs.rocketBallOffset - 1.0;
             break;
           case hatchMid:
-            target = Robot.robotPrefs.hatchMid;
+            target = Robot.robotPrefs.hatchMid -1.5;
             break;
           case hatchHigh:
             target = Robot.robotPrefs.hatchHigh;
