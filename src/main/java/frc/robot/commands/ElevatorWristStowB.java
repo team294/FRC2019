@@ -15,7 +15,7 @@ import frc.robot.utilities.RobotPreferences.WristAngle;
 public class ElevatorWristStowB extends CommandGroup {
   /**
    * Sequence to stow the wrist.
-   * <p>NOTE:  Only run this if the wrist is not already stowed or in the keepout region.
+   * <p>NOTE:  Only run this if the wrist is already stowed or in the keepout region.
    */
   public ElevatorWristStowB() {
     // Start moving climber if we need to deploy the wrist and the climber is in the way
