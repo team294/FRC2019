@@ -156,7 +156,7 @@ public class DrivePathfinder extends Command {
     logData();
   }
 
-
+//TODO update log filing
   private void logData() {
     Robot.log.writeLog(false, "Pathfinder", "execute", "time," + ((double)(System.currentTimeMillis() - dfLeft.getStartTimeMillis())) / 1000.0 +
     ",left power," + l + ",right power," + r + ",turn power," + turn +
