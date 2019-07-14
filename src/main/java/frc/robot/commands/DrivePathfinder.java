@@ -15,7 +15,7 @@ import frc.robot.pathfinder.Trajectory;
 import frc.robot.pathfinder.followers.DistanceFollower;
 
 public class DrivePathfinder extends Command {
-  private DistanceFollower dfLeft, dfRight;
+  private DistanceFollower dfLeft, dfRight, dfCenter;
   private Trajectory trajCenter;
   private Trajectory trajRight;
   private Trajectory trajLeft;
@@ -24,9 +24,9 @@ public class DrivePathfinder extends Command {
   private static boolean enablePathfinder = true; // true = all paths loaded and allow pathfinder to work,
                                                   // false = a path did not load, stop pathfinder
 
-  double distL = 0, distR = 0;      // Distance traveled
-  Trajectory.Segment segLeft, segRight;
-  double l = 0, r = 0, turn = 0;    // power to send to drive motors
+  double distL = 0, distR = 0, distC = 0;      // Distance traveled
+  Trajectory.Segment segLeft, segRight, segCenter;
+  double l = 0, r = 0, c = 0, distErrTerm = 0, turn = 0;    // power to send to drive motors
   double gyro_heading = 0, desired_heading = 0;
   
   /**
@@ -72,12 +72,16 @@ public class DrivePathfinder extends Command {
     }
 
     // Create DistanceFollowers for the Trajectories and configure them
+    
     dfLeft = new DistanceFollower(trajLeft);
     dfRight = new DistanceFollower(trajRight);
+    dfCenter = new DistanceFollower(trajCenter);
 
-    dfLeft.configurePIDVA(0.08, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.0013, 0.0012); // P = 0.2, 0.05
-    dfRight.configurePIDVA(0.08, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.0013, 0.0012); // A = 0.0032, 0.004
+    dfLeft.configurePIDVA(0.0, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.0013, 0.0012); // P = 0.2, 0.05
+    dfRight.configurePIDVA(0.0, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.0013, 0.0012); // A = 0.0032, 0.004
+    dfCenter.configurePIDVA(0.08, 0.0, 0.0, 1 / Robot.robotPrefs.max_velocity_ips, 0.0013, 0.0012);
     
+    segCenter = dfCenter.getSegment();
     segLeft = dfLeft.getSegment();
     segRight = dfRight.getSegment();
 
@@ -108,8 +112,10 @@ public class DrivePathfinder extends Command {
 
     dfLeft.reset();
     dfRight.reset();
+    dfCenter.reset();
     distL = 0;
     distR = 0;
+    distC = 0;
 
     if (resetGyro) {
       Robot.driveTrain.setGyroRotation(Pathfinder.r2d(trajCenter.segments[0].heading));
@@ -126,21 +132,26 @@ public class DrivePathfinder extends Command {
     
     distL = Robot.driveTrain.getLeftEncoderInches();
     distR = Robot.driveTrain.getRightEncoderInches();
+    distC = (distL + distR) / 2;
 
     l = dfLeft.calculate(distL);
     r = dfRight.calculate(distR);
+    c = dfCenter.calculate(distC);
 
     segLeft = dfLeft.getSegment();
     segRight = dfRight.getSegment();
+    segCenter = dfCenter.getSegment();
 
     gyro_heading = Robot.driveTrain.getGyroRotation();    // Assuming the gyro is giving a value in degrees
-    desired_heading = Pathfinder.r2d(dfLeft.getHeading());  // Should also be in degrees
+    desired_heading = Pathfinder.r2d(dfCenter.getHeading());  // Should also be in degrees
+
+    distErrTerm = 0.08 * (segCenter.position - distC);
 
     double angleDifference = Pathfinder.boundHalfDegrees(desired_heading - gyro_heading);
     turn = 0.01 * angleDifference;
 
-    Robot.driveTrain.setLeftMotors(-(l + turn));
-    Robot.driveTrain.setRightMotors(-(r - turn));
+    Robot.driveTrain.setLeftMotors(-(l + distErrTerm + turn));
+    Robot.driveTrain.setRightMotors(-(r + distErrTerm - turn));
     
     logData();
   }

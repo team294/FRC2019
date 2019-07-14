@@ -219,7 +219,7 @@ public class OI {
     SmartDashboard.putData("Disc Retract", new HatchExtensionExtend(false));
     SmartDashboard.putString("Disc Position", "Null");
     SmartDashboard.putData("DriveStraight 100 in", new DriveStraightDistanceProfile(100, 0, 80, 65));
-    //SmartDashboard.putData("Pathfinder Test", new DrivePathfinder("Right2RocketF", true, true));
+    SmartDashboard.putData("Pathfinder Test", new DrivePathfinder("LeftCurve", true, true));
     SmartDashboard.putData("AutoChooser Run", new RunAutoCommand());
 /*
     SmartDashboard.putData("LEDSet Purple", new LEDSet(0));
