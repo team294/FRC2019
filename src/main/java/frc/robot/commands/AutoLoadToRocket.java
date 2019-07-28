@@ -9,14 +9,12 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class AutoRocketToLoad extends CommandGroup {
+public class AutoLoadToRocket extends CommandGroup {
   /**
    * Add your docs here.
    */
-  public AutoRocketToLoad() {
-    addSequential(new HatchFingersGrab(false));
-    addSequential(new DrivePathfinder("RightRocketLoadF1", false, false));
-    addSequential(new TurnWithGyro(-180, false));
-    addSequential(new DrivePathfinder("RightRocketLoadF2", true, true));
+  public AutoLoadToRocket() {
+    addSequential(new DrivePathfinder("RightRocketLoadF2", true, false));
+    addSequential(new TurnWithGyro(0, false));
   }
 }

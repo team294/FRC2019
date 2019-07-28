@@ -219,9 +219,16 @@ public class OI {
     SmartDashboard.putData("Disc Retract", new HatchExtensionExtend(false));
     SmartDashboard.putString("Disc Position", "Null");
     SmartDashboard.putData("DriveStraight 100 in", new DriveStraightDistanceProfile(100, 0, 80, 65));
-    SmartDashboard.putData("Pathfinder Test", new DrivePathfinder("Right1RocketB", true, false));
     SmartDashboard.putData("Auto Test", new AutoRocketToLoad());
     SmartDashboard.putData("AutoChooser Run", new RunAutoCommand());
+    SmartDashboard.putData("Right1RocketF", new DrivePathfinder("Right1RocketF", true, true));
+    SmartDashboard.putData("RightRocketLoadF1", new DrivePathfinder("RightRocketLoadF1", false, false));
+    SmartDashboard.putData("TurnToLoad", new TurnWithGyro(-180, false));
+    SmartDashboard.putData("RightRocketLoadF2", new DrivePathfinder("RightRocketLoadF2", true, true));
+    SmartDashboard.putData("Straight150", new DrivePathfinder("Straight150", false, true));
+    SmartDashboard.putData("AutoRocketToLoad", new AutoRocketToLoad());
+    SmartDashboard.putData("AutoLoadToRocket", new AutoLoadToRocket());
+
 /*
     SmartDashboard.putData("LEDSet Purple", new LEDSet(0));
     SmartDashboard.putData("LEDSet Red", new LEDSet(1));
