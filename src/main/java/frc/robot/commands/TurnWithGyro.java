@@ -9,6 +9,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.utilities.RobotPreferences.TurnDirection;
+
 
 public class TurnWithGyro extends Command {
 
@@ -16,6 +18,7 @@ public class TurnWithGyro extends Command {
   double inputAngle;
   boolean isRelativeGyroAngle;
   double originalGyroAngle;
+  TurnDirection turnDirection;
 
   /**
    * Turns the robot in place
@@ -29,6 +32,16 @@ public class TurnWithGyro extends Command {
     requires(Robot.driveTrain);
     inputAngle = targetAngle;
     isRelativeGyroAngle = isRelativeAngle;
+    turnDirection = TurnDirection.shortest;
+  }
+
+  public TurnWithGyro(double targetAngle, boolean isRelativeAngle, TurnDirection direction) {
+    // Use requires() here to declare subsystem dependencies
+    // eg. requires(chassis);
+    requires(Robot.driveTrain);
+    inputAngle = targetAngle;
+    isRelativeGyroAngle = isRelativeAngle;
+    turnDirection = direction;
   }
 
   // Called just before this Command runs the first time
@@ -47,7 +60,7 @@ public class TurnWithGyro extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.driveTrain.turnWithGyro(targetAngle);
+    Robot.driveTrain.turnWithGyro(targetAngle, turnDirection);
   }
 
   // Make this return true when this Command no longer needs to run execute()
