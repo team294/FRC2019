@@ -222,10 +222,9 @@ public class OI {
     SmartDashboard.putData("DriveStraight 100 in", new DriveStraightDistanceProfile(100, 0, 80, 65));
     SmartDashboard.putData("Auto Test", new AutoRocketToLoad());
     SmartDashboard.putData("AutoChooser Run", new RunAutoCommand());
-    SmartDashboard.putData("Right1RocketF", new DrivePathfinder("Right1RocketF", true, true));
-    SmartDashboard.putData("RightRocketLoadF1", new DrivePathfinder("RightRocketLoadF1", false, false));
-    SmartDashboard.putData("TurnToLoad", new TurnWithGyro(-180, false));
-    SmartDashboard.putData("RightRocketLoadF2", new DrivePathfinder("RightRocketLoadF2", true, true));
+    SmartDashboard.putData("Right1RocketB", new DrivePathfinder("Right1RocketB", true, false));
+    SmartDashboard.putData("TurnToLoad", new TurnWithGyro(210, false));
+    SmartDashboard.putData("RightRocketBLoad", new DrivePathfinder("RightRocketBLoad", true, true));
     SmartDashboard.putData("Straight150", new DrivePathfinder("Straight150", false, true));
     SmartDashboard.putData("AutoRocketToLoad", new AutoRocketToLoad());
     SmartDashboard.putData("AutoLoadToRocket", new AutoLoadToRocket());

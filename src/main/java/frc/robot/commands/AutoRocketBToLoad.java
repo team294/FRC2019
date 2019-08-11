@@ -13,8 +13,15 @@ public class AutoRocketBToLoad extends CommandGroup {
   /**
    * Add your docs here.
    */
-  public AutoRocketBToLoad() {
-    addSequential(new TurnWithGyro(210,false));
+  public AutoRocketBToLoad() { //ALL OF THIS NEEDS TO BE TESTED 8/11/19
+    // addParallel(new VisionChangePipelineAndMoveWrist(0));
+    // addSequential(new DrivePathfinder("Right1RocketB", true, true));
+    // addSequential(new DriveAssist());
+    // addSequential(new TurnWithGyro(210,false));
+    // addParallel(new VisionChangePipelineAndMoveWrist(0));
+    // addSequential(new DrivePathfinder("RightRocketBLoad", true, true));
+    // addSequential(new DriveAssist());
+
     // Add Commands here:
     // e.g. addSequential(new Command1());
     // addSequential(new Command2());
