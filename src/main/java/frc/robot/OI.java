@@ -231,6 +231,9 @@ public class OI {
     SmartDashboard.putData("AutoLoadToRocket", new AutoLoadToRocket());
     SmartDashboard.putData("TestTurn", new TurnWithGyro(0, false, TurnDirection.right));
 
+    SmartDashboard.putData("AutoRightRocketF", new AutoRightRocketF());
+    SmartDashboard.putData("Test3Inch", new DrivePathfinder("Right1RocketFScore", true, true));
+
 /*
     SmartDashboard.putData("LEDSet Purple", new LEDSet(0));
     SmartDashboard.putData("LEDSet Red", new LEDSet(1));
