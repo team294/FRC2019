@@ -225,7 +225,9 @@ public class OI {
     SmartDashboard.putData("RightRocketLoadF1", new DrivePathfinder("RightRocketLoadF1", false, false));
     SmartDashboard.putData("TurnToLoad", new TurnWithGyro(-180, false));
     SmartDashboard.putData("RightRocketLoadF2", new DrivePathfinder("RightRocketLoadF2", true, true));
-    SmartDashboard.putData("Straight150", new DrivePathfinder("Straight150", false, true));
+    SmartDashboard.putData("Straight150", new DrivePathfinder("Straight150", true, true));
+    SmartDashboard.putData("LeftCurve", new DrivePathfinder("LeftCurve", true, true));
+    SmartDashboard.putData("LeftRightCurve", new DrivePathfinder("LeftRightCurve", true, true));
     SmartDashboard.putData("AutoRocketToLoad", new AutoRocketToLoad());
     SmartDashboard.putData("AutoLoadToRocket", new AutoLoadToRocket());
 
