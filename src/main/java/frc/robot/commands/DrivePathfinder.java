@@ -31,6 +31,7 @@ public class DrivePathfinder extends Command {
   double l = 0, r = 0, c = 0, distErrTerm = 0, turn = 0;    // power to send to drive motors
   double gyroHeading = 0, gyroHeadingPrior = 0, desiredHeading = 0;
   double skidGain = 0.28;      // Magnify delta between wheels by this factor to account for skid
+  double skidEncoderAdjust = 0.0;   // Decrease distance travelled compared to encoder measurements when turning, to account for skid (try 0.1)
   double skidAdjust = 0.0;    // Temp variable for skid adjustments
 
   /**
@@ -164,20 +165,12 @@ public class DrivePathfinder extends Command {
     // distC = (distL + distR) / 2;
     double deltaL = distL - distLPrior;
     double deltaR = distR - distRPrior;
-    if (deltaL > deltaR) {
-      // Turning right.  Adjust for skid.
-      // Use the distance from the inner wheel from the turn + heading change
-      distC = distCPrior +  deltaR + Pathfinder.d2r(Pathfinder.boundHalfDegrees(gyroHeading - gyroHeadingPrior)) * Robot.robotPrefs.wheelbase_in / 2.0;
-    } else {
-      // Turning left.  Adjust for skid.
-      // Use the distance from the inner wheel from the turn + heading change
-      distC = distCPrior +  deltaL + Pathfinder.d2r(Pathfinder.boundHalfDegrees(gyroHeadingPrior - gyroHeading)) * Robot.robotPrefs.wheelbase_in / 2.0;
-    }
+    distC = distCPrior + (deltaL + deltaR)/2.0 - Math.abs(deltaL - deltaR) * skidEncoderAdjust;
     distErrTerm = 0.08 * (segCenter.position - distC);
 
     // Set the motor percentage based on feed forward and feedback to follow the profile
     Robot.driveTrain.setLeftMotors(-(l + skidAdjust + distErrTerm + turn));
-    Robot.driveTrain.setRightMotors(-(r + - skidAdjust + distErrTerm - turn));
+    Robot.driveTrain.setRightMotors(-(r - skidAdjust + distErrTerm - turn));
     
     logData();
 
