@@ -31,8 +31,8 @@ public class DriveWithJoysticks extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double leftValue = Robot.oi.leftJoystick.getY();
-    double rightValue = Robot.oi.rightJoystick.getY();
+    double leftValue = Robot.oi.leftJoystick.getY() * 0.6;
+    double rightValue = Robot.oi.rightJoystick.getY() * 0.6;
 
     if (Robot.driveTrain.getDriveDirection() && Robot.shifter.isShifterInHighGear())  {
       Robot.driveTrain.tankDrive(-leftValue * highGearLimit, -rightValue * highGearLimit, false);
