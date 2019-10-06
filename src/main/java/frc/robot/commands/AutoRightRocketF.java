@@ -8,14 +8,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import frc.robot.utilities.RobotPreferences.TurnDirection;
 
-public class AutoLoadToRocket extends CommandGroup {
+public class AutoRightRocketF extends CommandGroup {
   /**
    * Add your docs here.
    */
-  public AutoLoadToRocket() {
-    addSequential(new DrivePathfinder("RightRocketLoadF2", true, false));
-    addSequential(new TurnWithGyro(0, false, TurnDirection.right));
+  public AutoRightRocketF() {
+    addParallel(new VisionChangePipelineAndMoveWrist(0));
+    addSequential(new DrivePathfinder("Right1RocketF", true, true));
+    addSequential(new DriveAssist());
   }
 }

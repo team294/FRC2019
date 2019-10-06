@@ -77,7 +77,7 @@ public class DriveWithVision extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double xOffsetAdjustmentFactor = 1.5; // Should be tested to be perfect; 2 seems to go out of frame too quickly. Must be greater than 1.
+    double xOffsetAdjustmentFactor = 1.5; // Should be tested to be perfect; 2 seems to go out of frame too quickly. Must be greater than 1. Was 1.5
     //double xOffsetAdjustmentFactor = 2.0 + Robot.oi.leftJoystick.getY(); // xAdjustment based on distance
 
 
@@ -105,10 +105,10 @@ public class DriveWithVision extends Command {
 
       // If we are farther than 40in from the target, use the target skew to 
       // follow an S-curve path to approach the target from a perpendicular line
-      if (distance>43) finalAngle -= skew*distance * 0.035;  // tuned to 0.035  for distance > 43
+      if (distance>43) finalAngle -= skew*distance * 0.025;  // tuned to 0.035  for distance > 43
     }
 
-    double gainConstant = distance * 0.00005 + 0.012;  // tuned to 0.008
+    double gainConstant = distance * 0.00005 + 0.008;  // tuned to 0.008
 
     //double lJoystickAdjust = Math.abs(Robot.oi.leftJoystick.getY());
     //double lJoystickAdjust = 0.7 * Math.sqrt(lJoystickRaw);

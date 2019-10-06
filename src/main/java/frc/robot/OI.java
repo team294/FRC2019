@@ -18,6 +18,7 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.Hatch;
 import frc.robot.triggers.*;
 import frc.robot.utilities.RobotPreferences.ElevatorPosition;
+import frc.robot.utilities.RobotPreferences.TurnDirection;
 import frc.robot.utilities.RobotPreferences.WristAngle;
 import frc.robot.utilities.AutoSelection.*;
 
@@ -230,6 +231,10 @@ public class OI {
     SmartDashboard.putData("LeftRightCurve", new DrivePathfinder("LeftRightCurve", true, true));
     SmartDashboard.putData("AutoRocketToLoad", new AutoRocketToLoad());
     SmartDashboard.putData("AutoLoadToRocket", new AutoLoadToRocket());
+    SmartDashboard.putData("TestTurn", new TurnWithGyro(0, false, TurnDirection.right));
+
+    SmartDashboard.putData("AutoRightRocketF", new AutoRightRocketF());
+    SmartDashboard.putData("Test3Inch", new DrivePathfinder("Right1RocketFScore", true, true));
 
 /*
     SmartDashboard.putData("LEDSet Purple", new LEDSet(0));

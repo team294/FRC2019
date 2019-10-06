@@ -20,6 +20,7 @@ import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.utilities.FileLog;
+import frc.robot.utilities.RobotPreferences.TurnDirection;
 
 /**
  * This is the parent class for a drive train. All the logic for line following, vision, etc. is here.
@@ -400,11 +401,12 @@ public abstract class DriveTrain extends Subsystem {
    * or complete the turn.
    * @param targetAngle Angle to turn to, in degrees
   */
-  public void turnWithGyro(double targetAngle) {
+  public void turnWithGyro(double targetAngle, TurnDirection direction) {
     double gainConstant, fixSpeed;
+    int directionMultiplier = 1;
 
     gainConstant = Robot.shifter.isShifterInHighGear() ? 0.002 : 0.005;  
-    fixSpeed = Robot.shifter.isShifterInHighGear() ? 0.05 : 0.1; 
+    fixSpeed = Robot.shifter.isShifterInHighGear() ? 0.05 : 0.1;
 
     double xVal = normalizeAngle(targetAngle - getGyroRotation());
     double percentOutput = fixSpeed + Math.abs(gainConstant * xVal);
@@ -415,12 +417,18 @@ public abstract class DriveTrain extends Subsystem {
     }
     priorTurnPercentOutput = percentOutput;
 
-    if(xVal > 0.5){
-      setLeftMotors(-percentOutput);
-      setRightMotors(percentOutput);
+    if (direction == TurnDirection.left && xVal > 0.5) {
+      directionMultiplier = -1;
+    } else if (direction == TurnDirection.right && xVal < -0.5) {
+      directionMultiplier = -1;
+    }
+
+    if (xVal > 0.5) {
+      setLeftMotors(-percentOutput * directionMultiplier);
+      setRightMotors(percentOutput * directionMultiplier);
     } else if (xVal < -0.5) {
-      setLeftMotors(percentOutput);
-      setRightMotors(-percentOutput);
+      setLeftMotors(percentOutput * directionMultiplier);
+      setRightMotors(-percentOutput * directionMultiplier);
     } else {
       stop();
     }
