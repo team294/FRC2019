@@ -22,6 +22,7 @@ public class TurnWithGyro extends Command {
 
   /**
    * Turns the robot in place
+   * Default direction is the shortest turn
    * @param targetAngle in degrees
    * @param isRelativeAngle true = turn relative to current robot heading (+ = turn right, - = turn left).  
    * false = turn to absolute robot heading on the gyro.
@@ -35,6 +36,13 @@ public class TurnWithGyro extends Command {
     turnDirection = TurnDirection.shortest;
   }
 
+  /**
+   * Turns the robot in place (allows you to choose direction of turn)
+   * @param targetAngle in degrees
+   * @param isRelativeAngle true = turn relative to current robot heading (+ = turn right, - = turn left).  
+   * false = turn to absolute robot heading on the gyro. 
+   * @param direction left = turn left, right = turn right, shortest = turn to shortest path
+   */
   public TurnWithGyro(double targetAngle, boolean isRelativeAngle, TurnDirection direction) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
