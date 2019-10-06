@@ -18,7 +18,7 @@ public class HatchReleaseSequenceB extends CommandGroup {
     addSequential(new HatchFingersGrab(false));
     addSequential(new WaitCommand(0.1));
     addSequential(new HatchExtensionExtend(false));
-    addSequential(new WaitCommand(1.5));
+    addSequential(new WaitCommand(3)); // was 1.5, changed for beach blitz
     addSequential(new HatchFingersGrab(true));
   }
 }

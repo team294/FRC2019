@@ -31,7 +31,7 @@ public class DrivePathfinder extends Command {
   double l = 0, r = 0, c = 0, distErrTerm = 0, turn = 0;    // power to send to drive motors
   double gyroHeading = 0, gyroHeadingPrior = 0, desiredHeading = 0;
   double skidGain = 0.28;      // Magnify delta between wheels by this factor to account for skid
-  double skidEncoderAdjust = 0.0;   // Decrease distance travelled compared to encoder measurements when turning, to account for skid (try 0.1)
+  double skidEncoderAdjust = 0.12;   // Decrease distance travelled compared to encoder measurements when turning, to account for skid (try 0.1)
   double skidAdjust = 0.0;    // Temp variable for skid adjustments
 
   /**
