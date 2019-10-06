@@ -60,7 +60,7 @@ public class DistanceFollower {
      * @param kp The proportional term. This is usually quite high (0.8 - 1.0 are common values)
      * @param ki The integral term. Currently unused.
      * @param kd The derivative term. Adjust this if you are unhappy with the tracking of the follower. 0.0 is the default
-     * @param kv The velocity ratio. This should be 1 over your maximum velocity @ 100% throttle.
+     * @param kv The velocity ratio. This should be 1 over your maximum velocity at 100% throttle.
      *           This converts m/s given by the algorithm to a scale of -1..1 to be used by your
      *           motor controllers
      * @param kaa The acceleration term (when accelerating). Adjust this if you want to reach higher or lower speeds faster. 0.0 is the default

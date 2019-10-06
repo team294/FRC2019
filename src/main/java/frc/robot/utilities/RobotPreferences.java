@@ -51,9 +51,12 @@ public class RobotPreferences {
   	public final double wheelbase_in = 26.5;       // wheelbase, in inches was 25
   	// public static final double wheel_diameter_in = 6.0;   // wheel diamater, in inches  -- DO NOT USE -- Use wheelCircumference preference instead
   	// public static final double wheel_distance_in_per_tick = wheel_diameter_in*Math.PI/encoderTicksPerRevolution;  // wheel distance traveled per encoder tick, in inches
-  	public final double max_velocity_ips = 95.0;   // max robot velocity, in inches per second  // was 110.0
+  	public final double max_velocity_ips = 115.0;   // max robot velocity, in inches per second  // was 95.0
   	public final double max_acceleration_ipsps = 130.0;  // max robot acceleration, in inches per second per second
-  	public final double max_jerk_ipspsps = 2400.0;  // max robot jerk, in inches per second per second per second
+	public final double max_jerk_ipspsps = 2400.0;  // max robot jerk, in inches per second per second per second
+	  
+	// TurnGyro Data
+	public enum TurnDirection {left, right, shortest} // for direction TurnWithGyro will actually turn (or take the shortest turn)
 
 	// Hatch piston positions
 	//public enum HatchPistonPositions { grab, release, moving, unknown }
