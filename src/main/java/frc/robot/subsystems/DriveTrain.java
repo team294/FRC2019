@@ -628,7 +628,8 @@ public abstract class DriveTrain extends Subsystem {
       SmartDashboard.putNumber("Gyro Angle", getGyroRotation());
       SmartDashboard.putNumber("Drive Left Ticks", getLeftEncoderTicks());
       SmartDashboard.putNumber("Drive Right Ticks", getRightEncoderTicks());
-
+      SmartDashboard.putNumber("Drive Left Velocity", getLeftEncoderVelocity());
+      SmartDashboard.putNumber("Drive Right Velocity", getRightEncoderVelocity());
       
       updateDriveLog(false);
 
