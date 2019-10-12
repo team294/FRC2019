@@ -83,7 +83,7 @@ public class CimDriveTrain extends DriveTrain {
 
     setDriveModeCoast(false);      // Set to brake drive mode
 
-    robotDrive.setDeadband(0.05);
+    robotDrive.setDeadband(0.12);  // Was 0.05
 
     leftMotor1.configVoltageCompSaturation(12.0);
     leftMotor2.configVoltageCompSaturation(12.0);
