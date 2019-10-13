@@ -59,7 +59,7 @@
               "Crosshair/Crosshair color": "#FFFFFFFF",
               "Controls/Show controls": true,
               "Controls/Rotation": "NONE",
-              "compression": -1.0,
+              "compression": 0.0,
               "fps": -1,
               "imageWidth": 0,
               "imageHeight": 0
@@ -649,6 +649,34 @@
                 }
               ]
             }
+          },
+          "0,1": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///SmartDashboard/Drive Right Velocity",
+              "_title": "Drive Right Velocity",
+              "Slider Settings/Min": -200.0,
+              "Slider Settings/Max": 200.0,
+              "Slider Settings/Block increment": 0.0625
+            }
+          },
+          "0,0": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///SmartDashboard/Drive Left Velocity",
+              "_title": "Drive Left Velocity",
+              "Slider Settings/Min": -200.0,
+              "Slider Settings/Max": 200.0,
+              "Slider Settings/Block increment": 0.0625
+            }
           }
         }
       }
@@ -728,7 +756,7 @@
               "Crosshair/Crosshair color": "#FFFFFFFF",
               "Controls/Show controls": true,
               "Controls/Rotation": "NONE",
-              "compression": -1.0,
+              "compression": 0.0,
               "fps": -1,
               "imageWidth": 0,
               "imageHeight": 0
@@ -976,7 +1004,7 @@
               "Crosshair/Crosshair color": "#FFFFFFFF",
               "Controls/Show controls": true,
               "Controls/Rotation": "NONE",
-              "compression": -1.0,
+              "compression": 0.0,
               "fps": -1,
               "imageWidth": 0,
               "imageHeight": 0
