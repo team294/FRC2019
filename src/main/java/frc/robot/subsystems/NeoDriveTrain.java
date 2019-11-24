@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -32,6 +33,9 @@ public class NeoDriveTrain extends DriveTrain {
 
   private SensorCollection lShaftEncoder = new WPI_TalonSRX(RobotMap.elevatorMotor2).getSensorCollection();
   private SensorCollection rShaftEncoder = new WPI_TalonSRX(RobotMap.climbMotor1).getSensorCollection();
+
+  private CANEncoder leftEncoder2 = new CANEncoder(leftMotor2);
+  private CANEncoder rightEncoder2 = new CANEncoder(rightMotor2);
 
   public final DifferentialDrive robotDrive = new DifferentialDrive(leftMotor2, rightMotor2);
 
@@ -107,6 +111,32 @@ public class NeoDriveTrain extends DriveTrain {
   @Override
   public double getRightEncoderVelocityRaw() {
     return rShaftEncoder.getQuadratureVelocity();
+  }
+
+  public double getLeftNeoEncoderRaw() {
+    return leftEncoder2.getPosition();
+  }
+
+  public double getRightNeoEncoderRaw() {
+    return rightEncoder2.getPosition();
+  }
+
+  public double getLeftNeoEncoderVelocityRaw() {
+    return -leftEncoder2.getVelocity();
+  }
+
+  public double getRightNeoEncoderVelocityRaw() {
+    return rightEncoder2.getVelocity();
+  }
+
+  void setNeoEncoderConversionFactor(double factor) {
+    leftEncoder2.setPositionConversionFactor(factor);
+    rightEncoder2.setPositionConversionFactor(factor);
+  }
+
+  void setNeoEncoderVelocityConversionFactor(double factor) {
+    leftEncoder2.setVelocityConversionFactor(factor);
+    rightEncoder2.setVelocityConversionFactor(factor);
   }
   
   @Override
